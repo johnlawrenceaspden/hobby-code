@@ -1,0 +1,10 @@
+run: bmuexample
+	./bmuexample
+
+bmuexample: bmu.c bmu.h bmuexample.c
+	gcc -Wall -std=c99 -lm bmu.c bmuexample.c -o bmuexample
+
+clean:
+	-rm bmuexample
+	-rm *~
+	-rm *.o
