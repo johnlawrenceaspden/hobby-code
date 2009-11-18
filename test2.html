@@ -1,0 +1,20 @@
+
+<html>
+ <head>
+  <script type="application/x-javascript">
+function draw() {
+ var ctx = document.getElementById('canvas').getContext('2d');
+ ctx.fillStyle = "rgb(200,0,0)";
+ ctx.fillRect (10, 10, 55, 50);
+ ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+ ctx.fillRect (30, 30, 55, 50);
+ for (i=0; i < 2000; i++) ctx.fillRect(50*Math.cos(i/100) + 100, 50*Math.sin(i/100) + 100, 1, 1);
+}
+  </script>
+ </head>
+ <body onload="draw()">
+   <canvas id="canvas" width="300" height="300"></canvas>
+   Using <a href=https://developer.mozilla.org/en/Drawing_Graphics_with_Canvas>Canvas
+ </body>
+</html>
+
