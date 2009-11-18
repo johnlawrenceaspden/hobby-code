@@ -1,0 +1,80 @@
+John Lawrence Aspden
+
+Contract Programmer (Assembler, Embedded C, C++, Java, Python, Lisp, Scheme) 
+Cambridge, England 
+
+£45/hour 
+
+Will negotiate fixed price contracts. 
+
+phone: (+44) 7742 918198 
+email: cv@aspden.com
+
+I'm looking for contract programming work in Cambridge. I like challenges.
+
+I have a degree in mathematics from the University of Cambridge. I'm also interested in Computer Science.
+
+My favourite computer books are: The C Programming Language, Structure and Interpretation of Computer Programs, Structured Analysis and Design, The C++ Programming Language, The Mythical Man-month, Peopleware, The Practical Guide to Structured Systems Design, Dive into Python and the 1979 TRS80 Basic manual. 
+Commercial Contracts
+2006 Brain Mapping Unit, University of Cambridge 
+Python, C, SWIG, Signal Processing (wavelets, Hurst exponent), MATLAB, Octave 
+I wrote software to calculate statistics on the output of a brain scanner. The initial prototyping and tests were in python for speed of development, and the final program was a C library. I used SWIG keep the original unit test framework.
+
+2005 Sepura
+( 3 separate contracts ) 
+Embedded C, Python, Visual C++, make, Subversion, CVS, Frontpage, Windows Comms, Unicode, CJK fonts, LGPL
+I solved some mysterious bugs in a project to split DSP code across several code pages, and then automated the build process and dependency generation. I debugged a browser-based error tracking/change control system. I converted an ancient program to use Windows Comms and work with Chinese, Korean and Japanese scripts.
+
+2004 Alphamosaic
+Embedded C, Assembler, SIMD/Vector Processor, VideoCore, WMV9, Video Codecs
+I ported the Microsoft WMV9 Codec to run on an embedded graphics chip.
+
+2003 Sepura 
+Embedded C, Assembler, AVR, Mega128, Codevision, High Speed Serial Comms, Device Drivers, Delphi
+I designed the software for a dashboard mounted police radio console, as well as a PC test harness in Delphi. I wrote drivers for a 900kb serial link over a 10 metre cable (lots of fun with oscilloscopes!).
+
+2001 Simoco Digital Systems
+ClearCase, HTML, UI Design, Toolbook Instructor 
+I was engaged to implement a new UI for a portable radio. I could see from the specifications that it would be less easy to use than the current UI, so I simulated it as part of the design work and showed the marketing people the simulator. This got the project cancelled and saved the company a fortune, partly at my expense.
+
+
+
+2000 European Telecom/ET Voice 
+Java, Swing, MATLAB, Mathematica, Research, Speech Recognition, TESPAR
+I ran a small research project into embedded speech recognition using TESPAR, a newly discovered signal processing technique.
+
+1999 Advantra 
+Delphi, UI Design
+I designed an application to test and configure pagers in shops. 
+
+1999 CLMP Software Research / Salomon Brothers
+Java, Solaris
+I wrote a library of graphical java objects to display financial time series.
+
+1998 Green Cathedral 
+C++, HTML, Linux
+I wrote a program to translate very large web server log files into readable html statistics and graphs. 
+
+1997-98 Philips Paging 
+Keil C and Assembler for 8051, Structured Analysis & Design, Protocols
+I helped design the software architecture for a pager. I implemented a tiny filesystem which was considered for patent. In my own time I wrote a memory map and stack analyser for the Keil C compiler which was thought to have shortened the project several months by directing our optimisation efforts.
+
+1996-97 Philips Telecom
+Borland C, Serial and Wireless Comms, ClearCase
+I maintained and extended a vast undocumented C program. I automated regression testing and version control.
+
+1989-96 King's College Cambridge
+dBase IV 
+I designed and implemented databases for the college hardship fund, teaching activity (including my own!) and admissions as three separate fixed price contracts over six years, while I was still a student. 
+Education
+1992-96 Imperial College London 
+Finite Element Analysis, Financial Analysis, C, Fortran
+I investigated computer solution of non-linear diffusion problems, using Functional Analysis and the Finite Element method. I taught mathematics and Fortran in London and microeconomics in Cambridge. I realised that I liked computers more than research and went and got a proper job instead.
+
+1988-91 King's College Cambridge 
+Degree in Pure and Applied Mathematics (2:1)
+Interests: Functional Analysis, Dynamical Systems, Topology, Markov Chains, Numerical Analysis, Quantum Mechanics.
+
+1981-86 Abbeydale Grange School 
+8 O Levels, 5 A Levels (AAAAB), STEP & S Levels Maths(1) Physics (1) Further Maths(1). The usual stuff with TRS80s, ZX81s, Spectrums, BBCs and Amstrad 1640s.
+
