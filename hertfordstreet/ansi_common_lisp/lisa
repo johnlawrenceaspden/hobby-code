@@ -1,0 +1,45 @@
+
+
+(= fib (fn (x)
+	   (if (< x 2) x
+	       (+ (fn (- x 1))
+		  (fn (- x 2))))))
+
+(= testvals (range 0 10))
+
+(print (map fib testvals))
+
+(= fib (memoize fib))
+
+(= a ())
+
+(= (a "foo") "bar")
+(= (a "quality") "mercy")
+
+(= (a 0 10) (map fib (range 0 10)))
+
+(== (car a) (a 0)) => true, (printing equality)
+
+(== ((cdr a) 0) (a 1)) => true
+
+(= (a "foo") (1+ (a "foo")))
+(++ (a "foo"))
+(update (fn (x) (* 2 x)) (a "foo"))
+(++ x) ~~ (update 1+ x)
+
+(= a b c (listn 3))
+
+(= listn (fn (x) (if (== x 0) ()
+		              (cons x fn (- x 1)))))
+
+(= testmac (mac ('a 'b c) `(print ,a a ,b b (+ c c)))
+
+(= x 2) 
+(= y 4)
+
+(expand (testmac (+ 1 2) (+ x y) (++ x)))
+=>
+(print 3 '(+ 1 2) (+ x y) '(+ x y) 6)
+
+args to function are lazy, quoted, evaled
+

@@ -1,0 +1,12 @@
+Package: test.package
+Version: 0.0-0
+Date: 2007-04-26
+Title: A Test Package
+Author: John Lawrence Aspden <john@aspden.com>
+Maintainer: John Lawrence Aspden <john@aspden.com>
+Depends:
+Suggests:
+Description: A collection of functions useful to the brainwaver scripts
+    In a sane language, this would be some sort of common subroutine file.
+License: GPL version 2 or newer
+URL: http://www.aspden.com
