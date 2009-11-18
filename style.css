@@ -1,0 +1,12 @@
+.clojure {font-family:courier new; font-size:14px;}
+.clojure-list {color:#000000; font-weight:normal;}
+.clojure-string {color:#555555; font-weight:normal;}
+.clojure-comment {font-family:verdana; font-size:12px; color:#008800; font-weight:normal; font-style:italic;}
+.clojure-escaped {color:#008800; font-weight:normal;}
+.clojure-keyword {color:#ff0000; font-weight:normal;}
+.clojure-vector {color:#000088; font-weight:bold;}
+.clojure-meta-tag {color:#aa0000; font-weight:bold;}
+.clojure-function {color:#3333ff; font-weight:bold;}
+.clojure-function-known {color:#3333ff; font-weight:bold; text-decoration:underline;}
+.clojure-def {background-color:#eeeeee;color:#222222; font-weight:bold;}
+.clojure-set {color:#000000; font-weight:normal;}

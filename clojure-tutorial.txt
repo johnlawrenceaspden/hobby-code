@@ -1,0 +1,155 @@
+;;A conversation with Clojure
+;;Counting words in a string, using maps, lists, reduce, regular expressions, and Java integration.
+
+;;Clojure is a lisp 
+;;
+;;to add 1 to 2 we want to call the function + on the arguments 1 and 2
+user> (+ 1 2)
+3
+;; that's what function calls look like in lisps
+
+;; we can't change numbers, but we can ask what the result of incrementing them is by calling the inc function
+user> (inc 3)
+4
+user> (inc 4)
+5
+;; since (inc 3) evaluates to 4, we can use that as the parameter to call inc with
+user> (inc (inc 3))
+5
+
+;;starting from 0, and using inc, we can build up all the integers
+user> 0
+0
+user> (inc 0)
+1
+user> (inc (inc 0))
+2
+user> (inc (inc (inc 0)))
+3
+;; and so on.....
+
+;; there are more interesting data types.
+
+;; let's look at maps.
+
+;; maps can contain keys, which are associated with values
+;; the map in which "hello" is associated with 1 and "hi" is associated with 10 is written {"hello" 1, "hi" 10}
+user> {"hello" 1, "hi" 10}
+{"hello" 1, "hi" 10}
+;; we can ask for the value associated with a key by using get
+user> (get {"hello" 1, "hi" 10} "hello")
+1
+user> (get {"hello" 1, "hi" 10} "hi")
+10
+;; if we ask for the value associated with a key which is not in the map, we get nil
+user> (get {"hello" 1, "hi" 10} "howdy")
+nil
+;; nil is like FALSE in other languages. get is telling us that "hello" isn't in the empty map.
+
+;; {} is the empty map. It is the simplest map. It is like 0 is for numbers.
+user> {}
+{}
+
+;;it contains no things
+user> (get {} "hello")
+nil
+
+
+;; there is no way to change a map, just like there is no way to change the number 3
+;; but we can ask what the result of adding things to it is
+;; assoc takes a map, and gives us back a map in which there is a new key/value pair
+user> (assoc {} "hello" 10)
+{"hello" 10}
+;; this is the name of the map in which the key "hello" is bound to the value 10
+;; we can use get to ask what the values are
+user> (get {"hello" 10} "hello")
+10
+;; if the key isn't in the map, get will return nil
+user> (get {"hello" 1} "howdy")
+nil
+;;we can add more key/value pairs to our maps
+user> (assoc {"hello" 1} "hi" 3)
+{"hi" 3, "hello" 1}
+
+;;we can use maps to count how many times we've seen things
+
+
+;; if we want to use our map to count, we'd prefer if get said 0 rather than nil if the key isn't in the map
+;; we can tell get what to return if a value isn't found
+user> (get {"hello" 1, "hi" 3} "howdy" 0)
+0
+;;but if the key is in the map, we still get the right answer
+user> (get {"hello" 1, "hi" 3} "hi" 0)
+3
+
+;;so if we want to add one to the value that's already in the map
+user> (assoc {"hello" 1} "hello" (inc (get {"hello" 1} "hello" 0)))
+{"hello" 2}
+user> (assoc {"hello" 1} "hi" (inc (get {"hello" 1} "hi" 0)))
+{"hi" 1, "hello" 1}
+
+;;this is too much typing, and it's too complicated to understand, so let's make a new function
+(defn add-thing [map thing] (assoc map thing (inc (get map thing 0))))
+#'user/add-thing
+
+;;we've created a new thing! add-thing is now a function, just like inc and + and get and assoc
+;;we can call it just like them
+user> (add-thing {} "hi")
+{"hi" 1}
+user> (add-thing {"hi" 1} "hello")
+{"hello" 1, "hi" 1}
+user> (add-thing {"hello" 1, "hi" 1} "hello")
+{"hello" 2, "hi" 1}
+
+;;and just like inc, we can nest the function calls to build up a map from {}
+user> (add-thing (add-thing (add-thing {} "hi") "hello") "hi")
+{"hello" 1, "hi" 2}
+
+;;if we want to nest calls like this, we can use the reduce function, 
+;;which takes a function and a starting value and a list of things, and applies the function repeatedly
+user> (reduce add-thing {} ["hi" "hi" "hello"])
+{"hello" 1, "hi" 2}
+
+;;reduce says 'take the empty map {}, and add "hi" to it. Take the result, and add "hi" to that. Take the result, and add "hello" to that'
+
+user> (reduce add-thing {} ["the" "cat" "sat" "on" "the" "map"])
+{"map" 1, "on" 1, "sat" 1, "cat" 1, "the" 2}
+
+;;we have regular expressions built in. re-seq splits a string using a regexp
+user> (re-seq #"\w+" "the cat sat on the map")
+("the" "cat" "sat" "on" "the" "map")
+;; this is nasty. clojure has printed the list that re-seq has made as if it were a function call.
+;; it's not. it's a list. I think that closure should have printed ["the" "cat" ..... ]
+;; but anyway. it's the printer that's wrong. The result is a list even though it hasn't been output to look like one.
+;; so we can count the words in a string by saying
+user> (reduce add-thing {} (re-seq #"\w+" "the cat sat on the map"))
+{"map" 1, "on" 1, "sat" 1, "cat" 1, "the" 2}
+;;let's make this a function too
+user> (defn word-count [s] (reduce add-thing {} (re-seq #"\w+" s)))
+#'user/word-count
+;;now we can say 
+user> (word-count "The quality of mercy is not strained. It falleth as the gentle rain from heaven")
+{"is" 1, "from" 1, "It" 1, "mercy" 1, "The" 1, "the" 1, "as" 1, "not" 1, "strained" 1, "rain" 1, "of" 1, "heaven" 1, "gentle" 1, "falleth" 1, "quality" 1}
+;;hmm. perhaps we'd better not count The and the as different words. 
+
+;;Clojure lives on top of the Java Virtual Machine, which means that we can call Java functions and libraries.
+user> (.toLowerCase "The quality of Mercy ....")
+"the quality of mercy ...."
+;; notice the dot! We've just called String.toLowerCase("The quality ....") in the underlying Java.
+;; a bit like calling assembly language from C.
+
+;;so let's make a better word counting function
+user> (defn ci-word-count [s] (reduce add-thing {} (re-seq #"\w+" (.toLowerCase s))))
+#'user/ci-word-count
+user> (ci-word-count "The quality of mercy is not strained. It falleth as the gentle rain from heaven")
+{"is" 1, "from" 1, "it" 1, "mercy" 1, "the" 2, "as" 1, "not" 1, "strained" 1, "rain" 1, "of" 1, "heaven" 1, "gentle" 1, "falleth" 1, "quality" 1}
+;;how many times did we see the word "the"?
+user> (get (ci-word-count "The quality of mercy is not strained. It falleth as the gentle rain from heaven") "the" 0)
+2
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;Here is the whole of our word-counting program:
+(defn add-thing [map thing] (assoc map thing (inc (get map thing 0))))
+(defn ci-word-count [string] (reduce add-thing {} (re-seq #"\w+" (.toLowerCase string))))
+(ci-word-count "How much wood would a wood chuck chuck if a wood chuck could chuck wood?")
