@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+import os
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gobject
+import sys
+import commands
+
+print "argv: ", sys.argv
+
+args=sys.argv[1:] #discard name of program
+
+if(args==['-']): #read from standard input
+    f=sys.stdin
+    filelist=f.readlines()
+else:
+    commandstring="locate "
+    commandstring += " ".join(args)
+    print "running command:", commandstring
+    status, filelist=commands.getstatusoutput(commandstring)
+    print "return status:", status
+    if(status<>0): raise "locate failed"
+    filelist=filelist.split('\n')
+    print "found ", len(filelist), " item(s)"
+    print "building tree..."
+    
+dirs={}
+
+def insert_in_tree(tree, dlist):
+    if(len(dlist)<>0):
+        d=dlist.pop()
+        if not d in tree:
+            tree[d]={}
+        insert_in_tree(tree[d], dlist)
+        
+for l in filelist:
+    d=l.strip()
+    dlist = []
+    
+    while(d <> '/' and d<>''):
+        h,t=os.path.split(d)
+        dlist.append(t)
+        d=h
+    insert_in_tree(dirs, dlist)
+
+def quit(*args):
+    gtk.main_quit()
+    
+def make_buttons(list):
+    buttonbox = gtk.HBox()
+    for label, func in list:
+        button = gtk.Button()
+        button.set_label(label)
+        button.connect("clicked", func)
+        button.show()
+        buttonbox.pack_start(button, expand=True, fill=True)
+    buttonbox.show()
+    return buttonbox
+
+model=gtk.TreeStore(gobject.TYPE_STRING)
+
+iter=model.insert_before(None, None)
+model.set_value(iter,0,'/')
+
+def inserttree(tree, iter):
+    for i in tree.keys():
+        iter2=model.insert_before(iter,None)
+        model.set_value(iter2,0,i)
+        inserttree(tree[i], iter2)
+
+inserttree(dirs, iter)
+
+view=gtk.TreeView(model)
+renderer=gtk.CellRendererText()
+column = gtk.TreeViewColumn("Files", renderer, text=0)
+view.append_column(column)
+view.show()
+
+scrolled=gtk.ScrolledWindow()
+scrolled.add(view)
+scrolled.show()
+
+#view.set_reorderable(True)
+
+buttonbox=make_buttons([("Quit", quit)])
+
+vbox=gtk.VBox()
+vbox.pack_start(buttonbox, expand=False, fill=False)
+vbox.pack_start(scrolled, expand=True, fill=True)
+vbox.show()
+
+win=gtk.Window(gtk.WINDOW_TOPLEVEL)
+win.connect("delete_event", quit)
+win.add(vbox)
+win.show()
+win.resize(300,300)
+
+gtk.main()
+

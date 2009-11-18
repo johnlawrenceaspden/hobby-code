@@ -1,0 +1,30 @@
+glocate
+
+
+I find that the output of the locate and find commands can be 
+rather confusing if a lot of files match
+
+glocate takes a list of files and displays it as a gtk tree
+
+example usage:
+
+$glocate -r '\.mp3'
+
+    Works like a graphical locate, by calling the system locate command.
+
+$locate -r '\.mp3' | glocate
+
+    Identical, but calling the locate command explicitly
+
+$find . -name "*.mp3" | glocate
+
+    Similar display, but using the find command instead of locate
+
+$find . -name "*.mp3" > music
+$find . -name "*.wav" >> music
+$grep "britney" music | glocate -
+
+    Saving intermediate output to a file and then displaying that
+
+The gtk-tutorial on which this code was based can be found at:
+http://liw.iki.fi/liw/texts/gtktreeview-tutorial.html
