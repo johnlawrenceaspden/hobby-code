@@ -1,0 +1,132 @@
+(define underlying-machine-eval eval)
+(define underlying-machine-apply apply)
+
+(define eval
+  (lambda (exp env)
+    ;(printf "( eval ~a , ~a )\n" exp env)
+    ( cond (( eq? #t exp) #t)
+           (( eq? #f exp) #f)
+           (( number? exp ) exp)
+           (( symbol? exp ) ( lookup exp env))
+           (( eq? (car exp) 'quote ) (cadr exp))
+           (( eq? (car exp) 'lambda )
+            ( list 'closure (cdr exp) env))
+           (( eq? (car exp) 'cond)
+            ( eval-cond (cadr exp) env))
+           ( else ( apply (eval (car exp) env) (eval-list (cdr exp) env)))
+           ;(else (error (format "unknown operator ~a in ~a" (car exp) exp )))
+           )))
+
+(define (eval-list list env)
+  (map (lambda (x) (eval x env)) list))
+
+
+(define (add-bindings env vars values)
+  ;(printf "adding bindings ~a with values ~a to environment ~a ~n" vars values env)
+  (cond  ((and (null? vars) (null? values)) env)
+         ((null? vars) (error "too many values"))
+         ((null? values) (error "too many variables"))
+         (else (add-bindings (cons (cons (car vars) (car values)) env) (cdr vars) (cdr values)))))
+
+
+(define (apply proc args )
+  (cond ((eq? (car proc) 'primitive-procedure) 
+         (underlying-machine-apply 
+          (underlying-machine-eval (cadr proc) (scheme-report-environment 5)) 
+          args))
+        ((eq? (car proc) 'closure) 
+         ;(printf "trying to apply ~a to ~a\n" proc args )
+         (eval (cadadr proc) (add-bindings (caddr proc) (caadr proc) args)))
+        (else (error (format "don't know how to apply ~a to ~a " proc args)))))
+
+;(apply '(closure ((x) (+ x 2)) ()) arguments)
+
+(define (eval-cond clauses env)
+  ;(printf "( eval-cond ~a , ~a )\n" clauses env)
+  (cond ((eval (caar clauses) env) 
+         (eval (cadar clauses) env))
+      (else (eval-cond (cdr clauses) env))))
+
+(define (lookup a alist)
+  (let ((answer (assoc a alist)))
+    (if (eq? answer #f) 
+        (error (format "value ~a not in environment ~a" a alist))
+        (cdr answer))))
+
+(define (test-eval exp env res)
+  (let ((result (eval exp env)))
+    (if (equal? result res)
+        (printf "pass~n")
+        (printf "fail: ( eval ~a , ~a ) -> ~a ~n" exp env (eval exp env)))))
+
+(require (lib "trace.ss"))
+
+(define initial-environment '((+ . (primitive-procedure +)) (* . (primitive-procedure *))))
+
+(define (tests)
+  (test-eval '2 '() 2)
+  (test-eval 'x '((x . 2)) 2)
+  (test-eval 'y '((y . 3)) 3)
+  (test-eval '(quote foo) '() 'foo )
+  (test-eval '(lambda (x) (+ x 2)) '() '(closure ((x) (+ x 2)) ()))
+  (test-eval '(cond ((#t 1))) '() 1)
+  (test-eval '(+ 2 3) '((+ . (primitive-procedure +))) 5)
+  (test-eval '(sqrt (+ (* 3 3) (* 4 4))) '((+ . (primitive-procedure +))(* . (primitive-procedure *))(sqrt . ( primitive-procedure sqrt))) 5)
+  (test-eval '((lambda (x) (+ 1 x)) 2) '((+ . (primitive-procedure +))) 3)
+  (test-eval '(((lambda (x) (lambda (y) (+ x y))) 3) 4) initial-environment 7)
+ 
+  ;(trace eval apply)
+  
+#| error generating tests
+(test-eval 'x '())
+(eval '(+ 2 3) '())
+|#
+  )
+
+(define global-environment initial-environment)
+
+(define (repl-feed expression)
+      (if (and (pair? expression) (eq? (car expression) 'define)) 
+        (let ((result (eval (caddr expression) global-environment)))
+          (set! global-environment (add-bindings global-environment (list (cadr expression)) (list result)))
+          result)
+        (eval expression global-environment)))
+
+(define (format-environment env)
+  (map (lambda (x) (format "~a " (car x))) env))
+
+(define (repl)
+  (printf "environment: ~n")
+  (map printf (format-environment global-environment))
+  (printf "~n")
+  (let ((a '()) (b '()))
+    (printf "Meta>")
+    (set! a (read))
+    (if (not (equal? a '(quit)))
+        (begin
+          (set! b (repl-feed a))
+          (printf "~a~n" b)
+          (repl)))))
+
+(tests)
+
+#|
+(repl-feed '(define inc (lambda (x) (+ x 1))))
+(repl-feed '(define pythag (lambda (x y) (+ (* x x) (* y y)))))
+(repl-feed '(define sqrt '(primitive-procedure sqrt)))
+(printf "Welcome to the meta-circular evaluator: try typing (sqrt (pythag 3 4))\n")
+(printf "(quit) exits the system ~n")
+(repl)
+|#
+
+(trace eval apply)
+
+(eval '((lambda (x) 
+          ((lambda (y) (+ x y))
+           3))
+        4) initial-environment)
+
+(eval '(((lambda (x) 
+          (lambda (y) (+ x y)))
+          3) 
+        4) initial-environment)
