@@ -1,0 +1,13 @@
+(define (proc x) (a b x c x))
+(define proc (lambda (x) (a b x c x)))
+;proc = (lambda (x) (a b x c x))
+
+(proc 2)
+((lambda (x) (a b x c x)) 2)
+_____________(a b 2 c 2)_ __
+("x-> a b x c x" 2)
+(a b 2 c 2)
+
+
+
+
