@@ -1,0 +1,2 @@
+run: ifelse
+	./ifelse
