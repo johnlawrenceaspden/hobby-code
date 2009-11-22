@@ -146,25 +146,12 @@
 ;;                           for c in cols) + (r in 'CF' and line or '')
 ;;         print
 
-(defn board [values]
-  (if (= values false)
-    "no solution"
-    (let [width (+ 1 (apply max (for [s squares] (count @(values s)))))
-          line  (str (apply str (interpose \+ (repeat subsquaresize (apply str (repeat (* subsquaresize width) "-"))))) \newline)]
-      (interpose line
-                 (for [r rows] 
-                   (str (apply str (for [c cols] 
-                                     (centre @(values (str r c)) width))) \newline))))))
+(defn join [char seq]
+  (apply str (interpose char seq)))
 
-(def rgr (partition subsquaresize rows))
-(def cgr (partition subsquaresize cols))
-(def r (first (first rgr)))
-(def c (first (first cgr)))
-(def cg (first cgr))
-(def rg (first rgr))
-(def values (parse_grid ""))
-(def width 5)
-(def line  (str \newline (apply str (interpose \+ (repeat subsquaresize (apply str (repeat (* subsquaresize width) "-"))))) \newline))
+(defmacro forjoin [sep [var seq] body]
+  `(join ~sep (for [~var ~seq] ~body)))
+
 
 (defn board [values]
   (if (= values false)
@@ -173,37 +160,22 @@
         cgr  (partition subsquaresize cols)
         width (+ 2 (apply max (for [s squares] (count @(values s)))))
         line (str \newline 
-                  (apply str (interpose \+ (repeat subsquaresize 
-                    (apply str (interpose \- (repeat subsquaresize 
-                       (apply str (repeat width "-")))))))) 
+                  (join \+ (repeat subsquaresize 
+                    (join \- (repeat subsquaresize 
+                       (apply str (repeat width "-"))))))
                   \newline)]
- (apply str
-  (interpose line
-   (for [rg rgr]
-    (apply str (interpose "\n"
-      (for [r rg]
-        (apply str 
-          (interpose "|" 
-            (for [cg cgr]
-              (apply str 
-                (interpose " " (for [c cg] (centre @(values (str r c)) width))))))))))))))))
+    (forjoin line [rg rgr]
+             (forjoin "\n" [r rg]
+                      (forjoin "|" [cg cgr]
+                               (forjoin " " [c cg] 
+                                        (centre @(values (str r c)) width))))))))
 
 (defn print_board [values] (print (board values)))
 
 (board (parse_grid ""))
-"
-rgby  rgby |rgby  rgby \n
-rgby  rgby |rgby  rgby \n
-----------+----------\n
-rgby  rgby |rgby  rgby \n
-rgby  rgby |rgby  rgby "
 
 ;(print_board (parse_grid "rgby|ybrg|g...|...."))
 ;(print_board (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
-
-
-
-
 
 (print_board (parse_grid  "
 850002400
