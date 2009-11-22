@@ -12,10 +12,12 @@
 (def cols "123456789")
 (def digits "123456789")
 (def subsquaresize 3)
+
 ;(def rows "ABCD")
 ;(def cols "1234")
 ;(def digits "rgby")
 ;(def subsquaresize 2)
+
 (def separators "0.-")
 
 ;squares = cross(rows, cols)
@@ -172,8 +174,6 @@
 
 (defn print_board [values] (print (board values)))
 
-(board (parse_grid ""))
-
 ;(print_board (parse_grid "rgby|ybrg|g...|...."))
 ;(print_board (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
 
@@ -189,14 +189,10 @@
 000036040
 "))
 
+;(def tv (parse_grid "rgby|y.rg|g...|...."))
+;(def tv (parse_grid "r.b.|y...|g...|...."))
 
-;(printboard (parse_grid "..r.\n.g..\n....\n...."))
-;((parse_grid "2345rgct6b") "A2")
-
-;; '(
-
-
-
+(defn deepcopy [values] (dict (for [k (keys values)] [k (atom @(values k))])))
 
 ;; def search(values, recurse=''):
 ;;     "Using depth-first search and propagation, try all possible values."
@@ -212,6 +208,22 @@
 ;;             return result
 ;;     return False
     
+(defn search 
+  ([values] (search values "go:"))
+  ([values, recurse] 
+     (println "recursion: " recurse)
+     (if values
+       (if (all? (for [s squares] (= 1 (count @(values s)))))
+         values
+         (let [ pivot 
+               (second (first (sort 
+                               (for [s squares :when (>(count @(values s)) 1)] 
+                                 [(count @(values s)),s]))))] ;;which square has fewest choices?
+           (let [results (for [d @(values pivot)]
+                          (search (assign! (deepcopy values) pivot d) (str recurse d)))]
+                (some identity results))))
+         
+       false)))
 
 
 ;; gridh01='4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
