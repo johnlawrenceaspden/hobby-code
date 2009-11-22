@@ -172,7 +172,7 @@
                                (forjoin " " [c cg] 
                                         (centre @(values (str r c)) width))))))))
 
-(defn print_board [values] (print (board values)))
+(defn print_board [values] (println (board values)))
 
 ;(print_board (parse_grid "rgby|ybrg|g...|...."))
 ;(print_board (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
@@ -209,19 +209,19 @@
 ;;     return False
     
 (defn search 
-  ([values] (search values "go:"))
+  ([values] (search values ""))
   ([values, recurse] 
-     (println "recursion: " recurse)
+     ;(println "recursion: " recurse)
      (if values
-       (if (all? (for [s squares] (= 1 (count @(values s)))))
-         values
+       (if (all? (for [s squares] (= 1 (count @(values s))))) ;;if all squares determined
+         values                                               ;;triumph!
          (let [ pivot 
-               (second (first (sort 
+               (second (first (sort     ;;which square has fewest choices?
                                (for [s squares :when (>(count @(values s)) 1)] 
-                                 [(count @(values s)),s]))))] ;;which square has fewest choices?
-           (let [results (for [d @(values pivot)]
+                                 [(count @(values s)),s]))))] 
+           (let [results (for [d @(values pivot)] ;;try all choices
                           (search (assign! (deepcopy values) pivot d) (str recurse d)))]
-                (some identity results))))
+                (some identity results)))) ;;and if any of them come back solved, return solution
          
        false)))
 
@@ -234,8 +234,30 @@
 ;; import re
 ;; easysudokus=[x for x in re.compile(r'\s*Grid\s.*\s*').split(easysudokufile) if x!='']
 
+(use 'clojure.contrib.str-utils)
+(def easysudokus (re-split #"\s*Grid\s.*\s*" (slurp "sudoku.txt")))
+
 
 ;; hardsudokus=open("sudoku_hard.txt").read().strip().split()
+
+(use 'clojure.contrib.duck-streams)
+(defn show-off []
+  (for [l (read-lines "sudoku_hard.txt")]
+    (print_board (search (parse_grid l)))))
+
+(def hard-sudokus (read-lines "sudoku_hard.txt"))
+
+(print_board (search (parse_grid (first hard-sudokus))))
+(print (join \newline (map #(apply str %) (partition 9 (first hard-sudokus)))))
+
+(defn solve [grid]
+     (do
+       (println (join \newline (map #(apply str %) (partition 9 grid))))
+       (print_board (search (parse_grid grid)))))
+
+(defn show-off [n]
+  (doall (map solve (take n hard-sudokus))))
+
 
 ;; hardestsudokuinworld="""
 ;; 850002400
@@ -264,10 +286,4 @@
 ;;     showoff(hardsudokus)
 ;;     showoff([hardestsudokuinworld])
 
-
-
-
-
-
-    
 ;; )
