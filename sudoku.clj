@@ -16,8 +16,7 @@
 ;(def cols "1234")
 ;(def digits "rgby")
 ;(def subsquaresize 2)
-(def separators ".-")
-
+(def separators "0.-")
 
 ;squares = cross(rows, cols)
 
@@ -39,8 +38,6 @@
 (def units (dict (for [s squares] 
                    [s (for [u unitlist :when (u s)] u)] )))
 
-;(def units2 (dict (for [s squares] [s (filter #(% s) unitlist)])))
-
 ;peers = dict((s, set(s2 for u in units[s] for s2 in u if s2 !=s)) for s in squares)
 
 (def peers (dict (for [s squares] 
@@ -57,8 +54,7 @@
 ;;     return values
 
 (defn all? [coll] (every? identity coll))
-(def assign!)
-(def eliminate!)
+(declare assign! eliminate! check!)
 
 (defn parse_grid [grid]
   (let [grid (filter (set (concat digits separators)) grid)
@@ -106,30 +102,29 @@
 ;;                 return False
 ;;     return values
 
-
-(defn check! [values s d]
-  (for [u (units s)]
-    (let [dplaces (for [s u :when ((set @(values s)) d)] s)]
-      (if (= (count dplaces) 0)
-        false
-        (if (= (count dplaces) 1)
-          (if (not (assign! values (first dplaces) d))
-            false
-            values)
-          values)))))
-
 (defn eliminate! [values s d]
-  (if (not ((set @(values s)) d)) values
+  (if (not ((set @(values s)) d)) values ;;if it's already not there nothing to do
       (do
-        (swap! (values s) #(. % replace (str d) ""))
-        (if (= 0 (count @(values s)))
-          false
-          (if (= 1 (count @(values s)))
+        (swap! (values s) #(. % replace (str d) "")) ;;remove it
+        (if (= 0 (count @(values s))) ;;no possibilities left
+          false                       ;;fail
+          (if (= 1 (count @(values s))) ;; one possibility left
             (let [d2 (first @(values s))]
               (if (not (all? (for [s2 (peers s)] (eliminate! values s2 d2))))
                 false
                 (check! values s d)))
             (check! values s d))))))
+
+(defn check! [values s d]
+  (for [u (units s)] ;;for each row, column, and block associated with square s
+    (let [dplaces (for [s u :when ((set @(values s)) d)] s)] ;;how many possible placings of d 
+      (if (= (count dplaces) 0) ;;if none then we've failed
+        false
+        (if (= (count dplaces) 1) ;;if only one, then that has to be the answer
+          (if (not (assign! values (first dplaces) d)) ;;so we can assign it.
+            false
+            values);;There's no point in this if. just call assign.
+          values)))))
 
 
 (defn centre[s width]
@@ -138,20 +133,79 @@
         rpad (- pad lpad)]
   (str (apply str (repeat lpad " ")) s (apply str (repeat  rpad " ")))))
 
+
+;; def printboard(values):
+;;     "Used for debugging."
+;;     if values==False:
+;;         print 'no solution'
+;;     else:
+;;         width = 1 + max(len(values[s]) for s in squares)
+;;         line = '\n' + '+'.join(['-'*(width*3)]*3)
+;;         for r in rows:
+;;             print ''.join(values[r+c].center(width)+(c in '36' and '|' or '')
+;;                           for c in cols) + (r in 'CF' and line or '')
+;;         print
+
 (defn board [values]
   (if (= values false)
     "no solution"
     (let [width (+ 1 (apply max (for [s squares] (count @(values s)))))
-          line  "-------"]
-      (apply str (for [r rows] 
+          line  (str (apply str (interpose \+ (repeat subsquaresize (apply str (repeat (* subsquaresize width) "-"))))) \newline)]
+      (interpose line
+                 (for [r rows] 
                    (str (apply str (for [c cols] 
                                      (centre @(values (str r c)) width))) \newline))))))
-    
-(defn printboard [values] (print (board values)))
 
-;(printboard (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
+(def rgr (partition subsquaresize rows))
+(def cgr (partition subsquaresize cols))
+(def r (first (first rgr)))
+(def c (first (first cgr)))
+(def cg (first cgr))
+(def rg (first rgr))
+(def values (parse_grid ""))
+(def width 5)
+(def line  (str \newline (apply str (interpose \+ (repeat subsquaresize (apply str (repeat (* subsquaresize width) "-"))))) \newline))
 
-(printboard (parse_grid  "
+(defn board [values]
+  (if (= values false)
+    "no solution"
+  (let [rgr  (partition subsquaresize rows)
+        cgr  (partition subsquaresize cols)
+        width (+ 2 (apply max (for [s squares] (count @(values s)))))
+        line (str \newline 
+                  (apply str (interpose \+ (repeat subsquaresize 
+                    (apply str (interpose \- (repeat subsquaresize 
+                       (apply str (repeat width "-")))))))) 
+                  \newline)]
+ (apply str
+  (interpose line
+   (for [rg rgr]
+    (apply str (interpose "\n"
+      (for [r rg]
+        (apply str 
+          (interpose "|" 
+            (for [cg cgr]
+              (apply str 
+                (interpose " " (for [c cg] (centre @(values (str r c)) width))))))))))))))))
+
+(defn print_board [values] (print (board values)))
+
+(board (parse_grid ""))
+"
+rgby  rgby |rgby  rgby \n
+rgby  rgby |rgby  rgby \n
+----------+----------\n
+rgby  rgby |rgby  rgby \n
+rgby  rgby |rgby  rgby "
+
+;(print_board (parse_grid "rgby|ybrg|g...|...."))
+;(print_board (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
+
+
+
+
+
+(print_board (parse_grid  "
 850002400
 720000009
 004000000
@@ -170,17 +224,6 @@
 ;; '(
 
 
-;; def printboard(values):
-;;     "Used for debugging."
-;;     if values==False:
-;;         print 'no solution'
-;;     else:
-;;         width = 1 + max(len(values[s]) for s in squares)
-;;         line = '\n' + '+'.join(['-'*(width*3)]*3)
-;;         for r in rows:
-;;             print ''.join(values[r+c].center(width)+(c in '36' and '|' or '')
-;;                           for c in cols) + (r in 'CF' and line or '')
-;;         print
 
 
 ;; def search(values, recurse=''):
