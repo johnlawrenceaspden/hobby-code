@@ -61,8 +61,8 @@
 (defn parse_grid [grid]
   (let [grid (filter (set (concat digits separators)) grid)
         values (dict (for [s squares] [s,(atom digits)]))]
-    (if (all? (doall (for [[square digit] (zipmap squares grid) :when ((set digits) digit)]
-                  (assign! values square digit))))
+    (if (all? (for [[square digit] (zipmap squares grid) :when ((set digits) digit)]
+                  (assign! values square digit)))
       values
       false)))
 
@@ -77,8 +77,8 @@
 
 (defn assign! [values square digit]
   ;(println "assign! " square digit)
-  (if (all? (doall (for [d @(values square) :when (not (= d digit))] 
-              (eliminate! values square d))))
+  (if (all? (for [d @(values square) :when (not (= d digit))] 
+              (eliminate! values square d)))
     values
     false))
            
@@ -114,7 +114,7 @@
           false                       ;;fail
           (if (= 1 (count @(values s))) ;; one possibility left
             (let [d2 (first @(values s))]
-              (if (not (all? (doall (for [s2 (peers s)] (eliminate! values s2 d2)))))
+              (if (not (all? (for [s2 (peers s)] (eliminate! values s2 d2))))
                 false
                 (check! values s d)))
             (check! values s d))))))
@@ -241,7 +241,7 @@
 ;; easysudokus=[x for x in re.compile(r'\s*Grid\s.*\s*').split(easysudokufile) if x!='']
 
 (use 'clojure.contrib.str-utils)
-(def easysudokus (re-split #"\s*Grid\s.*\s*" (slurp "sudoku.txt")))
+(def easy-sudokus (re-split #"\s*Grid\s.*\s*" (slurp "sudoku.txt")))
 
 
 ;; hardsudokus=open("sudoku_hard.txt").read().strip().split()
@@ -258,24 +258,28 @@
 
 (defn solve [grid]
      (do
-       (println (join \newline (map #(apply str %) (partition 9 grid))))
+       (println (join \newline (map #(apply str %) (partition 9 (filter (set (concat digits separators)) grid)))))
        (print_board (search (parse_grid grid)))))
 
-(defn show-off [n]
-  (doall (map solve (take n hard-sudokus))))
+(def hardestsudokuinworld "
+850002400
+720000009
+004000000
+000107002
+305000900
+040000000
+000080070
+017000000
+000036040
+")
+
+(defn show-off []
+  (doall (map solve hard-sudokus))
+  (doall (map solve easy-sudokus))
+  (solve hardestsudokuinworld))
 
 
-;; hardestsudokuinworld="""
-;; 850002400
-;; 720000009
-;; 004000000
-;; 000107002
-;; 305000900
-;; 040000000
-;; 000080070
-;; 017000000
-;; 000036040
-;; """
+
 
 ;; def solve(sudoku):
 ;;     print sudoku
@@ -305,3 +309,5 @@
 ;; Added doalls to every for
 ;; Now program crashes because last values have been eliminated without returning false
 ;; Actually we need loops with early return, otherwise we keep eliminating things from already false branches
+;; Now notice that the doalls are actually making things slower because any? would have short-circuited once anything was false. Get rid of them and get a 2x speedup.
+;; now running at half the speed of python
