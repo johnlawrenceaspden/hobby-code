@@ -9,39 +9,50 @@
 ;;Constraint propagation is performed by mutually recursive functions modifying state
 ;;So in clojure we need to put our strings in atoms.
 
+;;I split the eliminate function into two (eliminate! and check!) to make it easier to read.
+
 (defn cross [A, B]
   (for [a A b B] (str a b)))
 
 (def rows "ABCDEFGHI")
 (def cols "123456789")
 (def digits "123456789")
+;;the grid is divided into subsquares
 (def subsquaresize 3)
+(def rowgroups (partition subsquaresize rows))
+(def colgroups (partition subsquaresize cols))
 
+;;When we encode the grids as strings we may use any of these characters to encode blank squares
 (def separators "0.-")
 
-;;Squares indexed by strings A1 -> I9
+;;Squares are indexed by strings A1 -> I9
 (def squares (cross rows cols))
 
 ;;units are the groups into which squares are grouped: rows, columns and subsquares
 (def unitlist (map set  (concat 
                          (for [c cols] (cross rows [c]))
                          (for [r rows] (cross [r] cols))
-                         (for [rs (partition subsquaresize rows) 
-                               cs (partition subsquaresize cols)] (cross rs cs)))))
+                         (for [rs rowgroups
+                               cs colgroups] (cross rs cs)))))
 
 ;;helper functions for making maps and sets
 (defn dict [x] (apply sorted-map (apply concat x)))
 (defn set-union [x] (apply sorted-set (apply concat x)))
+;;use clojure's every? like python's all
+(defn all? [coll] (every? identity coll))
+
 
 ;;which units are associated with a given square?
 (def units (dict (for [s squares]  
                    [s (for [u unitlist :when (u s)] u)] )))
 
+;;which other squares are linked to a given square through its units?
 (def peers (dict (for [s squares]  
                    [s (disj (set-union (units s)) s)])))
 
 
-(defn all? [coll] (every? identity coll))
+;;three mutually recursive functions to propagate constraints. All of them return false 
+;;if the constraints can not be satisfied.
 (declare assign! eliminate! check!)
 
 ;;filter only the significant characters from an input string
@@ -58,47 +69,17 @@
       values
       false)))
 
-    
-;; def assign(values, square, digit):
-;;     "Eliminate all the other values (except d) from values[s] and propagate."
-;;     if all(eliminate(values, square, d2) for d2 in values[square] if d2!=digit):
-;;         return values
-;;     else:
-;;         return False
-
-
+;;assign a definite value to a square by eliminating all other values.    
 (defn assign! [values square digit]
-  ;(println "assign! " square digit)
   (if (all? (for [d @(values square) :when (not (= d digit))] 
               (eliminate! values square d)))
     values
     false))
-           
-;; def eliminate(values, s, d):
-;;     "Eliminate d from values[s]; propagate when values or places <=2."
-;;     if d not in values[s]:
-;;         return values ##Already eliminated
-;;     values[s] = values[s].replace(d,'')
-;;     if len(values[s]) == 0:
-;;         return False ##Contradiction: removed last value
-;;     elif len(values[s])==1:
-;;         ##If there is only one value (d2) left in square, remove it from peers
-;;         d2, =values[s]
-;;         if not all(eliminate(values, s2, d2) for s2 in peers[s]):
-;;             return False
-;;     ## Now check the places where d appears in the units of s
-;;     for u in units[s]:
-;;         dplaces = [s for s in u if d in values[s]]
-;;         if len(dplaces) == 0:
-;;             return False
-;;         elif len(dplaces) ==1:
-;;             # d can only be in one place in unit; assign it there
-;;             if not assign(values, dplaces[0], d):
-;;                 return False
-;;     return values
 
+;;remove a potential choice from a square. If that leaves no values, then that's a fail
+;;if it leaves only one value then we can also eliminate that value from its peers.
+;;either way, perform checks to see whether we've left the eliminated value with only one place to go.           
 (defn eliminate! [values s d]
- ; (println "eliminate! " s d)
   (if (not ((set @(values s)) d)) values ;;if it's already not there nothing to do
       (do
         (swap! (values s) #(. % replace (str d) "")) ;;remove it
@@ -111,12 +92,11 @@
                 (check! values s d)))
             (check! values s d))))))
 
+;;check whether the elimination of a value from a square has caused contradiction or further assignment
+;;possibilities
 (defn check! [values s d]
-;  (println "check! " s d)
   (loop [u (units s)] ;;for each row, column, and block associated with square s
- ;   (println u)
     (let [dplaces (for [s (first u) :when ((set @(values s)) d)] s)] ;;how many possible placings of d 
-  ;    (println dplaces)
       (if (= (count dplaces) 0) ;;if none then we've failed
         false
         (if (= (count dplaces) 1) ;;if only one, then that has to be the answer
@@ -125,25 +105,12 @@
             (if (not (empty? (rest u))) (recur (rest u)) values))
           (if (not (empty? (rest u))) (recur (rest u)) values))))))
 
-
+;;the function to print out the board is the hardest thing to translate from python to clojure!
 (defn centre[s width]
   (let [pad (- width (count s))
         lpad (int (/ pad 2))
         rpad (- pad lpad)]
   (str (apply str (repeat lpad " ")) s (apply str (repeat  rpad " ")))))
-
-
-;; def printboard(values):
-;;     "Used for debugging."
-;;     if values==False:
-;;         print 'no solution'
-;;     else:
-;;         width = 1 + max(len(values[s]) for s in squares)
-;;         line = '\n' + '+'.join(['-'*(width*3)]*3)
-;;         for r in rows:
-;;             print ''.join(values[r+c].center(width)+(c in '36' and '|' or '')
-;;                           for c in cols) + (r in 'CF' and line or '')
-;;         print
 
 (defn join [char seq]
   (apply str (interpose char seq)))
@@ -151,60 +118,29 @@
 (defmacro forjoin [sep [var seq] body]
   `(join ~sep (for [~var ~seq] ~body)))
 
-
 (defn board [values]
   (if (= values false)
     "no solution"
-  (let [rgr  (partition subsquaresize rows)
-        cgr  (partition subsquaresize cols)
-        width (+ 2 (apply max (for [s squares] (count @(values s)))))
-        line (str \newline 
-                  (join \+ (repeat subsquaresize 
-                    (join \- (repeat subsquaresize 
-                       (apply str (repeat width "-"))))))
-                  \newline)]
-    (forjoin line [rg rgr]
-             (forjoin "\n" [r rg]
-                      (forjoin "|" [cg cgr]
-                               (forjoin " " [c cg] 
-                                        (centre @(values (str r c)) width))))))))
+    (let [ width (+ 2 (apply max (for [s squares] (count @(values s)))))
+          line (str \newline 
+                    (join \+ (repeat subsquaresize 
+                                     (join \- (repeat subsquaresize 
+                                                      (apply str (repeat width "-"))))))
+                    \newline)]
+      (forjoin line [rg rowgroups]
+               (forjoin "\n" [r rg]
+                        (forjoin "|" [cg colgroups]
+                                 (forjoin " " [c cg] 
+                                          (centre @(values (str r c)) width))))))))
 
 (defn print_board [values] (println (board values)))
 
-;(print_board (parse_grid "rgby|ybrg|g...|...."))
-;(print_board (parse_grid "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"))
-
-(print_board (parse_grid  "
-850002400
-720000009
-004000000
-000107002
-305000900
-040000000
-000080070
-017000000
-000036040
-"))
-
-;(def tv (parse_grid "rgby|y.rg|g...|...."))
-;(def tv (parse_grid "r.b.|y...|g...|...."))
-
+;;We can't use Dr Norvig's trick of avoiding a deep copy by using strings. We have to copy the table
+;;by recreating the atoms and copying their contents
 (defn deepcopy [values] (dict (for [k (keys values)] [k (atom @(values k))])))
 
-;; def search(values, recurse=''):
-;;     "Using depth-first search and propagation, try all possible values."
-;;     print "recursion: ", recurse
-;;     if values is False:
-;;         return False
-;;     if all(len(values[s])==1 for s in squares):
-;;         return values
-;;     _,s = min((len(values[s]),s) for s in squares if len(values[s])>1)
-;;     for d in values[s]:
-;;         result=search(assign(values.copy(), s, d), recurse+d)
-;;         if result:
-;;             return result
-;;     return False
-    
+;;I've added a frill here where the search function keeps track of the search branches that it's following.
+;;This means that we can print the branches out when debugging.
 (defn search 
   ([values] (search values ""))
   ([values, recurse] 
@@ -224,35 +160,7 @@
        false)))
 
 
-;; gridh01='4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
-
-;; #[printboard(parse_grid(x)) for x in [gride01,gride02,gride03]]
-
-;; easysudokufile=open("sudoku.txt").read().strip()
-;; import re
-;; easysudokus=[x for x in re.compile(r'\s*Grid\s.*\s*').split(easysudokufile) if x!='']
-
-(use 'clojure.contrib.str-utils)
-(def easy-sudokus (re-split #"\s*Grid\s.*\s*" (slurp "sudoku.txt")))
-
-
-;; hardsudokus=open("sudoku_hard.txt").read().strip().split()
-
-(use 'clojure.contrib.duck-streams)
-(defn show-off []
-  (for [l (read-lines "sudoku_hard.txt")]
-    (print_board (search (parse_grid l)))))
-
-(def hard-sudokus (read-lines "sudoku_hard.txt"))
-
-;(print_board (search (parse_grid (first hard-sudokus))))
-;(print (join \newline (map #(apply str %) (partition 9 (first hard-sudokus)))))
-
-(defn solve [grid]
-     (do
-       (println (join \newline (map #(apply str %) (partition 9 (filter (set (concat digits separators)) grid)))))
-       (print_board (search (parse_grid grid)))))
-
+;;here's a demo:
 (def hardestsudokuinworld "
 850002400
 720000009
@@ -265,34 +173,32 @@
 000036040
 ")
 
+(defn solve [grid]
+     (do
+       (println "\nproblem:")
+       (println (join \newline (map #(apply str %) (partition 9 (filter (set (concat digits separators)) grid)))))
+       (println "\nsolution:")
+       (print_board (search (parse_grid grid)))))
+
+(solve hardestsudokuinworld)
+
+;;Dr Norvig provides a couple of files of easy and difficult sudokus for demonstration purposes.
+;;Here is some code to read them in and solve them
+
+(use 'clojure.contrib.str-utils)
+(use 'clojure.contrib.duck-streams)
+
+(def easy-sudokus (re-split #"\s*Grid\s.*\s*" (slurp "sudoku.txt")))
+(def hard-sudokus (read-lines "sudoku_hard.txt"))
+
 (defn show-off []
   (doall (map solve hard-sudokus))
   (doall (map solve easy-sudokus))
   (solve hardestsudokuinworld))
 
+;; Lessons learned during translation process
 
-
-
-;; def solve(sudoku):
-;;     print sudoku
-;;     values=parse_grid(sudoku)
-;;     printboard(values)
-;;     printboard(search(values))
-
-;; def showoff(slist):
-;;     for x in slist:
-;;         solve(x)
-
-;; def test():
-;;     showoff(easysudokus)
-;;     showoff(hardsudokus)
-;;     showoff([hardestsudokuinworld])
-
-;; )
-
-
-;; Lessons learned
-;;lazy evaluation and mutation really don't work together very well.
+;; Lazy evaluation and mutation really don't work together very well.
 
 ;; Solver appeared to work but seemed to take infinite time on 3rd sudoku
 ;; Actually it took several hundred thousand iterations, but got the right answer
