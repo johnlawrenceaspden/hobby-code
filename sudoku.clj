@@ -61,8 +61,8 @@
 (defn parse_grid [grid]
   (let [grid (filter (set (concat digits separators)) grid)
         values (dict (for [s squares] [s,(atom digits)]))]
-    (if (all? (for [[square digit] (zipmap squares grid) :when ((set digits) digit)]
-                  (assign! values square digit)))
+    (if (all? (doall (for [[square digit] (zipmap squares grid) :when ((set digits) digit)]
+                  (assign! values square digit))))
       values
       false)))
 
@@ -76,8 +76,9 @@
 
 
 (defn assign! [values square digit]
-  (if (all? (for [d @(values square) :when (not (= d digit))] 
-              (eliminate! values square d)))
+  ;(println "assign! " square digit)
+  (if (all? (doall (for [d @(values square) :when (not (= d digit))] 
+              (eliminate! values square d))))
     values
     false))
            
@@ -105,6 +106,7 @@
 ;;     return values
 
 (defn eliminate! [values s d]
+ ; (println "eliminate! " s d)
   (if (not ((set @(values s)) d)) values ;;if it's already not there nothing to do
       (do
         (swap! (values s) #(. % replace (str d) "")) ;;remove it
@@ -112,21 +114,24 @@
           false                       ;;fail
           (if (= 1 (count @(values s))) ;; one possibility left
             (let [d2 (first @(values s))]
-              (if (not (all? (for [s2 (peers s)] (eliminate! values s2 d2))))
+              (if (not (all? (doall (for [s2 (peers s)] (eliminate! values s2 d2)))))
                 false
                 (check! values s d)))
             (check! values s d))))))
 
 (defn check! [values s d]
-  (for [u (units s)] ;;for each row, column, and block associated with square s
-    (let [dplaces (for [s u :when ((set @(values s)) d)] s)] ;;how many possible placings of d 
+;  (println "check! " s d)
+  (loop [u (units s)] ;;for each row, column, and block associated with square s
+ ;   (println u)
+    (let [dplaces (for [s (first u) :when ((set @(values s)) d)] s)] ;;how many possible placings of d 
+  ;    (println dplaces)
       (if (= (count dplaces) 0) ;;if none then we've failed
         false
         (if (= (count dplaces) 1) ;;if only one, then that has to be the answer
           (if (not (assign! values (first dplaces) d)) ;;so we can assign it.
             false
-            values);;There's no point in this if. just call assign.
-          values)))))
+            (if (not (empty? (rest u))) (recur (rest u)) values))
+          (if (not (empty? (rest u))) (recur (rest u)) values))))))
 
 
 (defn centre[s width]
@@ -220,7 +225,8 @@
                                (for [s squares :when (>(count @(values s)) 1)] 
                                  [(count @(values s)),s]))))] 
            (let [results (for [d @(values pivot)] ;;try all choices
-                          (search (assign! (deepcopy values) pivot d) (str recurse d)))]
+                           (do ;(print_board values)
+                               (search (assign! (deepcopy values) pivot d) (str recurse d))))] ;(format "%s->%s;" pivot d)
                 (some identity results)))) ;;and if any of them come back solved, return solution
          
        false)))
@@ -247,8 +253,8 @@
 
 (def hard-sudokus (read-lines "sudoku_hard.txt"))
 
-(print_board (search (parse_grid (first hard-sudokus))))
-(print (join \newline (map #(apply str %) (partition 9 (first hard-sudokus)))))
+;(print_board (search (parse_grid (first hard-sudokus))))
+;(print (join \newline (map #(apply str %) (partition 9 (first hard-sudokus)))))
 
 (defn solve [grid]
      (do
@@ -287,3 +293,15 @@
 ;;     showoff([hardestsudokuinworld])
 
 ;; )
+
+
+;; Lessons learned
+;;lazy evaluation and mutation really don't work together very well.
+
+;; Solver appeared to work but seemed to take infinite time on 3rd sudoku
+;; Actually it took several hundred thousand iterations, but got the right answer
+;; run next to python program showed that python code was getting there in a couple of hundred
+;; Realised that constraints were not being propagated properly
+;; Added doalls to every for
+;; Now program crashes because last values have been eliminated without returning false
+;; Actually we need loops with early return, otherwise we keep eliminating things from already false branches
