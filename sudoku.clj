@@ -1,66 +1,58 @@
-;def cross(A, B):
-;    return [a+b for a in A for b in B]
+;;Sudoku solver
+
+;;As direct a translation as I could make of Peter Norvig's famous python solver
+;;Which is explained in detail at:
+;;http://norvig.com/sudoku.html
+
+;;Algorithm is constraint propagation coupled with depth-first search
+
+;;Constraint propagation is performed by mutually recursive functions modifying state
+;;So in clojure we need to put our strings in atoms.
 
 (defn cross [A, B]
   (for [a A b B] (str a b)))
-
-;rows= 'ABCDEFGHI'
-;cols= '123456789'
-;digits = '123456789'
 
 (def rows "ABCDEFGHI")
 (def cols "123456789")
 (def digits "123456789")
 (def subsquaresize 3)
 
-;(def rows "ABCD")
-;(def cols "1234")
-;(def digits "rgby")
-;(def subsquaresize 2)
-
 (def separators "0.-")
 
-;squares = cross(rows, cols)
-
+;;Squares indexed by strings A1 -> I9
 (def squares (cross rows cols))
 
-;unitlist = ([cross(rows, c) for c in cols] +
-;            [cross(r, cols) for r in rows] +
-;            [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')])
-
+;;units are the groups into which squares are grouped: rows, columns and subsquares
 (def unitlist (map set  (concat 
                          (for [c cols] (cross rows [c]))
                          (for [r rows] (cross [r] cols))
-                         (for [rs (partition subsquaresize rows) cs (partition subsquaresize cols)] (cross rs cs)))))
+                         (for [rs (partition subsquaresize rows) 
+                               cs (partition subsquaresize cols)] (cross rs cs)))))
 
-;units = dict((s, [u for u in unitlist if s in u]) for s in squares)
+;;helper functions for making maps and sets
 (defn dict [x] (apply sorted-map (apply concat x)))
-(defn sett [x] (apply sorted-set (apply concat x)))
+(defn set-union [x] (apply sorted-set (apply concat x)))
 
-(def units (dict (for [s squares] 
+;;which units are associated with a given square?
+(def units (dict (for [s squares]  
                    [s (for [u unitlist :when (u s)] u)] )))
 
-;peers = dict((s, set(s2 for u in units[s] for s2 in u if s2 !=s)) for s in squares)
+(def peers (dict (for [s squares]  
+                   [s (disj (set-union (units s)) s)])))
 
-(def peers (dict (for [s squares] 
-                   [s (disj (sett (units s)) s)])))
-
-
-;; def parse_grid(grid):
-;;     "Given a string of 81 digits (or . or 0 or -), return a dict of {cell:values}"
-;;     grid = [c for c in grid if c in '0.-123456789']
-;;     values = dict((s,digits) for s in squares)
-;;     for square,digit in zip(squares, grid):
-;;         if digit in digits and not assign(values, square, digit):
-;;             return False
-;;     return values
 
 (defn all? [coll] (every? identity coll))
 (declare assign! eliminate! check!)
 
+;;filter only the significant characters from an input string
+(defn strip-grid [grid] (filter (set (concat digits separators)) grid))
+;;make a grid where every square can contain every digit
+(defn make-grid [] (dict (for [s squares] [s,(atom digits)])))
+
+;;turn a string representing a grid into a dictionary of possible values for each square
 (defn parse_grid [grid]
-  (let [grid (filter (set (concat digits separators)) grid)
-        values (dict (for [s squares] [s,(atom digits)]))]
+  (let [grid (strip-grid grid)
+        values (make-grid)]
     (if (all? (for [[square digit] (zipmap squares grid) :when ((set digits) digit)]
                   (assign! values square digit)))
       values
