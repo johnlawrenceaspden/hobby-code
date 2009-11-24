@@ -1,13 +1,14 @@
 ;;Sudoku solver
 
-;;As direct a translation as I could make of Peter Norvig's famous python solver
+;;Inspired by Peter Norvig's famous solver in Python
 ;;Which is explained in detail at:
 ;;http://norvig.com/sudoku.html
 
 ;;Algorithm is constraint propagation coupled with depth-first search
 
-;;Constraint propagation is performed by mutually recursive functions modifying state
-;;So in clojure we need to put our strings in atoms.
+;;Constraint propagation in the original was performed by mutually recursive functions modifying state
+
+;;I'm trying to get the functions to return a list of things to do rather than recurse, effectively nationalizing the machine stack.
 
 ;;I split the eliminate function into two (eliminate! and check!) to make it easier to read.
 
