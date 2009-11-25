@@ -68,7 +68,7 @@ def printboard(values):
 
 def search(values, recurse=''):
     "Using depth-first search and propagation, try all possible values."
-    print "recursion: ", recurse
+    #print "recursion: ", recurse
     if values is False:
         return False
     if all(len(values[s])==1 for s in squares):
