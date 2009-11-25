@@ -90,3 +90,45 @@
 (bounce (fn[] (func-zero print)))
 (bounce (fn[] (func-zero (fn[x][false x]))))
 
+(defn factorial [n c]
+  (if (= n 0) (c 1)
+      (fn [] (factorial (- n 1) (fn[result] (fn[] (c (* n result))))))))
+
+(factorial 0 identity)
+(identity 1)
+1
+
+(factorial 1 identity)
+(fn[] (factorial 0 (fn[result] (fn[] (identity (* 1 result))))))
+
+((factorial 1 identity))
+(factorial 0 (fn[result] (fn[] (identity (* 1 result)))))
+(fn[] (identity (* 1 1)))
+
+(((factorial 1 identity)))
+(identity (* 1 1))
+1
+
+
+
+(((factorial 1 identity)))
+(((((factorial 2 identity)))))
+(((((((factorial 3 identity)))))))
+
+(defn t[f]
+  (if (fn? f) (recur (f))
+      f))
+
+(t (factorial 10000 identity))
+
+
+
+(defn factorial [n c]
+  (if (= n 0) [false (c 1)]
+      [true (fn [] (factorial (- n 1) (fn[result] [true (fn[] (c (* n result)))]))]))
+
+
+(bounce (fn[] (factorial 0 identity) ))
+(bounce (fn[] (factorial 1 identity) ))
+(bounce-of-death (fn[] (factorial 5000 identity) ))
+
