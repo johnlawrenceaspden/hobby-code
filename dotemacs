@@ -1,7 +1,16 @@
+;;emacs color themes are in the package emacs-goodies-el on ubuntu
+(require 'color-theme)
+;;here are the ones I find usable
+(color-theme-billw)
+;(color-theme-gtk-ide)
+;(color-theme-katester)
+;(color-theme-midnight)
+;(color-theme-retro-green)
+;(color-theme-retro-orange)
+;(color-theme-scintilla)
+
+;;lisp editing is better with flashing brackets
 (show-paren-mode)
-;(menu-bar-mode)
-(scroll-bar-mode)
-(tool-bar-mode)
 
 ;don't scroll like a tard. duh.
 (setq scroll-conservatively 10000)
@@ -14,64 +23,60 @@
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f5] 'shrink-window)
 
+;these should be neat, but they don't work
 ;(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
 ;(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
 ;(global-set-key (kbd "S-C-<down>") 'shrink-window)
 ;(global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
-;(highlight-tabs)
-;(highlight-trailing-whitespace)
+;whitespace highlighting is useful for python, but annoying usually
+;(global-whitespace-mode)
 
-;(setq indent-tabs-mode nil)
 (setq-default indent-tabs-mode nil)
 
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 
 
-;;clojure installation from 
+
+;;clojure setup from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
+;;################################################################
+;; disable bell function
+(setq ring-bell-function 'ignore)
+;; disable toolbar
+(tool-bar-mode -1)
+;; disable scrollbar
+(toggle-scroll-bar -1)
+;; disable splash screen
+(custom-set-variables '(inhibit-startup-screen t))
+;; current buffer name in title bar
+(setq frame-title-format "%b")
+;; start emacs server
+(server-start)
 
 ;; clojure-mode
 (add-to-list 'load-path "~/opt/clojure-mode")
 (require 'clojure-mode)
 
+
+;;lensfield classpath directories 
+(setq lensfield-classpath 
+"/home/john/lensfield/lensfield-build/target/classes:/home/john/.m2/repository/wwmm/atom-archiver/0.1/atom-archiver-0.1.jar:/home/john/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar:/home/john/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4.jar:/home/john/.m2/repository/org/freemarker/freemarker/2.3.9/freemarker-2.3.9.jar:/home/john/.m2/repository/log4j/log4j/1.2.13/log4j-1.2.13.jar:/home/john/.m2/repository/xom/xom/1.1/xom-1.1.jar:/home/john/.m2/repository/xerces/xmlParserAPIs/2.6.2/xmlParserAPIs-2.6.2.jar:/home/john/.m2/repository/xerces/xercesImpl/2.6.2/xercesImpl-2.6.2.jar:/home/john/.m2/repository/xalan/xalan/2.7.0/xalan-2.7.0.jar:/home/john/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar:/home/john/.m2/repository/jaxen/jaxen/1.1-beta-8/jaxen-1.1-beta-8.jar:/home/john/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar:/home/john/.m2/repository/jdom/jdom/1.0/jdom-1.0.jar:/home/john/.m2/repository/cdk/cdk-pure/1.2.1/cdk-pure-1.2.1.jar:/home/john/.m2/repository/cml/cifxml/1.4-SNAPSHOT/cifxml-1.4-SNAPSHOT.jar:/home/john/.m2/repository/net/sourceforge/jena/jena/2.4/jena-2.4.jar:/home/john/.m2/repository/antlr/antlr/2.7.5/antlr-2.7.5.jar:/home/john/.m2/repository/net/sourceforge/jena/arq/1.4/arq-1.4.jar:/home/john/.m2/repository/net/sourceforge/jena/iri/1.0/iri-1.0.jar:/home/john/.m2/repository/commons-logging/commons-logging/1.1/commons-logging-1.1.jar:/home/john/.m2/repository/logkit/logkit/1.0.1/logkit-1.0.1.jar:/home/john/.m2/repository/avalon-framework/avalon-framework/4.1.3/avalon-framework-4.1.3.jar:/home/john/.m2/repository/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar:/home/john/.m2/repository/concurrent/concurrent/1.3.4/concurrent-1.3.4.jar:/home/john/.m2/repository/icu4j/icu4j/3.4/icu4j-3.4.jar:/home/john/.m2/repository/org/json/json/1.0/json-1.0.jar:/home/john/.m2/repository/junit/junit/3.8/junit-3.8.jar:/home/john/.m2/repository/stax/stax-api/1.0/stax-api-1.0.jar:/home/john/.m2/repository/woodstox/wstx-asl/2.8/wstx-asl-2.8.jar:/home/john/.m2/repository/jgrapht/jgrapht/0.6.0/jgrapht-0.6.0.jar:/home/john/.m2/repository/cml/jumbo-converters/0.2-SNAPSHOT/jumbo-converters-0.2-SNAPSHOT.jar:/home/john/.m2/repository/cml/jumbo/5.5.1-SNAPSHOT/jumbo-5.5.1-SNAPSHOT.jar:/home/john/.m2/repository/cml/cmlxom/2.5.1-SNAPSHOT/cmlxom-2.5.1-SNAPSHOT.jar:/home/john/.m2/repository/org/apache/commons/commons-cli/2.0-SNAPSHOT/commons-cli-2.0-SNAPSHOT.jar:/home/john/.m2/repository/cml/jumbo-units/0.2-SNAPSHOT/jumbo-units-0.2-SNAPSHOT.jar:/home/john/lensfield/lensfield-share/target/lensfield-share-0.1-SNAPSHOT.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-repository-api/2.2.4/sesame-repository-api-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-query/2.2.4/sesame-query-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-model/2.2.4/sesame-model-2.2.4.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-collections/2.3/aduna-commons-collections-2.3.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-concurrent/2.2/aduna-commons-concurrent-2.2.jar:/home/john/.m2/repository/org/slf4j/slf4j-api/1.5.0/slf4j-api-1.5.0.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-iteration/2.3/aduna-commons-iteration-2.3.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-i18n/1.0/aduna-commons-i18n-1.0.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-rio-api/2.2.4/sesame-rio-api-2.2.4.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-lang/2.3/aduna-commons-lang-2.3.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-net/2.2/aduna-commons-net-2.2.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-text/2.2/aduna-commons-text-2.2.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-io/2.4/aduna-commons-io-2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryresultio-api/2.2.4/sesame-queryresultio-api-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryparser-sparql/2.2.4/sesame-queryparser-sparql-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryparser-api/2.2.4/sesame-queryparser-api-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryalgebra-model/2.2.4/sesame-queryalgebra-model-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-repository-sail/2.2.4/sesame-repository-sail-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-sail-api/2.2.4/sesame-sail-api-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-sail-nativerdf/2.2.4/sesame-sail-nativerdf-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-sail-inferencer/2.2.4/sesame-sail-inferencer-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryparser-serql/2.2.4/sesame-queryparser-serql-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryalgebra-evaluation/2.2.4/sesame-queryalgebra-evaluation-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-queryresultio-sparqlxml/2.2.4/sesame-queryresultio-sparqlxml-2.2.4.jar:/home/john/.m2/repository/info/aduna/commons/aduna-commons-xml/2.2/aduna-commons-xml-2.2.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-rio-rdfxml/2.2.4/sesame-rio-rdfxml-2.2.4.jar:/home/john/.m2/repository/org/openrdf/sesame/sesame-rio-turtle/2.2.4/sesame-rio-turtle-2.2.4.jar:/home/john/.m2/repository/org/clojure/clojure-lang/1.1.0-alpha-SNAPSHOT/clojure-lang-1.1.0-alpha-SNAPSHOT.jar:/home/john/.m2/repository/org/clojure/clojure-contrib/1.0-SNAPSHOT/clojure-contrib-1.0-SNAPSHOT.jar:/home/john/.m2/repository/owlapi/owlapi/2.2.0/owlapi-2.2.0.jar:/home/john/.m2/repository/wwmm/pub-crawler/0.1/pub-crawler-0.1.jar:/home/john/.m2/repository/commons-httpclient/commons-httpclient/4.0-beta2/commons-httpclient-4.0-beta2.jar:/home/john/.m2/repository/commons-httpcore/commons-httpcore/4.0-beta3/commons-httpcore-4.0-beta3.jar:/home/john/.m2/repository/org/dspace/foresite/SNAPSHOT/foresite-SNAPSHOT.jar:/home/john/.m2/repository/com/hp/hpl/jena/jena/2.5.5/jena-2.5.5.jar:/home/john/.m2/repository/com/hp/hpl/jena/arq/2.2/arq-2.2.jar:/home/john/.m2/repository/org/apache/lucene/lucene-core/2.2.0/lucene-core-2.2.0.jar:/home/john/.m2/repository/com/hp/hpl/jena/arq-extra/2.2/arq-extra-2.2.jar:/home/john/.m2/repository/com/hp/hpl/jena/jenatest/2.5.5/jenatest-2.5.5.jar:/home/john/.m2/repository/com/hp/hpl/jena/iri/0.5/iri-0.5.jar:/home/john/.m2/repository/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar:/home/john/.m2/repository/com/hp/hpl/jena/concurrent-jena/1.3.2/concurrent-jena-1.3.2.jar:/home/john/.m2/repository/com/hp/hpl/jena/json-jena/1.0/json-jena-1.0.jar:/home/john/.m2/repository/org/codehaus/woodstox/wstx-asl/3.0.0/wstx-asl-3.0.0.jar:/home/john/.m2/repository/rome/rome/0.9/rome-0.9.jar:/home/john/.m2/repository/commons-cli/commons-cli/1.0/commons-cli-1.0.jar:/home/john/.m2/repository/org/ccil/cowan/tagsoup/tagsoup/1.0.1/tagsoup-1.0.1.jar:/home/john/.m2/repository/javax/vecmath/1.2/vecmath-1.2.jar:")
+
 ;; swank-clojure
-(add-to-list 'load-path "~/opt/swank-clojure")
+(add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
+
+(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
+      swank-clojure-extra-classpaths (list
+				      "~/.clojure/clojure-contrib.jar"
+                                      "~/opt/swank-clojure/src/main/clojure"
+                                      lensfield-classpath ;;jla added this line!!!!!!!!!!!!!!!!!!!!!!!!!
+                                      "/home/john/lensfield/lensfield-build/src/main/clj"
+                                      "/home/john/lensfield/lensfield-build/src/test/clj"
+				      ))
+
 (require 'swank-clojure-autoload)
-
-;; this is the original classpath for clojure. But for some reason it 
-;; breaks with the pragmatic programmer's book code
-;; so I've written a new one (below) to load up the versions of clojure and the libraries as provided there
-;; (swank-clojure-config
-;;  (setq swank-clojure-jar-path "~/.clojure/clojure.jar")
-;;  (setq swank-clojure-extra-classpaths
-;;        (list "~/.clojure/clojure-contrib.jar" 
-;;              "~/opt/HTMLParser-2.0-SNAPSHOT/lib/htmlparser.jar"
-;; 	     )))
-
-(swank-clojure-config
- (setq swank-clojure-jar-path "~/clojure-programs/programming-clojure/lib/clojure.jar")
- (setq swank-clojure-extra-classpaths
-       (mapcar 
-	(lambda (s) (concat "~/clojure-programs/programming-clojure/" s)) 
-	(list "." 
-	      "lib/commons-io-1.4.jar" 
-	      "lib/commons-fileupload-1.2.1.jar"
-	      "lib/commons-codec-1.3.jar" 
-	      "lib/jline-0.9.94.jar"
-	      "lib/clojure.jar"
-	      "lib/clojure-contrib.jar"
-	      "lib/ant.jar:lib/ant-launcher.jar" 
-	      "lib/compojure.jar" 
-	      "lib/hsqldb.jar" 
-	      "lib/jetty-6.1.14.jar" 
-	      "lib/jetty-util-6.1.14.jar" 
-	      "lib/servlet-api-2.5-6.1.14.jar" 
-	      "classes"))))
-
-
-
 
 ;; slime
 (eval-after-load "slime"
@@ -80,7 +85,8 @@
 (add-to-list 'load-path "~/opt/slime")
 (require 'slime)
 (slime-setup)
-
+;;end of clojure setup from:
+;;http://riddell.us/tutorial/slime_swank/slime_swank.html
 
 ;;bind the slime selector to f12 and add a method for finding clojure buffers
 (define-key global-map (kbd "<f12>") 'slime-selector)
@@ -88,3 +94,52 @@
   "most recently visited clojure-mode buffer."
   (slime-recently-visited-buffer 'clojure-mode))
 
+
+;;################################################################
+;;################################################################
+;;################################################################
+
+
+;; to use the code from the book Programming Clojure, this fragment can be used
+;; (swank-clojure-config
+;;  (setq swank-clojure-jar-path "~/clojure-programs/programming-clojure/lib/clojure.jar")
+;;  (setq swank-clojure-extra-classpaths
+;;        (mapcar 
+;; 	(lambda (s) (concat "~/clojure-programs/programming-clojure/" s)) 
+;; 	(list "." 
+;; 	      "lib/commons-io-1.4.jar" 
+;; 	      "lib/commons-fileupload-1.2.1.jar"
+;; 	      "lib/commons-codec-1.3.jar" 
+;; 	      "lib/jline-0.9.94.jar"
+;; 	      "lib/clojure.jar"
+;; 	      "lib/clojure-contrib.jar"
+;; 	      "lib/ant.jar:lib/ant-launcher.jar" 
+;; 	      "lib/compojure.jar" 
+;; 	      "lib/hsqldb.jar" 
+;; 	      "lib/jetty-6.1.14.jar" 
+;; 	      "lib/jetty-util-6.1.14.jar" 
+;; 	      "lib/servlet-api-2.5-6.1.14.jar" 
+;; 	      "classes"))))
+
+
+;;copy last expression to repl
+(defun yo()
+  "Yo"
+  (interactive)
+  (let((end (point))
+       (beg (save-excursion
+              (backward-list 1)
+              (point)))
+       (edit-buffer (current-buffer))
+       (lisp-buffer (get-buffer "*slime-repl clojure*"))
+       (eval-command 'slime-repl-return))
+  (progn
+     (pop-to-buffer lisp-buffer)
+     (end-of-buffer)
+     (pop-to-buffer edit-buffer)
+     (append-to-buffer lisp-buffer beg end)
+     (pop-to-buffer lisp-buffer)
+     (funcall eval-command)
+     (pop-to-buffer edit-buffer))))
+
+(define-key global-map (kbd "C-x C-r") 'yo)
