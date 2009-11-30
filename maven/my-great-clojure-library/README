@@ -11,3 +11,10 @@ mvn clojure:repl
 
 to work, although it's not clear to me what they've achieved
 
+now added 
+
+mvn clojure:run
+mvn clojure:test
+
+which both run the hello.clj script
+
