@@ -21,19 +21,20 @@
   </dependencies>
   <build>
     <plugins>
+     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>clojure-maven-plugin</artifactId>
       <version>1.0</version>
       <executions>
         <execution>
         <id>compile-clojure</id>
-        <phase>
+        <phase>compile</phase>
         <goals>
 	<goal>compile</goal>
         </goals>
-        </phase>
         </execution>
       </executions>
+     </plugin>
     </plugins>
   </build>
 </project>
