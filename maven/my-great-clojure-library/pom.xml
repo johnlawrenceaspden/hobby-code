@@ -31,6 +31,7 @@
       <groupId>com.theoryinpractise</groupId>
       <artifactId>clojure-maven-plugin</artifactId>
       <version>1.1</version>
+<configuration><script>src/main/clojure/hello.clj</script></configuration>
       <executions>
         <execution>
         <id>compile-clojure</id>
