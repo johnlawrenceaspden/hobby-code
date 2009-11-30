@@ -1,1 +1,13 @@
+Original version after:
 http://stuartsierra.com/2009/09/03/mavens-not-so-bad
+
+Next modified in accordance with:
+http://github.com/talios/clojure-maven-plugin
+
+at this point we can get 
+
+mvn install
+mvn clojure:repl
+
+to work, although it's not clear to me what they've achieved
+

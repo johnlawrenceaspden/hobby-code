@@ -13,18 +13,24 @@
     <artifactId>clojure</artifactId>
     <version>1.0.0</version>
   </dependency>
+    <dependency>
+       <groupId>jline</groupId>
+       <artifactId>jline</artifactId>
+       <version>0.9.94</version>
+    </dependency>
   <dependency>
     <groupId>commons-io</groupId>
     <artifactId>commons-io</artifactId>
     <version>1.4</version>
   </dependency>
   </dependencies>
+
   <build>
     <plugins>
      <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>clojure-maven-plugin</artifactId>
-      <version>1.0</version>
+      <version>1.1</version>
       <executions>
         <execution>
         <id>compile-clojure</id>
