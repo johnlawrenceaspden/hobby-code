@@ -18,3 +18,14 @@ mvn clojure:test
 
 which both run the hello.clj script
 
+Now we've used these two commands to add swank to the local maven repository:
+
+$ wget http://cloud.github.com/downloads/jochu/swank-clojure/swank-clojure-1.0-SNAPSHOT-distribution.zip
+
+$ mvn install:install-file -DgroupId=com.codestuffs.clojure -DartifactId=swank-clojure -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=swank-clojure-1.0-SNAPSHOT/swank-clojure-1.0-SNAPSHOT.jar
+
+and added yet more boilerplate to pom.xml
+
+Unbelievably, that appears to have worked, allowing something to start on port 4005
+
+Much to my amazement, this responds to slime-connect on 127.0.0.1 port 4005
