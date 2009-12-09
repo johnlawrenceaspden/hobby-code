@@ -18,9 +18,11 @@ mvn clojure:test
 
 which both run the hello.clj script
 
-Now we've used these two commands to add swank to the local maven repository:
+Now we've used these commands to add swank to the local maven repository:
 
 $ wget http://cloud.github.com/downloads/jochu/swank-clojure/swank-clojure-1.0-SNAPSHOT-distribution.zip
+
+$ unzip swank-clojure-1.0-SNAPSHOT-distribution.zip
 
 $ mvn install:install-file -DgroupId=com.codestuffs.clojure -DartifactId=swank-clojure -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=swank-clojure-1.0-SNAPSHOT/swank-clojure-1.0-SNAPSHOT.jar
 
