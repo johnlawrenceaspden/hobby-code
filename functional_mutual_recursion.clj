@@ -54,10 +54,10 @@
 (defn factorial [n]
   (println "n=" n)
   (if (< n 2) n
-      #(* n ((factorial (dec n))))))
+      #(* n (factorial (dec n)))))
 
 
-(trampoline factorial 2)
+(trampoline factorial 3)
 
 (factorial 3)
 (#(* 3 (factorial 2)))
