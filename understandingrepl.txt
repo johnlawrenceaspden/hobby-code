@@ -1,0 +1,51 @@
+
+First, we need to understand what a REPL is:
+
+Remember that REPL stands for read-eval-print loop.
+
+There are three processes going on.
+
+The reader takes a string of characters and returns a java object.
+The evaluator works out what the value of that object is, which is
+another java object.
+The printer works out a representation of that in terms of characters
+which it can display on the screen.
+
+It can be enlightening to play with the reader, the evaluator, and the
+printer, and separate out their different roles. The magic incantation
+you need to start doing this is:
+
+user> (read (java.io.PushbackReader. (java.io.StringReader. "'[ 4 5]")))
+(quote [4 5])
+
+At this level it's all java objects. The reader is finding nice
+representations of them, but there are other ways to examine them.
+
+user> (type (read (java.io.PushbackReader. (java.io.StringReader. "'[ 4 5]"))))
+clojure.lang.Cons
+user> (.first (read (java.io.PushbackReader. (java.io.StringReader.
+"'[ 4 5]"))))
+quote
+user> (.next (read (java.io.PushbackReader. (java.io.StringReader. "'[ 4 5]"))))
+([4 5])
+user> (type (.first (read (java.io.PushbackReader.
+(java.io.StringReader. "'[ 4 5]")))))
+clojure.lang.Symbol
+user> (type (.next (read (java.io.PushbackReader.
+(java.io.StringReader. "'[ 4 5]")))))
+clojure.lang.PersistentList
+
+
+Just like you can create your own streams to give to the reader, you
+can create your own java objects to pass to eval.
+
+user> (eval (java.lang.Integer. 2))
+2
+
+Or just directly to the printer:
+
+user> (clojure.lang.Cons. (java.lang.Integer. 2) (clojure.lang.Cons.
+(java.lang.Integer. 2) nil ))
+(2 2)
+
+Play around with this until you're happy with what's going on.
