@@ -1,0 +1,11 @@
+#http://www.ukuug.org/events/linux2003/papers/bash_tips/
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+$if Bash
+  Space: magic-space
+$endif
+
+#first half of this works, but second half doesn't. Wonder why?
+set show-all-if-ambiguous on
+"\M-s": menu-complete 
