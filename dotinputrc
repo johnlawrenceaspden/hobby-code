@@ -6,6 +6,6 @@ $if Bash
   Space: magic-space
 $endif
 
-#first half of this works, but second half doesn't. Wonder why?
+#Changed "\M-s" to "\es" below, because it works on ubuntu. Some mysterious, but known, bug.
 set show-all-if-ambiguous on
-"\M-s": menu-complete 
+"\es": menu-complete
