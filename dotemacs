@@ -23,6 +23,10 @@
 (global-set-key [f6] 'enlarge-window)
 (global-set-key [f5] 'shrink-window)
 
+;make the set-fill-column thing, which I never use, go away and stop
+;interfering with C-x C-f for find-file
+(global-set-key (kbd "C-x f") 'find-file)
+
 ;these should be neat, but they don't work
 ;(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
 ;(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
@@ -33,6 +37,16 @@
 ;(global-whitespace-mode)
 
 (setq-default indent-tabs-mode nil)
+
+;; ========== Place Backup Files in Specific Directory ==========
+;; Enable backup files.
+(setq make-backup-files t)
+;; Enable versioning with default values (keep five last versions, I think!)
+;; actually no, seems to only make the one
+(setq version-control t)
+;; Save all backup file in this directory.
+(setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+
 
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
