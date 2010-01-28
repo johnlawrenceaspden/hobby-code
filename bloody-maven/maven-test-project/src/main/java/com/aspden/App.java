@@ -1,9 +1,5 @@
 package com.aspden;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -11,6 +7,7 @@ public class App
         System.out.println( "Hello World!" );
         System.out.println( "the factorial of 10 is " + factorial(10));
     }
+
     public static int factorial (int n)
     {
         int fac=1;
