@@ -1,15 +1,14 @@
-;; When we write lisp, we have magic powers, and the reason is that our code is in a form that is easy to manipulate
-;; programmatically.
+;; When we write lisp, we have magic powers, and the reason is that our code is in a form that is
+;; easy to manipulate programmatically.
 
 ;; Like all magic, there is a price to pay.
 
 ;; The price is that we have to rip the front end off our compiler.
 
-;; The front end is the thing that takes 1*2+3*5 and says
+;; The front end is the thing that takes 1*2+3*5 and says:
 
-;; 1 is valid but 1* isn't , and so on, so that must really be 1 * 2 + 3 * 5 
-;; * binds tighter than +, so that's really ( ( 1 * 2 ) + ( 3 * 5 ) )
-;; Which is really a tree:
+;; 1 is valid but 1* isn't, * is an operator, and so on, so that must really be 1 * 2 + 3 * 5 , and
+;; * binds tighter than +, so that's really ( ( 1 * 2 ) + ( 3 * 5 ) ) Which is really a tree:
 
              (+ 
               (* 5 3)
@@ -17,38 +16,45 @@
 
 ;; Meaning take 1 and 2 and multiply them, take 5 and 3 and multiply them. Add the results.
 
-;; This is clearly seriously annoying, and like monads in Haskell, it's the first thing you hit when you learn lisp, 
-;; but I promise that after a month or so of using it you stop noticing it, 
-;; and although it's never quite as good for actual arithmetic, it's actually much nicer as a notation for a 
-;; generalized function call.
+;; This is clearly seriously annoying, and like monads in Haskell, it's the first thing you hit when
+;; you learn lisp, but I promise that after a month or so of using it you stop noticing it, and
+;; although it's never quite as good for actual arithmetic, it's actually much nicer as a notation
+;; for a generalized function call.
 
-;; More importantly, it allows us to treat all functions uniformly, including the ones we define 
+;; More importantly, it allows us to treat all functions uniformly, including the ones we define
 ;; ourselves. And this is the source of the magic.
 
-;; If we do well today we'll be able to symbolically differentiate a function. Using a very short program. 
-;; And that's hard in a language with a syntax.
+;; If we do well today we'll be able to symbolically differentiate a function.  Using a very short
+;; program. And that's hard in a language with a syntax.
 
-;; So my aim for today is to get us used to the (lack of) syntax of lisp. 
+;; So my aim for today is to get us used to the (lack of) syntax of lisp.
 
-;; We're going to use clojure, which is a modern member of the LISP family, 
-;; in the same sense that Java is a member of the ALGOL family.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Clojure's a wonderful language, which uses Java bytecode as its machine language, and runs on the JVM, 
-;; and so has easy natural access to all the libraries that Java has. 
+;; We're going to use clojure, which is a modern member of the LISP family, in the same sense that
+;; Java is a member of the ALGOL family.
 
-;; My friends at the Chemistry department in Cambridge are using it because they've written a lot of Java over the years, 
-;; and they like it, but they've found that Clojure is an easier way to write Java than Java is.
+;; Clojure's a wonderful language, which uses Java bytecode as its machine language, and runs on the
+;; JVM, and so has easy natural access to all the libraries that Java has.
 
-;; It has pervasive laziness throughout the language, which allows us to 
-;; disconnect the things that need to be done from the order they need to be done in.  
-;; It has extraordinary pure-functional data structures, and baked-in software transactional memory, 
+;; My friends at the Chemistry department in Cambridge are using it because they've written a lot of
+;; Java over the years, and while they like it for all sorts of reasons, they've found that Clojure
+;; is an easier way to write Java than Java is.
+
+;; It has pervasive laziness throughout the language, which allows us to disconnect the things that
+;; need to be done from the order they need to be done in.
+
+;; It has extraordinary pure-functional data structures, and baked-in software transactional memory,
 ;; which together make for a style of programming that can run in parallel on many cores.
 
-;; But I'm going to ignore all of that, and we're going to get over the pons asinorum of lisp, 
-;; which is all those damned brackets.
+;; It has maps and sets and vectors and regular expressions built right into the language, and so
+;; natural to use that they're everyday objects like they are for PERL and Python people.
 
-;; We're going to write a program that you could have written in lisp forty years ago, when the newest member 
-;; of the ALGOL family was ALGOL itself.
+;; But I'm going to ignore all of that, and we're going to get over the pons asinorum of lisp, which
+;; is all those damned brackets.
+
+;; We're going to write a program that you could have written in LISP forty years ago, when the
+;; newest member of the ALGOL family was ALGOL itself.
 
 
 ;; -------------------------------------------------------------------------------------------------
@@ -56,27 +62,27 @@
 ;; The method of Heron of Alexandria
 ;; ---------------------------------
 
-;; I don't know if any of you remember not having a calculator. 
-;; Once upon a time they didn't even have mathematical tables, and so they had to calculate things like square roots by hand.
+;; I don't know if any of you remember not having a calculator.  Once upon a time they didn't even
+;; have mathematical tables, and so they had to calculate things like square roots by hand.
 
-;; One popular method of calculating a square root is due to Hero(n) of Alexandria, 
-;; who also invented steam power, the windmill, the syringe and the vending machine.
+;; One popular method of calculating a square root is due to Hero(n) of Alexandria, who also
+;; invented steam power, the windmill, the syringe and the vending machine.
 
 ;; What Heron said to do was this:
 
 ;; Suppose you have a number that you want to find the square root of, let's say 10.
 
-;; And suppose you have a guess for where that square root might be, let's say 1. 
-;; It's not a very good guess, because the square of 1 is 1, not ten, but it will do to get started.
+;; And suppose you have a guess for where that square root might be, let's say 1.  It's not a very
+;; good guess, because the square of 1 is 1, not ten, but it will do to get started.
 
 ;; So Heron tells us, if we know the square root, then if we divide 10 by it, we'll get it back.
-;; Like say the square root of 4 is 2, and if we divide 4 by 2, then we get 2. 
-;; And that's what it means to *be* a square root.
+;; Like say the square root of 4 is 2, and if we divide 4 by 2, then we get 2.  And that's what it
+;; means to *be* a square root.
 
-;; But if we guessed too low, then the thing we get back will be too high.
-;; And if it's too high, then the thing that we get back will be too low.
+;; But if we guessed too low, then the thing we get back will be too high.  And if it's too high,
+;; then the thing that we get back will be too low.
 
-;; So Heron says to take the average of what we have and what we get back when we do this division, 
+;; So Heron says to take the average of what we have and what we get back when we do this division,
 ;; and he promises us that will be a better guess.
 
 ;; Let's try that, for our problem number 10, and our guess 1
@@ -92,15 +98,15 @@ user> (/ (+ 10 1) 2)
 user> (/ (+ (/ 10 1) 1) 2)
 11/2
 
-;; That's getting a bit hard to read, so we should define a function to give us averages
+;; That's getting a bit hard to read, so we should define a function to give us averages:
 user> (defn average [a b] (/ (+ a b) 2))
 #'user/average
 
-;; We can test it
+;; We can test it:
 user> (average 10 1)
 11/2
 
-;; So our old calculation goes like
+;; So our old calculation goes like:
 user> (average (/ 10 1) 1)
 11/2
 
@@ -108,34 +114,43 @@ user> (average (/ 10 1) 1)
 user> (defn improve-guess [guess] (average guess (/ 10 guess)))
 #'user/improve-guess
 
-;; Let's try that
+;; Let's try that:
 user> (improve-guess 1)
 11/2
 
-;; Of course, a better guess can also be improved
+;; Of course, a better guess can also be improved.
 user> (improve-guess (improve-guess 1))
 161/44
 
-;; And improved again
+;; And improved again.
 user> (improve-guess (improve-guess (improve-guess 1)))
 45281/14168
 
-;; Now you'll notice that clojure is doing exact arithmetic, and giving us back a fraction, just like a human being would do. 
-;; But if we start it off with an inexact guess, a decimal rather than a rato, say 1.0 rather than 1
-;; Then because you can't make an exact answer from an inexact input, every answer we get back will be a decimal.
+;; Now you'll notice that clojure is doing exact arithmetic, and giving us back a fraction, just
+;; like a human being would do.  
+
+;; But if we start it off with an inexact guess, a decimal rather than a ratio, 
+;; say 1.0 rather than 1, then every answer we get back will be a decimal.
+  
+;; Because you can't make an exact answer from an inexact input.
 user> (improve-guess (improve-guess (improve-guess 1.0)))
 3.196005081874647
 
-;; inexactness is contagious.
+;; Inexactness is contagious.
 user> (+ 1 2)
 3
 user> (+ 1.0 2)
 3.0
 
-;; Let's go on a bit of a side-track now and look at just how good Heron's great idea is. We can use a magic function called 
-;; iterate to make an infinite sequence of guesses. It's best only to look at the first bit of an infinite sequence. 
-;; Otherwise, like with the Medusa of Greek myth, the REPL turns to stone. Let's look at the first five values in our
-;; sequence.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Let's go on a bit of a side-track now and look at just how good Heron's idea was.  We can
+;; use a magic function called iterate to make an infinite sequence of guesses.  It's best only to
+;; look at the first bit of an infinite sequence.
+
+;; Otherwise, like with the Medusa of Greek myth, the REPL turns to stone.  Let's look at the first
+;; five values in our sequence.
 user> (take 5 (iterate improve-guess 1))
 (1 11/2 161/44 45281/14168 4057691201/1283082416)
 
@@ -149,18 +164,30 @@ user> (take 10 (iterate improve-guess 1.))
 
 ;; Let's look at the squares of the values in our sequence:
 user> (map (fn[x](* x x)) (iterate improve-guess 1.))
-;; Oops. We looked at the medusa! In some environments the REPL is smart enough to print out the values one-by-one, 
+;; ...time passes...
+
+;; Oops. We looked at the medusa! 
+;; In some environments the REPL is smart enough to print out the values one-by-one, 
 ;; but here, it's trying to do the whole thing before printing anything.
 ;; Ctrl-C will stop the calculation and restore the REPL.
 
-; Evaluation aborted.
 
 ;; Try again:
 user> (take 10 (map (fn[x](* x x)) (iterate improve-guess 1.)))
 (1.0 30.25 13.388946280991735 10.21444848336857 10.001125566203939 10.000000031668918 9.999999999999998 9.999999999999998 9.999999999999998 9.999999999999998)
 
-;; But iterate and map are magic functions, so let's not worry too much about lazy sequences just yet, and see how we might do it the hard way.
+;; Iterate and map are magic functions, so let's not worry too much about them yet, 
+;; but the magic goes away once you know how it's done.
 
+;; If they weren't built into the language we could write our own versions.
+;; They're one liners.
+
+;; Later I'll show you how they work.  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; How do we know when to stop improving our guesses?
+        
 ;; First off, we'd like a definition of when our guess is good enough.
 ;; How about, square it and if the answer's close to 10 then that goes?
 ;; How good a guess is 3.19?
@@ -171,7 +198,7 @@ user> (- 10 (* 3.19 3.19))
 user> (defn abs[x] (if (< x 0) -x x))
 ; Barf....
 
-; Sigh. Every function needs the same call syntax. Unary minus is a function just like anything else.
+; Sigh. *Every* function needs the same call syntax. Unary minus is a function just like anything else.
 user> (defn abs[x] (if (< x 0) (- x) x))
 #'user/abs
 
@@ -183,7 +210,7 @@ user> (map abs (list -1 1 0))
 user> (abs (- 10 (* 3.19 3.19)))
 0.17609999999999992
 
-;; What's good enough? Say if the difference is less than 1/10^6, or 1e-6
+;; What's good enough? Let's say we're happy if the difference is less than 1/10^6, or 1e-6
 user> 1e-6
 1.0E-6
 
@@ -208,8 +235,10 @@ user> (take 10 (map good-enough? (iterate improve-guess 1.)))
 user> (take 10 (iterate improve-guess 1.))
 (1.0 5.5 3.659090909090909 3.196005081874647 3.16245562280389 3.162277665175675 3.162277660168379 3.162277660168379 3.162277660168379 3.162277660168379)
 
-;; So what if we just want a function that will give us an answer that is good enough?
-;; We'll call it good-enough-guess. We give it a guess. If that guess is good enough, then it gives us it back.
+;; So what if we just want a function that will give us an answer that is good enough?  We'll call
+;; it good-enough-guess. 
+
+;; We give it a guess. If that guess is good enough, then it gives us it back.
 ;; If it's not, then it makes it better, and tries again.
 user> (defn good-enough-guess [x]
         (if (good-enough? x) x
@@ -250,5 +279,8 @@ user> (* (good-enough-guess 3.0)(good-enough-guess 3.0))
       (good-enough-guess (improve-guess x))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 
 
