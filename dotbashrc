@@ -46,7 +46,8 @@ fi
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\W\$ '
+     PS1='\e[7m\w\e[0m\n\u@\h\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -125,3 +126,12 @@ export CLOJURE_EXT=~/.clojure
 PATH=$PATH:~/opt/clojure-contrib/launchers/bash
 
 alias clj=clj-env-dir
+
+#life is too short
+alias fnd='find . -name'
+
+function fndg 
+{  
+    command find . -name "$1" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
+}
+
