@@ -1,11 +1,13 @@
 ;; glob.clj -- globbing support for Clojure
 
+
 ;; A web search produced this:
 ;; http://svn2.assembla.com/svn/iode/src/compojure/lib/compojure/glob.clj
-;; which appeared to be a very old part of compojure
-;; It didn't work as found, so hackety hack...
+;; which appeared to be a very old part of compojure.  It didn't work
+;; as found, so hackety hack...
 
 (ns glob
+  "globbing support"
   (:use clojure.test)
   (:import java.io.File))
 
@@ -15,19 +17,21 @@
   ([parent name]   (new File parent name))
   ([p q & parents] (reduce file (file p q) parents)))
 
+;;This is getting the parents of the file by creating File objects
 (defn file-parents
   "Lazily iterate through all of the parents of a file."
   [file]
   (take-while identity
-    (iterate (memfn getParentFile) file)))
+              (iterate (memfn getParentFile) file)))
 
+;;Similarly using file objects
 (defn split-path
-  "Splits a path up into its parts."
+  "Splits a path up into its parts. Creates a file object and then examining it."
   [path]
   (map
-    (memfn getName)
-    (reverse
-      (file-parents (file path)))))
+   (memfn getName)
+   (reverse
+    (file-parents (file path)))))
 
 (defn includes?
   "Returns true if s contains something equal (with =) to x."
@@ -36,28 +40,29 @@
     true false))
 
 (defn escape
-  "Returns a string with each occurence of a character in 'chars' escaped with a \ ."
+  "Returns a string with each occurence of a character in 'chars' escaped with a backslash ."
   [chars #^String string]
   (apply str
-    (mapcat
-      #(if (includes? % chars) [\\ %] [%])
-      string)))
+         (mapcat
+          #(if (includes? % chars) [\\ %] [%])
+          string)))
+
+                                        ;(escape "()" "hello(world)")
 
 (defn- glob->regex
   "Turns a shallow file glob into a regular expression."
   [s]
   (re-pattern
-    (.. (escape "\\.+|()[]{}$^" s)
-        (replaceAll "\\*" ".*")
-        (replaceAll "\\?" "."))))
-
-(map glob->regex (list "*" "?" "h?ll*" "*?*??" "*.clj" "(c+e[q]u*_il)"))
-(glob->regex "*.clj")
-(glob->regex "*.clj")
+   (.. (escape "\\.+|()[]{}$^" s)
+       (replaceAll "\\*" ".*")
+       (replaceAll "\\?" "."))))
 
 (defn- recursive-glob?
+  "does the glob have a ** in it?"
   [glob]
-  (re-find #"\\*\\*" glob))
+  (not (empty? (re-find #"\*\*" glob))))
+
+(map recursive-glob? '("*.clj" "**/*.clj" "*/*"))
 
 (defn- glob-parts
   [parts path]
@@ -65,24 +70,56 @@
     (if (. path isDirectory)
       (mapcat
        #(glob-parts (rest parts) %)
-        (filter
-         #(re-matches
-            (glob->regex (first parts))
-            (. % (getName)))
-          (if (recursive-glob? (first parts))
-            (file-seq path)
-            (. path (listFiles))))))
+       (filter
+        #(re-matches (glob->regex (first parts)) (. % (getName)))
+        (if (recursive-glob? (first parts))
+          (file-seq path)
+          (. path (listFiles))))))
     (list path)))
 
-(glob-parts '( "*") (file "."))
-(glob->regex "*e*_*e*.clj")
-(. (file ".") isDirectory)
+
+;;glob-parts should take a glob split into pieces, e.g. "**" "*" "hello*" "*.clj"
+;;and a path.
+
+;;if the path is a file, then it should match if there is only one glob part, and it matches the regexp
+;;if it is a directory, then  
+
+(defn- glob-parts [parts path]
+  (if (empty? parts) (list path)
+      (
 
 
 (defn glob
   "Find all files in a directory matching a glob."
   ([pattern]
-    (glob-parts (split-path pattern) (file "."))))
+     (glob-parts (split-path pattern) (file ".")))
+  ([path pattern]
+     (glob-parts (split-path pattern) (file path))))
+
+
+(use 'clojure.contrib.trace)
+(dotrace (glob-parts glob) (glob "maven/**/*.clj"))
+
+
+
+
+
+
+
+
+
+
+(glob "." "")
+(glob-parts '() (file "."))
+(split-path "d")
+
+(map count (list 
+            (glob "/home/john/hobby-code" "**/*.clj")
+            (glob "/home/john/hobby-code" "*/*.clj")
+            (glob "/home/john/hobby-code" "*/*.clj")))
+
+
+(map glob->regex (list "*" "?" "h?ll*" "*?*??" "*.clj" "(c+e[q]u*_il)"))
 
 (deftest globbing
   (is (> (count (glob "*")) 0))
@@ -93,8 +130,26 @@
 
 
 
-  (comment
-    ([path pattern]
-       (map
-        #(relative-path path %)
-        (glob-parts (split-path pattern) (file path)))))
+(comment "regular expression experiments"
+         (re-pattern "foo")             ;string->pattern
+         (re-matcher #"foo" "foofoofoo") ; makes matcher thingy
+         (re-seq #"foo" "foofoofoo") ("foo" "foo" "foo") ;;returns sequence of matches
+         (re-seq #"fo+?" "foofoofoo") ("fo" "fo" "fo")
+
+         (def m (re-matcher (re-pattern "foo") "foofooofoooo"))
+         (re-find m)
+         (re-groups m)
+
+         (re-matches #"(fo)o*" "foofoofooo")
+         (re-seq #"(foo)\1o*" "foofoofooo")
+
+         (re-find #"foo*" "foofoofooo"))
+
+(comment "glob experiments"
+
+         (glob-parts '( "*") (file "."))
+         (glob->regex "*e*_*e*.clj")
+         (. (file ".") isDirectory))
+
+
+
