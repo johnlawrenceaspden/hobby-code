@@ -36,7 +36,7 @@
     true false))
 
 (defn escape
-  "Returns a string with each occurence of a character in 'chars' escaped with a \ ."
+  "Returns a string with each occurence of a character in 'chars' escaped with a \\ ."
   [chars #^String string]
   (apply str
     (mapcat
