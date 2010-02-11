@@ -13,7 +13,10 @@
 (show-paren-mode)
 
 ;no line wrapping
-(toggle-truncate-lines 1)
+(setq-default truncate-lines t)
+
+;set fill column for wider modern screens
+(setq-default fill-column 100)
 
 ;don't scroll like a tard. duh.
 (setq scroll-conservatively 10000)
@@ -22,19 +25,23 @@
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
-;window resizing keys
-(global-set-key [f6] 'enlarge-window)
-(global-set-key [f5] 'shrink-window)
 
-;make the set-fill-column thing, which I never use, go away and stop
+;make the set-fill-column key, which I never use, go away and stop
 ;interfering with C-x C-f for find-file
 (global-set-key (kbd "C-x f") 'find-file)
+;similarly make kill-buffer work even if I forget to release the control key
+;actually don't do that, it sods up the macro commands
+;(global-set-key (kbd "C-x C-k") 'kill-buffer)
 
-;these should be neat, but they don't work
-;(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-;(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-;(global-set-key (kbd "S-C-<down>") 'shrink-window)
-;(global-set-key (kbd "S-C-<up>") 'enlarge-window)
+;old window resizing keys
+;(global-set-key [f6] 'enlarge-window)
+;(global-set-key [f5] 'shrink-window)
+
+;these only started working after I disabled all the GNOME A-C-arrow etc keys.
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>") 'shrink-window)
+(global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 ;whitespace highlighting is useful for python, but annoying usually
 ;(global-whitespace-mode)

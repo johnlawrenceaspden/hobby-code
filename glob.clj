@@ -40,14 +40,14 @@
     true false))
 
 (defn escape
-  "Returns a string with each occurence of a character in 'chars' escaped with a backslash ."
+  "Returns a string with each occurence of a character in 'chars' escaped with a \\ ."
   [chars #^String string]
   (apply str
          (mapcat
           #(if (includes? % chars) [\\ %] [%])
           string)))
 
-                                        ;(escape "()" "hello(world)")
+;;(escape "()" "hello(world)")
 
 (defn- glob->regex
   "Turns a shallow file glob into a regular expression."
