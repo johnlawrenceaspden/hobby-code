@@ -123,8 +123,8 @@ function emacs #open emacs in background and disown it
 #jla added this for clojure, after http://riddell.us/tutorial/clojure/clojure.html
 export CLOJURE_EXT=~/.clojure
 
-PATH=$PATH:~/opt/clojure-contrib/launchers/bash
 
+PATH=$PATH:~/opt/clojure-contrib/launchers/bash
 alias clj='rlwrap clj-env-dir'
 
 #life is too short
@@ -134,4 +134,7 @@ function fndg
 {  
     command find . -name "$1" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
 }
+
+PATH=$PATH:~/bin
+
 
