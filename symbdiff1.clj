@@ -1,28 +1,30 @@
 ;; The simplest possible symbolic differentiator
 
+;; Functions to create and unpack additions like (+ 1 2)
 (defn make-add [ a b ] (list '+ a b))
 (defn addition? [x] (and (=(count x) 3) (= (first x) '+)))
 (defn add1   [x] (second x))
 (defn add2   [x] (second (rest x)))
 
+;; Similar for multiplications (* 1 2)
 (defn make-mul [ a b ] (list '* a b))
 (defn multiplication? [x] (and (=(count x) 3) (= (first x) '*)))
 (defn mul1   [x] (second x))
 (defn mul2   [x] (second (rest x)))
 
+;; Differentiation. 
 (defn deriv [exp var]
-  (cond (number? exp) 0
-        (symbol? exp) (if (= exp var) 1 0)
-        (addition? exp) (make-add (deriv (mul1 exp) var) (deriv (mul2 exp) var))
-        (multiplication? exp) (make-add (make-mul (deriv (mul1 exp) var) (mul2 exp)) 
+  (cond (number? exp) 0                                                              ;; d/dx c -> 0
+        (symbol? exp) (if (= exp var) 1 0)                                           ;; d/dx x -> 1, d/dx y -> 0
+        (addition? exp) (make-add (deriv (mul1 exp) var) (deriv (mul2 exp) var))     ;; d/dx a+b -> d/dx a + d/dx b
+        (multiplication? exp) (make-add (make-mul (deriv (mul1 exp) var) (mul2 exp)) ;; d/dx a*b -> d/dx a * b + a * d/dx b
                                         (make-mul (mul1 exp) (deriv (mul2 exp) var)))
         :else :error))
 
-(defn poly->fnform [poly] (list 'fn (vector 'x) poly))
-
-;;examples of use
-
+;;an example of use: create the function x -> x^3 + 2x^2 + 1 and its derivative 
 (def poly '(+ (+ (* x (* x x)) (* 2 (* x x))) 1))
+
+(defn poly->fnform [poly] (list 'fn '[x] poly))
 
 (def polyfn  (eval (poly->fnform poly)))
 (def dpolyfn (eval (poly->fnform (deriv poly 'x))))
