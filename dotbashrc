@@ -97,6 +97,7 @@ fi
 shopt -s cmdhist #multiline commands are one history item
 export HISTIGNORE="&:ls:[bf]g:exit"  #ignore duplicates, ls, bg, fg & exit in history
 export HISTFILESIZE=5000
+export HISTSIZE=5000
 
 #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
 shopt -s histappend
