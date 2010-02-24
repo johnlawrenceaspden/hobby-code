@@ -1,5 +1,6 @@
 ;;Statistics Example Sheet 1
-
+(set! *print-length* 100)
+(load-file "./hobby-code/require-all-snippet.clj")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Question 1
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -16,9 +17,9 @@
   (* 1.0 (/ (apply + seq) (count seq))))
 
 (defn approx-expectation [est]
-  (average (for [i (repeat 100000 'a)] (est))))
+  (average (for [i (repeat 1000 'a)] (est))))
 
-(set! *print-length* 100)
+
 
 (defn estimator1 [p] (- 2008 (/ (T p) 2)))
 
@@ -55,8 +56,13 @@
 (defn genotype [theta] ;; gG and Gg must both become "Gg"
   (apply str (sort (list (gene theta) (gene theta)))))
 
+(genotype 3)
+
 (defn sample [n theta]
   (for [i (range n)] (genotype theta)))
+
+(sample 10 3)   ;G outnumbers g by three to one
+(sample 10 1/3) ;g outnumbers G by three to one
 
 (defn seq->countmap [sq]
   (reduce (fn [map key](assoc map key (inc (get map key 0))))  {}  sq ))
@@ -69,11 +75,11 @@
 
 (sort (sample 20 0.5))
 
-(seq->countmap (sample 1000 0.1))          ; theta 0.1  means 1/11 genes are G
-(seq->countmap (sample 1000 0.5))          ; theta 0.5  means 1/3  genes are G
+(seq->countmap (sample 1210 0.1))          ; theta 0.1  means 1/11 genes are G
+(seq->countmap (sample 999 0.5))           ; theta 0.5  means 1/3  genes are G
 (seq->countmap (sample 1000 1))            ; theta 1    means 1/2  genes are G
-(seq->countmap (sample 1000 2))            ; theta 2    means 2/3  genes are G
-(seq->countmap (sample 1000 10))           ; theta 10   means 10/11  genes are G
+(seq->countmap (sample 999 2))             ; theta 2    means 2/3  genes are G
+(seq->countmap (sample 1210 10))           ; theta 10   means 10/11  genes are G
 
 
 (defn sample->abc [a-sample]
@@ -86,18 +92,23 @@
   (/ (Math/pow theta (+ a a b))
      (Math/pow (+ 1 theta) (* 2 (+ a b c)))))
 
-(defn likelihood [[a b c] theta] ;;big samples break this boo
+(defn likelihood [[a b c] theta] ;;big samples break this as well
   (/ (Math/pow (/ theta (+ 1 theta)) (+ a a b))
      (Math/pow (+ 1 theta) (+ b c c))))
 
-(defn loglikelihood [[a b c] theta]
+(defn loglikelihood [[a b c] theta] ;;logs to the rescue
   (- (* (+ a a b) (Math/log theta))
      (* 2 (+ a b c) (Math/log (+ 1 theta)))))
 
+(defn models-in-likelihood-order [modelslist sample]
+  (map second (sort (map 
+                    (fn [theta] [(loglikelihood (sample->abc sample) theta) theta])
+                    modelslist))))
 
-(map first
- (sort #(< (second %1) (second %2)) (let [abc (sample->abc (sample 3000 8))] 
-  (map (fn [theta] [theta (loglikelihood abc theta)]) (map #(/ % 10.) (range 100))))))
+(models-in-likelihood-order (map #(/ % 10.) (range 100)) (sample 30 8))
+
+
+
 
 
 
