@@ -12,8 +12,8 @@
 ;;lisp editing is better with flashing brackets
 (show-paren-mode)
 
-;no line wrapping
-(setq-default truncate-lines t)
+;no line wrapping ;modified for dev8d
+(setq-default truncate-lines nil)
 
 ;set fill column for wider modern screens
 (setq-default fill-column 100)
