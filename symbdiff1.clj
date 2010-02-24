@@ -16,7 +16,7 @@
 (defn deriv [exp var]
   (cond (number? exp) 0                                                              ;; d/dx c -> 0
         (symbol? exp) (if (= exp var) 1 0)                                           ;; d/dx x -> 1, d/dx y -> 0
-        (addition? exp) (make-add (deriv (mul1 exp) var) (deriv (mul2 exp) var))     ;; d/dx a+b -> d/dx a + d/dx b
+        (addition? exp) (make-add (deriv (add1 exp) var) (deriv (add2 exp) var))     ;; d/dx a+b -> d/dx a + d/dx b
         (multiplication? exp) (make-add (make-mul (deriv (mul1 exp) var) (mul2 exp)) ;; d/dx a*b -> d/dx a * b + a * d/dx b
                                         (make-mul (mul1 exp) (deriv (mul2 exp) var)))
         :else :error))
