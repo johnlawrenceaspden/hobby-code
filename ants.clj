@@ -8,9 +8,9 @@
 ;   You must not remove this notice, or any other, from this software.
 
 ;dimensions of square world
-(def dim 80)
+(def dim 160)
 ;number of ants = nants-sqrt^2
-(def nants-sqrt 7)
+(def nants-sqrt 2)
 ;number of places with food
 (def food-places 35)
 ;range of amount of food at a place
@@ -20,10 +20,10 @@
 ;scale factor for food drawing
 (def food-scale 30.0)
 ;evaporation rate
-(def evap-rate 0.99)
+(def evap-rate 0.99 )
 
-(def animation-sleep-ms 100)
-(def ant-sleep-ms 40)
+(def animation-sleep-ms 30)
+(def ant-sleep-ms 60)
 (def evap-sleep-ms 1000)
 
 (def running true)
