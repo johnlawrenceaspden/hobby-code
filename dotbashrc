@@ -130,7 +130,11 @@ PATH=$PATH:~/opt/clojure-contrib/launchers/bash
 alias clj='rlwrap clj-env-dir'
 
 #life is too short
-alias fnd='find . -name'
+#alias fnd='find . -iname'
+function fnd
+{
+    command find . -iname "$1"
+}
 
 function fndg 
 {  
