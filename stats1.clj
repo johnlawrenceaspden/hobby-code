@@ -19,19 +19,21 @@
 (defn approx-expectation [est]
   (average (for [i (repeat 1000 'a)] (est))))
 
+(defn approx-expectation
+  ([est] (approx-expectation est 1000))
+  ([est n] (average (for [i (repeat n 'a)] (est)))))
 
 
 (defn estimator1 [p] (- 2008 (/ (T p) 2)))
-
-(approx-expectation #(estimator1 0.3)) ;should be (2008-0.3)
+(estimator1 0.3) ;2008, 2007, or 2007.5
+(approx-expectation #(estimator1 0.3)) ;should be (2008-0.3), so it's unbiased
 
 (defn estimator2 [p] (if (= (T p) 0) 1 0))
-
-(estimator2 0.3)
-
+(estimator2 0.3) ; 1 or 0. We claim that this is an unbiased estimator of (1-p)^2
 (approx-expectation #(estimator2 0.3)) ;should be (1-0.3)^2
 
 (defn estimator3 [p] (Math/pow -2 (T p)))
+(estimator3 0.3) ; 1, 4, or -2. and yet it is an unbiased estimator of (1-3p)^2
 
 (approx-expectation #(estimator3 0.3)) ;should be (1-3*0.3)^2 = 0.01
 (approx-expectation #(estimator3 0.5)) ;should be (1-3*0.5)^2 = 0.25
@@ -42,6 +44,43 @@
                  ;; it's just right on average!
 
 ;; (d) is a non-existence proof, which is not really amenable to a computer!
+;; Assume that T is a sufficient statistic, on the basis that (1,0)=(0,1) has
+;; the same probability, so you don't get anything extra by separating the cases.
+;; The probabilities of T are p^2 for 2, 2p(1-p) for 1, and (1-p)^2 for 0
+;; So an estimator must be a function of {0,1,2}, and its expectation
+;; must be e(0)(1-p)^2+e(1)2p(1-p)+e(2)p^2
+;; = e(0)+p(-2e(0)+2e(1))+p^2(e(2)-2e(1)+e(0))
+;; = ap^2+bp+c 
+;; (where a=e2-2e1+e0, b=2(e1-e0), c=e0)
+;; So we can only make unbiased estimates for quadratic functions of p.
+;; And they're unique. So (2007-p) can only be estimated unbiased 
+;; by c=2007, b=-1, a=0
+;; or e0=2007, e1=2006.5, e2=2006, 
+;; or 2007-T/2
+;; and 1/(1-p) cannot be estimated at all.
+
+;;Hmm, we've got an unbiased estimator for p, T/2. What about using 
+;; 2/T as an estimate for p^-1?
+(defn estimator4[p] (/ 2 (T p)))
+(estimator4 0.5) 2, 1, or infinity
+;;So the mean is infinite, whatever p is. I think we can call that biased
+
+;;What about 2p^3
+(defn estimator5[p] (Math/pow (T p) 3))
+(estimator5 0.5) 0, 1, or 8
+(approx-expectation #(estimator5 0.5)) ;;comes out around 2.5
+(approx-expectation #(estimator5 0.1)) ;;comes out around 0.26
+(approx-expectation #(estimator5 0.9)) ;;comes out around 6.65
+
+;;In fact we know what the expectation of this is:
+;;e0=0, e1=1, e2=8
+;;a=6, b=2, c=0
+;;So T^3 is an unbiased estimator of 6p^3+2p^2
+;; Does this fit with above? 6*(0.5^2)+2(0.5^2)=
+((fn[x] (+ (* 6 x x x) (* 2 x x))) 0.5) ->1.25
+((fn[x] (+ (* 6 x x x) (* 2 x x))) 0.1) ->0.25
+((fn[x] (+ (* 6 x x x) (* 2 x x))) 0.9) ->5.99
+;;something wrong here. Sigh.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Question 2
