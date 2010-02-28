@@ -1,0 +1,8 @@
+[extensions]
+hgext.extdiff =
+hgk=
+
+[extdiff]
+cmd.xxdiff = xxdiff
+opts.xxdiff = -r
+
