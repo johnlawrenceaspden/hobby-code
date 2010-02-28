@@ -1,0 +1,5 @@
+[user]
+	name = John Lawrence Aspden
+	email = github@aspden.com
+[merge]
+	tool = xxdiff
