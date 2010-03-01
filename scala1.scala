@@ -2,7 +2,7 @@ import scala.swing._
 import java.awt._
 import javax.swing._
 
-object FirstSwingApp {
+object ScalaFractalTree {
        def main(args: Array[String]){
                       val frame=new JFrame("Scala Fractal Tree")
                       val panel=new MyPanel()
@@ -25,7 +25,7 @@ class MyPanel extends JPanel{
       g.setColor (Color.GREEN)
       val initlength=if (w<h) w/5 else h/5
       val branchangle=10*w/h
-      val maxdepth=10
+      val maxdepth=12
       drawtree( g, 0.0, w/2.0, h ,initlength, branchangle, maxdepth)
       }
       
