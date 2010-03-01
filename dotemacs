@@ -71,7 +71,7 @@
 ;; disable scrollbar
 (toggle-scroll-bar -1)
 ;; disable menu bar
-(toggle-menu-bar-mode-from-frame -1)
+(menu-bar-mode -1)
 ;; disable splash screen
 (custom-set-variables '(inhibit-startup-screen t))
 ;; start emacs server
