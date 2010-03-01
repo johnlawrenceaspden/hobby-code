@@ -1,3 +1,5 @@
 bloody-maven/maven-test-project/target/
+*.class
+*.clj.html
 
 
