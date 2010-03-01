@@ -21,6 +21,8 @@
 ;don't scroll like a tard. duh.
 (setq scroll-conservatively 10000)
 
+; make a copy for backup rather than moving the file and writing a new one.
+; means that hard links survive editing.
 (setq backup-by-copying t)
 
 ; make emacs use the clipboard
@@ -31,13 +33,6 @@
 ;make the set-fill-column key, which I never use, go away and stop
 ;interfering with C-x C-f for find-file
 (global-set-key (kbd "C-x f") 'find-file)
-;similarly make kill-buffer work even if I forget to release the control key
-;actually don't do that, it sods up the macro commands
-;(global-set-key (kbd "C-x C-k") 'kill-buffer)
-
-;old window resizing keys
-;(global-set-key [f6] 'enlarge-window)
-;(global-set-key [f5] 'shrink-window)
 
 ;these only started working after I disabled all the GNOME A-C-arrow etc keys.
 (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
@@ -69,28 +64,26 @@
 (savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
 
-
-
-;;clojure setup from:
-;;http://riddell.us/tutorial/slime_swank/slime_swank.html
-;;################################################################
 ;; disable bell function
 (setq ring-bell-function 'ignore)
 ;; disable toolbar
 (tool-bar-mode -1)
 ;; disable scrollbar
 (toggle-scroll-bar -1)
+;; disable menu bar
+(toggle-menu-bar-mode-from-frame -1)
 ;; disable splash screen
 (custom-set-variables '(inhibit-startup-screen t))
-;; current buffer name in title bar
-;; (setq frame-title-format "%b") ;;jla commented this out as prefer the one with path above
 ;; start emacs server
 (server-start)
+
+;;clojure/slime/swank setup adapted from:
+;;http://riddell.us/tutorial/slime_swank/slime_swank.html
+;;################################################################
 
 ;; clojure-mode
 (add-to-list 'load-path "~/opt/clojure-mode")
 (require 'clojure-mode)
-
 
 ;; swank-clojure
 (add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
@@ -110,7 +103,8 @@
 (add-to-list 'load-path "~/opt/slime")
 (require 'slime)
 (slime-setup)
-;;end of clojure setup from:
+
+;;end of clojure/slime/swank setup from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
 
 ;;bind the slime selector to f12 and add a method for finding clojure buffers
