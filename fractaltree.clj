@@ -1,17 +1,19 @@
+(set! *warn-on-reflection* true)
+
 (import '(javax.swing JFrame JPanel )
 	'(java.awt Color Graphics Graphics2D))
 
-(defn draw-tree [g2d angle x y length branch-angle depth]
+(defn draw-tree [ #^Graphics g2d angle x y length branch-angle depth]
   (if (> depth 0)
-    (let [new-x (+ x (* -1 length (Math/sin (Math/toRadians angle))))
-	  new-y (+ y (* -1 length (Math/cos (Math/toRadians angle))))
+    (let [new-x (- x (* length (Math/sin (Math/toRadians angle))))
+	  new-y (- y (* length (Math/cos (Math/toRadians angle))))
 	  new-length (fn [] (* length (+ 0.75 (rand 0.1))))
 	  new-angle (fn [op] (op angle (* branch-angle (+ 0.75 (rand)))))]
       (. g2d drawLine x y new-x new-y)
       (draw-tree g2d (new-angle +) new-x new-y (new-length) branch-angle (- depth 1))
       (draw-tree g2d (new-angle -) new-x new-y (new-length) branch-angle (- depth 1)))))
 
-(defn render [g w h ]
+(defn render [ #^Graphics g w h ]
   (doto g
     (.setColor (Color/BLACK))
     (.fillRect 0 0 w h)
@@ -28,8 +30,9 @@
 		    (proxy-super paintComponent g)
 		    (render g (. this getWidth) (. this getHeight)))))
 
+
 (defn run []
-  (let [frame (JFrame. "Fractal Tree")
+  (let [frame (JFrame. "Clojure Fractal Tree")
 	panel (create-panel)]
     (doto frame
       (.add panel)
