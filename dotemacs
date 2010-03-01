@@ -77,6 +77,10 @@
 ;; start emacs server
 (server-start)
 
+;; scala-mode
+(add-to-list 'load-path "~/opt/scala-mode")
+(require 'scala-mode)
+
 ;;clojure/slime/swank setup adapted from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
 ;;################################################################
