@@ -2,9 +2,9 @@ import scala.swing._
 import java.awt._
 import javax.swing._
 
-object FirstSwingApp extends JFrame("Scala Fractal Tree") {
+object FirstSwingApp {
        def main(args: Array[String]){
-                      val frame=new JFrame
+                      val frame=new JFrame("Scala Fractal Tree")
                       val panel=new MyPanel()
                       frame add panel
                       frame setSize (640, 400)
