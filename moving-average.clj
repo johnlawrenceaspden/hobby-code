@@ -1,4 +1,4 @@
-;(set! *warn-on-reflection* true)
+(require 'clojure.contrib.pprint)
 ;;Elegant but inefficient
 
 (def integers (iterate inc 0))
@@ -74,16 +74,17 @@
         (drop window lst)
         lst)))
 
-
+;; We can also write it as an imperative loop
 (defn tail-recursive-moving-average [window lst]
-  (loop [sum (reduce + (take window lst))
-         addus (drop window lst)
-         subus lst
-         sofar (list sum)]
-    (if-let [addus (seq addus)]
-      (let [nsum (- (+ (first addus) sum) (first subus))]
-        (recur nsum (rest addus) (rest subus) (cons nsum sofar)))
-        (map #(/ % window) (reverse sofar)))))
+  (map #(/ % window) (reverse 
+                      (loop [sum (reduce + (take window lst))
+                             addus (drop window lst)
+                             subus lst
+                             sofar (list sum)]
+                        (if-let [addus (seq addus)]
+                          (let [nsum (- (+ (first addus) sum) (first subus))]
+                            (recur nsum (rest addus) (rest subus) (cons nsum sofar)))
+                          sofar)))))
     
 
 (def slow-flist   '(moving-average moving-average-2 ))
@@ -124,7 +125,7 @@
           [ w l (timings flist w intlist) ]))))
 
 (defn print-timing-chart [windows lengths fns]
-  (cl-format true "~{ ~{ ~6d ~8d ~{ ~5d ~} ~} \n~}" 
+  (clojure.contrib.pprint/cl-format true "~{ ~{ ~6d ~8d ~{ ~5d ~} ~} \n~}" 
              (cons (list 'window 'length (map sym->shortsym fns))
                    (timing-chart windows lengths fns))))
   
