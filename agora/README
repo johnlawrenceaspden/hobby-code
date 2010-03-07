@@ -9,6 +9,8 @@ we have the following targets.
 $ mvn clean
 
 $ mvn clojure:test
+$ mvn clojure:gendoc
+
 $ mvn clojure:run
 $ mvn clojure:repl
 $ mvn clojure:swank
