@@ -85,6 +85,16 @@
         <configuration>
           <script>src/main/clojure/run.clj</script>
         </configuration>
+        <!-- Link compile-clojure into mvn compile  -->
+	<executions>
+          <execution>
+            <id>compile-clojure</id>
+            <phase>compile</phase>
+            <goals>
+	      <goal>compile</goal>
+            </goals>
+          </execution>
+	</executions>
 
       </plugin>
     </plugins>
