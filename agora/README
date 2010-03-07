@@ -3,18 +3,25 @@ AGORA
 
 Version 0.0 "Hello World"
 
-Once all the dependencies are loaded into the local maven repository:
+Once all the dependencies are loaded into the local maven repository,
+we have the following targets.
 
+$ mvn clean
 $ mvn clojure:compile
+$ mvn clojure:run
 $ mvn clojure:repl
 $ mvn clojure:swank
 
-At the repl:
+In EMACS (with slime installed) M-x slime-connect will link to the running
+swank server.
+
+At the repl either on the command line or in EMACS/slime/swank:
 
 (use 'hello)
 (hello)
 
-will start the server
+will start the web server
+
 and we can look at http://localhost:8080
 
 

@@ -82,6 +82,10 @@
 	<groupId>com.theoryinpractise</groupId>
 	<artifactId>clojure-maven-plugin</artifactId>
 	<version>1.1</version>
+        <configuration>
+          <script>src/main/clojure/run.clj</script>
+        </configuration>
+
       </plugin>
     </plugins>
   </build>
