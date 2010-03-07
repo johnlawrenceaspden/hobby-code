@@ -3,26 +3,42 @@ AGORA
 
 Version 0.0 "Hello World"
 
-Compojure and clojure-contrib need to be separately built and installed 
-into maven repository.
+Once all the dependencies are loaded into the local maven repository:
 
-Compojure's dependencies are listed in pom.xml 
-so that they can be handled by maven itself.
+$ mvn clojure:compile
+$ mvn clojure:repl
+$ mvn clojure:swank
 
-at this point we can get 
-
-mvn clojure:repl
-mvn clojure:swank
-
-to run.
-
-At the repl
+At the repl:
 
 (use 'hello)
 (hello)
 
 will start the server
 and we can look at http://localhost:8080
+
+
+Dependencies
+============
+
+Compojure, clojure-contrib, and swank-clojure
+need to be separately built and installed into the maven repository.
+
+Download clojure-contrib using git, switch to version 1.1.0
+
+Build it
+
+Install it to local maven repository
+$ mvn install:install-file -DgroupId=org.clojure -DartifactId=clojure-contrib -Dversion=1.1.0 -Dpackaging=jar -Dfile=clojure-contrib.jar
+
+Download compojure using git, and switch to version 0.3.2, build it
+
+This line puts compojure into the local maven repository
+$ mvn install:install-file -DgroupId=org.clojure -DartifactId=compojure -Dversion=0.3.2 -Dfile=compojure.jar -Dpackaging=jar
+
+Compojure's dependencies are all in the central maven repository, 
+and listed in pom.xml so that they can be handled by maven itself.
+
 
 Now we've used these commands to add swank to the local maven repository:
 
@@ -32,19 +48,4 @@ $ unzip swank-clojure-1.0-SNAPSHOT-distribution.zip
 
 $ mvn install:install-file -DgroupId=com.codestuffs.clojure -DartifactId=swank-clojure -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=swank-clojure-1.0-SNAPSHOT/swank-clojure-1.0-SNAPSHOT.jar
 
-and added yet more boilerplate to pom.xml
-
-Unbelievably, that appears to have worked, allowing something to start on port 4005
-
-Much to my amazement, this responds to slime-connect on 127.0.0.1 port 4005
-
-In summary, the following commands now work, although the repl and swank targets, while
-creating usable repls and servers, don't seem to have taken any notice of the program file
-hello.clj.
-
-$ mvn clojure:compile
-$ mvn clojure:test
-$ mvn clojure:run
-$ mvn clojure:repl
-$ mvn clojure:swank
 

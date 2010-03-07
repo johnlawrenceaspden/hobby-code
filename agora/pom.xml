@@ -12,6 +12,8 @@
   <url>http://maven.apache.org</url>
 
   <dependencies>
+
+    <!--Clojure itself -->
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
@@ -22,6 +24,8 @@
       <artifactId>clojure-contrib</artifactId>
       <version>1.1.0</version>
     </dependency>
+
+    <!--Jline for the REPL, swank-clojure for EMACS -->
     <dependency>
       <groupId>jline</groupId>
       <artifactId>jline</artifactId>
@@ -69,26 +73,17 @@
       <artifactId>jetty-util</artifactId>
       <version>6.1.15</version>
     </dependency>
-
-
   </dependencies>
 
+  <!-- Build requires clojure-maven-plugin  -->
   <build>
     <plugins>
       <plugin>
 	<groupId>com.theoryinpractise</groupId>
 	<artifactId>clojure-maven-plugin</artifactId>
 	<version>1.1</version>
-	<executions>
-          <execution>
-            <id>compile-clojure</id>
-            <phase>compile</phase>
-            <goals>
-	      <goal>compile</goal>
-            </goals>
-          </execution>
-	</executions>
       </plugin>
     </plugins>
   </build>
+
 </project>
