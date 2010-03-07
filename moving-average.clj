@@ -19,13 +19,11 @@
 (defn moving-average-4 [window lst] 
   (map #(/ (apply +  %) window) (partition window 1 lst)))
 
-(= (range 2 18) (moving-average-4 5 (take 20 integers)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Of course for long windows, our algorithm is doing lots of unnecessary work
 
-;; What we actually want is (window 3):
+;; What we actually want is a sliding window algorithm (window 3):
 ;; (0 1 2 3 4 5 6 7 8 9 10 11)
 ;;       (0 1 2 3 4 5 6 7  8 9 10 11)
 ;; ->
@@ -42,26 +40,42 @@
           (cons n (sum n (rest lst))))
         '())))
 
-(defn clever-elegant-moving-average [window lst]
+(defn sliding-window-moving-average [window lst]
   (map #(/ % window)
        (let [start   (apply + (take window lst))
              diffseq (map - (drop window lst) lst)]
          (cons start (sum start diffseq)))))
 
-(clever-elegant-moving-average 5 (take 20 integers))
+;; This version is a bit faster, especially for long windows, since it keeps a rolling sum and avoids repeatedly adding the same things.
+;; Because of the lazy-seq, it's also perfectly general and won't blow stack
+
+(defn partialsums-2 [start lst]
+  (lazy-seq
+    (if-let [lst (seq lst)] 
+          (cons start (partialsums-2 (+ start (first lst)) (rest lst)))
+          (list start))))
+
+(defn sliding-window-moving-average-2 [window lst]
+  (map #(/ % window)
+       (let [start   (apply + (take window lst))
+             diffseq (map - (drop window lst) lst)]
+         (partialsums-2 start diffseq))))
+
+
+
 
 
 ;; Another way to phrase the same thing
 
-(defn partialsums [s as ms]
+(defn partialsums-3 [s as ms]
      (if (empty? as) (list s)
          (let [ns (- (+ s (first as)) (first ms))]
-           (cons s (partialsums ns (next as) (next ms))))))
+           (cons s (partialsums-3 ns (next as) (next ms))))))
 
 
 (defn cunning-moving-average [window lst]
   (map #(/ % window) 
-       (partialsums
+       (partialsums-3
         (reduce + (take window lst))
         (drop window lst)
         lst)))
@@ -126,7 +140,7 @@
     
 
 (def slow-flist   '(moving-average moving-average-2 moving-average-3 moving-average-4 ))
-(def safe-flist   '(very-cunning-moving-average exceedingly-cunning-moving-average tail-recursive-moving-average clever-elegant-moving-average))
+(def safe-flist   '(sliding-window-moving-average sliding-window-moving-average-2 very-cunning-moving-average exceedingly-cunning-moving-average tail-recursive-moving-average ))
 (def unsafe-flist '( cunning-moving-average))
 
 
@@ -136,15 +150,17 @@
  (moving-average-2 5 (take 20 (iterate inc 0)))
  (moving-average-3 5 (take 20 (iterate inc 0)))
  (moving-average-4 5 (take 20 (iterate inc 0)))
- (clever-elegant-moving-average 5 (take 20 (iterate inc 0)))
  (cunning-moving-average 5 (take 20 (iterate inc 0)))
  (very-cunning-moving-average 5 (take 20 (iterate inc 0)))
  (exceedingly-cunning-moving-average 5 (take 20 (iterate inc 0)))
+ (sliding-window-moving-average 5 (take 20 (iterate inc 0)))
+ (sliding-window-moving-average-2 5 (take 20 (iterate inc 0)))
  (tail-recursive-moving-average 5 (take 20 (iterate inc 0)))
 )
 
 
 (defn timings [flist window seq]
+  (. (Runtime/getRuntime) gc)
   (for [f flist]
     (let [s (doall seq)
           start (System/nanoTime)
@@ -173,6 +189,8 @@
   
 
 (print-timing-chart '(3 10 30 100) '(100 300 1000) (concat slow-flist safe-flist unsafe-flist))
-(print-timing-chart '(3 4 5) '(100 300 1000 3000) (concat slow-flist safe-flist))
+(print-timing-chart '(3 4 5 6 7 8 9) '(100 300 1000 3000 10000 30000) (concat slow-flist safe-flist))
 
 (print-timing-chart '(3 10 30 100 300 1000) '(100 300 1000 3000 10000 30000 100000) (concat safe-flist))
+
+
