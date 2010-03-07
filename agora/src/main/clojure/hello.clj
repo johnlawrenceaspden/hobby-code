@@ -9,7 +9,7 @@
 
 (defn hello []
   (println "hello!")
-  (run-server {:port 8080} "/*" (servlet my-app)))
+  (run-server {:port 8080} "/*" (servlet (with-session my-app))))
 
 ;(require 'hello)
 ;(hello/hello)
