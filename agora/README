@@ -7,8 +7,8 @@ Once all the dependencies are loaded into the local maven repository,
 we have the following targets.
 
 $ mvn clean
-$ mvn compile
 
+$ mvn clojure:test
 $ mvn clojure:run
 $ mvn clojure:repl
 $ mvn clojure:swank

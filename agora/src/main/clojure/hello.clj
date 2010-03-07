@@ -10,3 +10,8 @@
 (defn hello []
   (println "hello!")
   (run-server {:port 8080} "/*" (servlet my-app)))
+
+(use 'clojure.test)
+
+(deftest the-test
+  (is true))
