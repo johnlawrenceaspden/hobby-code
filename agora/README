@@ -16,14 +16,8 @@ $ mvn clojure:swank
 In EMACS (with slime installed) M-x slime-connect will link to the running
 swank server.
 
-At the repl either on the command line or in EMACS/slime/swank:
-
-(use 'hello)
-(hello)
-
-will start the web server
-
-and we can look at http://localhost:8080
+any of run repl and swank should start the web server, 
+and we can then look at http://localhost:8080
 
 
 Dependencies
