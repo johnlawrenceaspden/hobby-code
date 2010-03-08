@@ -1,0 +1,1 @@
+java -cp ~/compojure/compojure.jar:~/compojure/deps:~/compojure/deps/clojure.jar:~/compojure/deps/clojure-contrib.jar:~/compojure/deps/jetty-6.1.14.jar:~/compojure/deps/jetty-util-6.1.14.jar:~/compojure/deps/servlet-api-2.5-6.1.14.jar:. clojure.lang.Repl  site.clj
