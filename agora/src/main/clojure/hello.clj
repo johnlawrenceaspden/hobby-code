@@ -1,3 +1,4 @@
+;; at REPL: (do (in-ns 'hello)(load-file "/home/john/hobby-code/require-all-snippet.clj"))
 (ns hello)
 
 (use 'compojure)

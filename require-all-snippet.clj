@@ -13,7 +13,7 @@
    (print "Attempting to require " ns ": ")
    (require ns)
    (println "success")
-   (catch Exception e (println "couldn't require " ns "\nException\n" e "\n\n"))))
+   (catch Throwable e (println "couldn't require " ns "\nException\n" e "\n\n"))))
 
 ;; Generally we'd want clojure.*, clojure.contrib.*, and any project-specific namespaces
 (defn require-all-namespaces-starting-with [strng]
@@ -80,6 +80,11 @@
 (defmacro fd [symbol-or-string] `(find-doc (stringify '~symbol-or-string)))
 
 (defmacro fdn [symbol-or-string] `(find-doc-names (stringify '~symbol-or-string)))
+
+(defn source-file* [symbol] (:file (meta (resolve symbol))))
+
+(defmacro source-file [symbol-or-string] `(source-file* (symbol (stringify '~symbol-or-string))))
+
 
 
 
