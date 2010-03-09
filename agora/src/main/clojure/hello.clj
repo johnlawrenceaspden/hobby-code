@@ -8,6 +8,9 @@
 (def online-users (ref {}))
 (def data (ref {"http://localhost:8080/" {:title "Agora" :points 10 :poster "jla"}}))
 
+
+
+
 (defn pick [m & ks] (map #(m %) ks))
 
 (defn with-head [session title & body]
@@ -87,7 +90,7 @@
        [:tr [:td "email"]    [:td (text-field "email")]]
        [:tr [:td "password"] [:td (password-field "psw")]]]
       (submit-button "Login"))
-    [:h1 "Registration Form"]
+    [:h1 "Or Register for an Account"]
     (form-to [:post "/register/"]
       [:table
        (for [field ["Email" "Username" "Password"]]
@@ -95,8 +98,6 @@
           [:td field]
           [:td (text-field field)]])]
       (submit-button "Sign Up"))))
-
-
 
 (defn add-user [session [email username password]]
   (redirect-to
@@ -108,10 +109,14 @@
        "/"))))
      
 (defn add-link [session [title url]]
-  (redirect-to
-   (dosync 
-    (alter data assoc url {:title title :points 1
-                           :poster (@online-users (:id session))}) "/")))
+  (let [post-content {:title title :url url}
+        hash-code (. post-content hashCode)]
+    (redirect-to
+     (dosync 
+      (alter data assoc url {:title title :points 1
+                             :poster (@online-users (:id session))
+                             :content post-content
+                             :hash-code hash-code}) "/"))))
 
 (defn vote [session url fn]
   (redirect-to
@@ -149,34 +154,4 @@
 (use 'clojure.test)
 (deftest the-test
   (is true))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; DEAD CODE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(comment
-
-(defn login-form [session msg]
-  (with-head session "Login"
-    [:h1 "Login"]
-    (when msg [:h4 msg])
-    (form-to [:post "/login/"]
-      [:table
-       [:tr [:td "email"]    [:td (text-field "email")]]
-       [:tr [:td "password"] [:td (password-field "psw")]]]
-      (submit-button "Login"))))
-
-(defn registration-form [session msg]
-  (with-head session "Registration Form"
-    [:h1 "Registration Form"]
-    (when msg [:h4 msg])
-    (form-to [:post "/register/"]
-      [:table
-       (for [field ["Email" "Username" "Password"]]
-         [:tr
-          [:td field]
-          [:td (text-field field)]])]
-      (submit-button "Sign Up"))))
-)
-
 
