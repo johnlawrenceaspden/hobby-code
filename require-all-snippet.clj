@@ -31,7 +31,7 @@
 
 ;; It drives me up the wall that it's (doc re-pattern) but (find-doc "re-pattern").
 ;; Can use macros so that (fd re-pattern) (fd "re-pattern") and (fd 're-pattern) all mean the same thing
-(defn- stringify [x]
+(defn stringify [x]
   (println "stringify given" (str x))
   (let [s  (cond (string? x) x
                  (symbol? x) (str x)
@@ -42,9 +42,9 @@
 
 
 ;; Sometimes I like to ask which public functions a namespace provides.
-(defn- ns-publics-list [ns] (#(list (ns-name %) (map first (ns-publics %))) ns))
+(defn ns-publics-list [ns] (#(list (ns-name %) (map first (ns-publics %))) ns))
 ;; And occasionally which functions it pulls in (with refer or use)
-(defn- ns-refers-list  [ns] (#(list (ns-name %) (map first (ns-refers %))) ns))
+(defn ns-refers-list  [ns] (#(list (ns-name %) (map first (ns-refers %))) ns))
 
 ;; Nice pretty-printed versions of these functions, accepting strings, symbols or quoted symbol
 (defmacro list-publics     
@@ -62,7 +62,7 @@
 
 ;; With all the namespaces loaded, find-doc can be overwhelming.
 ;; This is like find-doc, but just gives the associated names.
-(defn- find-doc-names
+(defn find-doc-names
   "Prints the name of any var whose documentation or name contains a match for re-string-or-pattern"
   [re-string-or-pattern]
     (let [re  (re-pattern re-string-or-pattern)]
