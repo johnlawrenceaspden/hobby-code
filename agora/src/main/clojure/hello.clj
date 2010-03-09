@@ -47,15 +47,7 @@
     [:h3 "Online Users"]
     (str @online-users)))
 
-(defn login-form [session msg]
-  (with-head session "Login"
-    [:h1 "Login"]
-    (when msg [:h4 msg])
-    (form-to [:post "/login/"]
-      [:table
-       [:tr [:td "email"]    [:td (text-field "email")]]
-       [:tr [:td "password"] [:td (password-field "psw")]]]
-      (submit-button "Login"))))
+
 
 (defn login-user [session [email password]]
   (println session email password)
@@ -86,11 +78,16 @@
         (submit-button "Add link"))
       (link-to "/" "Home")))
 
-
-(defn registration-form [session msg]
-  (with-head session "Registration Form"
-    [:h1 "Registration Form"]
+(defn login-or-register-form [session msg]
+  (with-head session "Login or Register"
     (when msg [:h4 msg])
+    [:h1 "Login"]
+    (form-to [:post "/login/"]
+      [:table
+       [:tr [:td "email"]    [:td (text-field "email")]]
+       [:tr [:td "password"] [:td (password-field "psw")]]]
+      (submit-button "Login"))
+    [:h1 "Registration Form"]
     (form-to [:post "/register/"]
       [:table
        (for [field ["Email" "Username" "Password"]]
@@ -98,6 +95,8 @@
           [:td field]
           [:td (text-field field)]])]
       (submit-button "Sign Up"))))
+
+
 
 (defn add-user [session [email username password]]
   (redirect-to
@@ -130,12 +129,12 @@
   (GET "/new/*"   (guard session (new-link session (:msg params))))
   (POST "/new/"      (add-link session (pick params :title :url)))
 
-  (GET "/login/*" (login-form session (pick params :msg)))
+  (GET "/login/*" (login-or-register-form session (pick params :msg)))
   (POST "/login/" (login-user session (pick params :email :psw)))
 
   (GET "/logout/" (logout-user session))
 
-  (GET "/register/*" (registration-form session (:msg params)))
+  (GET "/register/*" (login-or-register-form session (:msg params)))
   (POST "/register/" (add-user session (pick params :Email :Username :Password)))
 
   (GET "/up/*"   (guard session (vote session (:* params) inc)))
@@ -150,3 +149,34 @@
 (use 'clojure.test)
 (deftest the-test
   (is true))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DEAD CODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(comment
+
+(defn login-form [session msg]
+  (with-head session "Login"
+    [:h1 "Login"]
+    (when msg [:h4 msg])
+    (form-to [:post "/login/"]
+      [:table
+       [:tr [:td "email"]    [:td (text-field "email")]]
+       [:tr [:td "password"] [:td (password-field "psw")]]]
+      (submit-button "Login"))))
+
+(defn registration-form [session msg]
+  (with-head session "Registration Form"
+    [:h1 "Registration Form"]
+    (when msg [:h4 msg])
+    (form-to [:post "/register/"]
+      [:table
+       (for [field ["Email" "Username" "Password"]]
+         [:tr
+          [:td field]
+          [:td (text-field field)]])]
+      (submit-button "Sign Up"))))
+)
+
+
