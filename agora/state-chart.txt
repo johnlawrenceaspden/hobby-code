@@ -1,0 +1,31 @@
+GET "/" -> home-page
+
+home-page links 
+Refresh  GET "/"
+Add Link GET "/new/"
+
+GET "/new/" -> new-link( nil ) (or /register/ if not online)
+
+new-link(msg)
+
+Home GET "/"
+Add Link POST "/new/" params (title,url)
+
+POST "/new/" -> add-link(title,url)
+
+add-link(title,url)
+does its thing
+redirects to "/"
+
+GET "/login/*" -> login-form (msg)
+
+login-form (msg)
+display message
+Login POST "/login/" email psw
+
+POST "/login/" -> login-user( email psw)
+if user exists and password is good
+log in, redirect to "/"
+if not, redirect to /login/?msg=
+
+

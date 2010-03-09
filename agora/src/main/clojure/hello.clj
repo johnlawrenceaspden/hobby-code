@@ -17,13 +17,20 @@
    [:body
     [:div#user
     (if-let [user (@online-users (:id session))]
-       (list (:username user) " " (link-to "/logout/" "(Log Out)"))
+       (list (:username (@users user)) " " (link-to "/logout/" "(Log Out)"))
        (link-to "/login/" "(Log In)")) ]
     body]))
    
 
 (defn format-links [data]
-    [:ul (map (fn[x] [:li (link-to (first x) (:title (second x))) "  " (:points (second x)) " posted by: " (:username (@users (:poster (second x))))]) data)])
+    [:ul (map (fn[x] 
+                [:li 
+                 (link-to (str "up/" (first x)) "up" ) " "
+                 (link-to (str "down/" (first x)) "down" ) " "
+                 (link-to (first x) (:title (second x))) "  " 
+                 (:points (second x)) " posted by: " 
+                 (:username (@users (:poster (second x))))] )
+              data)])
   
 
 (defn home-page [session]
@@ -56,7 +63,7 @@
    (if-let [user (@users email)]
      (if (= password (:password user))
        (dosync
-        (alter online-users assoc (:id session) user)
+        (alter online-users assoc (:id session) email)
         "/")
        "/login/?msg=Bad username or password")
      "/login/?msg=User does not exist")))
@@ -92,33 +99,48 @@
           [:td (text-field field)]])]
       (submit-button "Sign Up"))))
 
-(defn add-user [id [email username password]]
+(defn add-user [session [email username password]]
   (redirect-to
    (if (@users email)
      "/register/?msg=Email already registered"
      (dosync
        (alter users assoc email {:username username :password password})
-       (alter online-users assoc id (@users email))
+       (alter online-users assoc (:id session) email)
        "/"))))
      
 (defn add-link [session [title url]]
   (redirect-to
    (dosync 
     (alter data assoc url {:title title :points 1
-                           :poster (:username (@online-users (:id session)))}) "/")))
+                           :poster (@online-users (:id session))}) "/")))
+
+(defn vote [session url fn]
+  (redirect-to
+   (dosync
+    (alter data update-in [url :points] fn)
+    "/")))
+
+(defmacro guard [session & body]
+  `(if (@online-users (:id ~session))
+       ~@body
+       (redirect-to "/register/")))
 
 (defroutes my-app
   (GET "/"        (home-page session))
-  (GET "/new/*"   (if (@online-users (:id session))
-                    (new-link session (:msg params))
-                    (redirect-to "/register/")))
+  (GET "/new/*"   (guard session (new-link session (:msg params))))
+  (POST "/new/"      (add-link session (pick params :title :url)))
+
   (GET "/login/*" (login-form session (pick params :msg)))
   (POST "/login/" (login-user session (pick params :email :psw)))
+
   (GET "/logout/" (logout-user session))
+
   (GET "/register/*" (registration-form session (:msg params)))
-  (POST "/register/" (add-user (:id session)
-                               (pick params :Email :Username :Password)))
-  (POST "/new/"      (add-link session (pick params :title :url)))
+  (POST "/register/" (add-user session (pick params :Email :Username :Password)))
+
+  (GET "/up/*"   (guard session (vote session (:* params) inc)))
+  (GET "/down/*" (guard session (vote session (:* params) dec)))
+
   (ANY "*" (page-not-found)))
 
 (defn hello []
