@@ -80,7 +80,7 @@
 	<version>1.3.2-SNAPSHOT</version>
         <configuration>
           <script>src/main/clojure/run.clj</script>
-          <replScript>src/main/clojure/run.clj</replScript>
+          <replScript>src/main/clojure/replrun.clj</replScript>
         </configuration>
       </plugin>
     </plugins>
