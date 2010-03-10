@@ -12,7 +12,6 @@
 ;;lisp editing is better with flashing brackets
 (show-paren-mode)
 
-
 ;no line wrapping ;modified for dev8d
 (setq-default truncate-lines nil)
 
@@ -81,6 +80,7 @@
 ;; scala-mode
 (add-to-list 'load-path "~/opt/scala-mode")
 (require 'scala-mode)
+(setq auto-mode-alist (cons '("\\.scala$" . scala-mode) auto-mode-alist))
 
 ;;clojure/slime/swank setup adapted from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
@@ -191,12 +191,13 @@
 (define-key global-map (kbd "C-x C-8") 'swap-windows)
 
 ;;rainbow brackets
-(add-to-list 'load-path "~/opt")
-(require 'highlight-parentheses)
-(setq-default hl-paren-colors
+(add-to-list 'load-path "~/hobby-code")
+
+(setq hl-paren-colors
       '(;"#8f8f8f" ; this comes from Zenburn
                    ; and I guess I'll try to make the far-outer parens look like this
         "orange1" "yellow1" "greenyellow" "green1"
         "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
 
-(setq-default highlight-parentheses-mode 1)
+(require 'highlight-parentheses)
+;(setq-default highlight-parentheses-mode t)
