@@ -143,4 +143,5 @@ function fndg
 
 PATH=$PATH:~/bin
 
+alias cda='cd ~/hobby-code/agora'
 
