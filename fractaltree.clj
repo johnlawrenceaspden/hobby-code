@@ -26,7 +26,7 @@
   (proxy [JPanel] []
     (paintComponent [g]
 		    (proxy-super paintComponent g)
-		    (render g (. this getWidth) (. this getHeight)))))
+		    (time (render g (. this getWidth) (. this getHeight))))))
 
 
 (defn run []

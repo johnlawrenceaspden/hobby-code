@@ -16,7 +16,11 @@ object ScalaFractalTree {
 class MyPanel extends JPanel{
   override def paintComponent(g:Graphics):Unit = {
     super.paintComponent(g)
+    val start=System.nanoTime()
     render(g, getWidth(), this.getHeight())
+    val finish=System.nanoTime()
+    println ("Elapsed time: " + (finish-start)/1000000.0 + " msecs")
+
    
   }
   def render(g:Graphics, w:Int, h:Int){
