@@ -1,17 +1,45 @@
 ;; Someone on Stack Overflow asked how to take the moving average of a list
 
-(def integers (iterate inc 0))
+;; These were my answers:
 
-;; This was my answer, which I thought elegant but inefficient
+;; The first one is elegant, but inefficient for long windows.
 (defn average [lst] (/ (reduce + lst) (count lst)))
 (defn moving-average [window lst] (map average (partition window 1 lst)))
 
+
+;; The second is harder to understand, but keeps a running sum.
+(defn partialsums [start lst]
+  (lazy-seq
+    (if-let [lst (seq lst)] 
+          (cons start (partialsums (+ start (first lst)) (rest lst)))
+          (list start))))
+
+(defn sliding-window-moving-average [window lst]
+  (map #(/ % window)
+       (let [start   (apply + (take window lst))
+             diffseq (map - (drop window lst) lst)]
+         (partialsums start diffseq))))
+
+;; Here is a list
+(def integers (iterate inc 0))
+
+;; Here are some averages of it:
+(take 10 (moving-average 5 integers))
+(take 10 (sliding-window-moving-average 5 integers))
+
+;; Athena sprang fully-armed from the forehead of Zeus, and I have presented these functions in a similar spirit.
+
+
+
+;; Just in case anyone is interested to see the gory details of the thought process:
+
+
 ;; There would seem to be an obvious improvement to be made by not counting the number of 
-;; elements in the windows, since we already know it, but apparently not.
+;; elements in the windows, since we already know it.
 (defn average-2 [lst size] (/ (reduce + lst) size))
 (defn moving-average-2 [window lst] (map #(average-2 % window) (partition window 1 lst)))
 
-;; It occurs that folding the two functions into one might improve things, but apparently not
+;; It occurs that folding the two functions into one might improve things.
 (defn moving-average-3 [window lst] 
   (map #(/ (reduce +  %) window) (partition window 1 lst)))
 
@@ -49,17 +77,7 @@
 ;; This version is a bit faster, especially for long windows, since it keeps a rolling sum and avoids repeatedly adding the same things.
 ;; Because of the lazy-seq, it's also perfectly general and won't blow stack
 
-(defn partialsums-2 [start lst]
-  (lazy-seq
-    (if-let [lst (seq lst)] 
-          (cons start (partialsums-2 (+ start (first lst)) (rest lst)))
-          (list start))))
 
-(defn sliding-window-moving-average-2 [window lst]
-  (map #(/ % window)
-       (let [start   (apply + (take window lst))
-             diffseq (map - (drop window lst) lst)]
-         (partialsums-2 start diffseq))))
 
 
 
