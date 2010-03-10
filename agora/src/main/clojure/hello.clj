@@ -3,6 +3,7 @@
 
 (use 'compojure)
 (use 'clojure.contrib.pprint)
+(require 'lessons)
 
 (def users (ref {"jla" {:username "John Lawrence Aspden" :password "passwd"}}))
 (def online-users (ref {}))
@@ -129,6 +130,12 @@
        ~@body
        (redirect-to "/register/")))
 
+
+
+
+
+
+
 (defroutes my-app
   (GET "/"        (home-page session))
   (GET "/new/*"   (guard session (new-link session (:msg params))))
@@ -144,6 +151,8 @@
 
   (GET "/up/*"   (guard session (vote session (:* params) inc)))
   (GET "/down/*" (guard session (vote session (:* params) dec)))
+
+  (GET "/lessonplan" (lessons/lessonplan))
 
   (ANY "*" (page-not-found)))
 
