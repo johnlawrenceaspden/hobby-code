@@ -7,12 +7,13 @@
 
 (def users (ref {"jla" {:username "John Lawrence Aspden" :password "passwd"}}))
 (def online-users (ref {}))
-(def data (ref {"http://localhost:8080/" {:title "Agora" :points 10 :poster "jla"}}))
+(def data (ref {"http://localhost:8080/" {:title "Agora" :points 10 :poster "jla"}
+                "http://localhost:8080/lessonplan/?fname=Pablo&sname=Picasso" {:title "Picasso Lesson Plan" :points 10 :poster "jla"}}))
 
 
 
 
-(defn pick [m & ks] (map #(m %) ks))
+(defn pick [m & ks] (map #(get m % "NO PARAMETER") ks))
 
 (defn with-head [session title & body]
   (html
@@ -152,7 +153,7 @@
   (GET "/up/*"   (guard session (vote session (:* params) inc)))
   (GET "/down/*" (guard session (vote session (:* params) dec)))
 
-  (GET "/lessonplan" (lessons/lessonplan))
+  (GET "/lessonplan/*" (lessons/lessonplan (pick params :fname :sname)))
 
   (ANY "*" (page-not-found)))
 
