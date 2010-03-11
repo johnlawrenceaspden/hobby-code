@@ -193,11 +193,15 @@
 ;;rainbow brackets
 (add-to-list 'load-path "~/hobby-code")
 
+
+
+(require 'highlight-parentheses)
 (setq hl-paren-colors
       '(;"#8f8f8f" ; this comes from Zenburn
                    ; and I guess I'll try to make the far-outer parens look like this
         "orange1" "yellow1" "greenyellow" "green1"
         "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
 
-(require 'highlight-parentheses)
 ;(setq-default highlight-parentheses-mode t)
+(add-hook 'clojure-mode-hook 
+          (lambda () (highlight-parentheses-mode t)))
