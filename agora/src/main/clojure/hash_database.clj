@@ -1,5 +1,5 @@
-;; at REPL: (do (in-ns 'database)(load-file "/home/john/hobby-code/require-all-snippet.clj"))
-(ns database)
+;; at REPL: (do (in-ns 'hash-database)(load-file "/home/john/hobby-code/require-all-snippet.clj"))
+(ns hash-database)
 
 (defstruct user :password :username :email)
 (defstruct datum :link :title)
