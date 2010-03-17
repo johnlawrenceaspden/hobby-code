@@ -1,0 +1,8 @@
+Targets that work:
+
+mvn clojure:repl
+mvn clojure:swank
+mvn clojure:test
+mvn clojure:gendoc
+mvn clojure:run
+mvn clean

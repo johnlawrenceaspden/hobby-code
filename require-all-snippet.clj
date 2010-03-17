@@ -23,11 +23,12 @@
 
 ;; The functions in these namespaces are so useful at the REPL that I want them 'use'd.
 ;; I.e. I want to be able to type 'source' rather than 'clojure.contrib.repl-utils/source'
-(use 'clojure.contrib.repl-utils)
+(use 'clojure.test)
 (use 'clojure.inspector)
-(use 'clojure.contrib.pprint)
 (use 'clojure.contrib.repl-utils)
+(use 'clojure.contrib.pprint)
 (use 'clojure.contrib.trace)
+
 
 ;; It drives me up the wall that it's (doc re-pattern) but (find-doc "re-pattern").
 ;; Can use macros so that (fd re-pattern) (fd "re-pattern") and (fd 're-pattern) all mean the same thing
@@ -56,7 +57,7 @@
   ([symbol-or-string] `(pprint (ns-refers-list (find-ns (symbol (stringify '~symbol-or-string)))))))
 
 ;; List all the namespaces
-(defn list-all-ns [] (pprint (map ns-name (all-ns))))
+(defn list-all-ns [] (pprint (sort (map ns-name (all-ns)))))
 ;; List all public functions in all namespaces!
 (defn list-publics-all-ns [] (pprint (map #(list (ns-name %) (map first (ns-publics %))) (all-ns))))
 
