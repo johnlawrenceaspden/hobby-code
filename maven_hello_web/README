@@ -6,3 +6,5 @@ mvn clojure:test
 mvn clojure:gendoc
 mvn clojure:run
 mvn clean
+
+mvn versions:display-dependency-updates
