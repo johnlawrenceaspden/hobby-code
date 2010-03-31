@@ -41,7 +41,7 @@
     <dependency>
       <groupId>swank-clojure</groupId>
       <artifactId>swank-clojure</artifactId>
-      <version>1.2.0-break-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
