@@ -69,9 +69,9 @@
     (let [re  (re-pattern re-string-or-pattern)]
       (doseq [ns (all-ns)
               v (sort-by (comp :name meta) (vals (ns-interns ns)))
-              :when (and (:doc ^v)
-                         (or (re-find (re-matcher re (:doc ^v)))
-                             (re-find (re-matcher re (str (:name ^v))))))]
+              :when (and (:doc (meta v))
+                         (or (re-find (re-matcher re (:doc (meta v))))
+                             (re-find (re-matcher re (str (:name (meta v)))))))]
                (print v "\n"))))
 
 
