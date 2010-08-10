@@ -106,4 +106,20 @@
 (:X-sq mousavi-test)
 (:p-value mousavi-test)
 
+;; Irises
+(use '(incanter core charts stats datasets))
 
+(view (scatter-plot :Sepal.Length :Sepal.Width :data (get-dataset :iris)))
+
+(doto
+    (scatter-plot :Sepal.Length :Sepal.Width :data (get-dataset :iris))
+  (set-stroke-color java.awt.Color/gray)
+  view)
+
+(view (scatter-plot :Sepal.Length :Sepal.Width :group-by :Species :data (get-dataset :iris)))
+
+;; Dynamic xy plot
+(let [x (range -3 3 0.1)]
+	  (view (dynamic-xy-plot [mean (range -3 3 0.1)
+	                          std-dev (range 0.1 10 0.1)]
+	          [x (pdf-normal x :mean mean :sd std-dev)])))
