@@ -1,0 +1,4 @@
+Some Incanter demo code
+mvn clojure:run   will run it, bringing graphs up
+mvn clojure:repl  will bring up a repl, but not run the file (use load-file or cut and paste)
+mvn clojure:swank brings up a swank server. connect with M-x slime-connect, and Bob is your uncle
