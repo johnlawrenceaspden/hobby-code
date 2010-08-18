@@ -1,16 +1,16 @@
-;; Three very fundamental operators in any sort of programming are 
-;; map, filter and reduce.
+;; Three very fundamental operators in any sort of programming are map, filter
+;; and reduce.
 
 ;; They represent the common programming tasks of transforming a collection,
 ;; selecting from it, and summing over it.
 
-;; Most people think that map and filter are fairly obvious, but there seems 
-;; to be a certain amount of confusion about reduce.
+;; Most people think that map and filter are fairly obvious, but there seems to
+;; be a certain amount of confusion about reduce.
 
 ;; But it's actually very simple in concept, and represents an easy idea.
 
-;; Often one needs to loop over a collection, and store results in an accumulator.
-
+;; Often one needs to loop over a collection, and store results in an
+;; accumulator.
 
 ;; The simplest example of a reduction would be adding the numbers in a list.
 
@@ -28,61 +28,36 @@
 ;;      a += list[i];
 ;; }
 
-;; In fact, in C, for is a syntactic abstraction over while, and the loop becomes
-
-;; i=0;
-;; while(i<len)
-;; {
-;;   a += list[i];
-;;   i++;
-;; }
-
-;; This seems a perfectly natural and straightforward way to do things, and it 
-;; often annoys me that you can't write this as easily in languages with 
-;; functional pretensions. Let's see how close we can get:
-
-;; Clojure means something else by for, so let's translate the while loop version:
 ;; Using atoms to provide mutable state, we can do something similar
 
 (def lst '(1 2 3 4 5 6 7 8 9 10))
 (def len 10)
 
 (def a (atom 0))
-(def i (atom 0))
 
-(loop []
-    (when (< @i len)
-      (swap! a + (nth lst @i))
-      (swap! i inc)
-      (recur)))
+(dotimes [i len]
+      (swap! a + (nth lst i)))
 
 ;; The value ends up in the atom a, just as in the C version.
 
-;; In clojure, this looks more complicated, 
+;; In clojure, this looks more complicated.
 
-;; partly because we've got to build the loop by hand, from loop, when and recur
-
-;; partly because mutation in clojure is intrinsically more complicated, because
+;; Partly because mutation in clojure is intrinsically more complicated, because
 ;; clojure is extremely concerned with thread safety, and so we need to allocate 
 ;; and dereference atoms rather than mutating local variables.
 
-;; and partly because C has very good notations for its fundamental operations. 
+;; And partly because C has very good notations for its fundamental operations,
 
 ;; But logically they're the same algorithm.
 
-;; If you found yourself constructing these kinds of loops often,
-;; then you'd define a macro to help, and it would look something like 
-;; (for i 0 len), which would make the code look more like the first C version.
+;; But I'd feel dirty writing this code in clojure, even though that would have
+;; been a perfectly good piece of LISP in the sixties. It's just a feeling that
+;; I have that it is better to avoid mutation unless it's actually necessary.
+;; Even though the mutation-less algorithms are often harder to write, they're
+;; often easier to debug and test.
 
-;; However, I feel dirty just writing this code in clojure, even
-;; though that would have been a perfectly good piece of LISP in the sixties.
-
-;; The function is unnecessarily complicated in clojure because the idea 
-;; of mutating the value of a variable is foreign to clojure. 
-;; You can do it, but it's hard work.
- 
 ;; A more natural way to accumulate over a list in clojure is the 
-;; loop-as-function-call:
+;; loop-as-function-call, with accumulator and iterator as parameters:
 
 (loop [a 0 i 0]
   (if (= i len) a
@@ -94,40 +69,50 @@
 
 ;; And here the final value is the value of the expression, which is nicer.
 
-;; Also of course, clojure's lists know how long they are, or at least when 
-;; they are empty or not, so we don't need an explicit loop counter either.
+;; Of course, clojure's lists know when they are empty, so we don't need an
+;; explicit loop counter.
 
-;; So how about
+;; So how about:
 (loop [a 0 l lst]
   (if (empty? l) a
       (recur (+ a (first l)) (rest l))))
 
 ;; l moves along the list, while a accumulates the values.
 
-;; We can imagine that this is a common pattern
+;; It still looks a bit long-winded, but we can easily imagine that this is a
+;; common pattern:
 (loop [acc _ l _]
   (if (empty? l) a
       (recur (_ a (first l)) (rest l))))
 
-;; almost as common as
+;; Where the blanks represent holes in the boilerplate we have to fill in.
+
+;; It should be almost as common as the equivalent pattern:
+
 ;; a= _ 
 ;; for(i=0; i<_; i++)
 ;; { 
 ;;   a _= _ [i] 
 ;; } 
+
 ;; is in C
 
-;; Where in both cases we need to fill in the _ with the initial value of 
-;; the accumulator, the list to be accumulated over, 
-;; and the operation to be performed.
+;; Where in both cases we need to fill in the _ with the initial value of the
+;; accumulator, the list to be accumulated over, and the operation to be
+;; performed.
 
-;; And indeed it is. The pattern is called reduce, and it works on anything
-;; that naturally has a number of items in it
+;; Pretty much the first law of programming is:
+;; If you see a common pattern, you should name it and abstract it so it goes away.
 
-(reduce + 1 lst)
+;; The pattern is called reduce. 
 
-;; Here we're filling in the blanks with the function to do the accumulating,
+;; We need to fill in the blanks with the function to do the accumulating,
 ;; the initial value of the accumulator, and the list
+
+;; Since we're reducing the list lst, using the operation +, and starting 
+;; with the value zero, we write:
+
+(reduce + 0 lst)
 
 ;; reduce is clojure's natural way of expressing accumulation over a list
 ;; in the same way as the for-loop over += and ++ is C's
@@ -140,7 +125,7 @@
 ;; This produces the product of the numbers in the list.
 
 ;; In these cases where the order of the arguments doesn't matter
-;; we can think of reduce as 'use the function to add the list to the accumulator'
+;; we can think of reduce as 'put the function between the values'
 
 (reduce + 0 '(1 2 3 4 5 6 7 8 9 10)) ; (0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10)
 (reduce * 1 '(1 2 3 4 5 6 7 8 9 10)) ; (1 * 1 * 2 * 3 * 4 * 5 * ........)
@@ -150,30 +135,32 @@
 ;; into the accumulator one by one.
 
 (reduce + 0 '(1 2 3))   
+;; proceeds like:
 ;; (+ 0 1) -> 1
-;; (+ 1 2) -> 3
-;; (+ 3 3) -> 6
+;;         (+ 1 2) -> 3
+;;                 (+ 3 3) -> 6
 
 ;; If this seems confusing, even though you're happy with the C version,
-;; think about the C loop and how you'd go about changing it into a clojure 
-;; program. They're actually just different ways of expressing the same idea,
+;; think about the C loop.
+
+;; They're actually just different ways of expressing the same idea,
 ;; and should look equally natural. Seeing how either one can always be 
 ;; transformed into the other will help.
-
 
 ;; Here's an example where the order does matter:
 (reduce conj '() '(1 2 3))
 
 ;; How do we think about this?
 (conj '()  1)   ; -> '(1)
-(conj '(1) 2)   ; -> '(2 1)
-(conj '(2 1) 3) ; -> '(3 2 1)
+               (conj '(1) 2)   ; -> '(2 1)
+                              (conj '(2 1) 3) ; -> '(3 2 1)
 
 ;; So 
 (reduce conj '() '(1 2 3)) -> '(3 2 1)
 
-;; Of course many of this simple reduction is so common that it
-;; already has a function
+;; Of course this simple reduction is so common that the pattern 
+;; (reduce conj '() _ ) already has a name
+
 (reverse '( 1 2 3 ))
 
 ;; Here's the definition of reverse in the clojure.core source code!
@@ -184,12 +171,7 @@
     (reduce conj () coll))
 
 
-;; Of course the real reduce in clojure.core is an optimised version
-;; and can deal with all sorts of collections efficiently, but in 
-;; spirit it is just making every collection into a sequence and then
-;; doing what my little skeleton above did.
-
-;; A perfectly acceptable reduce would be:
+;; An acceptable definition of reduce itself would be:
 
 (defn my-reduce [fn init coll]
   (loop [acc init l (seq coll)]
@@ -201,21 +183,27 @@
 (my-reduce * 1 #{1,2,3}) ;; a set
 (my-reduce * 1  [1,2,3]) ;; a vector
 
-;; In fact the library reduce, as well as being somewhat optimized, also has
-;; another feature, which is that if you don't provide an initial value for the
-;; accumulator, then it takes the first element of the sequence as its initial
-;; value, and accumulates over the rest of the sequence.
+;; The real reduce in clojure.core is an optimised version and can deal with all
+;; sorts of collections efficiently, but in spirit it is just making every
+;; collection into a sequence and then doing what my little skeleton above did.
 
-;; For operations which produce answers of the same type as their arguments, this is often what you want.
-(reduce * '(1 2 3)) 
-(reduce + [1 2 3])
+;; In fact the library reduce also has another feature, which is that if you
+;; don't provide an initial value for the accumulator, then it takes the first
+;; element of the sequence as its initial value, and accumulates over the rest
+;; of the sequence.
 
+;; For operations which produce answers of the same type as their arguments,
+;; this is often what you want.
+
+(reduce * '(1 2 3 4)) ;24 
+(reduce +  [1 2 3 4])  ;10
+(reduce bit-xor '(1 2 3 4 5)) ;1
 
 ;; So why has this simple operation got a scary reputation?
 
 ;; I think it's because all the common cases are so useful that they have
-;; already been abstracted away, like reverse.
-
+;; already been abstracted away, like reverse. So in fact you don't meet it that
+;; often in practice.
 
 ;; Let's see if we can construct something more interesting:
 
@@ -223,16 +211,18 @@
 
 (def strlist '("fred" "barney" "fred" "wilma"))
 
-;; And wanted to count each one.
+;; And wanted to count how many times each string occurs in the list.
 
-;; We want an accumulator to keep the strings and count in, and 
-;; a function which will take that accumulator, and a new string, and 
-;; return the updated accumulator.
+;; We want an accumulator to keep the strings and counts in, and a function
+;; which will take that accumulator, and a new string, and return the updated
+;; accumulator.
 
 ;; The obvious accumulator is a map. We'd want the answer to be something like
 {"fred" 2, "barney" 1, "wilma" 1}
 
-;; So what function will add strings to a map?
+;; So what function will add strings to a map?  
+
+;;In a rather naive and long-winded way:
 
 (defn addtomap [map string]
   (let [oldval
@@ -241,12 +231,13 @@
           0)]
         (assoc map string (inc oldval))))
 
-;; Here's how we use it, starting from the empty map {}:
-(addtomap {} "fred")
-(addtomap {"fred" 1} "barney")
-(addtomap {"fred" 1, "barney" 1} "fred")
+;; Here's how we'd use it to count our list, starting from the empty map {}:
+(addtomap {} "fred")                      ;; {"fred" 1}
+(addtomap {"fred" 1} "barney")            ;; {"barney" 1, "fred" 1}
+(addtomap {"fred" 1, "barney" 1} "fred")  ;; {"fred" 2, "barney" 1}
+(addtomap {"fred" 2, "barney" 1} "wilma") ;; {"wilma" 1, "fred" 2, "barney" 1}
 
-;; So the reduce is obvious:
+;; So the reduce part is obvious, once you have addtomap
 
 (reduce addtomap {} strlist)
 
@@ -257,12 +248,13 @@
 ;;           (map string) 
 ;;           0)
 
+;; So a better version of addtomap would be:
+
 (defn addtomap [map string]
   (let [oldval (map string 0)]
         (assoc map string (inc oldval))))
 
 ;; And now the let statement looks redundant, so let's say
-
 (defn addtomap [map string]
   (assoc map string (inc (map string 0))))
 
@@ -270,15 +262,15 @@
 ;; "since I'm only going to use this function here, why not make it anonymous?"
 
 ;; And now the reduce looks like:
-
 (reduce (fn [map string] (assoc map string (inc (map string 0)))) {} strlist)
 
-;; And well, any reasonable man is going to think:
+;; And well, at this point, any reasonable man is going to think:
 ;; "Since I'm writing a one-liner, I might as well use the anonymous shorthand"
 
 (reduce #(assoc %1 %2 (inc (%1 %2 0))) {} strlist)
 
-;; And if you already understand reduce, this is actually not too hard to look at.
+;; And if you already understand reduce and anonymous functions, and how maps
+;; work, this is actually not too hard to look at.
 
 ;; In fact this is the version of the function that I originally wrote.
 
@@ -288,13 +280,21 @@
 ;; Actually the obfuscation / pleasing terseness is all in the anonymous
 ;; function, and the behaviour of maps, and the reduce bit isn't scary at all.
 
-;; Here's another example, using a little structure as an accumulator.
-;; See if you can figure out what it does using the above ideas to unpack it.
+;; Here's another example, using a little structure as an accumulator.  See if
+;; you can figure out what it does using the above ideas to unpack it.
 
 (reduce (fn[[c s] n] [(+ c n), (str s n)]) [0,""] lst)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;; Clojure's natural facility with abstractions and small functions allows
+;; some truly terse code.
+
 ;; This little piece of code counts words in a file and orders them by popularity:
+
 (sort #(< (%1 1) (%2 1)) 
       (reduce #(assoc %1 %2 (inc (%1 %2 0))) {}
        (clojure.contrib.string/split 
@@ -302,23 +302,62 @@
         (slurp "/home/john/hobby-code/reduce.clj"))))
 
 ;; With practice this sort of thing is actually readable. Promise!
-;; But if I was actually writing it 
+
+;; But if I was actually writing it for someone else to read, 
 ;; I'd probably split it up and give the bits names.
 
 (let [filecontents (slurp "/home/john/hobby-code/reduce.clj")
       words        (clojure.contrib.string/split #"\W" filecontents)
-      wordmap      (reduce #(assoc %1 %2 (inc (%1 %2 0)) {}  words)
+      wordmap      (reduce #(assoc %1 %2 (inc (%1 %2 0))) {}  words)
       sortedwords  (sort #(< (%1 1) (%2 1)) wordmap)]
   sortedwords)
 
+;; And if I knew the library, I'd remember that two of those little operations
+;; actually already have names:
+
+(let [filecontents (slurp "/home/john/hobby-code/reduce.clj")
+      words        (clojure.contrib.string/split #"\W" filecontents)
+      wordmap      (frequencies words)
+      sortedwords  (sort-by second wordmap)]
+  sortedwords)
+
+;; And then I'd abstract away the function bit
+
+(defn sorted-word-frequencies [string]
+  (reverse (sort-by second (frequencies
+                   (clojure.contrib.string/split #"\W" string)))))
+
+(take 10 (sorted-word-frequencies (slurp "/home/john/hobby-code/reduce.clj")))
+
+
 ;; Which is also pleasingly terse, but I think more readable.
-;; But in fact, reduce #(assoc %1 %2 (inc (%1 %2 0)) {} .... )
-;; Turns out to be such a useful thing that it too has made it into
-;; clojure.core as the function  frequencies
 
+;; The idiom
+( reduce #(assoc %1 %2 (inc (%1 %2 0)) {} .... )
 
+;; which I used to find myself writing all the time, is such a useful thing 
+;; that it too has made it into clojure.core as the function frequencies:
 
+(frequencies strlist)
 
+;; But the library version is not quite the same as mine.
+
+;; It's similar, but it uses the new 1.2 features of persistent and transient
+;; collections to speed up the operation:
+
+;;Here's the source code:
+(defn frequencies
+  "Returns a map from distinct items in coll to the number of times
+  they appear."
+  {:added "1.2"}
+  [coll]
+  (persistent!
+   (reduce (fn [counts x]
+             (assoc! counts x (inc (get counts x 0))))
+           (transient {}) coll)))
+
+;; This persistent/transient version is quite a lot faster on short lists,
+;; although it doesn't seem to have much of an advantage on long ones.
 
 
 
