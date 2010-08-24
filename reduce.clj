@@ -178,7 +178,7 @@
     (if (empty? l) acc
         (recur (fn acc (first l)) (rest l)))))
 
-;; This works on any collection
+;; This works on any collection that can be made into a sequence:
 (my-reduce * 1 '(1 2 3)) ;; a list
 (my-reduce * 1 #{1,2,3}) ;; a set
 (my-reduce * 1  [1,2,3]) ;; a vector
@@ -187,10 +187,9 @@
 ;; sorts of collections efficiently, but in spirit it is just making every
 ;; collection into a sequence and then doing what my little skeleton above did.
 
-;; In fact the library reduce also has another feature, which is that if you
-;; don't provide an initial value for the accumulator, then it takes the first
-;; element of the sequence as its initial value, and accumulates over the rest
-;; of the sequence.
+;; It also has another feature, which is that if you don't provide an initial
+;; value for the accumulator, then it takes the first element of the sequence as
+;; its initial value, and accumulates over the rest of the sequence.
 
 ;; For operations which produce answers of the same type as their arguments,
 ;; this is often what you want.
@@ -202,8 +201,8 @@
 ;; So why has this simple operation got a scary reputation?
 
 ;; I think it's because all the common cases are so useful that they have
-;; already been abstracted away, like reverse. So in fact you don't meet it that
-;; often in practice.
+;; already been further abstracted away, like reverse.  So in fact you don't
+;; meet it that often in practice.
 
 ;; Let's see if we can construct something more interesting:
 
@@ -264,13 +263,13 @@
 ;; And now the reduce looks like:
 (reduce (fn [map string] (assoc map string (inc (map string 0)))) {} strlist)
 
-;; And well, at this point, any reasonable man is going to think:
+;; And, well, at this point, any reasonable man is going to think:
 ;; "Since I'm writing a one-liner, I might as well use the anonymous shorthand"
 
 (reduce #(assoc %1 %2 (inc (%1 %2 0))) {} strlist)
 
 ;; And if you already understand reduce and anonymous functions, and how maps
-;; work, this is actually not too hard to look at.
+;; work, this is actually not too hard to understand.
 
 ;; In fact this is the version of the function that I originally wrote.
 
@@ -280,15 +279,16 @@
 ;; Actually the obfuscation / pleasing terseness is all in the anonymous
 ;; function, and the behaviour of maps, and the reduce bit isn't scary at all.
 
-;; Here's another example, using a little structure as an accumulator.  See if
-;; you can figure out what it does using the above ideas to unpack it.
+;; Here's another deliberately obscure example, using a little structure as an
+;; accumulator.  See if you can figure out what it does using the above ideas to
+;; unpack it.
 
 (reduce (fn[[c s] n] [(+ c n), (str s n)]) [0,""] lst)
 
+;; The trick is to work out what the anonymous function does to the accumulator 
+;; when it gets a value from the list.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 ;; Clojure's natural facility with abstractions and small functions allows
 ;; some truly terse code.
@@ -321,13 +321,14 @@
       sortedwords  (sort-by second wordmap)]
   sortedwords)
 
-;; And then I'd abstract away the function bit
+;; And then I'd abstract away the word counting operations from the file reading part
 
 (defn sorted-word-frequencies [string]
-  (reverse (sort-by second (frequencies
-                   (clojure.contrib.string/split #"\W" string)))))
+  (sort-by second (frequencies
+                   (clojure.contrib.string/split #"\W+" string))))
 
-(take 10 (sorted-word-frequencies (slurp "/home/john/hobby-code/reduce.clj")))
+(take 10 (reverse (sorted-word-frequencies (slurp "/home/john/hobby-code/reduce.clj"))))
+
 
 
 ;; Which is also pleasingly terse, but I think more readable.
