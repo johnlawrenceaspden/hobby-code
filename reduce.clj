@@ -28,7 +28,7 @@
 ;;      a += list[i];
 ;; }
 
-;; Using atoms to provide mutable state, we can do something similar
+;; Using atoms to provide mutable state, we can do something similar in Clojure:
 
 (def lst '(1 2 3 4 5 6 7 8 9 10))
 (def len 10)
@@ -40,19 +40,20 @@
 
 ;; The value ends up in the atom a, just as in the C version.
 
-;; In clojure, this looks more complicated.
+;; In clojure, this looks slightly more complicated.
 
 ;; Partly because mutation in clojure is intrinsically more complicated, because
 ;; clojure is extremely concerned with thread safety, and so we need to allocate 
 ;; and dereference atoms rather than mutating local variables.
 
-;; And partly because C has very good notations for its fundamental operations,
+;; And partly because C has very good notations for its fundamental operations.
 
 ;; But logically they're the same algorithm.
 
 ;; But I'd feel dirty writing this code in clojure, even though that would have
 ;; been a perfectly good piece of LISP in the sixties. It's just a feeling that
 ;; I have that it is better to avoid mutation unless it's actually necessary.
+
 ;; Even though the mutation-less algorithms are often harder to write, they're
 ;; often easier to debug and test.
 
@@ -95,7 +96,7 @@
 ;;   a _= _ [i] 
 ;; } 
 
-;; is in C
+;; is in C.
 
 ;; Where in both cases we need to fill in the _ with the initial value of the
 ;; accumulator, the list to be accumulated over, and the operation to be
@@ -230,7 +231,8 @@
           0)]
         (assoc map string (inc oldval))))
 
-;; Here's how we'd use it to count our list, starting from the empty map {}:
+;; Here's how we'd use it to count our list, starting from the empty map {}, and
+;; using addtomap to add each string into the accumulator returned by each call.
 (addtomap {} "fred")                      ;; {"fred" 1}
 (addtomap {"fred" 1} "barney")            ;; {"barney" 1, "fred" 1}
 (addtomap {"fred" 1, "barney" 1} "fred")  ;; {"fred" 2, "barney" 1}
@@ -253,18 +255,25 @@
   (let [oldval (map string 0)]
         (assoc map string (inc oldval))))
 
+(reduce addtomap {} strlist)
+
 ;; And now the let statement looks redundant, so let's say
 (defn addtomap [map string]
   (assoc map string (inc (map string 0))))
 
+(reduce addtomap {} strlist)
+
 ;; And then he might say 
 ;; "since I'm only going to use this function here, why not make it anonymous?"
+(fn [map string] (assoc map string (inc (map string 0))))
 
 ;; And now the reduce looks like:
 (reduce (fn [map string] (assoc map string (inc (map string 0)))) {} strlist)
 
 ;; And, well, at this point, any reasonable man is going to think:
 ;; "Since I'm writing a one-liner, I might as well use the anonymous shorthand"
+
+#(assoc %1 %2 (inc (%1 %2 0)))
 
 (reduce #(assoc %1 %2 (inc (%1 %2 0))) {} strlist)
 
@@ -281,12 +290,13 @@
 
 ;; Here's another deliberately obscure example, using a little structure as an
 ;; accumulator.  See if you can figure out what it does using the above ideas to
-;; unpack it.
+;; unpack it. I'm using the destructuring notation to take the little structure
+;; apart, and then the function modifies each part and puts them back together again
 
 (reduce (fn[[c s] n] [(+ c n), (str s n)]) [0,""] lst)
 
-;; The trick is to work out what the anonymous function does to the accumulator 
-;; when it gets a value from the list.
+;; The trick is to work out what the anonymous function does to the starting 
+;; value of the accumulator when it gets a value from the list.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -315,6 +325,16 @@
 ;; And if I knew the library, I'd remember that two of those little operations
 ;; actually already have names:
 
+;; The idiom
+( reduce #(assoc %1 %2 (inc (%1 %2 0)) {} .... )
+
+;; which I used to find myself writing all the time, is such a useful thing 
+;; that it too has made it into clojure.core as the function frequencies:
+
+(frequencies strlist)
+
+;; and the sort with the comparator on the second elements can be replaced by sort-by, and second
+
 (let [filecontents (slurp "/home/john/hobby-code/reduce.clj")
       words        (clojure.contrib.string/split #"\W" filecontents)
       wordmap      (frequencies words)
@@ -327,38 +347,10 @@
   (sort-by second (frequencies
                    (clojure.contrib.string/split #"\W+" string))))
 
+;; So now I can ask for the 10 most popular words:
 (take 10 (reverse (sorted-word-frequencies (slurp "/home/john/hobby-code/reduce.clj"))))
 
-
-
-;; Which is also pleasingly terse, but I think more readable.
-
-;; The idiom
-( reduce #(assoc %1 %2 (inc (%1 %2 0)) {} .... )
-
-;; which I used to find myself writing all the time, is such a useful thing 
-;; that it too has made it into clojure.core as the function frequencies:
-
-(frequencies strlist)
-
-;; But the library version is not quite the same as mine.
-
-;; It's similar, but it uses the new 1.2 features of persistent and transient
-;; collections to speed up the operation:
-
-;;Here's the source code:
-(defn frequencies
-  "Returns a map from distinct items in coll to the number of times
-  they appear."
-  {:added "1.2"}
-  [coll]
-  (persistent!
-   (reduce (fn [counts x]
-             (assoc! counts x (inc (get counts x 0))))
-           (transient {}) coll)))
-
-;; This persistent/transient version is quite a lot faster on short lists,
-;; although it doesn't seem to have much of an advantage on long ones.
+;; which is also pleasingly terse, but I think more readable.
 
 
 
