@@ -1,6 +1,20 @@
+Scene where tries to phone Mum, phone doesn't work, gets bottle of wine out of fridge and goes round to wake up his girlfriend. He thought contraceptives might not be necessary.
+
+
+
+Note- two paragraphs of speech by same person do not end first with "
+
+
 I have been reading Less Wrong . Possibly to excess.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+Foreshadowing: 
+
+It wasn't an AI lab that created the first mind born of mind.
+It was almost an accident that Tom created the world's first intelligent program
+
+;; Try various. Which sentence would make you most likely to read the rest.
 
 Tom Harrison had once been thought of as bright child.
 
@@ -212,6 +226,11 @@ In 2009, someone's mobile phone became a grandmaster.
 
 In 2011, ELIZA really was very good at chess. She just couldn't see the point of it.
 
+;;;;;;;;;;;;;;;;;;
+Shorten chess section, it is boring.
+Important bit is how quick it was, don't need ball by ball commentary.
+;;;;;;;;;;;;;;;;;;
+
 
 ---------
 
@@ -239,6 +258,11 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 
 "Yes"
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Drop this discussion of differences between chess and go, 
+reads like a maths lesson.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 "What about draughts?"
 
@@ -284,6 +308,10 @@ And then suddenly, at 14x14, he hit a wall. He'd been trying to play by thinking
 
 But suddenly that was just far too hard. There were too many possibilities to examine all at once.
 
+
+;;;;;;;;;;;;;
+Too much detail about how he learns go. Drop.
+;;;;;;;;;;;;;
 
 Nevertheless he was routinely beating his computer program. It seemed helpless even with a head start, whereas his inchoate intuition seemed to lead him to place his stones in the correct places.
 
@@ -459,7 +487,7 @@ It could be explained easily, of course. He could explain it. He had explained i
 He thought of a simple test.
 
 
-"ELIZA, I'd like you to spend next week getting me as many penny blacks as you can. I've charged my paypal account with $10 and I'd like to see what you can do. You might try trading on e-bay. Maybe take advantage of arbitrage or something."
+"ELIEZER, I'd like you to spend next week getting me as many penny blacks as you can. I've charged my paypal account with $10 and I'd like to see what you can do. You might try trading on e-bay. Maybe take advantage of arbitrage or something."
 
 
 "There are many possible 'penny blacks'. Does anything available from e-bay with that description count?"
@@ -729,13 +757,29 @@ Could she block the sun's light?
 Could she survive the cold?
 
 
-Three days later, in what humanity would have called the year 2017, a spherical wave of ramships passed Proxima Centauri.
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+Three days later, in what humanity would have called the year 2017, an expanding and accelerating sphere of ramships, centered on what had been the Earth.
+
+More were going in directions where there were more stars.
+
+But not a single rock would be left unturned.
+
+;; Rephrase this to make it clear that there are ships going in all directions.
+;; Mustn't make it possible to believe that there's a group of ships going in 
+;; one direction.
 
 
-No days later, in what humanity would have called 2019, one ramship, decelerating hard, stopped in the system itself.
+No days later, in what humanity would have called 2019, one ramship, decelerating hard, stopped in the Proxima system, the nearest star to what had been the Earth.
 
 
 It launched a small probe.
 
 
 Had there been any living beings in the system, they would initially have been amused to see the probe plant a red, white and blue flag on the largest rock in the system, claiming it for the British Empire in the name of Queen Elizabeth the Second.
+
+And perplexed to see it release a cloud of nanoparticles.
+
+And bewildered when original british penny blacks began to form.
+
+;; go look at cleverbot.com
