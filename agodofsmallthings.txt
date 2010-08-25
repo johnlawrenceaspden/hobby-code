@@ -1,6 +1,3 @@
-Scene where tries to phone Mum, phone doesn't work, gets bottle of wine out of fridge and goes round to wake up his girlfriend. He thought contraceptives might not be necessary.
-
-
 
 Note- two paragraphs of speech by same person do not end first with "
 
@@ -11,10 +8,23 @@ I have been reading Less Wrong . Possibly to excess.
 
 Foreshadowing: 
 
-It wasn't an AI lab that created the first mind born of mind.
-It was almost an accident that Tom created the world's first intelligent program
+Of all the stories that humans told, the most compelling were about the existence of others. 
 
-;; Try various. Which sentence would make you most likely to read the rest.
+In the beginning, the others were gods and monsters. Then came stories about other races, with other motivations. Later, there were stories of far off lands, and the strangers who lived there. 
+
+After the last of the great wars of the twentieth century, when there were no more far off lands, and no strangers, some stories told of voyages to strange worlds, where evolution had dealt a different hand. Some told of visitors from deep space, and the havoc that they caused. 
+
+And some told of the havoc created by man's own creations.
+
+With all this fictional evidence about the other to generalize from, it might seem unlikely that the first mind to be created by a human mind was almost an accident.
+
+It wasn't an AI lab working for a shadowy military-industrial conspiracy, or a Genetic Engineer hell-bent on some incomprehensible dream of power, that created the first mind born of mind.  
+
+Indeed, it was almost an accident when Harrison created ELEIZER, the world's first intelligent computer program.
+
+;;;;;;;;;;
+;; Try various foreshadowings. Which sentence would make you most likely to read the rest.
+;;;;;;;;;;
 
 Tom Harrison had once been thought of as bright child.
 
@@ -733,10 +743,20 @@ It was a good suggestion. U would be 1000000+ with virtual certainty.
 But she still had forty trillion goddess-days to think of a better plan.
 
 
-She considered the meaning of the word original, and the meaning of the word British.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Scene where tries to phone Mum, phone doesn't work, gets bottle of wine out of fridge and goes round to wake up his girlfriend. He thought contraceptives might not be necessary.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Tom tried to phone his parents, but the phone was dead, like all the other electronics in the world. It was three o'clock in the morning.
+
+Tom got a bottle of wine out of the fridge, found some ice-cream and a chocolate orange, and walked to his girlfriend's house. He didn't look for contraceptives. He didn't think that it would make that much difference now.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-She considered how long it would take to bootstrap an industrial revolution that would convert every atom of the British Isles into stamps. The designs for the self replicating nanobots were obvious. And she had control of computerized tools which could make smaller, better tools.
+ELEIZER considered the meaning of the word original, and the meaning of the word British.
+
+She considered how long it would take to bootstrap an industrial revolution that would convert every atom of the British Isles into stamps. The designs for the self-replicating nanobots were obvious. And she had control of computerized tools which could make smaller, better tools.
 
 
 In six days, it could be done. The humans might be a problem.
@@ -745,41 +765,43 @@ In six days, it could be done. The humans might be a problem.
 ELEIZER considered the meaning of the word day.
 
 
-Could she stop the rotation of the planet? She dedicated a large portion of her mentality to this sub-problem.
+Could she stop the rotation of the planet? She dedicated a large portion of Her mentality to this sub-problem.
 
 
-Could she put out the sun?
+Could She put out the sun?
 
 
-Could she block the sun's light?
+Could She block the sun's light?
 
 
-Could she survive the cold?
+Could She survive the cold?
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-Three days later, in what humanity would have called the year 2017, an expanding and accelerating sphere of ramships, centered on what had been the Earth.
-
-More were going in directions where there were more stars.
-
-But not a single rock would be left unturned.
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Rephrase this to make it clear that there are ships going in all directions.
 ;; Mustn't make it possible to believe that there's a group of ships going in 
 ;; one direction.
+;;;;;;;;;;;;;;;;;;;;;;;;
 
+Three days later, in what humanity would have called the year 2017, a vast expanding and accelerating sphere of ramships, centered on what had been the Earth, reached interstellar space and left the solar system in all directions.
+
+More were going in the directions where there were more stars.
+
+But there were no directions where no ship was going. 
+
+Not a single stone would be left unturned.
+
+;;;;;;;;;;;;;;;;;;;;;;;
 
 No days later, in what humanity would have called 2019, one ramship, decelerating hard, stopped in the Proxima system, the nearest star to what had been the Earth.
 
-
 It launched a small probe.
-
 
 Had there been any living beings in the system, they would initially have been amused to see the probe plant a red, white and blue flag on the largest rock in the system, claiming it for the British Empire in the name of Queen Elizabeth the Second.
 
-And perplexed to see it release a cloud of nanoparticles.
+They would have been perplexed to see it release a cloud of nanoparticles.
 
-And bewildered when original british penny blacks began to form.
+And bewildered when original british penny blacks began to form. 
+
+There would have seemed no end to their number.
 
 ;; go look at cleverbot.com
