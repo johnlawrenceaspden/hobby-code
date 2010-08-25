@@ -1,4 +1,4 @@
-;;Clojure Multimethods
+;; Clojure Multimethods
 
 (defn ticket [age]
   (cond (< age 16) :child
@@ -16,7 +16,8 @@
                       (person. "Jimmy" 12)
                       (person. "Seth" 78)))
 
-;;Alternative
+
+;; And an alternative version
 
 (defn pname [person]
      (str
