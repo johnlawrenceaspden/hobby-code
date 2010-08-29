@@ -113,11 +113,11 @@ export -f ll
 function doc {  pushd "/usr/share/doc/$1" && ls ; }
 export -f doc
 
-function emacs #open emacs in background and disown it
-{
-  echo "emacs function backgrounds and disowns emacs-snapshot-gtk; see .bashrc"
-  command emacs-snapshot-gtk "$@" & disown
-}
+#function emacs #open emacs in background and disown it
+#{
+#  echo "emacs function backgrounds and disowns emacs-snapshot-gtk; see .bashrc"
+#  command emacs-snapshot-gtk "$@" & disown
+#}
 #add similar entries for commonly used graphical programs
 
 
