@@ -1,0 +1,32 @@
+How do I transfer files between one Ubuntu box and another?
+
+Simple Answer:
+
+Install an ssh server on one box, and then use nautilus (the file manager) to drag and drop files.
+
+In detail:
+
+Decide which box will be client and which will be server.
+
+Go to the server and install ssh
+
+$ sudo apt-get install ssh
+
+Now use ifconfig to find out the network address of the server.
+
+$ ifconfig
+
+On the other box select Connect to Server on the Places menu.
+
+Use SSH as the service type, and put in the server's ip address you found above, then press Connect
+
+You'll be asked for a username and password for the server. 
+Give the username and password for your account on the server.
+
+And you're done. 
+
+You should now have a nautilus window open showing the files on the first machine.
+
+[1] It doesn't actually matter. You can connect to a server from any box in the world. 
+And if you like, you can set up both boxes as servers.
+
