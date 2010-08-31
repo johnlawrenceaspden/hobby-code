@@ -1,3 +1,14 @@
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
+
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
 ;;here are the ones I find usable
@@ -78,41 +89,42 @@
 (server-start)
 
 ;; scala-mode
-(add-to-list 'load-path "~/opt/scala-mode")
-(require 'scala-mode)
-(setq auto-mode-alist (cons '("\\.scala$" . scala-mode) auto-mode-alist))
+;; (add-to-list 'load-path "~/opt/scala-mode")
+;; (require 'scala-mode)
+;; (setq auto-mode-alist (cons '("\\.scala$" . scala-mode) auto-mode-alist))
 
 ;;clojure/slime/swank setup adapted from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
 ;;################################################################
 
 ;; clojure-mode
-(add-to-list 'load-path "~/opt/clojure-mode")
-(require 'clojure-mode)
+;; (add-to-list 'load-path "~/opt/clojure-mode")
+;;(require 'clojure-mode)
 
 ;; swank-clojure
-(add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
+;; (add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
 
-(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
-      swank-clojure-extra-classpaths (list
-				      "~/.clojure/clojure-contrib.jar"
-                                      "~/opt/swank-clojure/src/main/clojure"
-				      ))
+;;(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
+;;        swank-clojure-extra-classpaths (list
+;;				      "~/.clojure/clojure-contrib.jar"
+;;                                      "~/opt/swank-clojure/src/main/clojure"
+;;				      ))
 
-(require 'swank-clojure-autoload)
+;; (require 'swank-clojure-autoload)
 
 ;; slime
-(eval-after-load "slime"
-  '(progn (slime-setup '(slime-repl))))
+;;(eval-after-load "slime"
+;;  '(progn (slime-setup '(slime-repl))))
+;;
+;;(add-to-list 'load-path "~/opt/slime")
 
-(add-to-list 'load-path "~/opt/slime")
-(require 'slime)
-(slime-setup)
+;;(slime-setup)
 
 ;;end of clojure/slime/swank setup from:
 ;;http://riddell.us/tutorial/slime_swank/slime_swank.html
 
 ;;bind the slime selector to f12 and add a method for finding clojure buffers
+(require 'slime)
 (define-key global-map (kbd "<f12>") 'slime-selector)
 (def-slime-selector-method ?j
   "most recently visited clojure-mode buffer."
@@ -205,3 +217,5 @@
 ;(setq-default highlight-parentheses-mode t)
 (add-hook 'clojure-mode-hook 
           (lambda () (highlight-parentheses-mode t)))
+
+
