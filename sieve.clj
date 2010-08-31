@@ -213,7 +213,7 @@
               (> int multiple) (recur (conj (disj testset pair) [(+ multiple prime) prime]) int stop)
               (< int multiple) (recur (conj testset [(* int int) int]) (inc int) stop))))))
 
-(infinite-sieve 100)
+(infinite-sieve 110)
 (take 10 (reverse (infinite-sieve 10000)))
 
 
