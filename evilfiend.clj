@@ -22,13 +22,15 @@
 ;; until he has run out of moves or found his card.
 
 ;; Given our permutation, let us make a function which performs this step:
-(defn iterator [boxes] (vec boxes))
+(defn iterator [boxes]
+  (vec boxes))
 
 ;; Here is a prisoner going to box 0 and being redirected to box 8
 ;; ((iterator [ 8 3 2 6 0 7 1 9 4 5]) 0) -> 8
 
 ;; We can model the repetition of this process like so
-(defn iterations [boxes n] (iterate (iterator boxes) n))
+(defn iterations [boxes n]
+  (iterate (iterator boxes) n))
 
 ;; Here is prisoner 0, going to box 0, then 8, then 4, where he finds his card 0 and wins
 ;; After that, if he carried on, the cycle would repeat. We'll just look at the first 10 moves:
@@ -90,15 +92,15 @@
 ;; We'll generate some sequences by repeated shuffling of the cards.
 ;; Let's say that (given n prisoners, n boxes, and n cards), the guards
 ;; shuffle the cards 10 times, and then every day shuffle them again.
-(defn perms[n] (drop 10 (iterate shuffle (range n))))
+(defn boxes-seq[n] (drop 10 (iterate shuffle (range n))))
 
 ;; The interesting thing about these permutations, from the prisoner's point of view,
 ;; is the length of the largest cycle. If it's short, they win. If it's long, they lose.
-(defn largest-cycles[n] (map largest-cycle (perms n)))
+(defn largest-cycles[boxes-seq] (map largest-cycle boxes-seq))
 
 ;; We can generate 31 shuffles of 100 cards, as in the problem:
 ;; Here is a list of the cycle lengths in a random example:
-;; (take 31 (largest-cycles 100))
+;; (take 31 (largest-cycles (boxes-seq 100)))
 ;; (99 50 72 52 55 84 36 79 55 57 81 48 63 98 80 57 69 94 90 87 97 77 69 52 43 50 93 62 94 37 83)
 
 ;; In this case, on the first day, one prisoner will find his card in his own box, but the other 99
@@ -113,56 +115,59 @@
 
 ;; We can do a monte-carlo simulation to find, approximately, the odds of winning on any given day.
 
-;; Here's the sequence of randomly generated largest cycles
-(def rglc (largest-cycles 100))
-
-;; creating this sequence seems to take bloody ages compared to generating the permutation. Wonder why?
-;; (time (count (doall (take 100000 (perms 100))))) ;; 7 seconds for 100000 perms
-;; (time (nth rglc 2000))                           ;; 60 seconds to analyse 2000 perms. Sheesh!
-
-
 ;; Let's have a look at a typical random sequence:
-;; (take 100 rglc) -> (65 52 54 75 87 58 40 45 79 71 61 67 46 49 98 62 79 30 90 42 95 65 46 62 60 88 68 82 90 46 45 42 70 66 76 58 51 96 77 69 90 83 88 75 67 72 68 54 99 64 38 49 42 97 73 38 82 58 56 54 24 32 46 66 53 99 54 90 43 51 53 53 93 37 47 35 39 52 77 35 36 40 76 89 52 39 85 68 46 60 40 41 93 85 41 89 43 42 81 65)
+;; (take 100 (largest-cycles (boxes-seq 100))) -> (65 52 54 75 87 58 40 45 79 71 61 67 46 49 98 62 79 30 90 42 95 65 46 62 60 88 68 82 90 46 45 42 70 66 76 58 51 96 77 69 90 83 88 75 67 72 68 54 99 64 38 49 42 97 73 38 82 58 56 54 24 32 46 66 53 99 54 90 43 51 53 53 93 37 47 35 39 52 77 35 36 40 76 89 52 39 85 68 46 60 40 41 93 85 41 89 43 42 81 65)
 
 ;; Let's define a sequence of the frequencies of each maximum cycle length, just by counting up
 ;; the first few numbers in this sequence:
-(def freqs (map (fn[n] (frequencies (take n rglc))) (iterate inc 1)))
+(defn cumulative-frequency-sequence [largest-cycles-sequence]
+  (map (fn[m] (frequencies (take m largest-cycles-sequence))) (iterate inc 1)))
 
-;; (sort (nth freqs 10)) -> ([40 1] [45 1] [52 1] [54 1] [58 1] [61 1] [65 1] [71 1] [75 1] [79 1] [87 1])
+
+(take 5 (cumulative-frequency-sequence (largest-cycles (boxes-seq 100))))
+
+;; (sort (nth (freqs (largest-cycles (boxes-seq 100))) 10)) -> ([40 1] [45 1] [52 1] [54 1] [58 1] [61 1] [65 1] [71 1] [75 1] [79 1] [87 1])
 ;; After 11 trials, there was one where the maximal cycle was 40, and one where it was 45.
 ;; On the other 9 days, the largest cycle was too long, and the airmen lost the game.
 
 ;; After 101 trials, there was one where the largest cycle was 24, one where it was 30, etc
-;; (sort (nth freqs 100)) -> ([24 1] [30 1] [32 1] ......
+;; (sort (nth (freqs (largest-cycles (boxes-seq 100))) 100)) -> ([24 1] [30 1] [32 1] ......
 
 ;; Given a number of trials and a threshold, we can split them into wins and losses:
 
-(defn wins-losses [trials threshold]
-  (let [fr  (nth freqs (dec trials))
-        losses (filter (fn[[k v]] (<  threshold k)) fr)
-        wins   (filter (fn[[k v]] (>= threshold k)) fr)
+(defn wins-losses [cumulative-frequency threshold]
+  (let [losses (filter (fn[[k v]] (<  threshold k)) cumulative-frequency)
+        wins   (filter (fn[[k v]] (>= threshold k)) cumulative-frequency)
         count-up  (fn [m] (apply + (map second m)))]
     [(count-up wins), (count-up losses)]))
 
-;;(wins-losses 1000 50) ;; [303 697]
+(defn wins-losses-seq [threshold cumulative-frequency-seq]
+  (map (fn [cf] (wins-losses cf threshold)) cumulative-frequency-seq))
 
-;; A sequence of these wins and losses as the number of trials increases
-(defn wins-and-losses [threshold]
-  (map (fn [n] (wins-losses n threshold)) (iterate inc 1)))
+(take 5 (wins-losses-seq 50 (cumulative-frequency-sequence (largest-cycles (boxes-seq 100)))))
 
-(def wins-and-losses-ratio (map (fn[[w l]] (/ w (+ w l) 1.0)) (wins-and-losses 50)))
+(defn wins-and-losses-ratio-seq [wins-losses-seq]
+  (map (fn[[w l]] (/ w (+ w l))) wins-losses-seq))
+
+
+(take 20 (wins-and-losses-ratio-seq (wins-losses-seq 50 (cumulative-frequency-sequence (largest-cycles (boxes-seq 100))))))
+
+
+(def trial-seq (map #(* 1.0 %) (wins-and-losses-ratio-seq (wins-losses-seq 50 (cumulative-frequency-sequence (largest-cycles (boxes-seq 100)))))))
 
 ;; Here are the results of some trials
 (comment
-  (nth wins-and-losses-ratio 10)   ;; 0.1818181818181818
-  (nth wins-and-losses-ratio 20)   ;; 0.2857142857142857
-  (nth wins-and-losses-ratio 40)   ;; 0.2439024390243902
-  (nth wins-and-losses-ratio 80)   ;; 0.2962962962962963
-  (nth wins-and-losses-ratio 160)  ;; 0.3478260869565217
-  (nth wins-and-losses-ratio 320)  ;; 0.3457943925233645
-  (nth wins-and-losses-ratio 640)  ;; 0.3042121684867395
-  (nth wins-and-losses-ratio 1280) ;; 0.3013270882123341
-  (nth wins-and-losses-ratio 2560) ;; 0.3053494728621632
+  (nth trial-seq 10)   ;; 0.1818181818181818
+  (nth trial-seq 20)   ;; 0.2857142857142857
+  (nth trial-seq 40)   ;; 0.2439024390243902
+  (nth trial-seq 80)   ;; 0.2962962962962963
+  (nth trial-seq 160)  ;; 0.3478260869565217
+  (nth trial-seq 320)  ;; 0.3457943925233645
+  (nth trial-seq 640)  ;; 0.3042121684867395
+  (nth trial-seq 1280) ;; 0.3013270882123341
+  (nth trial-seq 2560) ;; 0.3053494728621632
+  (nth trial-seq 5120) ;; 0.3057996485061511
+  (nth trial-seq 10240) 
   )
 
 ;; The wins-losses ratio seems to have settled down to about 30%
@@ -173,6 +178,149 @@
 
 ;; It seems that they are, in fact, very unlikely to lose as long as they find the right strategy.
 ;; Good old Dr EvilFiend! He is clearly a softie at heart.
+
+;;-------------------------------------------------------------------------------------------------------------------
+
+;; Although it's given us a plausible sounding answer, the program seems a little slow to run.
+
+;; Let's time some of the parts
+
+(defn profile [n]
+  (println "start")
+  (let [a (time (doall (take n (boxes-seq 100))))
+        b (time (doall (take n (largest-cycles a))))
+        c (time (doall (take n (cumulative-frequency-sequence b))))
+        d (time (doall (take n (wins-losses-seq 50 c))))
+        e (time (doall (take n (map #(* 1.0 %) (wins-and-losses-ratio-seq d)))))]
+    (println "done")
+    (map (vec e) '(1 2 4 8 16 32 64))))
+
+(profile 5120)
+
+;;My results were:
+;;10 msecs to generate 100 permutations of 100 numbers
+;;2900 msecs to find the largest cycles
+;;20 msecs to calculate the cumulative frequencies
+;;40 msecs to count wins and losses
+;;5  msec  to turn those into ratios
+
+;;Clearly the first thing to look at is the largest-cycles function
+
+(defn profile [n]
+  (println "start")
+  (let [a (time (doall (take n (boxes-seq  100))))
+        b (time (doall (take n (map partitions a))))
+        c (time (doall (take n (map #(sort (map count %)) b))))
+        d (time (doall (take n (map #(apply max %) c))))]
+    (println "done")
+    (map (vec d) '(1 2 4 8 16 32 64))))
+
+(profile 100)
+
+;; "start"
+;; "Elapsed time: 9.639319 msecs"
+;; "Elapsed time: 3157.97671 msecs"
+;; "Elapsed time: 5.33656 msecs"
+;; "Elapsed time: 1.137731 msecs"
+;; "done"
+
+;; It appears that it is the function partitions which is slow
+
+;; Here is the definition
+
+(defn partitions [boxes]
+  (set (map #(orbit boxes %) (range (count boxes)))))
+
+;; For each element in the arrangement, it calls orbit, which itself runs through n iterations.
+;; There's an order n*n thing going on here where we probably only need order n.
+
+(def p (shuffle (range 10)))
+
+;;Let's define a test permutation which we want to split into cycles
+
+;; p [4 2 6 8 1 7 9 5 0 3]
+
+(defn get-cycle [p a]
+  (let [it (iterator p)]
+    (loop [cycle (list a), g a]
+      (let [next (it g)]
+        (if (= next a) (reverse cycle)
+            (recur (cons next cycle) next ))))))
+
+
+(defn cycles [p]
+  (loop [els (set p) cycles '()]
+    (if (empty? els) cycles
+        (let [cycle (get-cycle p (first els))]
+          (recur (apply disj els cycle) (cons cycle cycles))))))
+
+(defn partitions [p]
+  (set (map #( apply sorted-set %) (cycles p))))
+
+
+;; This is much faster.
+
+;; If we go back and reprofile, then we now find that cumulative-frequency-sequence starts to dominate the
+;; time for n=4000
+
+;; This is its current definition:
+(defn cumulative-frequency-sequence [largest-cycles-sequence]
+  (map (fn[m] (frequencies (take m largest-cycles-sequence))) (iterate inc 1)))
+
+
+;; It's recalculating the sum over the whole sequence every time
+
+
+(def example (largest-cycles (boxes-seq 100)))
+(take 5 example) ;; (86 91 52 30 99)
+
+
+(defn running-reduce [f acc sq]
+  (lazy-seq
+   (if (empty? sq) '()
+       (let [next-acc (f acc (first sq))]
+         (cons next-acc (running-reduce f next-acc (rest sq)))))))
+
+;;(running-reduce + 0 '(1 2 3 4 5))
+(take 10 (running-reduce (fn [counts x] (assoc counts x (inc (get counts x 0)))) {} example))
+
+(defn cumulative-frequency-sequence [largest-cycles-sequence]
+  (drop 1 (running-reduce (fn [counts x] (assoc counts x (inc (get counts x 0)))) {} largest-cycles-sequence)))
+
+
+(defn profile [n]
+  (println "start")
+  (let [a (time (doall (take n (boxes-seq 100))))
+        b (time (doall (take n (largest-cycles a))))
+        c (time (doall (take n (cumulative-frequency-sequence b))))
+        d (time (doall (take n (wins-losses-seq 50 c))))
+        e (time (doall (take n (map #(* 1.0 %) (wins-and-losses-ratio-seq d)))))]
+    (println "done")
+    (map (vec e) '(1 2 4 8 16 32 64))))
+
+(profile 20000)
+
+(take 5 (map #(* 1.0 %) (wins-and-losses-ratio-seq (wins-losses-seq 50 (cumulative-frequency-sequence (largest-cycles (boxes-seq 10)))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
