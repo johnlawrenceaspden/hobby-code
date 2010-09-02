@@ -28,6 +28,42 @@
 ;; This wasn't a problem for my program as first written, but as I pushed it
 ;; this became the major bottleneck, and so I decided to optimize.
 
+(defn runavg
+  ([lst] (runavg 0 0 lst))
+  ([sum count lst]
+     (if (empty? lst) '()
+         (let [newsum (+ sum (first lst))
+               newcount (inc count)]
+           (cons (/ newsum newcount)
+                 (runavg newsum newcount (rest lst)))))))
+
+(runavg '(1 2 3 4 5))
+
+;; Of course, we can make this work for infinite sequences too
+
+(defn runavg
+  ([lst] (runavg 0 0 lst))
+  ([sum count lst]
+     (lazy-seq
+      (if (empty? lst) '()
+          (let [newsum (+ sum (first lst))
+                newcount (inc count)]
+            (cons (/ newsum newcount)
+                  (runavg newsum newcount (rest lst))))))))
+
+(take 5 (runavg (iterate inc 0)))
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
