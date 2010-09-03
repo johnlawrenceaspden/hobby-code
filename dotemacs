@@ -26,8 +26,8 @@
 ;no line wrapping ;modified for dev8d
 (setq-default truncate-lines nil)
 
-;set fill column for wider modern screens
-(setq-default fill-column 100)
+;set fill column for netbook screen
+(setq-default fill-column 80)
 
 ;don't scroll like a tard. duh.
 (setq scroll-conservatively 10000)
