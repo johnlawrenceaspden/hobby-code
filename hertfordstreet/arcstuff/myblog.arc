@@ -1,4 +1,4 @@
-; Blog tool example.  20 Jan 08.
+; Birdcage server
 
 ; To run:
 ; arc> (load "~/myblog.arc")
