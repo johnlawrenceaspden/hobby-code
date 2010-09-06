@@ -145,3 +145,5 @@ PATH=$PATH:~/bin
 
 alias cda='cd ~/hobby-code/agora'
 
+alias unisondesktop2mini='unison /home/john/Desktop/unison ssh://john@dell-mini//home/john/Desktop/unison'
+alias unisonmini2desktop='unison /home/john/Desktop/unison ssh://john@woc-desktop//home/john/Desktop/unison'
