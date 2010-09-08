@@ -11,46 +11,50 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-A macro is like having an apprentice programmer that you can write notes to:
+;; A macro is like having an apprentice programmer that you can write notes to:
 
-Sometimes, if I'm trying to debug something, I like to change something like
+;; Sometimes, if I'm trying to debug something, I like to change something like
 
     (* 3 2)
 
-Into something like this:
+;; Into something like this:
 
     (let [a (* 3 2)] (println "dbg: (* 3 2) = " a) a)
 
-Which works the same way, except that it prints out the expression it
-has just evaluated, and its value, as well as returning the value as the result of the
-whole expression. This means that I can leave my code undisturbed whilst examining intermediate values.
+;; Which works the same way, except that it prints out the expression it has
+;; just evaluated, and its value, as well as returning the value as the result
+;; of the whole expression. This means that I can leave my code undisturbed
+;; whilst examining intermediate values.
 
-This can be very useful, but it's time consuming and error prone to type. You might imagine
-delegating such tasks to your apprentice!
+;; This can be very useful, but it's time consuming and error prone to type. You
+;; might imagine delegating such tasks to your apprentice!
 
-Rather than hiring an apprentice, you can program the compiler to do these things for you.
+;; Rather than hiring an apprentice, you can program the compiler to do these
+;; things for you.
 
     ;;debugging parts of expressions
     (defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
 
-Now try:
+;; Now try:
 
     (* 4 (dbg (* 3 2)))
 
-It actually makes the textual transformation on the code for you, although
-being a computer, it chooses unreadable names for its variables instead of the "a" I would have chosen.
+;; The compiler actually makes the textual transformation on the code for you,
+;; although being a computer, it chooses unreadable names for its variables
+;; instead of the "a" I would have chosen.
 
-We can ask it what it would do for a given expression:
+;; We can ask it what it would do for a given expression:
 
     (macroexpand '(dbg (* 3 2)))
 
-And this is its answer, so you can see that it really is rewriting the code for you:
+;; And this is its answer, so you can see that it really is rewriting the code
+;; for you:
 
     (let* [x__1698__auto__ (* 3 2)]
           (clojure.core/println "dbg:" (quote (* 3 2)) "=" x__1698__auto__)
           x__1698__auto__)
 
---------------
+;;;;;;
 
 Try to write a function dbgf that does the same thing, and you'll have problems, because (dbgf (* 3 2)) -> (dbgf 6) before dbgf is called, and so whatever dbgf does, it can't recover the expression that it needs to print out.
 
