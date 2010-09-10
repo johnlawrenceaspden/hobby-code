@@ -210,7 +210,9 @@
 
 (gensym)
 
-;; will make you a new unlikely name every time you call it, which is guaranteed not to be the same as any symbol that can be read in, or the same as any other gensym.
+;; will make you a new unlikely name every time you call it, which is guaranteed
+;; not to be the same as any symbol that can be read in, or the same as any
+;; other gensym.
 
 ;; So here is the final version of our macro. It's robust, and can now be
 ;; trusted.  It uses the right println from clojure/core, and it gives its
@@ -225,9 +227,15 @@
 ;; But it no longer looks much like the code transformation we were originally
 ;; trying to make.
 
-
-
-
+;; Now that we understand what macros are, and how to avoid the two pitfalls
+;; that can break them, in part two we'll look at the various ways in which
+;; clojure makes the macro writing process easier, so that you when you want
+(dbg x)
+;; to become
+(let [a x] (println 'x "=" a) a)
+;; you can write the more readable:
+(defmacro dbg[x] `(let [x# ~x] (println '~x "=" x#) x#))
+;; instead.
 
 
 
