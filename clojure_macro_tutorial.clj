@@ -189,9 +189,14 @@
 (macroexpand '(dbg-1 (* a a))) ;; (let* [a (* a a)] (println (quote (* a a)) "=" a) a)
 
 ;; I can't see a way in which this could cause a problem for dbg-2, it is just
-;; bad style.
+;; bad style. 
 
-;; But in more complicated macros, the interference between the variables introduced by the macros and the variables in the source code can be a source of subtle bugs.
+;; But in more complicated macros, the interference between the variables
+;; introduced by the macros and the variables in the source code can be a source
+;; of subtle bugs.
+
+;; Using a temporary variable which could collide with a variable in the real code
+;; is an accident waiting to happen, and you shouldn't do it.
 
 ;; If we don't want them to interfere (and sometimes we do!) we'd be better off
 ;; choosing an unlikely name.
