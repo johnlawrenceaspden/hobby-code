@@ -244,6 +244,316 @@
 
 
 
+(doseq [i (range 1 11)]
+  (print i)
+  (print (inc i)))
+
+
+(forloop [i 1 10]
+         (print i)
+         (print (+ 1 i)))
+
+(loop [i 1]
+  (when (<= i 10)
+    (print i)
+    (print (+ 1 i))
+    (recur (inc i))))
+
+(defmacro forloop [[var start end] & body]
+  `(loop [~var ~start limit# ~end]
+     (when (<= ~var limit#)
+       ~@body
+       (recur (inc ~var) limit#))))
+
+(def x true)
+
+(if x
+  (let [a (if x 3 4)]
+    (* a a)))
+
+
+(condif [(= x true )       [a 3 b 4]
+         (= x false)       [a 4 b 5]
+         :else             [a 0 b 0]]
+        (* a a b))
+
+
+
+
+(if true
+  (let [a (if true 3 4)]
+  (let [a 4]
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; So far, we have been considering the dbg macro:
+
+(defmacro dbg[x] `(let [x# ~x] (println '~x "=" x#) x#))
+
+;; And we have got as far as being able to approximate it by:
+
+(defmacro dbg-1 [s]
+  (list 'let ['a s] (list 'println (list 'quote s) "=" 'a) 'a))
+
+;; We have by this point understood the essence of macros, but there are a couple of loose ends to tidy up.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; There are a couple of theoretical problems that one runs into when
+;; constructing in this way, and they are problems that all lisps have to find
+;; ways of solving.
+
+;; I don't think people quite realize how clever clojure's namespace and
+;; backquote system are. They make what were serious problems with nasty
+;; solutions in traditional lisps into theoritical difficulties in clojure.
+
+;; But we should understand the problems, in order to understand the answer, and
+;; use clojure's macros with confidence.
+
+;; To illustrate the problems, let us consider a slightly more complicated
+;; problem:
+
+;; Suppose we find ourselves writing many imperative loops. The sort of thing
+;; which C expresses as
+;; for(i=0; i<=10; i++)
+;; {
+;;     print "%d" i;
+;; }
+
+;;In clojure, we can equivalently write:
+(loop [i 0]
+  (when (<= i 10)
+    (print i)
+    (recur (inc i))))
+
+;;012345678910nil
+
+;; Now clojure being the sort of language where everything you might ever want
+;; to do has already been done better for you, we would be better off writing
+(doseq [i (range (inc 10))]
+  (print i))
+
+;; doseq is a complex macro. Let us see if we can construct a simple version of
+;; our own to handle this trivial case, without using doseq, and using the
+;; primitive macro construction methods that we already know.
+
+;; This conceit will allow us to hit the traditional problems full on.  I would
+;; be indebted to anyone who can suggest a more realistic case that is as simple
+;; to understand.
+
+;; We would like
+(fori 10 (print i))
+;; to turn into:
+(loop [i 0]
+  (when (<= i 10)
+    (print i)
+    (recur (inc i))))
+
+;; Let us first of all define a code-generating function:
+(defn fori-f [finish & code]
+  (list 'loop '[i 0]
+        (concat
+         (concat (list 'when) (list (list '<= 'i finish))
+                 code)
+         (list (list 'recur '(inc i))))))
+
+;; I trust you will forgive the slightly eccentric expression of this idea. I do
+;; hope that all this concatting, listing and quoting is not getting too old too
+;; quickly. There is a better way!
+
+(= (fori-f 10 '(print i)) '(loop [i 0] (when (<= i 10) (print i) (recur (inc i)))))
+;;(loop [i 0] (when (<= i 10) (print i) (recur (inc i))))
+
+;; Reassured by our single example, we define our macro thus:
+(defmacro fori-1 [finish & code]
+  (list 'loop '[i 0]
+        (concat
+         (concat
+          (list 'when) (list (list '<= 'i finish))
+          code)
+         (list (list 'recur '(inc i))))))
+
+(fori-1 10 (print i))
+;; 012345678910nil
+
+;; Now this macro, simple though it is, is sufficiently complex that it runs
+;; into all the traditional difficulties of macros:
+
+;; The first difficulty is that the functions the macro expands into may not be
+;; the same when it is expanded as they were when it was defined.
+
+;; Suppose I have innocently redefined concat.
+(defn concat [list1 list2]
+  (if (empty? list1) list2
+      (cons (first list1) (concat (rest list1) list2)))))
+
+;; This traditional definition works fine, modulo blowing stack
+(concat '(a b) '(c d))
+
+;; But our macro is relying on the more general version in clojure/core
+(fori-1 10 (print i))
+;; Wrong number of args (3) passed to: user$concat
+
+;; Now you may think that anyone who redefines concat deserves anything they
+;; get, but this would put an intolerable burden on programmers. There are many
+;; functions in core and contrib. Are we supposed to avoid them all?
+
+;; This is exactly the problem that namespaces are supposed to solve. I have
+;; defined user/concat, and my macro would like to use clojure.core/concat.
+
+;; With a heavy heart, and not without wondering whether these macro things are
+;; really worth all the trouble, we redefine fori to be proof against the sort
+;; of halfwits who redefine concat:
+(defmacro fori-2 [finish & code]
+  (list 'loop '[i 0]
+        (clojure.core/concat
+         (clojure.core/concat
+          (list 'when) (list (list '<= 'i finish))
+          code)
+         (list (list 'recur '(inc i))))))
+
+
+;; And all is well (until someone redefines list, or inc ....)
+(fori-2 10 (print i))
+;;012345678910nil
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; The second traditional difficulty of macros is that control of evaluation
+;; has given us enough rope to shoot ourselves in the foot.
+
+;; Consider:
+(fori-2 (rand 10) (print i))
+;; 012nil
+;; 0123nil
+;; 01nil
+
+;; Looks ok to me. But how many times is rand getting called?
+
+(use 'clojure.contrib.trace)
+(dotrace (rand) (fori-2 (rand 10) (print i)))
+
+;;TRACE t12262: (rand 10)
+;;TRACE t12262: => 7.637716578809059
+;;0TRACE t12263: (rand 10)
+;;TRACE t12263: => 1.7129420087274194
+;;1TRACE t12264: (rand 10)
+;;TRACE t12264: => 9.701793250880767
+;;2TRACE t12265: (rand 10)
+;;TRACE t12265: => 1.4731346458223638
+;;nil
+
+;; Was that what you expected? It looks as though we've violated the principle
+;; of least surprise.
+
+;; How to fix?
+
+;; What does the macro expand into?
+(macroexpand-1 '(fori (rand 10) (print i)))
+;; goes to:
+(loop [i 0]
+  (when (<= i (rand 10))
+    (print i)
+    (recur (inc i))))
+;; Now do you see the problem?
+
+;; What we wanted was:
+(let [finish (rand 10)]
+  (loop [i 0]
+    (when (<= i finish)
+      (print i)
+      (recur (inc i)))))
+
+;; Note to self: careful with how many times you evaluate your arguments:
+(defmacro fori-3 [end & code]
+  (list 'let ['finish end]
+        (list 'loop '[i 0]
+              (clojure.core/concat
+               (clojure.core/concat
+                (list 'when) (list (list '<= 'i 'finish))
+                code)
+               (list (list 'recur '(inc i)))))))
+
+
+(macroexpand-1 '(fori-3 (rand 10) (print i)))
+;; becomes
+(let [finish (rand 10)]
+  (loop [i 0]
+    (when (<= i finish)
+      (print i)
+      (recur (inc i)))))
+
+(fori-3 (rand 10) (print i))
+
+(dotrace (rand) (fori-3 (rand 10) (print i)))
+;;TRACE t12531: (rand 10)
+;;TRACE t12531: => 6.961169251276846
+;;0123456nil
+
+;; All is well. Except for....
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; The third traditional difficulty of macros is conflict between temporary
+;; variables introduced in the macro and variables in the surrounding scope
+
+;; Consider:
+
+(def cutoff 4)
+(fori-3 10 (when (<= i cutoff) (print i)))
+;; 01234nil
+
+(def finish 4)
+(fori-3 10 (when (<= i finish) (print i)))
+;; 012345678910nil
+
+;; If that doesn't violate the principle of least surprise, I don't know what does!
+
+;; Let us again examine our expansion:
+(macroexpand-1 '(fori-3 10 (when (<= i finish) (print i))))
+
+(let [finish 10]
+  (loop [i 0]
+    (when (<= i finish)
+      (when (<= i finish) (print i))
+      (recur (inc i)))))
+
+;; It's pretty clear what the problem is. We should choose a less obvious name
+;; for our temporary variable finish.
+
+;; But what to choose? Even if we called it
+;; fori-finish-7&8^%%-johns-macro-temporary-variable-please-dont-use-me, which
+;; should guarantee that it won't get used by any sane human being who doesn't
+;; want something odd to happen, macros often expand around other macros.
+
+;; This turns out to be the most serious, and happily the last of the
+;; traditional problems with macros.
+
+;; The traditional solution is (gensym), which generates a new symbol every time
+;; it is called, which is guaranteed not to be the same as any other symbol,
+;; generated either by reading in a source file, or by another call to gensym.
+
+;; We need support from the language for this, and luckily we have it.
+
+(pr (gensym))
+;; G__13128
+
+;; Not that I am in any way paranoid, but:
+(let [a (gensym)
+      s (pr-str a)]
+  [a, s, (read-string s), (= (read-string s) a) (identical? (read-string s) a)])
+;;[G__13259 "G__13259" G__13259 true false]
+
+
+(identical? 'symbol 'symbol) false
+
+
+
+
+
+
 
 
 
