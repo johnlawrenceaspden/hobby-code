@@ -1,39 +1,85 @@
-;; It turns out the clojure is fast.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Clojure is Fast!
+;;
+;; Paul Graham said that Common Lisp was two languages, one for writing programs
+;; fast, and one for writing fast programs.  I've never tried to find Clojure's
+;; fast bits before, but I thought I'd give it a try.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Let's try to solve this problem
+;; We need a very simple procedure to experiment on.
 
-;; Numerical solution of dy/dt = f (t,y)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Where f = t - y, and y(0) = 0
+;; Let's try to Integrate a Differential Equation.
 
-;; The exact solution is of course, y = e^(-t)+t-1
-;; (because dy/dt = -e^(-t)+1 = t-y)
-;; So y(1) = e^-1 = (Math/exp -1) = 0.36787944117144233
+;; Don't be scared. That means that we've got a number that needs to change over
+;; time, and a function that tells us how much it needs to change by.
 
-;; To solve a differential equation like this, you use a runge-kutta method
-;; and the simplest runge-kutta is euler's method:
+;; You've got a variable y, say it's 0 (feet). We start at time 0 (seconds).
 
-;; Take h the step size to be 0.01, y(0)=0, t(0)=0
+;; We calculate f(0,0), lets say that's 0. (feet/second)
 
-;; And iterate h(n+1)=h(n), t(n+1)=t(n)+h, y(n+1)=y(n)+f(y(n), t(n))
+;; Then y has to change by 0 feet per second. So after a tenth of a second we
+;; calculate that t should be 0.1 seconds, y should still be about 0 feet, and
+;; that lets us work out roughly what f is now.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Say f is 0.1 : then y needs to change by 0.1 feet/second. So after another
+;; tenth of a second, t is 0.2, y is roughly 0.01, and we can work out f again.
+
+;; And that's how you find an approximate numerical solution to the differential
+;; equation:
+
+;; dy/dt = f(t,y) where f(t, y) = t-y and y=0 when t=0.
+
+;; using a step size of one-tenth of a second.
+
+;; This challenging procedure is known as Euler's method,
+;; or sometimes as first-order Runge-Kutta.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; A Test Case
+
+;; As it happens, we can work out by devious mathematical trickery that the
+;; exact solution (which is what happens if you make the steps so small that you
+;; can't tell they're steps any more, and everything is nice and smooth) to this
+;; equation is y=e^(-t)+t-1
+
+;; So if we write our program correctly then when t is 1,
+;; y should be close to (Math/exp -1) = 0.36787944117144233
+;; And it should get closer if we make our steps smaller.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; For this program, I care how fast the iteration is, so, since what
 ;; get measured gets improved:
 
-;; Tell the compiler to warn me about any places that it needs to use
-;; reflection, which is intrinsically slow:
+;; I'm going to tell the compiler to warn me about any places that it needs to
+;; use reflection, which is intrinsically slow, although it turns out that there
+;; aren't any, so you can forget about this line:
 (set! *warn-on-reflection* true)
 
-;; And let's get our cpu speed so that we can measure speed in terms of
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; What is the clock speed of my CPU?
+
+;; Let's get our cpu speed so that we can measure speed in terms of
 ;; iterations per clock cycle.
-;; The only way I can find to do this in clojure is to read the file
+
+;; Do computers still work like this?  When I were a lad everything were
+;; different... I imagine that there's all sorts of stuff going on under various
+;; hoods nowadays.
+
+;; The only way I can find to get the cpu speed in Clojure is to read the file
 ;; /proc/cpuinfo, and for some reason slurp("/proc/cpuinfo") doesn't work,
-;; So I have to do it the hard way:
+;; so I have to do it the hard way:
 (require 'clojure.contrib.string)
 
 (defn proc-cpuspeed []
-  "find out the cpu speed in GHz by reading /proc/cpuinfo"
+  "Find out the cpu speed in GHz by reading /proc/cpuinfo.
+ Almost certainly doesn't work in Windows. Macs?"
   (let [procspeed  (/ (read-string
                        (clojure.contrib.string/replace-by
                         #"cpu MHz\t\t: " (constantly "")
@@ -44,13 +90,14 @@
                                   (java.io.FileReader.
                                    (java.io.File. "/proc/cpuinfo"))))))))
                       1000.0)]
-    (print "cpuspeed from proc" procspeed "GHz")
+    (println "cpuspeed from proc" procspeed "GHz")
     procspeed))
 
-(proc-cpuspeed);; 2.399 GHz on desktop, 1.6 on laptop, but there are two cores there.
-;; often when laptop is idle, the cpu will cut down to 0.8, which will screw things up fairly royally!
+(proc-cpuspeed);; 2.399 GHz on my desktop, 1.6 on my laptop, but there are two cores
+;; in the laptop.  Also, often, when laptop is idle, the cpu will cut down to 0.8, which
+;; will screw things up fairly royally!
 
-;; There has got to be a better way to do this, but Lord, the roman hyacinths are blooming in bowls and 
+;; There has got to be a better way to do this, but Lord, the Roman hyacinths are blooming in bowls and 
 
 (def *cpuspeed*
   (let [speed (proc-cpuspeed)]
@@ -66,15 +113,15 @@
 
 ;; Forgive me.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Now we can define a microbenchmarking macro which takes an expression
 ;; and the number of iterations that its calculation represents, and
 ;; tell us how many cpu cycles went into every iteration.
 
-;; Do computers still work like this?
-;; When I were a lad everything were different...
 (defmacro cyclesperit [expr its]
   `(let [start# (. System (nanoTime))
-         ret# ( ~@expr ~its )
+         ret# ( ~@expr (/ 1.0 ~its) ~its )
          finish# (. System (nanoTime))]
      (int (/ (* *cpuspeed* (- finish# start#)) ~its))))
 
@@ -83,7 +130,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Runge-Kutta solver as originally written. This is how I'd do it if
-;; I wasn't interested in the intermediate results, just the final value of y
+;; I wasn't interested in the intermediate results, just the final value of y.
 
 (defn f [t y] (- t y))
 
@@ -94,7 +141,7 @@
       (recur t1 y1 h (dec its)))
     [t0 y0 h its]))
 
-;; Let's see how it goes: remember y(1) = e^-1 0.36787944117144233
+;; Let's see how it goes: remember y(1) should approximate e^-1 0.36787944117144233
 (def results (map #(second (solveit 0.0 0.0 (/ 1.0 %) %)) '(1 10 100 1000 10000 100000)))
 ;;(0.0 0.34867844010000004 0.3660323412732297 0.36769542477096434 0.367861046432899 0.3678776017662642)
 (map #(- (Math/exp -1) %) results)
@@ -104,10 +151,11 @@
 ;; Ten times more iterations leads to a ten times better result, which we'd
 ;; expect from theory.
 
+;; And here's an expression that times the loop over 100000 iterations
 
-;; And here's an expression that times it over 100000 iterations
+(cyclesperit (solveit 0.0 1.0) 1000000)
 
-(cyclesperit (solveit 0.0 1.0 0.01) 100000)
+;; laptop sample timings
 2374
 2070
 1816
@@ -122,10 +170,10 @@
 
 ;; On my desktop, the results are even worse
 ;; desktop
-3167
-2704
-3005
-;; laptop
+2600
+2862
+2576
+;; vs laptop
 1927
 1762
 1765
@@ -134,15 +182,17 @@
 ;; advantage of its two cores.
 
 ;; So how do we make it faster?
-(cyclesperit (solveit 0.0 1.0 0.01) 100000)
 
-;; There's a fairly significant speed up to be had from
-;; killing off function calls,
-;; I think this is because primitives don't make it through function boundaries
-;; They need to be boxed and unboxed.
+;; There's a fairly significant speed-up to be had from killing off function
+;; calls. I think this is because primitives don't make it through function
+;; boundaries They need to be boxed and unboxed.
 
-;; We'll inline f and create an internal target for recur, using casts to doubles
-;; to make sure that inside the loop/recur, only java primitives are seen.
+;; There is something a bit odd about a functional language where function calls
+;; are inefficient, but I understand that great men are working on the problem.
+
+;; In the meantime, we'll inline f by hand and create an internal target for
+;; recur, using casts for the initial values to make sure that inside
+;; the loop/recur, only java primitives are seen.
 
 (defn solveit [t0 y0 h its]
   (loop [t0 (double t0) y0 (double y0) h (double h) its (int its)]
@@ -152,25 +202,55 @@
         (recur t1 y1 h (dec its)))
       [t0 y0 h its])))
 
+(cyclesperit (solveit 0.0 1.0) 10000000)
 ;; Much better, but still rather high.
 ;;desktop
-570
-580
-564
+488
+506
+486
 ;;laptop
 384
 384
 386
-(cyclesperit (solveit 0.0 1.0 0.01) 10000000)
 
-;; At this point, we run jvisualvm, and excellent piece of software
-;; that can be installed with
+
+;; At this point, we bring in the excellent jvisualvm, an excellent piece of
+;; software that can be installed with
+
 ;; # sudo apt-get visualvm
-;; the profiler suggest integer casts are done every time round the loop,
-;; and are very expensive
 
-;; Another factor of ten comes from the (> its 0) call.  It seems that even
-;; though clojure knows that its is an int, it can't figure out that 0 is??
+;; Just run it and everything will be obvious.
+
+;; When using jvisualvm, you should be careful to use the most stripped down
+;; clojure image possible.  I routinely require all of contrib on startup, and
+;; this means that the poor profiler has to instrument something like 10000
+;; classes.  This takes ages. If you start with a clean image of just clojure
+;; itself (it's ok to have everything on the class path, just don't load it),
+;; then it's only about 1000 classes, and everything happens 10 times faster.
+;; You still need to wait about 10 seconds while turning profiling on or off.
+
+;; Attach jvisualvm and then run
+
+(cyclesperit (solveit 0.0 1.0) 1000000)
+
+;; The profiling slows everything down to treacle, even the REPL, so remember to
+;; de-attach it before trying to do anything that might take noticeable time.
+
+
+;; I'm using EMACS to write and execute this code, so the relevant procedure
+;; calls can be found by taking a profiler snapshot and looking under the SWANK
+;; Worker Thread.
+
+;; There are four innocent looking calls to add, minus, and multi, all with
+;; signature (double, double).  There's one to dec(int). But there's one to
+;; gt(int, Object). That only takes 20% of the time, but under it there's a
+;; whole tree of other calls. 
+
+
+;; The profiler suggest that function overload resolutions are being done every
+;; time round the loop. Weirdly, it suggests that they're not very expensive compared to add(double,double).
+;; I am suspicious, so I'm going to try changing (> its 0) to (> its (int 0))
+
 (defn solveit [t0 y0 h its]
   (loop [t0  (double t0) y0  (double y0) h (double h) its (int its)]
     (if (> its (int 0)) 
@@ -179,20 +259,36 @@
         (recur t1 y1 h (dec its)))
       [t0 y0 h its])))
 
+;; remember to detach the profiler! If you don't you'll get cycle counts in the 100000s
+
+(cyclesperit (solveit 0.0 1.0) 1000000)
 ;; desktop
-60
-63
-61
+59
+58
+55
 ;; laptop
 50
 50
 49
-(cyclesperit (solveit 0.0 1.0 0.01) 100000000)
-;; Were now running round the loop 100 million times, and the startup effect
-;; seems to have gone away.
 
-;; However, it seems that we can find another factor of two here by making an
-;; explicit variable for zero.  The Lord alone knows what is going on here:
+;; Wow! That's made a vast difference.
+;; Apparently the literal 0 was being treated as a generic object. I can see why that would be slow,
+;; but the profiler said that it was only 20% of the running cost.
+;; It seems more likely that removing it has somehow decontaminated the other calls.
+;; Maybe it's allowing the variables to stay in registers, or something?
+
+;; At any rate, the loop is now about ten times faster, and laptop and desktop
+;; are looking much more comparable in terms of cycles/iteration.
+
+;; Let's have another look with the profiler:
+
+(cyclesperit (solveit 0.0 1.0) 1000000)
+
+;; Again, the profiling looks about what you'd expect, except that a method
+;; called RT.intCast is being called just as often as the multiplies, minuses,
+;; and decs that I'm expecting to see. The profiler claims that it's not taking
+;; up much time, but let's try to get rid of it by making an explicit variable
+;; for zero.  
 (defn solveit [t0 y0 h its]
   (let [zero (int 0)]
     (loop [t0 (double t0) y0 (double y0) h (double h) its (int its)]
@@ -202,30 +298,45 @@
           (recur t1 y1 h (dec its)))
       [t0 y0 h its]))))
 
+;; Remove profiler and re-time:
+(cyclesperit (solveit 0.0  1.0) 100000000)
+
 ;;desktop
-26
-28
-27
+24
+24
+24
+
 ;;laptop
 
 19
 19
 20
-(cyclesperit (solveit 0.0  1.0 0.01) 100000000)
 
-;; The profiler is now telling me that there are
-;; 2 adds, 1 gt, 1 minus, 1 dec and 1 multiply in every loop,
-;; which is what I'd expect if I was writing assembler,
-;; but I'm suspicious that it can tell! Presumably there's still some dispatching
-;; going on?
+;; Doing the (int 0) outside the loop again seems to have doubled the speed of
+;; the loop.
+
+;; The profiler is now telling me that there are: 2 adds(double,double), 1
+;; gt(int,int), 1 minus(double, double), 1 dec(int) and 1 multiply(double,
+;; double) in every loop, which is what I'd expect if I was writing C or Java to
+;; do this, but I'm suspicious that it can tell! Presumably there's still some
+;; dispatching going on?
 
 ;; With 4 floating point, 1 gt, 1 dec, and 1 conditional branch I'd imagine that
-;; 7 cycles/loop would be as good as it gets without being clever.
+;; 7 cycles/loop would be as fast as this loop could be made to run without being clever.
 
-;; So it appears that there's only a factor of 3 on laptop between this loop
-;; as written, and what I'd expect from a C program!
+;; So it appears that there's only around a factor of 3 between this loop
+;; as written, and what I'd expect from a C, Java or assembler program. 
 
-(time (solveit 0.0 1.0 0.01 100000000))
+;; In absolute terms:
+
+"Elapsed time: 1027.354276 msecs"
+[1000000.0007792843 999999.000779284 0.01 0]
+
+"Elapsed time: 1025.422183 msecs"
+[0.09999999995254745 0.9096748359793724 1.0E-9 0]
+"Elapsed time: 1026.64446 msecs"
+[1.0000000022898672 0.7357588790870762 1.0E-8 0]
+(time (solveit 0.0 1.0 (/ 1.0 100000000) 100000000))
 ;;laptop
 "Elapsed time: 1215.044133 msecs"
 [1000000.0007792843 999999.000779284 0.01 0]
@@ -233,7 +344,7 @@
 "Elapsed time: 1130.129868 msecs"
 [1000000.0007792843 999999.000779284 0.01 0]
 
-;; 1.1 seconds to do 100 000 000 iterations on my desktop.
+;; 1.1 seconds to do 100 000 000 iterations on my desktop, at about 24 cycles/loop
 
 ;; 1.2 seconds on my laptop, which has about half the clock speed, and which
 ;; seems to take 19 cycles for every loop
@@ -243,16 +354,82 @@
 
 ;; Does anyone have any ideas how to bum a few more cycles out of the loop?
 
+
+;; So we can make it go pretty fast. Does it still work?
+
+;; Remember y(1) should approximate e^-1 0.36787944117144233, and our vast speed up means that it's now not unreasonable to throw 1 000 000 000 iterations
+;; at the problem.
+(def results (map #(second (solveit 0.0 0.0 (/ 1.0 %) %)) '(1 10 100 1000 10000 100000 1000000 10000000 100000000 1000000000)))
+;; (0.0 0.34867844010000004 0.3660323412732297 0.36769542477096434 0.367861046432899 0.3678776017662642 0.3678792572317447 0.3678794227282174 0.3678794397549051 0.3678794410553999)
+
+(map #(- (Math/exp -1) %) results)
+;;(0.36787944117144233 0.019201001071442292 0.001847099898212634 1.8401640047799317E-4 1.8394738543314748E-5 1.8394051781167597E-6 1.8393969763996765E-7 1.8443224947262138E-8 1.4165372208552185E-9 1.1604245342411446E-10)
+
+;; Cool! Nine Significant Figures.
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Premature optimization is the root of all evil
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Of course, it's a major sin to optimize like this
+;; Of course, it's a major sin to optimize like this before you optimize your algorithm.
+
+;; Since the problem that we're solving is smooth, we could use a higher order Runge-Kutta method instead:
+;; Here's the mighty Runge Kutta order 4, usually known as 'the' Runge-Kutta method.
+
+;; By analogy with the previous function, I'm going to define locals for 0, 2.0
+;; and 6.0, which are all needed in the fourth order formula. Otherwise it's very similar.
+
+(defn solveit [t0 y0 h its]
+  (let [zero (int 0) two (double 2) six (double 6)]
+    (loop [t0 (double t0) y0 (double y0) h (double h) its (int its)]
+      (if (> its zero) 
+        (let [h2 (/ h two)
+              k1 (- t0 y0)
+              k2 (- (+ t0 h2) (+ y0 (* h2 k1)))
+              k3 (- (+ t0 h2) (+ y0 (* h2 k2)))
+              k4 (- (+ t0 h)  (+ y0 (* h k3)))
+              t1 (+ t0 h)
+              y1 (+ y0 (* (/ h six)
+                          (+ (+ k1 (* k2 two)) (+ (* two k3) k4))))]
+          (recur t1 y1 h (dec its)))
+      [t0 y0 h its]))))
 
 
+(cyclesperit (solveit 0.0  1.0) 10000000)
+;; desktop
+177
+147
+145
+
+;; This takes about five times longer per step, which looks about right for the extra complexity of the calculation,
+;; so let's drop the last couple of trials because they take a while and check whether the new function works.
 
 
+;; True answer: 0.36787944117144233
+(def results (map #(second (solveit 0.0 0.0 (/ 1.0 %) %)) '(1 10 100 1000 10000 100000 1000000 10000000)))
+;;(0.375 0.3678797744124984 0.3678794412023557 0.36787944117144566 0.3678794411714117 0.36787944117113575 0.3678794411715326 0.36787944112224436)
+
+(map #(- (Math/exp -1) %) results)
+;;(-0.007120558828557666 -3.3324105608301124E-7 -3.0913382964570246E-11 -3.3306690738754696E-15 3.064215547965432E-14 3.06588088250237E-13 -9.026113190202523E-14 4.919797902402934E-11)
+
+;; So by being a bit smarter, we can get 15 significant figures with only 1000 iterations.
+
+;; It looks as though using 10 times as many steps makes us 10000 times more
+;; accurate now, which again is in accordance with the theory. The four zeros in
+;; 10000 are why it's called 'fourth order'.
+
+;; But actually, after 1000 iterations, the accuracy actually gets worse!
+
+;; We're running into floating point 'noise' here.  With 10 000 000 iterations,
+;; the tiny errors in the floating point calculations are adding up to dominate
+;; the error in the approximation method. First order Runge-Kutta isn't good
+;; enough to see this effect, although it is there.  Presumably if we'd tried
+;; running the method for 100 billion iterations then we wouldn't have got any
+;; more accurate. Which would have been a disappointment after hours of computing.
+;; Without using an exact test case, there would have been no way to tell.
 
 
 
