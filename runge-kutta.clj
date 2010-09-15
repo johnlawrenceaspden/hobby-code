@@ -1,35 +1,38 @@
 ;; Numerical solution of dy/dt = f (t,y)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; optimization utilities
+
+
+(set! *warn-on-reflection* true)
+
+(require 'clojure.contrib.string)
+
+(defn cpuspeed []
+  "find out the cpu speed by reading /proc/cpuinfo"
+  (/ (read-string
+      (clojure.contrib.string/replace-by
+       #"cpu MHz\t\t: " (constantly "")
+       (first (clojure.contrib.string/grep
+               #"cpu MHz.*"
+               (line-seq
+                (java.io.BufferedReader.
+                 (java.io.FileReader. (java.io.File. "/proc/cpuinfo"))))))))
+     1000.0))
+
+(cpuspeed);; 2.399 GHz on desktop, 1.6 on laptop, but there are two cores there.
+
+(defmacro cyclesperit [expr its]
+  `(let [start# (. System (nanoTime))
+         ret# ( ~@expr ~its )
+         finish# (. System (nanoTime))]
+     (int (/ (* (cpuspeed) (- finish# start#)) ~its))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Runge-Kutta solver as originally written:
 
 (defn f [t y] (- t y))
-
-(defn iterator [[t0 y0 h]]
-  (let [t1 (+ t0 h)
-        y1 (+ y0 (* h (f t0 y0)))]
-    [t1 y1 h]))
-
-
-(def iterations (iterate iterator [0.0 1.0 0.01]))
-
-(time (nth iterations 100000))
-"Elapsed time: 545.998816 msecs"
-
-;; 1 600 000 000 ops/sec
-;; 1 600 000 ops/msec
-;; 545 msecs/ 100 000 its = 0.00545 msecs/it (* 0.00545 1600000)
-;; 8720 ops/it??
-
-;; ops/it=ghz*nanotime/its
-
-(defmacro opsperit [expr ghz, its]
-  `(let [start# (. System (nanoTime))
-         ret# ~expr
-         finish# (. System (nanoTime))]
-     [(/ (* ~ghz (- finish# start#)) ~its), ret#]))
-
-(opsperit (nth iterations 100000) 1.6 100000)
-[2880.876992 [999.9999999992356 998.9999999992357 0.01]]
-[2918.492992 [999.9999999992356 998.9999999992357 0.01]]
 
 (defn solveit [t0 y0 h its]
   (if (> its 0) 
@@ -38,39 +41,174 @@
       (recur t1 y1 h (dec its)))
     [t0 y0 h its]))
 
-(opsperit (solveit 0.0 1.0 0.01 1000000) 1.6 1000000)
-[1867.9925168000002 [10000.000000171856 9999.000000171847 0.01 0]]
+;;desktop
+3167
+2704
+3005
+(cyclesperit (solveit 0.0 1.0 0.01) 100000)
 
+
+;; There's a fairly significant speed up to be had from
+;; killing off function calls,
+;; (I think because primitives don't make it through function boundaries)
+;; We inline f and create an internal target for recur, with casts to doubles.
 
 (defn solveit [t0 y0 h its]
-  (loop [t0 t0 y0 y0 h h its its]
+  (loop [t0 (double t0) y0 (double y0) h (double h) its (int its)]
     (if (> its 0) 
       (let [t1 (+ t0 h)
-            y1 (+ y0 (* h (f t0 y0)))]
+            y1 (+ y0 (* h (- t0 y0)))]
         (recur t1 y1 h (dec its)))
       [t0 y0 h its])))
 
-(opsperit (solveit 0.0 1.0 0.01 1000000) 1.6 1000000)
-[1687.9692032 [10000.000000171856 9999.000000171847 0.01 0]]
+;;desktop
+570
+580
+564
+(cyclesperit (solveit 0.0 1.0 0.01) 10000000)
 
-(set! *warn-on-reflection* true)
+;; profiler suggest integer casts done often
+
+;; Another factor of ten comes from the (> its 0) call.
+;; Even though it knows its is an int, it can't figure out that 0 is??
+(defn solveit [t0 y0 h its]
+  (loop [t0  (double t0)
+         y0  (double y0)
+         h   (double h)
+         its (int its)]
+    (if (> its (int 0)) 
+      (let [t1 (+ t0 h)
+            y1 (+ y0 (* h (- t0 y0)))]
+        (recur t1 y1 h (dec its)))
+      [t0 y0 h its])))
+
+;; desktop
+60
+63
+61
+(cyclesperit (solveit 0.0 1.0 0.01) 100000000)
+
+;; The Lord alone knows what is going on here, for another factor of two
+;; Making (int 0) into the explicit constant zero helps.
 
 (defn solveit [t0 y0 h its]
-  (loop [ t0 (float t0)
-         y0 (float y0)
-         h (float h)
-         its (int its)]
-    (if (> its 0) 
-      (let [t1 (float (unchecked-add t0 h))
-            y1 (float (unchecked-add y0 (unchecked-multiply h (float (f t0 y0)))))]
-        (recur t1 y1 h (dec its)))
+  (let [zero (int 0)]
+    (loop [t0 (double t0) y0 (double y0) h (double h) its (int its)]
+      (if (> its zero) 
+        (let [t1 (+ t0 h)
+              y1 (+ y0 (* h (- t0 y0)))]
+          (recur t1 y1 h (dec its)))
       [t0 y0 h its])))
 
-(opsperit (solveit 0.0  1.0 0.01 1000000) 1.6 1000000)
-[1483.4707072 [9865.224 9864.235 0.01 0]]
+;;desktop
+26
+28
+27
+(cyclesperit (solveit 0.0  1.0 0.01) 100000000)
+
+;; profiler says 2xadd, 1 gt, 1xminus, 1xdec 1xmulti
+;; 4 floating point, 1 gt, 1 dec, 1 conditional branch;; 7 cycles/loop is optimal?
+;; So maybe factor of 4 slower than hand-optimized?
+
+(time (solveit 0.0 1.0 0.01 100000000))
+"Elapsed time: 1130.129868 msecs"
+[1000000.0007792843 999999.000779284 0.01 0]
+
+;; 1.1 seconds to do 100 000 000 iterations on my desktop.
+
+
+
+
+;;desktop
+570
+580
+564
+
+(cyclesperit (solveit 0.0 1.0 0.01) 10000000)
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Lazy sequence thingy.
+;; Assuming no way to optimize this because it has to involve function call?
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn iterator [[t0 y0 h]]
+  (let [t1 (+ t0 h)
+        y1 (+ y0 (* h (f t0 y0)))]
+    [t1 y1 h]))
+
+(def iterations (iterate iterator [0.0 1.0 0.01]))
+
+;;desktop
+3271
+3359
+3727
+(cyclesperit (nth iterations) 10000)
+
+;; this doesn't seem to help
+(defn iterator [[t0 y0 h]]
+  (let [t0 (double t0)
+        y0 (double y0)
+        h  (double h)]
+  (let [t1 (+ t0 h)
+        y1 (+ y0 (* h (f t0 y0)))]
+    [t1 y1 h])))
+
+(def iterations (iterate iterator [0.0 1.0 0.01]))
+
+;;desktop
+
+3182
+3463
+3164
+(cyclesperit (nth iterations) 10000)
+
+
+
+
+
+
+
+
+
+
+
+;; Alternatively:
+;;(time (nth iterations 100000))
+
+;; On desktop: "Elapsed time: 619.078491 msecs"
+;; 2 399 573 000 ops/sec
+;; 2 399 573 ops/msec
+;; 619 msecs / 100 000 its = 0.00619 msecs/it (* 0.00619 2399573)
+;; 14853 cycles/it
+
+;; On laptop:  "Elapsed time: 545.998816 msecs"
+;; 1 600 000 000 ops/sec
+;; 1 600 000 ops/msec
+;; 545 msecs/ 100 000 its = 0.00545 msecs/it (* 0.00545 1600000)
+;; 8720 ops/it??
+
+;; ops/it=ghz*nanotime/its
+
+
+
+;;(cyclesperit (nth iterations 100000) 100000)
+;;desktop
+;;[4841.019052760331 [999.9999999992356 998.9999999992357 0.01]]
+;;[5454.73967420272 [999.9999999992356 998.9999999992357 0.01]]
+;;laptop
+;;[2880.876992 [999.9999999992356 998.9999999992357 0.01]]
+;;[2918.492992 [999.9999999992356 998.9999999992357 0.01]]
