@@ -376,11 +376,22 @@
 
 ;; Of course, it's a major sin to optimize like this before you optimize your algorithm.
 
-;; Since the problem that we're solving is smooth, we could use a higher order Runge-Kutta method instead:
-;; Here's the mighty Runge Kutta order 4, usually known as 'the' Runge-Kutta method.
+;; Since the problem that we're solving is smooth, we could use a higher order Runge-Kutta method instead.
+;; Here's the mighty Runge Kutta order 4, usually known as 'the' Runge-Kutta method:
 
 ;; By analogy with the previous function, I'm going to define locals for 0, 2.0
-;; and 6.0, which are all needed in the fourth order formula. Otherwise it's very similar.
+;; and 6.0, which are all needed in the fourth order formula. Otherwise it's
+;; very similar, except for:
+
+;; In the final addition, there's a place where you add
+;; four things together.
+;; (+ (+ a b) (+ c d)) turns out to be faster than (+ a b c d).
+
+;; I didn't use the profiler to find this out, I knew it because the
+;; inlining of binary addition keeps screwing up programs of mine that rely on
+;; things like redefining + .
+
+;; And so I knew it only happened for two-argument +.
 
 (defn solveit [t0 y0 h its]
   (let [zero (int 0) two (double 2) six (double 6)]
@@ -430,6 +441,142 @@
 ;; running the method for 100 billion iterations then we wouldn't have got any
 ;; more accurate. Which would have been a disappointment after hours of computing.
 ;; Without using an exact test case, there would have been no way to tell.
+
+;; So it looks like our method is limited to 14 significant figures no matter how much time we throw at the problem.
+;; Once we're doing a thousand iterations or so, the small errors in the 18th place mount up. If we do more iterations
+;; after that, then we actually get less accurate as the noise dominates the signal.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Solving ODEs to ludicrously high accuracy
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Remember that we're only using doubles for speed. If we only need 1000
+;; iterations to hit the limits of our method, maybe we don't need that
+;; speed?
+
+(defn solveit [t0 y0 h its]
+      (if (> its 0) 
+        (let [h2 (/ h 2)
+              k1 (- t0 y0)
+              k2 (- (+ t0 h2) (+ y0 (* h2 k1)))
+              k3 (- (+ t0 h2) (+ y0 (* h2 k2)))
+              k4 (- (+ t0 h)  (+ y0 (* h k3)))
+              t1 (+ t0 h)
+              y1 (+ y0 (* (/ h 6) (+ k1 (* 2 k2) (* 2 k3) k4)))]
+          (recur t1 y1 h (dec its)))
+      [t0 y0 h its]))
+
+
+(cyclesperit (solveit 0.0  1.0) 1000)
+;;desktop
+39856
+41956
+50955 ;; performance has suffered a little.
+
+;; but it hardly matters
+(map #(- (Math/exp -1) %) (map #(second (solveit 0.0 0.0 (/ 1.0 %) %)) '(1 10 1000 10000)))
+(-0.007120558828557666 -3.3324105608301124E-7 -3.3306690738754696E-15 3.064215547965432E-14)
+
+(time (solveit 0.0 0.0 (/ 1.0 1000) 1000))
+"Elapsed time: 14.410201 msecs"
+[1.0000000000000007 0.36787944117144566 0.001 0]
+
+
+;; However, now we've got a nice generic function again, we can use exact arithmetic:
+(solveit 0 0 (/ 1 1) 1) [1 3/8 1 0]
+(solveit 0 0 (/ 1 2) 2) [1 54289/147456 1/2 0]
+(solveit 0 0 (/ 1 4) 4) [1 6472063200625/17592186044416 1/4 0]
+(solveit 0 0 (/ 1 8) 8) [1 3208307719630240099790400946202112034561/8721064880344833042121878122499340763136 1/8 0]
+(solveit 0 0 (/ 1 16) 16)[1 11990140112119775043369217033912424554081216405608577694520861916980855720874431807131808961/32592575621351777380295131014550050576823494298654980010178247189670100796213387298934358016 1/16 0]
+(solveit 0 0 (/ 1 32) 32)[1 246412356133955816199620382899316293432129767245646558344929340902249935350907593078160372146903045963881152378256286370877112937869948723651051988346796991863123856378526863577730348474112307403863978124347867041976384981553451907543041/669818224522974246136511205636237783432933957060969763905404382286154970612525584300750613343385316201568039565326788308545168150360949005367701501572763151249161016406666700525933789886716236394905233931211102250882009673431225494142976 1/32 0]
+;; Unfortunately, that means that the length of the numbers in the fraction looks like it's doubling with the number of steps.
+;; Our ten thousand iterations might be a bit tricky.
+(- (Math/exp -1) (second (solveit 0 0 (/ 1 32) 32)))-3.000808657116494E-9
+
+(map #(- (Math/exp -1) (second (solveit 0 0 (/ 1 %) %))) '(1 2 4 8 16 32 64 128))
+(-0.007120558828557666 -2.914030125854561E-4 -1.4758235306278067E-5 -8.307505093840817E-7 -4.9281128566835974E-8 -3.000808657116494E-9 -1.8512297250694587E-10 -1.1495082663515177E-11)
+
+;; Fine accuracy: 10 significant figures with 128 steps, but run time is going through the roof
+
+;; We need to control the size of the fraction somehow. Keep it down to maybe 30 digit numerator and denominator on every step.
+
+(require 'clojure.contrib.math)
+(defn control [x]
+  (/ (clojure.contrib.math/floor (* x 1000000000000000000000000000)) 1000000000000000000000000000))
+
+(control 2/3) ;;333333333333333333333333333/500000000000000000000000000
+
+(defn solveit [t0 y0 h its]
+      (if (> its 0) 
+        (let [h2 (/ h 2)
+              k1 (- t0 y0)
+              k2 (- (+ t0 h2) (+ y0 (* h2 k1)))
+              k3 (- (+ t0 h2) (+ y0 (* h2 k2)))
+              k4 (- (+ t0 h)  (+ y0 (* h k3)))
+              t1 (+ t0 h)
+              y1 (+ y0 (* (/ h 6) (+ k1 (* 2 k2) (* 2 k3) k4)))]
+          (recur t1 (control y1) h (dec its)))
+      [t0 y0 h its]))
+
+
+(map #(- (Math/exp -1) (second (solveit 0 0 (/ 1 %) %)))
+     '(1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384))
+
+(-0.007120558828557666
+ -2.914030125854561E-4
+ -1.4758235306278067E-5
+ -8.307505093840817E-7
+ -4.9281128566835974E-8
+ -3.000808657116494E-9
+ -1.8512297250694587E-10
+ -1.1495082663515177E-11
+ -7.160383397319947E-13
+ -4.468647674116255E-14
+ -2.7755575615628914E-15
+ -1.6653345369377348E-16
+ 5.551115123125783E-17
+ 5.551115123125783E-17
+ 5.551115123125783E-17)
+
+;; WTF? We're computing to 30 digits of accuracy, and there are only 16384 iterations.
+;; The answer is that our 'exact solution' isn't exact!
+
+(Math/exp -1) 0.36787944117144233
+
+;; We've reached, with 4096 iterations, the limit of the accuracy of double precision arithmetic.
+
+;; That will do for now. 
+
+(time (solveit 0 0 (/ 1 4096) 4096))
+"Elapsed time: 2247.582868 msecs"
+[1 91969860292860583122289481/250000000000000000000000000 1/4096 0]
+;; two and a bit seconds for an accuracy of sixteen decimal places. thirty
+;; second to twenty, if we wanted.  We could probably do a bit better by using a
+;; more intelligent control. Rather than rounding to the nearest 1/10^30th, we
+;; could take the nearest fraction representable with 15digit numerator and
+;; denominator. That would probably speed things up by a small factor.
+
+
+
+
+
+
+
+
+(map #(- (Math/exp -1) %) (map #(second (solveit 0 0 (/ 1 %) %)) '(1 10 100 1000 10000)))(-0.007120558828557666 -3.3324105608301124E-7 -3.091316091996532E-11 -3.0531133177191805E-15 5.551115123125783E-17)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
