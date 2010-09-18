@@ -25,17 +25,20 @@
 ;; I.e. I want to be able to type 'source' rather than 'clojure.contrib.repl-utils/source'
 (use 'clojure.test)
 (use 'clojure.inspector)
-(use 'clojure.contrib.repl-utils)
-(use 'clojure.contrib.pprint)
+(use 'clojure.repl)
+(use 'clojure.pprint)
+(use 'clojure.trace)
+;;(use 'clojure.contrib.repl-utils)
+;;(use 'clojure.contrib.pprint)
 ;(use 'clojure.contrib.trace) ;;see below
 
 ;; There's a trace in incanter which conflicts with the one from cct. Manual require/refer avoids importing it
-(require 'clojure.contrib.trace)
-(refer 'clojure.contrib.trace :exclude '(trace))
+;;(require 'clojure.contrib.trace)
+;;(refer 'clojure.contrib.trace :exclude '(trace))
 
 ;; More conservatively, we could require them with short prefixes
-(require '(clojure [test :as ct] [inspector :as ci])) 
-(require '(clojure.contrib [repl-utils :as ccr] [pprint :as ccp] [trace :as cct]))
+;;(require '(clojure [test :as ct] [inspector :as ci])) 
+;;(require '(clojure.contrib [repl-utils :as ccr] [pprint :as ccp] [trace :as cct]))
 
 
 ;; It drives me up the wall that it's (doc re-pattern) but (find-doc "re-pattern").
