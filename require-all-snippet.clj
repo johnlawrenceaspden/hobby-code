@@ -27,10 +27,10 @@
 (use 'clojure.inspector)
 (use 'clojure.repl)
 (use 'clojure.pprint)
-(use 'clojure.trace)
+;;(use 'clojure.trace)
 ;;(use 'clojure.contrib.repl-utils)
 ;;(use 'clojure.contrib.pprint)
-;(use 'clojure.contrib.trace) ;;see below
+;;(use 'clojure.contrib.trace) ;;see below
 
 ;; There's a trace in incanter which conflicts with the one from cct. Manual require/refer avoids importing it
 ;;(require 'clojure.contrib.trace)
