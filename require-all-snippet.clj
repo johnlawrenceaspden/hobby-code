@@ -115,7 +115,7 @@
               (seq (.getURLs (java.lang.ClassLoader/getSystemClassLoader))))))
 
 (defn print-classpath []
-  (clojure.contrib.pprint/pprint (get-classpath)))
+  (pprint (get-classpath)))
 
 (defn get-current-directory []
   (. (java.io.File. ".") getCanonicalPath))
