@@ -21,24 +21,17 @@
               (filter #(. (str %) startsWith strng) 
                       (clojure.contrib.find-namespaces/find-namespaces-on-classpath)))))
 
-;; The functions in these namespaces are so useful at the REPL that I want them 'use'd.
-;; I.e. I want to be able to type 'source' rather than 'clojure.contrib.repl-utils/source'
-(use 'clojure.test)
-(use 'clojure.inspector)
-(use 'clojure.repl)
-(use 'clojure.pprint)
-;;(use 'clojure.trace)
-;;(use 'clojure.contrib.repl-utils)
-;;(use 'clojure.contrib.pprint)
-;;(use 'clojure.contrib.trace) ;;see below
+;; Some of clojure's extra namespaces are so useful at the REPL that I want them
+;; to have shorter names, i.e. I want to be able to type 'r/source' rather than
+;; 'clojure.repl/source'.
+;; This also means that emacs tab completion can find them with e.g. r/<TAB>
 
-;; There's a trace in incanter which conflicts with the one from cct. Manual require/refer avoids importing it
-;;(require 'clojure.contrib.trace)
-;;(refer 'clojure.contrib.trace :exclude '(trace))
-
-;; More conservatively, we could require them with short prefixes
-;;(require '(clojure [test :as ct] [inspector :as ci])) 
-;;(require '(clojure.contrib [repl-utils :as ccr] [pprint :as ccp] [trace :as cct]))
+(require '(clojure [test :as t]
+                   [inspector :as i]
+                   [repl :as r]
+                   [pprint :as pp])) 
+(require '(clojure.contrib
+           [trace :as cct]))
 
 
 ;; It drives me up the wall that it's (doc re-pattern) but (find-doc "re-pattern").
@@ -60,17 +53,17 @@
 
 ;; Nice pretty-printed versions of these functions, accepting strings, symbols or quoted symbol
 (defmacro list-publics     
-  ([]   `(pprint (ns-publics-list *ns*)))
-  ([symbol-or-string] `(pprint (ns-publics-list (find-ns (symbol (stringify '~symbol-or-string)))))))
+  ([]   `(clojure.pprint/pprint (ns-publics-list *ns*)))
+  ([symbol-or-string] `(clojure.pprint/pprint (ns-publics-list (find-ns (symbol (stringify '~symbol-or-string)))))))
 
 (defmacro list-refers
-  ([]   `(pprint (ns-refers-list *ns*)))
-  ([symbol-or-string] `(pprint (ns-refers-list (find-ns (symbol (stringify '~symbol-or-string)))))))
+  ([]   `(clojure.pprint/pprint (ns-refers-list *ns*)))
+  ([symbol-or-string] `(clojure.pprint/pprint (ns-refers-list (find-ns (symbol (stringify '~symbol-or-string)))))))
 
 ;; List all the namespaces
-(defn list-all-ns [] (pprint (sort (map ns-name (all-ns)))))
+(defn list-all-ns [] (clojure.pprint/pprint (sort (map ns-name (all-ns)))))
 ;; List all public functions in all namespaces!
-(defn list-publics-all-ns [] (pprint (map #(list (ns-name %) (map first (ns-publics %))) (all-ns))))
+(defn list-publics-all-ns [] (clojure.pprint/pprint (map #(list (ns-name %) (map first (ns-publics %))) (all-ns))))
 
 ;; With all the namespaces loaded, find-doc can be overwhelming.
 ;; This is like find-doc, but just gives the associated names.
@@ -103,7 +96,12 @@
 ;;debugging macro                                try: (* 2 (dbg (* 3 4)))
 (defmacro dbg [x] `(let [x# ~x] (do (println '~x "->" x#) x#))) 
 ;;and pretty-printing version 
-(defmacro ppdbg [x]`(let [x# ~x] (do (println "--")(pprint '~x)(println "->")(pprint x#) (println "--") x#))) 
+(defmacro ppdbg [x]`(let [x# ~x]
+                      (do (println "--")
+                          (clojure.pprint/pprint '~x)
+                          (println "->")
+                          (clojure.pprint/pprint x#)
+                          (println "--") x#))) 
 
 ;;and one for running tests 
 (defmacro run-test [fn] `(test (resolve '~fn)))
@@ -115,7 +113,7 @@
               (seq (.getURLs (java.lang.ClassLoader/getSystemClassLoader))))))
 
 (defn print-classpath []
-  (pprint (get-classpath)))
+  (clojure.pprint/pprint (get-classpath)))
 
 (defn get-current-directory []
   (. (java.io.File. ".") getCanonicalPath))
