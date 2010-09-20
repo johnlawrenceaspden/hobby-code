@@ -135,3 +135,13 @@
 (println "to require all namespaces starting with example:")
 (println "(require-all-namespaces-starting-with \"example\")")
 
+;; see http://blog.n01se.net/?p=85
+(println "setting *print-length* to 103, *print-level* to 13 to deal with infinities")
+(set! *print-length* 103)
+(set! *print-level* 13)
+
+;; but we don't need this bit, 
+;; (require 'clojure.contrib.repl-utils)
+;; (clojure.contrib.repl-utils/add-break-thread!)
+;; because swank repl threads already have a break handler set.
+;; might come in useful for command line repls though.
