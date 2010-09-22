@@ -120,9 +120,6 @@
 (defn get-current-directory []
   (. (java.io.File. ".") getCanonicalPath))
 
-;;require everything from clojure and clojure.contrib, so that find-doc can find it
-(require-all-namespaces-starting-with "clojure")
-
 ;;print the classpath
 (println "Classpath:")
 (print-classpath)
@@ -147,3 +144,9 @@
 ;; (clojure.contrib.repl-utils/add-break-thread!)
 ;; because swank repl threads already have a break handler set.
 ;; might come in useful for command line repls though.
+
+
+;;require everything from clojure and clojure.contrib, so that find-doc can find it. Do it in an agent so it doesn't block repl startup. Jesus, am I really allowed to do this?
+(def require-all-agent (agent "not done"))
+(send-off require-all-agent (fn[agent] (with-out-str (require-all-namespaces-starting-with "clojure"))))
+
