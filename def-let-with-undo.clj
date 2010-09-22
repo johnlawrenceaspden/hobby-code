@@ -56,6 +56,13 @@
 
 (macroexpand '(def-let [a 3 b 2] (* a b)))
 
+(do
+  (defn remove-crapspray [] (do (ns-unmap *ns* (quote a)) (ns-unmap *ns* (quote b))))
+  (println "undo fn:" (quote (defn remove-crapspray [] (do (ns-unmap *ns* (quote a)) (ns-unmap *ns* (quote b))))))
+  (def a 3)
+  (def b 2)
+  (* a b))
+
 
 
 
