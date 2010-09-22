@@ -31,7 +31,8 @@
                    [repl :as r]
                    [pprint :as pp])) 
 (require '(clojure.contrib
-           [trace :as cct]))
+           [trace :as cct]
+           [repl-utils :as ccr]))
 
 
 ;; It drives me up the wall that it's (doc re-pattern) but (find-doc "re-pattern").
@@ -90,7 +91,8 @@
 
 (defmacro source-file [symbol-or-string] `(source-file* (symbol (stringify '~symbol-or-string))))
 
-
+;;get the methods of a java object
+(defn meths [x] (println (apply str (interpose "\n" (map str (.getMethods (if (class? x) x (class x))))))))
 
 
 ;;debugging macro                                try: (* 2 (dbg (* 3 4)))
