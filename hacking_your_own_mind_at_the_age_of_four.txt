@@ -1,0 +1,247 @@
+I have a friend, whom for the sake of his anonymity I shall refer to only as Sips.
+
+Sips has a wonderful, a remarkable ability with dates and numbers. I thought until recently that he had savant abilities. It was said of Ramanujan that every number was a personal friend, and Sips is like that with history. If you give him a random date in the last 2000 years, he will tell you all the interesting things that happened in that year.
+
+I am a useful man in a pub quiz, but there is little point to having me along if Sips is there, because he appears to know a strict superset of all the things I know.
+
+My only comparable talent is a completely useless in depth knowledge of the rules of 2nd edition Dungeons and Dragons, which isn't even much use for playing Dungeons and Dragons these days.
+
+When Sips was a child, he liked to play snakes and ladders, and one day, he noticed that the numbers on a snakes and ladders board go 'as the ox plows', which is to say that they go from left to right 1 2 3 4 5 6 7 8 9 10, then up to 11, then right to left 11 12 13 14 15 16 17 18 19 20, and continue.
+
+A diagram like this.
+
+INSERT DIAGRAM
+
+Sips liked the pattern, and he notcied that historical events make nice patterns on a snakes and ladders board.
+
+Here is the Black Death, as it affected England in the years 1347-1352.
+
+See what a nice shape it makes:
+
+INSERT DIAGRAM
+
+A symmetrical box in the middle of the right hand edge of the board.
+
+Now you will remember for the rest of your life the dates of the Black Death in England, which were ??47 to ??52.
+
+If you're like me, then that will go on a very select list of historical events
+
+53BC Julius Caesar invades England
+53AD Claudius Caesar invades England and stays
+1066 Norman Conquest. William the Bastard kills Harold Godwinson at the Battle of Hastings
+1914-1918 First World War
+1939-1945 Second World War
+1966 English victory over Germany in the Soccer World Cup
+195? Death of King George VI. coronation of Queen Elizabeth II.
+18/07/1970 Birthday
+15/01/19?? Mother's Birthday
+??/??/1980 ZX80 released. 10 year old John begs parents incessantly for one
+??/??/1981 ZX81 released. Parents worn down after one solid year of begging.
+18/07/1981 ZX81 acquired
+??/??/1982 ZX Spectrum.
+18/07/1982 ZX Spectrum acquired. Parents gave in without a fight.
+14/02/19?? Valentine's Day and date of first proper sex.
+9/11/2001  Islam becomes interesting in West.
+
+That's it for me. All the dates I can remember.
+
+When I was a child, I was a slave.
+
+My country considered it so important that I know certain things that they took my childhood away, and replaced it with many mostly dreary years of sitting in stuffy rooms on cheap uncomfortable chairs at nasty vandalised desks coated with old chewing gum listening to lectures.
+
+I had no choice in this matter. I was a child. A slave.
+
+The most egregious horror perpetrated on my mind in all those years was called 'Music'.
+
+These pillocks somehow decided that it one hour of my precious childhood every week was to be spent, not listening to the wonders of music, or acquiring the difficult and valuable skill of listening to music, but to memorizing the dates on which various composers lived and died.
+
+As if the most important thing about Mendelssohn was not the sublime violin concerto in E minor, or how his runaway success poisoned the jealous Wagner's mind with anti-Semitism, and led him to write an essay which led to the most important, the most gifted, the most human and the most humane of all nineteenth century composers to be remembered as a partisan of a retarded ideology invented sixty years after his death by a stack of nasty comic fatheads who didn't understand the first thing about the Ring.
+
+As if the most important thing about Mendelssohn was not his music, but his fucking birthday.
+
+I am happy to say that I have no idea when Mendelssohn's birthday was.
+
+Sips, who has little interest in history, and who considers that music began and ended with Bach and then reawoke with the invention of the blues, and who considers the entire romantic movement to have been an unfortunate failed experiment, can tell you not only Mendelssohn's dates, but can tell you a significant historical event for every year of his life. He will know the date of 'The Jewish Influence in Music'. He will know the date that the Ring was first performed in Bayreuth, even though he has never heard the Ring.
+
+There was widespread amazement recently when he bet a historian a bottle of whisky over the date on which Martin Luther nailed his 95 theses to the door of the church. The amazement came when he lost. He was out by two years. The smart money was on Sips.
+
+I can't remember my own mobile phone number. Nobody remembers mobile numbers these days. Why would you? How could you? You never dial them. Every time someone drops his mobile in the river while drunk they change anyway. You get an e-mail with the new one, and put it in your phone. The whole number is ten digits or so long. Human beings cannot remember ten digits in short term memory. As it goes from your screen to your phone, you do not hold it all at once, and that's the last time you ever see it.
+
+The other day, as a test, I picked a mutual friend's mobile number from my phone at random. It was 07942672385.
+
+OK, what was it? No looking back.
+
+So I asked Sips what it was, and he knew. He'd never dialled it, he said.
+
+I asked him how he knew.
+
+07942 is a common mobile prefix. It's also the date of the battle of
+
+?672 is the date of
+
+?385 is the date of
+
+He'd just noticed that as he was typing it in.
+
+Once upon a time I read a book called, ironically, something something something something Your Memory!
+
+It described a complicated scheme for remembering long numbers by turning them into words. I was sixteen, so I picked a number at random and it made 'A beautiful naked blonde jumps up and down'. I can't remember the system. But if I could, that number would still be there.
+
+Sips developed, by accident, at the age of four, a way of associating a strong mental image with every number from 0 to 2000, and like Ramanujan, without any effort, over the course of his life, he has made a friend of every number from 0 to 2000.
+
+Once he'd explained this to me, and how he did it, I challenged him to multiply two big numbers in his head, racing me doing it on a piece of paper.
+
+He protested. He's no good at mental arithmetic. I'd beat him hands down.
+
+I wanted to see.
+
+I chose two four digit numbers as randomly as I could, and we began multiplying.
+
+It took us both one minute and ten seconds to finish our calculation. 
+
+Neither of us was at all confident in our answer. Neither of us had done a long multiplication for years. Both of us had had to reconstruct the algorithm from first principles while doing the calculation.
+
+It is of no relevance that he was right and I was wrong.
+
+You can't do this in your head. You just can't.
+
+       715
+       267
+   -------
+      5005
+     42900
+    143000
+   -------
+    190905
+
+You haven't got enough short term memory to hold all those digits while working out the small sums and products that make up the bigger numbers, and simultaneously working out the algorithm from first principles.
+
+I found it hard enough on paper. My degree was in mathematics.
+
+I just checked the above sum on computer. I couldn't remember the two numbers I was supposed to multiply, and had to come back and look, and say to myself a couple of times seven hundred and fifteen two hundred and sixty seven.
+
+There are countless experiments that prove that six or seven digits is it for the human memory. You can't hold two five digit numbers reliably in your short term memory even if they've got your undivided attention.
+
+But Sips can. Once he's thought of a number, however long, it becomes a sequence of historical dates. 
+
+And anyone can remember Catharine the Great, publication of Schubert's leider, Agincourt for a few minutes while thinking about something else.
+
+
+
+Now of itself, this is just a magic trick. My friend has superhuman powers, but not of a particularly useful kind (although as long as human beings organise quizzes in the pub he'll not starve).
+
+But it got me thinking about how immensely powerful our minds are, and how crap they are at the same time.
+
+I can ask my computer what the factorial of 10000 is (1x2x3x4x5x....x9998x9999x10000), and it will tell me, in much less time than it takes me to ask the question, what the answer is. It will not get a single digit wrong, and the only way for me to check that is to ask a different computer the same question in a different way.
+
+The interesting, brain bits of a computer are five or six very small pieces of silicon, on which some exceedingly intricate patterns have been engraved.
+
+My brain is a large piece of exceedingly intricate flesh, of roughly the same complexity per tiny bit as a computer.
+
+In an evolutionary sense, it cost a fortune. Your ancestors had very many fewer children than they could have had because they had to pay the enormous energy cost of their brains.
+
+It has to be about as well designed as evolution can make things. Which is not as well as intelligence can make things. But it is very good indeed.
+
+The complexity of the two things, brain and computer, is not even comparable. The brain blows the computer out of the water. It is very, very much larger that the thinking parts of the computer, which are about the size, in complexity terms, as the brain of an insect.
+
+And yet the computer can do, effortlessly in minutes, things that all the humans on the planet working together single mindedly could not do in a million years.
+
+Where is all that brain power going? What is it for? How did it pay the cost of its existence over evolutionary time?
+
+We're not some weird sport. We are the cleverest of the animals, but we are animals. And other animals also have brains. Large, complex, expensive brains that are utterly *rubbish* at things that are very easy for computers.
+
+An insect could not calculate the factorial of 10000. An insect could not calculate the factorial of 5. I can. It's 120. But it took me 10 seconds, and holding all those little numbers in my head at once took about as much short term memory as I have.
+
+Well what is it that animals do with their brains?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
