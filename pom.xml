@@ -50,9 +50,9 @@
       <plugin>
 	<groupId>com.theoryinpractise</groupId>
 	<artifactId>clojure-maven-plugin</artifactId>
-	<version>1.3.4-SNAPSHOT</version>
+        <version>1.3.2</version>
         <configuration>
-          <replScript>../require-all-snippet.clj</replScript>
+          <replScript>require-all-snippet.clj</replScript>
         </configuration>
       </plugin>
 
