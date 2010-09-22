@@ -150,3 +150,5 @@ alias unisonmini2desktop='unison /home/john/Desktop/unison ssh://john@woc-deskto
 alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/sdg/unison'
 alias sw='cd /home/john/hobby-code/maven && mvn clojure:swank'
 alias ssw='cd /home/john/hobby-code && mvn -f simple.pom.xml clojure:swank'
+alias cgg='cd /home/john/hobby-code/ && git pull origin master && git gui'
+
