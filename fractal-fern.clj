@@ -21,10 +21,7 @@
 
 (create-window "Barnsley's Fern" 350 450)
 
-(cls)
 (ink green)
 (scaled-scatter-plot (take 10000 barnsley-points) 50 300 50 400 100)
-
-
 
 

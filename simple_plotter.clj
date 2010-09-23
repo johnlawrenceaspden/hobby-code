@@ -18,26 +18,25 @@
 
 ;; Private machinery
 
-(defvar- lines        (atom []))
-(defvar- inkcolor     (atom green))
-(defvar- papercolor   (atom black))
+(defvar- height       (atom nil))
+(defvar- width        (atom nil))
+(defvar- ink-color     (atom nil))
+(defvar- paper-color   (atom nil))
 (defvar- current-position (atom [0,0]))
-(defvar- defaultink   (atom green))
-(defvar- defaultpaper (atom black))
+(defvar- lines        (atom []))
 (declare thepanel)
 
 
-(defn- draw-lines [#^Graphics2D g2d ]
+(defn- draw-lines [#^Graphics2D g2d xs ys]
   (doseq [[x1 y1 x2 y2 color] @lines]
     (. g2d setColor color)
-    (. g2d drawLine x1 y1 x2 y2)
-    (. g2d drawLine x1 y1 x2 y2)))
+    (. g2d drawLine (* xs x1) (* ys y1) (* xs x2) (* ys y2))))
 
 (defn- render [ #^Graphics2D g w h ]
   (doto g
-    (.setColor @papercolor)
+    (.setColor @paper-color)
     (.fillRect 0 0 w h))
-    (draw-lines g))
+    (draw-lines g (/ w @width) (/ h @height)))
 
 (defn- create-panel []
     "Create a panel with a customised render"
@@ -52,33 +51,24 @@
   (. thepanel repaint))
 
 (defn- primitive-line [x1 y1 x2 y2]
-  (swap! lines conj [x1 y1 x2 y2 @inkcolor])
+  (swap! lines conj [x1 y1 x2 y2 @ink-color])
   (primitive-repaint))
 
-(defn- set-current-position [x1 y1]
-  (swap! current-position (constantly [x1 y1])))
 
-(defn- set-ink [color]
-  (swap! inkcolor (constantly color)))
 
-(defn- set-paper [color]
-  (swap! papercolor (constantly color))
+(defmacro- defsetter [s]
+        `(defn- ~(symbol (str "set-" s)) [~'x] (swap! ~s (constantly ~'x))))
+
+(defsetter height)
+(defsetter width)
+(defsetter ink-color)
+(defsetter current-position)
+
+(defn- set-paper-color [color]
+  (swap! paper-color (constantly color))
   (primitive-repaint))
-
-(defn- set-default-ink [color]
-  (swap! defaultink (constantly color)))
-
-(defn- set-default-paper [color]
-  (swap! defaultpaper (constantly color)))
 
 (defn- remove-lines[] (swap! lines (constantly [])))
-
-(defn- reset[]
-  (set-ink @defaultink)
-  (set-paper @defaultpaper)
-  (set-current-position 0 0)
-  (remove-lines)
-  (primitive-repaint))
 
 (defn- make-scalars [points xleft xright ytop ybottom]
   (let [xmax (reduce max (map first points))
@@ -95,9 +85,12 @@
   ([title] (create-window title 1024 768))
   ([title width height] (create-window title width height white black ))
   ([title width height ink paper]
-     (set-default-ink ink)
-     (set-default-paper paper)
-     (reset)
+     (set-height height)
+     (set-width  width)
+     (set-ink-color ink)
+     (set-paper-color paper)
+     (set-current-position [0 0])
+     (remove-lines)
      (let [frame (JFrame. title)]
        (doto frame
          (.add thepanel)
@@ -106,27 +99,27 @@
          (.setSize (+ width 2) (+ height 32))
          (.setVisible true)))))
 
-(defn cls[]
+(defn cls[] 
   (remove-lines)
   (primitive-repaint))
 
 (defn plot [x1 y1]
   (primitive-line x1 y1 x1 y1)
-  (set-current-position x1 y1))
+  (set-current-position [x1 y1]))
 
 (defn draw [dx dy]
   (let [[x1 y1] @current-position
         [x2 y2] [(+ x1 dx) (+ y1 dy)]]
     (primitive-line x1 y1 x2 y2)
-    (set-current-position x2 y2)))
+    (set-current-position [x2 y2])))
 
 (defn line [x1 y1 x2 y2]
   (plot x1 y1)
   (draw (- x2 x1) (- y2 y1)))
 
-(defn ink [color] (set-ink color))
+(defn ink [color] (set-ink-color color))
 
-(defn paper [color] (set-paper color))
+(defn paper [color] (set-paper-color color))
 
 (defn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
   (let [[xsc ysc] (make-scalars (take scalepoints points) xleft xright ytop ybottom)]
@@ -156,7 +149,7 @@
   (line 512 0 512 1024))
 
 
-;;(sine-example)
+(sine-example)
 
 
 
