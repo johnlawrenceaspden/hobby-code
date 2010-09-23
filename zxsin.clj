@@ -3,14 +3,6 @@
 (use 'simple-plotter)
 (create-window "ZX Graphics" 256 176)
 
-;; 5 CLS
-
-(cls)
-
-;; 5  INK 2
-
-(ink green)
-
 ;; 10 FOR X = 1 TO 255
 ;; 20 PLOT X, 88+80*SIN(X/128*PI)
 ;; 30 NEXT X
@@ -24,19 +16,9 @@
 ;; 50 PLOT 0,88: DRAW 255,0
 ;; 60 PLOT 127,0: DRAW 0,168
 
-(ink yellow)
+(ink gray)
 (plot 0 88) (draw 255 0)
 (plot 127 0) (draw 0 175)
-
-;; And a border
-
-(ink red)
-(plot 0 0) (draw 255 0) (draw 0 175) (draw -255 0) (draw 0 -175)
-
-;; And a blue line right through everything
-
-(ink blue)
-(line 0 0 255 175)
 
 
 

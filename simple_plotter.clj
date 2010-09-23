@@ -3,15 +3,29 @@
            (java.awt Color Graphics Graphics2D Image))
   (:use (clojure.contrib def )))
 
+;; This is an attempt to make graphics in clojure as simple as it was on a ZX
+;; spectrum. Let us count the whole maven/leiningen/cake-clojure-emacs-(require
+;; 'simple-plotter) thing as being a one-time effort equivalent to persuading
+;; one's father to buy a ZX spectrum in the first place.
+
+;; Define some colours to use:
+;; Call java.awt.Color/GREEN simple-plotter/green
+
 (defmacro- defcolours [& colours]
   (list* 'do (map #(list 'def  (symbol (. (str %) toLowerCase)) (symbol (str "Color/" (str %)))) colours)))
 
 (defcolours black blue cyan darkGray gray green lightGray magenta orange pink red white yellow)
 
-(defvar- lines (atom []))
-(defvar- inkcolor (atom green))
-(defvar- papercolor (atom black))
+;; Private machinery
+
+(defvar- lines        (atom []))
+(defvar- inkcolor     (atom green))
+(defvar- papercolor   (atom black))
 (defvar- current-position (atom [0,0]))
+(defvar- defaultink   (atom green))
+(defvar- defaultpaper (atom black))
+(declare thepanel)
+
 
 (defn- draw-lines [#^Graphics2D g2d ]
   (doseq [[x1 y1 x2 y2 color] @lines]
@@ -44,19 +58,55 @@
 (defn- set-current-position [x1 y1]
   (swap! current-position (constantly [x1 y1])))
 
+(defn- set-ink [color]
+  (swap! inkcolor (constantly color)))
+
+(defn- set-paper [color]
+  (swap! papercolor (constantly color))
+  (primitive-repaint))
+
+(defn- set-default-ink [color]
+  (swap! defaultink (constantly color)))
+
+(defn- set-default-paper [color]
+  (swap! defaultpaper (constantly color)))
+
+(defn- remove-lines[] (swap! lines (constantly [])))
+
+(defn- reset[]
+  (set-ink @defaultink)
+  (set-paper @defaultpaper)
+  (set-current-position 0 0)
+  (remove-lines)
+  (primitive-repaint))
+
+(defn- make-scalars [points xleft xright ytop ybottom]
+  (let [xmax (reduce max (map first points))
+        xmin (reduce min (map first points))
+        ymax (reduce max (map second points))
+        ymin (reduce min (map second points))]
+    [(fn[x] (+ xleft (* (/ (- x xmin) (- xmax xmin))    (- xright xleft))))
+     (fn[y] (+ ybottom  (* (/ (- y ymin) (- ymax ymin)) (- ytop ybottom))))]))
+
+;; Public Interface
+
 (defn create-window
   ([] (create-window "Simple Plotter"))
   ([title] (create-window title 1024 768))
-  ([title width height]
-  (let [frame (JFrame. title)]
-    (doto frame
-      (.add thepanel)
-      (.setSize (+ width 2) (+ height 32)) ; the extra space is taken up by window decoration
+  ([title width height] (create-window title width height white black ))
+  ([title width height ink paper]
+     (set-ink ink)
+     (set-paper paper)
+     (let [frame (JFrame. title)]
+       (doto frame
+         (.add thepanel)
+                                        ; the extra space 2,32 is taken up by window decoration
                                         ; how to get that from the OS? 
-      (.setVisible true)))))
+         (.setSize (+ width 2) (+ height 32))
+         (.setVisible true)))))
 
 (defn cls[]
-  (swap! lines (constantly []))
+  (remove-lines)
   (primitive-repaint))
 
 (defn plot [x1 y1]
@@ -73,54 +123,39 @@
   (plot x1 y1)
   (draw (- x2 x1) (- y2 y1)))
 
-(defn ink [color]
-  (swap! inkcolor (constantly color)))
+(defn ink [color] (set-ink color))
 
-(defn paper [color]
-  (swap! papercolor (constantly color))
-  (primitive-repaint))
+(defn paper [color] (set-paper color))
+
+(defn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
+  (let [[xsc ysc] (make-scalars (take scalepoints points) xleft xright ytop ybottom)]
+      (doseq [[x y] points]
+        (plot (* (xsc x))
+              (* (ysc y))))))
+
   
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Example
+;; Examples
 
-;; (use 'simple-plotter)
+(defn sine-example[]
 
-;; (create-window "ZX Graphics" 256 176)
+  (use 'simple-plotter)
+  (create-window)
 
-;; ;; 5 CLS
+  (cls)
+  
+  ;; sine graph
+  (doseq [x (range 1024)]
+    (plot x (+ 384 (* 376 (Math/sin (* Math/PI (/ x 512)))))))
 
-;; (cls)
-
-;; ;; 10 FOR X = 1 TO 255
-;; ;; 20 PLOT X, 88+80*SIN(X/128*PI)
-;; ;; 30 NEXT X
-
-;; (doseq [x (range 256)]
-;;   (plot x (+ 88 (* 80 (Math/sin (* Math/PI (/ x 128)))))))
-
-;; ;; Hey, let's have some axes as well
-
-;; ;; 40 INK 6
-;; ;; 50 PLOT 0,88: DRAW 255,0
-;; ;; 60 PLOT 127,0: DRAW 0,168
-
-;; (ink yellow)
-;; (plot 0 88) (draw 255 0)
-;; (plot 127 0) (draw 0 168)
-
-;; ;; And a border
-
-;; (ink red)
-;; (plot 0 0) (draw 255 0) (draw 0 168) (draw -255 0) (draw 0 -168)
-
-;; ;; And a blue line right through everything
-
-;; (ink blue)
-;; (line 0 0 255 168)
+  ;; axes
+  (ink yellow)
+  (plot 0 384) (draw 1024 0)
+  (line 512 0 512 1024))
 
 
-
+;;(sine-example)
 
 
 
