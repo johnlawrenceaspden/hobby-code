@@ -95,8 +95,9 @@
   ([title] (create-window title 1024 768))
   ([title width height] (create-window title width height white black ))
   ([title width height ink paper]
-     (set-ink ink)
-     (set-paper paper)
+     (set-default-ink ink)
+     (set-default-paper paper)
+     (reset)
      (let [frame (JFrame. title)]
        (doto frame
          (.add thepanel)
