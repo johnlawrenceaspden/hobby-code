@@ -149,7 +149,7 @@
   (line 512 0 512 1024))
 
 
-(sine-example)
+;;(sine-example)
 
 
 
