@@ -150,7 +150,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Examples
 
-(defn examples[]
+(defn sine-example[]
 
   (use 'simple-plotter)
   (create-window "sine")
@@ -164,13 +164,14 @@
   ;; axes
   (ink yellow)
   (plot 0 384) (draw 1024 0)
-  (line 512 0 512 1024)
+  (line 512 0 512 1024))
 
-  
-  )
+(defn examples []
+  (sine-example)
+  (load-file "fractal-fern.clj")
+  (load-file "zxsin.clj"))
 
-
-(examples)
+;;(examples)
 
 
 
