@@ -18,57 +18,62 @@
 
 ;; Private machinery
 
-(defvar- height       (atom nil))
-(defvar- width        (atom nil))
-(defvar- ink-color     (atom nil))
-(defvar- paper-color   (atom nil))
-(defvar- current-position (atom [0,0]))
-(defvar- lines        (atom []))
-(declare thepanel)
-
-
-(defn- draw-lines [#^Graphics2D g2d xs ys]
+(defn- n-draw-lines [lines #^Graphics2D g2d xs ys]
   (doseq [[x1 y1 x2 y2 color] @lines]
     (. g2d setColor color)
     (. g2d drawLine (* xs x1) (* ys y1) (* xs x2) (* ys y2))))
 
-(defn- render [ #^Graphics2D g w h ]
+(defn- n-render-lines-to-graphics [lines paper-color height width #^Graphics2D g w h ]
   (doto g
     (.setColor @paper-color)
     (.fillRect 0 0 w h))
-    (draw-lines g (/ w @width) (/ h @height)))
+    (n-draw-lines lines g (/ w @width) (/ h @height)))
 
-(defn- create-panel []
-    "Create a panel with a customised render"
-  (proxy [JPanel] []
-    (paintComponent [g]
-		    (proxy-super paintComponent g)
-		    (render g (. this getWidth) (. this getHeight)))))
+(defn- primitive-repaint [plotter]
+  (. (plotter :panel) repaint))
 
-(defvar- thepanel (create-panel))
+(defn create-plotter [title width height ink paper]
+  (let [lines (atom [])
+        height (atom height)
+        width (atom width)
+        paper-color (atom paper)
+        panel (proxy [JPanel] []
+                (paintComponent [g]
+                             
+                                (proxy-super paintComponent g)
+                                  (n-render-lines-to-graphics lines paper-color height width #^Graphics2D g (. this getWidth) (. this getHeight))))
+        frame (JFrame. title)]
+    (doto frame
+      (.add panel)
+      ;; the extra space 2,32 is taken up by window decoration
+      ;; how to get that from the OS? 
+      (.setSize (+ @width 2) (+ @height 32))
+      (.setVisible true))
+    {:height height
+     :width  width
+     :ink-color (atom ink)
+     :paper-color paper-color
+     :current-position (atom [0,0])
+     :lines lines
+     :panel panel}))
 
-(defn- primitive-repaint []
-  (. thepanel repaint))
 
-(defn- primitive-line [x1 y1 x2 y2]
-  (swap! lines conj [x1 y1 x2 y2 @ink-color])
-  (primitive-repaint))
+(defn- primitive-line [plotter x1 y1 x2 y2]
+  (let [ink @(:ink-color plotter)]
+    (swap! (:lines plotter) conj [x1 y1 x2 y2 ink]))
+  (primitive-repaint plotter))
 
+(defn- set-paper-color [plotter color]
+  (swap! (plotter :paper-color) (constantly color))
+  (primitive-repaint plotter))
 
+(defn- set-ink-color [plotter color]
+  (swap! (plotter :ink-color) (constantly color)))
 
-(defmacro- defsetter [s]
-        `(defn- ~(symbol (str "set-" s)) [~'x] (swap! ~s (constantly ~'x))))
+(defn- set-current-position [plotter [x y]]
+  (swap! (plotter :current-position) (constantly [x y])))
 
-(defsetter height)
-(defsetter width)
-(defsetter ink-color)
-(defsetter current-position)
-
-(defn- set-paper-color [color]
-  (swap! paper-color (constantly color))
-  (primitive-repaint))
-
-(defn- remove-lines[] (swap! lines (constantly [])))
+(defn- remove-lines [plotter] (swap! (plotter :lines) (constantly [])))
 
 (defn- make-scalars [points xleft xright ytop ybottom]
   (let [xmax (reduce max (map first points))
@@ -78,48 +83,54 @@
     [(fn[x] (+ xleft (* (/ (- x xmin) (- xmax xmin))    (- xright xleft))))
      (fn[y] (+ ybottom  (* (/ (- y ymin) (- ymax ymin)) (- ytop ybottom))))]))
 
-;; Public Interface
+
+(def current-plotter (atom nil))
+
+;; ;; Public Interface
 
 (defn create-window
   ([] (create-window "Simple Plotter"))
   ([title] (create-window title 1024 768))
   ([title width height] (create-window title width height white black ))
   ([title width height ink paper]
-     (set-height height)
-     (set-width  width)
-     (set-ink-color ink)
-     (set-paper-color paper)
-     (set-current-position [0 0])
-     (remove-lines)
-     (let [frame (JFrame. title)]
-       (doto frame
-         (.add thepanel)
-                                        ; the extra space 2,32 is taken up by window decoration
-                                        ; how to get that from the OS? 
-         (.setSize (+ width 2) (+ height 32))
-         (.setVisible true)))))
+     (let [plotter (create-plotter title width height ink paper)]
+       (swap! current-plotter (constantly plotter))
+       plotter)))
 
-(defn cls[] 
-  (remove-lines)
-  (primitive-repaint))
 
-(defn plot [x1 y1]
-  (primitive-line x1 y1 x1 y1)
-  (set-current-position [x1 y1]))
+(defn cls
+  ([] (cls @current-plotter))
+  ([plotter] 
+     (remove-lines plotter)
+     (primitive-repaint plotter)))
 
-(defn draw [dx dy]
-  (let [[x1 y1] @current-position
+(defn plot
+  ([x1 y1] (plot @current-plotter x1 y1))
+  ([plotter x1 y1]
+     (primitive-line plotter x1 y1 x1 y1)
+     (set-current-position plotter [x1 y1])))
+
+(defn draw
+  ([dx dy] (draw @current-plotter dx dy))
+  ([plotter dx dy]
+  (let [[x1 y1] @(plotter :current-position)
         [x2 y2] [(+ x1 dx) (+ y1 dy)]]
-    (primitive-line x1 y1 x2 y2)
-    (set-current-position [x2 y2])))
+    (primitive-line plotter x1 y1 x2 y2)
+    (set-current-position plotter [x2 y2]))))
 
-(defn line [x1 y1 x2 y2]
-  (plot x1 y1)
-  (draw (- x2 x1) (- y2 y1)))
+(defn line
+  ([x1 y1 x2 y2] (line @current-plotter x1 y1 x2 y2))
+  ([plotter x1 y1 x2 y2]
+   (plot plotter x1 y1)
+   (draw plotter (- x2 x1) (- y2 y1))))
 
-(defn ink [color] (set-ink-color color))
+(defn ink
+  ([color] (ink @current-plotter color))
+  ([plotter color] (set-ink-color plotter color)))
 
-(defn paper [color] (set-paper-color color))
+(defn paper
+  ([color] (paper @current-plotter color))
+  ([plotter color] (set-paper-color plotter color)))
 
 (defn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
   (let [[xsc ysc] (make-scalars (take scalepoints points) xleft xright ytop ybottom)]
@@ -127,18 +138,22 @@
         (plot (* (xsc x))
               (* (ysc y))))))
 
-(defn get-height[] @height)
-(defn get-width [] @width)
 
+(defn get-height
+  ([] (get-height @current-plotter))
+  ([plotter] @(plotter :height)))
 
+(defn get-width
+  ([] (get-width @current-plotter))
+  ([plotter] @(plotter :width)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Examples
 
-(defn sine-example[]
+(defn examples[]
 
   (use 'simple-plotter)
-  (create-window)
+  (create-window "sine")
 
   (cls)
   
@@ -149,10 +164,13 @@
   ;; axes
   (ink yellow)
   (plot 0 384) (draw 1024 0)
-  (line 512 0 512 1024))
+  (line 512 0 512 1024)
+
+  
+  )
 
 
-;;(sine-example)
+(examples)
 
 
 
