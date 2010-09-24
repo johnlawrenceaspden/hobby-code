@@ -17,8 +17,6 @@
 
 (def barnsley-points (iterate (iteration barnsleys-fern) [0 1]))
 
-
-
 (create-window "Barnsley's Fern" 350 450)
 
 (ink green)
