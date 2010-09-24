@@ -1,7 +1,7 @@
 (ns simple-plotter
   (:import (javax.swing JFrame JPanel )
            (java.awt Color Graphics Graphics2D Image))
-  (:use (clojure.contrib def )))
+  (:use (clojure.contrib def)))
 
 ;; This is an attempt to make graphics in clojure as simple as it was on a ZX
 ;; Spectrum. Let us count the whole maven/leiningen/cake-clojure-emacs-(require
@@ -18,30 +18,34 @@
 
 ;; Private machinery
 
-(defn- n-draw-lines [lines #^Graphics2D g2d xs ys]
+(defn- draw-lines [lines #^Graphics2D g2d xs ys]
   (doseq [[x1 y1 x2 y2 color] @lines]
     (. g2d setColor color)
     (. g2d drawLine (* xs x1) (* ys y1) (* xs x2) (* ys y2))))
 
-(defn- n-render-lines-to-graphics [lines paper-color height width #^Graphics2D g w h ]
+(defn- render-lines-to-graphics [lines paper-color height width
+                                 #^Graphics2D g w h ]
   (doto g
     (.setColor @paper-color)
     (.fillRect 0 0 w h))
-    (n-draw-lines lines g (/ w @width) (/ h @height)))
+    (draw-lines lines g (/ w @width) (/ h @height)))
 
 (defn- primitive-repaint [plotter]
   (. (plotter :panel) repaint))
 
 (defn create-plotter [title width height ink paper]
-  (let [lines (atom [])
-        height (atom height)
-        width (atom width)
+  (let [lines       (atom [])
+        height      (atom height)
+        width       (atom width)
         paper-color (atom paper)
-        panel (proxy [JPanel] []
-                (paintComponent [g]
-                             
-                                (proxy-super paintComponent g)
-                                  (n-render-lines-to-graphics lines paper-color height width #^Graphics2D g (. this getWidth) (. this getHeight))))
+        panel       (proxy [JPanel] []
+                      (paintComponent [g]
+                                      (proxy-super paintComponent g)
+                                      (render-lines-to-graphics
+                                       lines paper-color height width
+                                       #^Graphics2D g
+                                       (. this getWidth)
+                                       (. this getHeight))))
         frame (JFrame. title)]
     (doto frame
       (.add panel)
@@ -97,62 +101,66 @@
        (swap! current-plotter (constantly plotter))
        plotter)))
 
+;;Makes a version of a function with an implicit first argument of plotter, and
+;;a default version with no first argument is not supplied, and which uses
+;;current-plotter instead.
+(defmacro ddefn [fnname args & body]
+  `(defn ~fnname
+     (~args (~fnname @~'current-plotter ~@args))
+     ([~'plotter ~@args] ~@body)))
 
-(defn cls
-  ([] (cls @current-plotter))
-  ([plotter] 
-     (remove-lines plotter)
-     (primitive-repaint plotter)))
+;; So that instead of saying
+;; (defn plot
+;;   ([x1 y1] (plot @current-plotter x1 y1))
+;;   ([plotter x1 y1]
+;;      (primitive-line plotter x1 y1 x1 y1)
+;;      (set-current-position plotter [x1 y1])))
+;; we can say:
 
-(defn plot
-  ([x1 y1] (plot @current-plotter x1 y1))
-  ([plotter x1 y1]
+(ddefn plot [x1 y1]
+       (primitive-line plotter x1 y1 x1 y1)
+       (set-current-position plotter [x1 y1]))
+
+(ddefn cls [] 
+       (remove-lines plotter)
+       (primitive-repaint plotter))
+
+(ddefn plot [x1 y1]
      (primitive-line plotter x1 y1 x1 y1)
-     (set-current-position plotter [x1 y1])))
+     (set-current-position plotter [x1 y1]))
 
-(defn draw
-  ([dx dy] (draw @current-plotter dx dy))
-  ([plotter dx dy]
+(ddefn draw [dx dy]
   (let [[x1 y1] @(plotter :current-position)
         [x2 y2] [(+ x1 dx) (+ y1 dy)]]
     (primitive-line plotter x1 y1 x2 y2)
-    (set-current-position plotter [x2 y2]))))
+    (set-current-position plotter [x2 y2])))
 
-(defn line
-  ([x1 y1 x2 y2] (line @current-plotter x1 y1 x2 y2))
-  ([plotter x1 y1 x2 y2]
+(ddefn line [x1 y1 x2 y2]
    (plot plotter x1 y1)
-   (draw plotter (- x2 x1) (- y2 y1))))
+   (draw plotter (- x2 x1) (- y2 y1)))
 
-(defn ink
-  ([color] (ink @current-plotter color))
-  ([plotter color] (set-ink-color plotter color)))
+(ddefn ink   [color] (set-ink-color plotter color))
 
-(defn paper
-  ([color] (paper @current-plotter color))
-  ([plotter color] (set-paper-color plotter color)))
+(ddefn paper [color] (set-paper-color plotter color))
 
-(defn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
+(ddefn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
   (let [[xsc ysc] (make-scalars (take scalepoints points) xleft xright ytop ybottom)]
       (doseq [[x y] points]
         (plot (* (xsc x))
               (* (ysc y))))))
 
+(defn window [plotter]
+  (swap! current-plotter (fn[x] plotter)))
 
-(defn get-height
-  ([] (get-height @current-plotter))
-  ([plotter] @(plotter :height)))
+(ddefn get-height [] @(plotter :height))
 
-(defn get-width
-  ([] (get-width @current-plotter))
-  ([plotter] @(plotter :width)))
+(ddefn get-width  [] @(plotter :width))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Examples
 
 (defn sine-example[]
 
-  (use 'simple-plotter)
   (create-window "sine")
 
   (cls)
@@ -166,10 +174,15 @@
   (plot 0 384) (draw 1024 0)
   (line 512 0 512 1024))
 
-(defn examples []
-  (sine-example)
-  (load-file "fractal-fern.clj")
-  (load-file "zxsin.clj"))
+;;(sine-example)
+
+;; (defn examples []
+;;   (sine-example)
+;;   (in-ns 'user)
+;;   (use 'simple-plotter)
+;;   (load-file "fractal-fern.clj")
+;;   (load-file "zxsin.clj")
+;;   (load-file "gridpattern.clj") )
 
 ;;(examples)
 

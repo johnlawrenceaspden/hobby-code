@@ -2,22 +2,27 @@
 
 (defn draw-grid [step]
   (let [h (get-height) w (get-width)]
-    (doseq [i (range 0 w step)] (plot i 0) (draw 0 h))
-    (doseq [i (range 0 h step)] (line 0 i w i))))
+    (doseq [i (range 0 w step)]
+      (plot i 0) (draw 0 h))
+    (doseq [i (range 0 h step)]
+      (line 0 i w i))))
 
-(defn draw-grids [n]
-  (when (>= n 5)
-    (cls)
+(defn draw-grids [n colors]
+  (when (and (<= n (get-width)) (seq colors))
+    (ink (first colors))
     (draw-grid n)
-    (recur (/ n 2))))
+    (recur (* n 2) (rest colors))))
 
-(create-window)
-(draw-grids 80)
+(def g1 (create-window "grid1" 300 400))
+(def g2 (create-window "grid2" 300 400))
 
+(window g1)
+(draw-grids 2 (list red yellow green))
 
-;;kills original window. fix.
+(window g2)
+(draw-grids 2 (repeat white))
 
-(create-window "grid" 300 400)
-(draw-grids 256)
-
+(window g1)
+(ink blue)
+(draw-grid 16)
 
