@@ -4,12 +4,12 @@
   (:use (clojure.contrib def )))
 
 ;; This is an attempt to make graphics in clojure as simple as it was on a ZX
-;; spectrum. Let us count the whole maven/leiningen/cake-clojure-emacs-(require
+;; Spectrum. Let us count the whole maven/leiningen/cake-clojure-emacs-(require
 ;; 'simple-plotter) thing as being a one-time effort equivalent to persuading
-;; one's father to buy a ZX spectrum in the first place.
+;; one's father to buy a ZX Spectrum in the first place.
 
 ;; Define some colours to use:
-;; Call java.awt.Color/GREEN simple-plotter/green
+;; java.awt.Color/GREEN -> simple-plotter/green
 
 (defmacro- defcolours [& colours]
   (list* 'do (map #(list 'def  (symbol (. (str %) toLowerCase)) (symbol (str "Color/" (str %)))) colours)))
@@ -127,7 +127,10 @@
         (plot (* (xsc x))
               (* (ysc y))))))
 
-  
+(defn get-height[] @height)
+(defn get-width [] @width)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Examples
