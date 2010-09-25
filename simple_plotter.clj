@@ -135,6 +135,11 @@
     (primitive-line plotter x1 y1 x2 y2)
     (set-current-position plotter [x2 y2])))
 
+(ddefn draw-to [x2 y2]
+  (let [[x1 y1] @(plotter :current-position)]
+    (primitive-line plotter x1 y1 x2 y2)
+    (set-current-position plotter [x2 y2])))
+
 (ddefn line [x1 y1 x2 y2]
    (plot plotter x1 y1)
    (draw plotter (- x2 x1) (- y2 y1)))
