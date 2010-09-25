@@ -49,8 +49,8 @@
         frame (JFrame. title)]
     (doto frame
       (.add panel)
-      ;; the extra space 2,32 is taken up by window decoration
-      ;; how to get that from the OS? 
+      ;; The extra space 2,32 is taken up by the window decorations
+      ;; in GNOME. How to get that from the OS? 
       (.setSize (+ @width 2) (+ @height 32))
       (.setVisible true))
     {:height height
@@ -88,7 +88,7 @@
      (fn[y] (+ ybottom  (* (/ (- y ymin) (- ymax ymin)) (- ytop ybottom))))]))
 
 
-(def current-plotter (atom nil))
+(defvar- current-plotter (atom nil))
 
 ;; ;; Public Interface
 
