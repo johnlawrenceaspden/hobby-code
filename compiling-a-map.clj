@@ -490,6 +490,79 @@ nil
 "Elapsed time: 1437.094696 msecs"
 ;; (100 99 33 4 4 4 2 2 3 3 2 1 0 0 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 100 100 99 33 4 4 ...
 
+;; As a stiffer test, let's make a completely random map with 100 entries:
+(def random-map (apply sorted-map (for [i (range 200)] (rand-int 100))))
+
+;; And generate and compile code to inline the binary search
+(def large-random-step-function (eval (generate-array-transformer random-map 100)))
+
+;; Let's see how it does:
+(time (take 100 (large-random-step-function ten-million-ints)))
+"Elapsed time: 276.477877 msecs"
+"Elapsed time: 1497.910398 msecs"
+;;(19 19 12 29 28 28 28 4 72 99 99 87 87 ............
+
+;; 119 cycles per lookup over 10 million integers. The whole loop in less than a second,
+;; although there's still this completely silly second and a half where it's turning an array
+;; of ints into an identical array of ints.
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Wild Speculation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; And so I wonder:
+
+;; This technique strikes me as very general, and very useful. All sorts of things can be
+;; represented as lookups in tables.
+
+;; This whole program took me one short day to write, and the whole time I was doing things
+;; that I've never done before, just going by intuition.
+
+;; I think that the program should be as fast as the equivalent java program would be, although
+;; I haven't got around to actually testing that, so I may have dropped the ball somewhere.
+
+;; In any case, it's probably possible to generate code like this that does run
+;; as fast as whatever the fastest Java implementation actually is.
+
+;; The JVM is widely thought to be around the same speed as native machine code
+;; or optimized C.
+
+;; I'm absolutely sure that I'm not able to write the equivalent program in
+;; Java, C, or assembler without code-generation.
+
+;; The code generation would be very very very much harder in Java, C or
+;; assembler.
+
+;; And so I wonder, is Clojure the fastest computer language in the world?
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bugger
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; If you try to make the map much larger than 100 entries
+;; e.g.
+(def random-map (apply sorted-map (for [i (range 400)] (rand-int 1000))))
+
+;; Then when you try to compile it:
+(def large-random-step-function (eval (generate-array-transformer random-map 100)))
+;; The compilation fails with this interesting error:
+Too many arguments in method signature in class file user$eval23503$fn__23504$fn__23505
+[Thrown class java.lang.ClassFormatError]
+
+;; Something tells me that the let-bound local variables are getting translated
+;; to a function call (let/lambda equivalence and all that), and that Java has a
+;; hard coded limit somewhere. May I guess that that limit is 256?
+
+;; I don't know whether there's any way round that. I'm too tired to think.
+
+
+
+
 
 
 
