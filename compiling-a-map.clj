@@ -1,21 +1,50 @@
-;;Suppose we have a lookup table, in this case a map
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Cheating on a Map Lookup. 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Suppose we have a function:
+
+(defn step-function [x]
+  (cond (< x 1) 0
+        (< x 2) 1
+        (< x 3) 3
+        (< x 4) 4
+        (< x 6) 3
+        (< x 8) 2
+        (< x 9) 3
+        (< x 10) 3
+        (< x 11) 2
+        (< x 12) 1
+        :else 0))
+
+(step-function 6) ;2
+
+;; Now imagine that the function is to be generated from some data. We might use a
+;; map to hold the values:
 
 (def lookup-table {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})
 
-;; We intend to use it as a step function , so:
+;; and implement the function by this simple program:
 
-;; -10 < 1, is lower than all the map entries so we'll give it the default
-;; value.  1 is in the map, so that goes to 1, 7 is between 6 and 8, so that
+(defn lookup-fn [map default]
+  (let [sorted (sort (seq lookup-table))]
+    (fn [n]
+      (if-let [[k v] (last (filter (fn[[k v]] (<= k n)) sorted ))]
+        v
+        default))))
+
+((lookup-fn lookup-table 0) 6) ;2
+
+;; Here we look up the values -10, 1, 7, 6, and 20 in our table:
+
+(map (lookup-fn lookup-table 0) '(-10 1 7 6 20))  ;(0 1 2 2 0)
+
+;; -10 < 1, is lower than all the map entries so we'll give it the default value 0.
+;; 1 is actually in the map, so that goes to 1, 7 is between 6 and 8, so that
 ;; goes to 6's value of 2, 20 is higher than all the entries, so it gets 12's value of 0.
 
 
-(defn lookup-fn [map default]
-  (fn [n]
-    (if-let [r (last (filter (fn[[k v]] (<= k n)) (sort (seq lookup-table))))] (second r)
-          default)))
-
-
-;; A quick test
+;; A quick test:
 
 (defn fn-to-map [fn range]
   (apply sorted-map
@@ -23,36 +52,55 @@
                 (partition 2 (interleave range (map fn range))))))
 
 (fn-to-map (lookup-fn lookup-table 0) (range -1 14))
+;;{-1 0, 0 0, 1 1, 2 3, 3 4, 4 3, 5 3, 6 2, 7 2, 8 3, 9 3, 10 2, 11 1, 12 0, 13 0}
 
-{-1 0, 0 0, 1 1, 2 3, 3 4, 4 3, 5 3, 6 2, 7 2, 8 3, 9 3, 10 2, 11 1, 12 0, 13 0}
+(fn-to-map step-function (range -1 14))
+;;{-1 0, 0 0, 1 1, 2 3, 3 4, 4 3, 5 3, 6 2, 7 2, 8 3, 9 3, 10 2, 11 1, 12 0, 13 0}
 
+;; At least as far as integers go, the map and the function are interchangeable.
 
+;; But how fast is it?
+
+;; This is the hard coded version:
+(time (doall (map step-function (range 1000))))
+"Elapsed time: 3.054365 msecs"
+
+;; And here's our version:
 (time (doall (map (lookup-fn lookup-table 0) (range 1000))))
-"Elapsed time: 27.675279 msecs"
+"Elapsed time: 15.657764 msecs"
 
-;; Not bad, but what if we wanted a performant version, to use on a trillion
-;; data points?  And what if we were expecting our map to grow until running
-;; down the map list one by one was an insane option?
+;; Not bad, but what if we wanted a performant version, to use on trillions of
+;; data points?
+;; Either version would take hours to run.
 
-;; Well, a binary search is one way,
-(1 2 3 4 6 8 9 10 11 12)
-test >= 8
-((1 2 3 4 6) (8 9 10 11 12))
-test >= 3 or 10
-(((1 2) (3 4 6)) ((8 9) (10 11 12)))
-test >= 1, 4, 8, or 11
-((((1) (2)) ((3) (4 6))) (((8) (9)) ((10) (11 12))))
-test >= 6 or 12
-((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
-;; and we're done in three steps, with corresponding values
-((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
-((((1) (3)) ((4) ((3) (2)))) (((3) (3)) ((2 ) ((1 ) (0 )))))
+;; And what if we were expecting our map to grow and grow until running
+;; down the map list one by one was an insane option? This would affect the hard
+;; coded version too, of course. The difference is only a constant factor.
+
+;; Well, a binary search is one way to deal with the growth in the map.
+;; We could visualize it like this:
+;; (1 2 3 4 6 8 9 10 11 12)
+;; test >= 8
+;; Dividing and conquering at each step:
+;; ((1 2 3 4 6) (8 9 10 11 12))
+;; test >= 3 or 10
+;; Looking in the two halves
+;; (((1 2) (3 4 6)) ((8 9) (10 11 12)))
+;; test >= 1, 4, 8, or 11
+;; Making finer and finer distinctions at each step
+;; ((((1) (2)) ((3) (4 6))) (((8) (9)) ((10) (11 12))))
+;; test >= 6 or 12
+;; ((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
+;; and we're done in four steps.
+;;
+;; The corresponding values are:
+;; ((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
+;; ((((1) (3)) ((4) ((3) (2)))) (((3) (3)) ((2 ) ((1 ) (0 )))))
 ;; so the sane way of proceeding would probably be to write a binary search
 ;; function and call it a day.
 
 
 ;; But if we really really needed it to be fast, why not:
-
 (defn lookup-fn-handwritten [x]
   (if (< x 6) 
     (if (< x 3); x is < 6
@@ -86,8 +134,10 @@ test >= 6 or 12
 (fn-to-map lookup-fn-handwritten (range -1 14))
 {-1 0, 0 0, 1 1, 2 3, 3 4, 4 2, 5 2, 6 2, 7 2, 8 3, 9 3, 10 1, 11 0, 12 0, 13 0}
 
+;; And it's fast. Already it's faster than the original cond, and its performance
+;; advantage will only increase as the map grows:
 (time (doall (map lookup-fn-handwritten (range 1000))))
-"Elapsed time: 1.981008 msecs"
+"Elapsed time: 1.442812 msecs"
 
 ;; Why not, indeed?
 
@@ -98,34 +148,39 @@ test >= 6 or 12
 
 ;; Go on, find the damned error. I dare you.
 
-;; Such code is horrible to write and impossible to read. We could do it, if we really needed to,
-;; but it would be mechanical, repetitive, boring and error prone.
+;; Such code is horrible to write and impossible to read.  We could do it, if we
+;; really needed to, but it would be mechanical, repetitive, boring and error
+;; prone.
+
+;; And if we were gathering the data for the lookup table as part of our
+;; program, we wouldn't be able to hand code a special function every time.
 
 ;; Hmmmmmmm...
 
+;; Let's look at some easy cases (The quotes are just to stop the code being
+;; executed, whilst keeping the syntax highlighting. Ignore them.)
 
-;; Let's look at some easy cases
-
-(make-lookup-fn [] default)
+'(make-lookup-fn {} default)
 ;->
-default
+'default
 
-(make-lookup-fn {10 yo} default)
+'(make-lookup-fn {10 yo} default)
 ;->
-(fn[x] (if (< x 10) default yo))
-;; or we could write it:
-(fn[x] (if (< x 10) (make-lookup-fn {} default) yo))
+'(fn[x] (if (< x 10) default yo))
+;; or we could also write it:
+'(fn[x] (if (< x 10) (make-lookup-fn {} default) yo))
 ;;
-(make-lookup-fn  {8 hey 10 yo 12 hi} default)
+'(make-lookup-fn  {8 hey 10 yo 12 hi} default)
 ;;->
-(fn[x] (if (< x 10)
-         (make-lookup-fn {8 hey} default)
-         (make-lookup-fn {12 hi} yo)))
+'(fn[x] (if (< x 10)
+          (make-lookup-fn {8 hey} default)
+          (make-lookup-fn {12 hi} yo)))
 
-;; oh hell, let's just write it.
+;; oh hell, let's just write it:
 
-(defn make-lookup-expression [var vmap lowdefault]
-  (let [vmcount (count vmap)]
+(defn make-lookup-expression [var lookup-map lowdefault]
+  (let [vmap (sort (seq lookup-map))
+        vmcount (count vmap)]
     (cond (= vmcount 0) lowdefault
           (= vmcount 1) (let [[test high] (first vmap)]
                           (list 'if (list '< var test) lowdefault high))
@@ -140,8 +195,10 @@ default
                   (make-lookup-expression var before-pivot lowdefault)
                   (make-lookup-expression var after-pivot highdefault))))))
 
-;; I actually found that easier to write than the hand-written loop above. It all just seemed to fit together.
-;; Let's try it on our example
+;; I actually found that easier to write than the hand-written nest of if statements above.
+;; It all just seemed to fit together according to plan.
+
+;; Let's try it on our example lookup table:
 (make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
 
 (if
@@ -152,84 +209,178 @@ default
   (if (< x 6) (if (< x 4) 4 3) 2))
  (if (< x 11) (if (< x 10) (if (< x 9) 3 3) 2) (if (< x 12) 1 0)))
 
-;; Looks like the sort of thing. We shouldn't use x as a variable though, just in case it somehow finds its way into the map!
-
-(defn make-lookup-fn [map default]
-  (let [vmap (sort (seq map))
-        var  (gensym)]
-    (list 'fn [var] (make-lookup-expression var vmap default))))
+;; Looks like the sort of thing.
 
 
+;; If we can generate the code for the nest of ifs, we can generate the code for
+;; a lookup function: We shouldn't use x as the variable though, just in case it
+;; somehow finds its way into the map! Let's use a gensym for the variable so that it
+;; can't capture anything:
+(defn make-lookup-fn [lookup-map default]
+  (let [var (gensym)]
+    (list 'fn [var] (make-lookup-expression var lookup-map default))))
 
-;; Luckily, the compiler is with us always:
-
+;; The compiler is with us always, so we can turn that into a real function:
 (def lookup-fn-automatic (eval (make-lookup-fn {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 0)))
 
-;; Bug banished:
-
+;; The bug is banished:
 (=
  (fn-to-map lookup-fn-automatic (range -1 14))
  (fn-to-map (lookup-fn lookup-table 0) (range -1 14))) ;true!
 
-;; And it seems to do the business
+;; Compilers don't make those sorts of mistakes.
+
+;; So we now have the advantages of hard-coding, without the drawbacks. If we can
+;; construct our map, then we can construct our hand-coded function, it's just that it's
+;; being hand-coded by the compiler at runtime, which is the best sort of hand coding.
+
+;; And it seems to do the business, speed-wise
 (def million (doall (range 1000000)))
 
-(time (doall (map lookup-fn-automatic million)))
-"Elapsed time: 790.041511 msecs"
+(time (dorun (map lookup-fn-automatic (range 1000000))))
+
+(time (dorun (map lookup-fn-automatic million)))
+"Elapsed time: 778.459478 msecs"
 
 ;; Just for comparison:
-(time (doall (map #(* 3 %) million)))
-"Elapsed time: 603.250889 msecs"
+(time (dorun (map #(* 3 %) million)))
+"Elapsed time: 474.40039 msecs"
 
-;; Now, our lookup works at about the same speed as arithmetic, which is to say
-;; About 603 nanoseconds per operation, which is about 2500 cpu cycles per
-;; multiply with my processor running at 4.33 GHz
+;; So it seems that our lookup is now comparable in speed to multiplication.
+;; In terms of cycles, 778 milliseconds for 1000000 operations means
+;; 778 nanoseconds per operation, which is about (* 4.33 778)
+;; 3300 cpu cycles per operation with my processor running at 4.33 GHz
 
-;; But we're still doing generic arithmetic.
 
-;; Things work faster if we work on primitive integers, although the semantics of this are surprisingly subtle
 
-(let [source (int-array million)
-      destination (aclone source)
-      length (alength source)
-      three (int 3)]
-  (time         (loop [x (int 0)]
-                  (if (< x length)
-                    (do (aset destination x (* three (aget source x)))
-                        (recur (unchecked-inc x)))))))
-"Elapsed time: 46.320215 msecs"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Optimizing Clojure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; But we're still doing generic arithmetic on an array of boxed objects.
+;; There is a two orders of magnitude cost for that sort of thing, which
+;; is why dynamic languages are often thought to be slow.
+
+;; Things work faster if we work on primitive integers, although the semantics
+;; of this are surprisingly subtle. The compiler will not compile literals
+;; like 0 to primitive constants. I don't understand why.
+
+;; It's better to bind them to local variables, at which point the extremely
+;; clever HotSpot JVM will notice and optimize at runtime!
+
+;; Also, primitives will not survive function calls, which means that we have to throw
+;; away the advantages of first order functions and abstractions like map,
+;; and stick everything in a big loop, as if we were writing Java or C.
+
+;; I'm told that these little idiosyncracies are being worked on....
+
+;; Here's an example loop, using the primitive types, but without the
+;; type hints that reassure the compiler that there's nothing fishy going on.
+(last (let [source (into-array Integer/TYPE (range 1000))
+            destination (aclone source)]
+        ;; after the arrays are created, time the inner loop
+        (time (loop [x 0]
+                (if (< x (alength source))
+                  (do (aset destination x (* 3 (aget source x)))
+                      (recur (inc x))))))
+        destination))
+"Elapsed time: 168.434663 msecs"
+;; three quarters of a million machine cycles per loop!
+
+;; Take all the constants out of the inner loop, type hint them as integers And
+;; use unchecked-inc for the loop variable. It's an array. I don't think they
+;; can be larger than integer size.  Integer/MAX_VALUE is about 2 billion so it
+;; wouldn't fit in my 1GB memory anyway.
+(last (let [source (int-array (range 1000))
+            destination (int-array (aclone source))
+            length (int (alength source))
+            zero (int 0) three (int 3)]
+        ;; after the arrays are created, time the inner loop
+        (time (loop [x zero]
+                (if (< x length)
+                  (do (aset destination x (* three (aget source x)))
+                      (recur (unchecked-inc x))))))
+        destination))
+"Elapsed time: 1.1944 msecs"
+2997
+;; 5000 cycles per loop. Still not brilliant. It's great fun removing these optimizations
+;; one by one until suddenly the whole thing becomes 100 times slower!
+
+;; Now we've speeded it up, we can use it on much larger arrays. Try length 1000000 now.
+(last (let [source (int-array (range 1000000))
+            destination (aclone source)
+            length (alength source)
+            zero (int 0) three (int 3)]
+        ;; after the arrays are created, time the inner loop
+        (time (loop [x (int 0)]
+                (if (< x length)
+                  (do (aset destination x (* three (aget source x)))
+                      (recur (unchecked-inc x))))))
+        destination))
+"Elapsed time: 45.465962 msecs"
+2999997
+;; 200 cycles per loop.
+
+;; The weird thing is that the loop seems to be sub-linear at first
 
 ;; And actually we're only down to 200 cycles/multiply even now. I guess we're
-;; reading and writing from RAM all the time.
+;; reading and writing from RAM all the time?
 
-;; Although I'm told that this should be as fast as the equivalent java. I wonder if that's true? Only one way to find out.
+;; However:
 
 (time (int-array 1000000))
 "Elapsed time: 5.84744 msecs"
 
-;; Since the looping, multiplying and mapping is only ten times longer than it
-;; takes to allocate a suitable destination array in the first place, I cease to care.
+;; Since the looping, multiplying and mapping is now only taking ten times longer than it
+;; takes to allocate a suitable destination array in the first place, let's
+;; call that a wrap, even though there might be another factor of ten hiding in there somewhere!
 
-;; So what would the final loop look like in clojure's equivalent of assembly language?
-;; The irritating bit is that we have to hard-code the constants, and we're going to need a lengthy let-expression
-;; and a transformed if-expression
+;; I'm told that this should be as fast as the equivalent Java.
+;; I wonder if that's true? Only one way to find out, I suppose....
 
-;; First, let's generate the list of constants, as well as a helpful map to do the transformation for us:
+;; Note to self: Write Java version and benchmark it.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Cheating Optimally
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; So what would the handwritten map lookup loop look like in clojure's
+;; equivalent of assembly language?  The nasty bit is that we have to hard-code
+;; the constants, and we're going to need a lengthy let-expression and an
+;; if-expression transformed to use the local variables.
+
+;; First, let's generate the list of all the constants in the map, as well as
+;; the default value From that we can generate the binding form for the big
+;; let-expression, and a map of which constants have been bound to which local
+;; variables.
 (defn constant-helper [mp default]
-  (let [constants (sort (set (cons default (apply concat (sort (seq the-map))))))
+  (let [constants (sort (set (cons default (apply concat (sort (seq mp))))))
         constants-let (apply vector (mapcat #(list (symbol (str "n" %))(list 'int  %)) constants))
         constant-symbols (map #(symbol (str "n" %)) constants)
         constants-symbols-map (apply sorted-map (interleave constants constant-symbols))]
     (list constants-let constants-symbols-map)))
 
+;; Trying this on our example map
 (constant-helper {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
+;; We can see what it does:
+([n0 (int 0) n1 (int 1) n2 (int 2) ............. n12 (int 12) n255 (int 255)]
+   {0 n0, 1 n1, 2 n2, 3 n3, 4 n4, 6 n6, 8 n8, 9 n9, 10 n10, 11 n11, 12 n12, 255 n255})
 
 
-;; And we need to put the constants into the expression, once it's generated,
-;; which we can do with the code-walker function from clojure walk:
+;; To put the constants into the expression, once it's generated, we can use the
+;; code-walker function from clojure walk:
+
+;; Here's a simple example of a code-walk, or tree map as it's sometimes known.
+(clojure.walk/postwalk
+ #(if (integer? %) (get {1 "1", 2 "2"} % %) %)
+ '(+ 1 (* 2 3)))
+
+;; Gives:
+;; (+ "1" (* "2" 3))
+;; See how it's changed 1 and 2 but left everything else alone?
 
 ;; So we can make both the let-expression and the nest of ifs with
-
 (defn transformed-exprs [mp default]
   (let [[let-expr cs-map] (constant-helper mp default)
         if-expr (make-lookup-expression 'x (sort (seq mp)) default)
@@ -239,17 +390,18 @@ default
     (list transformed-if-expr let-expr)))
 
 
-(transformed-things {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
-
-((if (< x n8) (if (< x n3) (if (< x n2) (if (< x n1) n255 n1) n3) (if (< x n6) (if (< x n4) n4 n3) n2)) (if (< x n11) (if (< x n10) (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))
- [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)])
-    
+;; Evaluating:
+(transformed-exprs {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
+;; Gives us:
+((if (< x n8)   ...   (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))
+ [n0 (int 0) n1 (int 1) ... n12 (int 12) n255 (int 255)])
+;; Which are the parts we need to make an optimal loop:
 
 ;; so the final expression we're looking at would be:
 
 (let [source (int-array million)
-            destination (aclone source)
-            length (alength source)]
+      destination (aclone source)
+      length (alength source)]
         (let  [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)]
           (time 
            (loop [i (int 0)]
