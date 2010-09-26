@@ -182,14 +182,19 @@ default
 ;; Now, our lookup works at about the same speed as arithmetic, which is to say
 ;; About 603 nanoseconds per operation, which is about 2500 cpu cycles per multiply.
 
-;; But we're still doing generic arithmetic, 
+;; But we're still doing generic arithmetic.
 
-;; Things work faster if we work on primitive integers
-(def million (int-array (range 1000000)))
+;; Things work faster if we work on primitive integers, although the semantics of this are surprisingly subtle
+(let [array (int-array (range 1000000))]
+  (time
+   (let [three (int 3)]
+     (amap array x newmillion (* three x)))))
+"Elapsed time: 56.543545 msecs"
 
+;; And actually we're only down to 250 cycles/multiply even now. I guess we're
+;; reading and writing from RAM all the time.
 
-
-
+(count (seq newmillion))
 
 
 
