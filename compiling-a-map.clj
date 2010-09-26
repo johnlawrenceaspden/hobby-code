@@ -180,34 +180,90 @@ default
 "Elapsed time: 603.250889 msecs"
 
 ;; Now, our lookup works at about the same speed as arithmetic, which is to say
-;; About 603 nanoseconds per operation, which is about 2500 cpu cycles per multiply.
+;; About 603 nanoseconds per operation, which is about 2500 cpu cycles per
+;; multiply with my processor running at 4.33 GHz
 
 ;; But we're still doing generic arithmetic.
 
 ;; Things work faster if we work on primitive integers, although the semantics of this are surprisingly subtle
-(let [array (int-array (range 1000000))]
-  (time
-   (let [three (int 3)]
-     (amap array x newmillion (* three x)))))
-"Elapsed time: 56.543545 msecs"
 
-;; And actually we're only down to 250 cycles/multiply even now. I guess we're
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)
+      three (int 3)]
+  (time         (loop [x (int 0)]
+                  (if (< x length)
+                    (do (aset destination x (* three (aget source x)))
+                        (recur (unchecked-inc x))))))))
+"Elapsed time: 46.320215 msecs"
+
+;; And actually we're only down to 200 cycles/multiply even now. I guess we're
 ;; reading and writing from RAM all the time.
 
-(count (seq newmillion))
+;; Although I'm told that this should be as fast as the equivalent java. I wonder if that's true? Only one way to find out.
+
+(time (int-array 1000000))
+"Elapsed time: 5.84744 msecs"
+
+;; Since the looping, multiplying and mapping is only ten times longer than it
+;; takes to allocate a suitable destination array in the first place, I cease to care.
 
 
 
-(time (doall (amap million x newmillion (* 3 x))))
-"Elapsed time: 605.47959 msecs"
+;; So what would the final loop look like in clojure's equivalent of assembly language?
+;; The irritating bit is that we have to hard-code the constants.
 
-(time (doall (map (fn[x] (let [x (int x)] (* 3 x))) million)))
-"Elapsed time: 748.628281 msecs"
+;; luckily, we can generate that list:
+(defn map-helper [mp]
+  (let [constants (sort (set (apply concat (sort (seq the-map)))))
+        constant-symbols (map #(symbol (str "n" %)) constants)
+        constants-symbols-map (apply sorted-map (interleave constants constant-symbols))
+        constants-let (apply vector (mapcat #(list (symbol (str "n" %))(list 'int  %)) constants))]
+    (list constants-let constants-symbols-map)))
 
-(time (doall (map (fn[x] (let [x (int x) t (int 3)] (* t x))) million)))
+(map-helper {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})
+
+([n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12)]
+   {0 n0, 1 n1, 2 n2, 3 n3, 4 n4, 6 n6, 8 n8, 9 n9, 10 n10, 11 n11, 12 n12})
 
 
+;; so the final expression we're looking at would be:
 
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)]
+  (let [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12)]
+    (loop [i (int 0)]
+      (if (< i length)
+        (do (aset destination i ( 
+    
+         
+))
+
+(defmacro def-let
+  "like let, but binds the expressions globally."
+  [bindings & more]
+  (let [let-expr (macroexpand `(let ~bindings))
+        names-values (partition 2 (second let-expr))
+        defs   (map #(cons 'def %) names-values)]
+    (concat (list 'do) defs more)))
+
+
+    
+      
+
+(make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
+
+    
+          
+
+(if
+ (< x 8)
+ (if
+  (< x 3)
+  (if (< x 2) (if (< x 1) default 1) 3)
+  (if (< x 6) (if (< x 4) 4 3) 2))
+ (if (< x 11) (if (< x 10) (if (< x 9) 3 3) 2) (if (< x 12) 1 0)))
 
 
                 
