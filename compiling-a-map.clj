@@ -380,7 +380,7 @@
 ;; (+ "1" (* "2" 3))
 ;; See how it's changed 1 and 2 but left everything else alone?
 
-;; So we can make both the let-expression and the nest of ifs with
+;; So we can make both the let-expression and the transformed nest of ifs with
 (defn transformed-exprs [mp default]
   (let [[let-expr cs-map] (constant-helper mp default)
         if-expr (make-lookup-expression 'x (sort (seq mp)) default)
@@ -415,10 +415,11 @@
 nil
 
 ;; Which somewhat to my amazement is not only executable and produces the correct answer,
-;; but actually seems faster than the multiplication example! (something like 120 cycles/integer).
+;; but actually seems faster than the multiplication example! (something like 100 cycles/loop).
 
-;; So the final step is to take a map and a default value, and generate the expression above, which
-;; takes a java int array as input and gives back another one, with the transformation done.
+;; So the final step is to take a map and a default value, and generate the
+;; expression above, which takes a java int array as input and gives back
+;; another one, with all the values passed through the lookup table.
 
 
 (defn generate-array-transformer [mp default]
@@ -434,41 +435,66 @@ nil
                    (recur (unchecked-inc i#)))))))
         destination#))))
 
+;; Here's how we use it to make the loop code
 (generate-array-transformer {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
 
+;; And now we'll compile it and assign it to a suitably named variable
 (def never-going-to-work (eval (generate-array-transformer {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)))
 
+;; Let's create a java array with our data in it
 (def million-ints (int-array million))
 
-(take 100 (never-going-to-work million-ints))  ;;(255 1 3 4 3 3 2 2 3 3 2 1 0 0 0 ...... bloody hell!
+(take 100 (never-going-to-work million-ints))
+"Elapsed time: 11.656722 msecs"
+;;(255 1 3 4 3 3 2 2 3 3 2 1 0 0 0 ......
+;; bloody hell!
 
-;; Not only does it appear to be working, but the inner loop now appears to be down to ten milliseconds.
-;; 43 cycles per number transformed.
+;; Not only does it appear to be working, but the inner loop now appears to be
+;; down to twelve milliseconds.  50 cycles per number transformed.
 
+;; However, if we time the whole thing:
 (time (never-going-to-work million-ints))
 "Elapsed time: 10.887267 msecs"
 "Elapsed time: 148.408179 msecs"
 
          
-;; I'm very happy with that, considering that I've managed to optimize away a reference into an associative map.
+;; I'm very happy with that, considering that I've managed to optimize away a
+;; lookup into a data structure.
 
-;; But it's annoying that the whole loop actually takes 148. Most of the time is being spent in the
-;; call to int-array. But the call to int-array is only there so that the compiler can tell it's an int array!
+;; But it's annoying that the whole loop actually takes 148ms.
 
-;; The thing passed in is an int-array already! It doesn't need to spend this vast time transforming it!
+;; Most of the time is being spent in the call to int-array. But the call to
+;; int-array is only there so that the compiler can tell it's an int array!
+
+;; The thing passed in is an int-array already! It doesn't need to spend this
+;; time transforming it!
 
 ;; How do I let the compiler know that it's actually going to get an int-array passed in?
 
-;;Oh crap, why is this broken?:
+;; Just to prove that it wasn't a fluke, here's a different map
          
-(def never-going-to-work-2 (eval (generate-array-transformer {1 99, 2 33, 3 4, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0, 24 100} 100)))
+(def never-going-to-work-2 (eval (generate-array-transformer {1 99, 2 33, 3 4, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0, 15 -1, 24 100} 100)))
 
-(take 100 (never-going-to-work-2 million-ints))
+(time (take 100 (never-going-to-work-2 million-ints))) ;(100 99 33 4 4 4 2 2 3 3 2 1 0 0 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 100 100 ......
+;;inner loop:
+"Elapsed time: 11.455121 msecs"
+;;whole call:
+"Elapsed time: 138.169579 msecs"
+
+;; Just to check that it's actually doing something, and that we're not being fooled by
+;; some sort of lazy eval
+(def ten-million-ints (int-array (apply concat (repeat 400000 (range 25) ))))
+
+(time (take 100 (never-going-to-work-2 ten-million-ints)))
+"Elapsed time: 156.814438 msecs"
+"Elapsed time: 1437.094696 msecs"
+;; (100 99 33 4 4 4 2 2 3 3 2 1 0 0 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 100 100 99 33 4 4 ...
 
 
-;; This works:
-(map (eval (make-lookup-fn {1 99, 2 33, 3 4, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0, 24 100} 100)) (range 30))
-(100 99 33 4 4 4 2 2 3 3 2 1 0 0 0 0 0 0 0 0 0 0 0 0 100 100 100 100 100 100)
 
+
+
+
+ 
 
 
