@@ -108,6 +108,15 @@
 ;;and one for running tests 
 (defmacro run-test [fn] `(test (resolve '~fn)))
 
+;; def-let as in blogpost
+(defmacro def-let
+  "like let, but binds the expressions globally."
+  [bindings & more]
+  (let [let-expr (macroexpand `(let ~bindings))
+        names-values (partition 2 (second let-expr))
+        defs   (map #(cons 'def %) names-values)]
+    (concat (list 'do) defs more)))
+
 
 ;; Sometimes it's nice to check the classpath
 (defn- get-classpath []
