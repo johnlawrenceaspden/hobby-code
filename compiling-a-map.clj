@@ -159,6 +159,8 @@ default
         var  (gensym)]
     (list 'fn [var] (make-lookup-expression var vmap default))))
 
+
+
 ;; Luckily, the compiler is with us always:
 
 (def lookup-fn-automatic (eval (make-lookup-fn {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 0)))
@@ -194,7 +196,7 @@ default
   (time         (loop [x (int 0)]
                   (if (< x length)
                     (do (aset destination x (* three (aget source x)))
-                        (recur (unchecked-inc x))))))))
+                        (recur (unchecked-inc x)))))))
 "Elapsed time: 46.320215 msecs"
 
 ;; And actually we're only down to 200 cycles/multiply even now. I guess we're
@@ -208,63 +210,113 @@ default
 ;; Since the looping, multiplying and mapping is only ten times longer than it
 ;; takes to allocate a suitable destination array in the first place, I cease to care.
 
-
-
 ;; So what would the final loop look like in clojure's equivalent of assembly language?
-;; The irritating bit is that we have to hard-code the constants.
+;; The irritating bit is that we have to hard-code the constants, and we're going to need a lengthy let-expression
+;; and a transformed if-expression
 
-;; luckily, we can generate that list:
-(defn map-helper [mp]
-  (let [constants (sort (set (apply concat (sort (seq the-map)))))
+;; First, let's generate the list of constants, as well as a helpful map to do the transformation for us:
+(defn constant-helper [mp default]
+  (let [constants (sort (set (cons default (apply concat (sort (seq the-map))))))
+        constants-let (apply vector (mapcat #(list (symbol (str "n" %))(list 'int  %)) constants))
         constant-symbols (map #(symbol (str "n" %)) constants)
-        constants-symbols-map (apply sorted-map (interleave constants constant-symbols))
-        constants-let (apply vector (mapcat #(list (symbol (str "n" %))(list 'int  %)) constants))]
+        constants-symbols-map (apply sorted-map (interleave constants constant-symbols))]
     (list constants-let constants-symbols-map)))
 
-(map-helper {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})
+(constant-helper {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
 
-([n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12)]
-   {0 n0, 1 n1, 2 n2, 3 n3, 4 n4, 6 n6, 8 n8, 9 n9, 10 n10, 11 n11, 12 n12})
 
+;; And we need to put the constants into the expression, once it's generated,
+;; which we can do with the code-walker function from clojure walk:
+
+;; So we can make both the let-expression and the nest of ifs with
+
+(defn transformed-exprs [mp default]
+  (let [[let-expr cs-map] (constant-helper mp default)
+        if-expr (make-lookup-expression 'x (sort (seq mp)) default)
+        transformed-if-expr (clojure.walk/postwalk
+                             #(if (integer? %) (get cs-map % %) %)
+                             if-expr)]
+    (list transformed-if-expr let-expr)))
+
+
+(transformed-things {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
+
+((if (< x n8) (if (< x n3) (if (< x n2) (if (< x n1) n255 n1) n3) (if (< x n6) (if (< x n4) n4 n3) n2)) (if (< x n11) (if (< x n10) (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))
+ [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)])
+    
 
 ;; so the final expression we're looking at would be:
 
 (let [source (int-array million)
-      destination (aclone source)
-      length (alength source)]
-  (let [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12)]
-    (loop [i (int 0)]
-      (if (< i length)
-        (do (aset destination i ( 
-    
+            destination (aclone source)
+            length (alength source)]
+        (let  [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x n8) (if (< x n3) (if (< x n2) (if (< x n1) n255 n1) n3) (if (< x n6) (if (< x n4) n4 n3) n2)) (if (< x n11) (if (< x n10) (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))))
+                   (recur (unchecked-inc i)))))))
+        destination)
+
+"Elapsed time: 28.387293 msecs"
+nil
+
+;; Which somewhat to my amazement is not only executable and produces the correct answer,
+;; but actually seems faster than the multiplication example! (something like 120 cycles/integer).
+
+;; So the final step is to take a map and a default value, and generate the expression above, which
+;; takes a java int array as input and gives back another one, with the transformation done.
+
+
+(defn generate-array-transformer [mp default]
+  (let [[if-expr let-expr] (transformed-exprs mp default)]
+       `(fn[source#]
+          (let [source# (int-array source#)
+                destination# (aclone source#)
+                length# (alength source#)]
+            (time (let  ~let-expr
+              (loop [i# (int 0)]
+                (if (< i# length#)
+                  (do (aset destination# i# (let [~'x (aget source# i#)] ~if-expr))
+                   (recur (unchecked-inc i#)))))))
+        destination#))))
+
+(generate-array-transformer {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
+
+(def never-going-to-work (eval (generate-array-transformer {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)))
+
+(def million-ints (int-array million))
+
+(take 100 (never-going-to-work million-ints))  ;;(255 1 3 4 3 3 2 2 3 3 2 1 0 0 0 ...... bloody hell!
+
+;; Not only does it appear to be working, but the inner loop now appears to be down to ten milliseconds.
+;; 43 cycles per number transformed.
+
+(time (never-going-to-work million-ints))
+"Elapsed time: 10.887267 msecs"
+"Elapsed time: 148.408179 msecs"
+
          
-))
+;; I'm very happy with that, considering that I've managed to optimize away a reference into an associative map.
 
-(defmacro def-let
-  "like let, but binds the expressions globally."
-  [bindings & more]
-  (let [let-expr (macroexpand `(let ~bindings))
-        names-values (partition 2 (second let-expr))
-        defs   (map #(cons 'def %) names-values)]
-    (concat (list 'do) defs more)))
+;; But it's annoying that the whole loop actually takes 148. Most of the time is being spent in the
+;; call to int-array. But the call to int-array is only there so that the compiler can tell it's an int array!
 
+;; The thing passed in is an int-array already! It doesn't need to spend this vast time transforming it!
 
-    
-      
+;; How do I let the compiler know that it's actually going to get an int-array passed in?
 
-(make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
+;;Oh crap, why is this broken?:
+         
+(def never-going-to-work-2 (eval (generate-array-transformer {1 99, 2 33, 3 4, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0, 24 100} 100)))
 
-    
-          
-
-(if
- (< x 8)
- (if
-  (< x 3)
-  (if (< x 2) (if (< x 1) default 1) 3)
-  (if (< x 6) (if (< x 4) 4 3) 2))
- (if (< x 11) (if (< x 10) (if (< x 9) 3 3) 2) (if (< x 12) 1 0)))
+(take 100 (never-going-to-work-2 million-ints))
 
 
-                
-                
+;; This works:
+(map (eval (make-lookup-fn {1 99, 2 33, 3 4, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0, 24 100} 100)) (range 30))
+(100 99 33 4 4 4 2 2 3 3 2 1 0 0 0 0 0 0 0 0 0 0 0 0 100 100 100 100 100 100)
+
+
+
