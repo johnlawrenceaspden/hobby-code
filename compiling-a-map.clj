@@ -148,7 +148,7 @@
 ;; the same algorithm but replacing a lot of indirections with branches in the
 ;; code.
 
-;; Every reference into the map gets replaced by a simple less than test and
+;; Every reference into the map gets replaced by a simple 'less than' test and
 ;; possibly a jump.
 
 ;; Why not, indeed?
@@ -252,8 +252,6 @@
 ;; And it seems to do the business, speed-wise
 (def million (doall (range 1000000)))
 
-(time (dorun (map lookup-fn-automatic (range 1000000))))
-
 (time (dorun (map lookup-fn-automatic million)))
 "Elapsed time: 778.459478 msecs"
 
@@ -286,7 +284,7 @@
 ;; It's better to bind them to local variables, at which point the extremely
 ;; clever HotSpot JVM will notice and optimize at runtime!
 
-;; THIS ISNT TRUE. YOU CAN GET AWAY WITH (int 0)
+;; ACTUALLY I DONT KNOW IF YOU NEED TO. IT HELPS A BIT. JUST (int 0) HELPS.
 
 ;; Also, primitives will not survive function calls, which means that we have to throw
 ;; away the advantages of first order functions and abstractions like map,
@@ -313,7 +311,7 @@
 ;; wouldn't fit in my 1GB memory anyway.
 (last (let [source (int-array (range 1000))
             destination (int-array (aclone source))
-            length (int (alength source))
+            length (alength source)
             zero (int 0) three (int 3)]
         ;; after the arrays are created, time the inner loop
         (time (loop [x zero]
@@ -332,7 +330,7 @@
             length (alength source)
             zero (int 0) three (int 3)]
         ;; after the arrays are created, time the inner loop
-        (time (loop [x (int 0)]
+        (time (loop [x zero]
                 (if (< x length)
                   (do (aset destination x (* three (aget source x)))
                       (recur (unchecked-inc x))))))
