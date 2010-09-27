@@ -20,33 +20,37 @@
 (step-function 6) ;2
 
 ;; Now imagine that the function is to be generated from some data. We might use a
-;; map to hold the values:
+;; map to hold the values at which the value of the function changes:
 
 (def lookup-table {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})
 
-;; and implement the function by this simple program:
-
+;; And given such a map, we might implement the function by this simple program:
+;; Take all the keys that are less than or equal to n.
+;; If there are none, then give the default value.
+;; Otherwise provide the value of the biggest key.
 (defn lookup-fn [map default]
   (let [sorted (sort (seq lookup-table))]
     (fn [n]
-      (if-let [[k v] (last (filter (fn[[k v]] (<= k n)) sorted ))]
+      (if-let [[k v]
+               (last (filter (fn[[k v]] (<= k n)) sorted ))]
         v
         default))))
 
 ((lookup-fn lookup-table 0) 6) ;2
 
-;; Here we look up the values -10, 1, 7, 6, and 20 in our table:
+;; Here we look up the values  1, 7, 6, and 20 and -10 in our table:
 
-(map (lookup-fn lookup-table 0) '(-10 1 7 6 20))  ;(0 1 2 2 0)
+(map (lookup-fn lookup-table 0) '(1 7 6 20 -10))  ;(1 2 2 0 0)
 
-;; -10 < 1, is lower than all the map entries so we'll give it the default value 0.
 ;; 1 is actually in the map, so that goes to 1, 7 is between 6 and 8, so that
-;; goes to 6's value of 2, 20 is higher than all the entries, so it gets 12's value of 0.
-
+;; goes to 6's value of 2, 20 is higher than all the entries, so it gets 12's
+;; value of 0. -10 < 1, is lower than all the map entries so we'll give it the
+;; default value 0.
 
 ;; A quick test:
 
 (defn fn-to-map [fn range]
+  "Evaluate fn everywhere in range. Return map of all values to all results."
   (apply sorted-map
          (apply concat 
                 (partition 2 (interleave range (map fn range))))))
@@ -91,7 +95,7 @@
 ;; ((((1) (2)) ((3) (4 6))) (((8) (9)) ((10) (11 12))))
 ;; test >= 6 or 12
 ;; ((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
-;; and we're done in four steps.
+;; and we're done in at most four steps.
 ;;
 ;; The corresponding values are:
 ;; ((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
@@ -103,41 +107,49 @@
 ;; But if we really really needed it to be fast, why not:
 (defn lookup-fn-handwritten [x]
   (if (< x 6) 
-    (if (< x 3); x is < 6
-      (if (< x 2) ; x is < 3
-          (if ( < x 1) ; x is < 2
-            0 ; < 1
-            1)       ; 1 <= x < 2
-          3) ; 2 <= x < 3
-      (if (< x 4) ; 3 <= x < 6
-        4   ; 3 <= x < 4
-        2)) ; 4 <= x < 6
-    (if (< x 10) ; 6 <= x < 10
-      (if (< x 9) ; 6 <= x < 9
+    (if (< x 3)                         ; x is < 6
+      (if (< x 2)                       ; x is < 3
+        (if ( < x 1)                    ; x is < 2
+          0                             ; < 1
+          1)                            ; 1 <= x < 2
+        3)                              ; 2 <= x < 3
+      (if (< x 4)                       ; 3 <= x < 6
+        4                               ; 3 <= x < 4
+        2))                             ; 4 <= x < 6
+    (if (< x 10)                        ; 6 <= x < 10
+      (if (< x 9)                       ; 6 <= x < 9
         (if (< x 8) 
-          2   ; 6 <= x < 8
-          3)  ; 8 <= x < 9
-        3)    ; 9 <= x < 10
-      (if (< x 11)  ; 10 < x
-        (if (< x 12) ; 11 <= x
-          1 ; 11 <= x < 12
+          2                             ; 6 <= x < 8
+          3)                            ; 8 <= x < 9
+        3)                              ; 9 <= x < 10
+      (if (< x 11)                      ; 10 < x
+        (if (< x 12)                    ; 11 <= x
+          1                             ; 11 <= x < 12
           0)
-        0)))) ; 12 <= x
+        0))))                           ; 12 <= x
           
 ;; I have seen this sort of code occasionally in dark corners.  When a man knows
 ;; how his processor works, knows how his C compiler works, knows about data
 ;; structures, and really, really needs his loops to be fast then he will
-;; occasionally write this sort of thing. This is sort of code that *real*
-;; programmers write. 
+;; occasionally write this sort of thing.
+
+;; This is sort of code that Real Programmers write.
 
 ;; A quick test:
 (fn-to-map lookup-fn-handwritten (range -1 14))
 {-1 0, 0 0, 1 1, 2 3, 3 4, 4 2, 5 2, 6 2, 7 2, 8 3, 9 3, 10 1, 11 0, 12 0, 13 0}
 
-;; And it's fast. Already it's faster than the original cond, and its performance
-;; advantage will only increase as the map grows:
+;; It works and it's fast. Already it's faster than the original cond, and its
+;; performance advantage will only increase as the map grows:
 (time (doall (map lookup-fn-handwritten (range 1000))))
 "Elapsed time: 1.442812 msecs"
+
+;; I'd hope it would be faster than the binary search, because it's implementing
+;; the same algorithm but replacing a lot of indirections with branches in the
+;; code.
+
+;; Every reference into the map gets replaced by a simple less than test and
+;; possibly a jump.
 
 ;; Why not, indeed?
 
@@ -146,7 +158,7 @@
  (fn-to-map lookup-fn-handwritten (range -1 14))
  (fn-to-map (lookup-fn lookup-table 0) (range -1 14))) ; false
 
-;; Go on, find the damned error. I dare you.
+;; Go on, find the bug. I dare you.
 
 ;; Such code is horrible to write and impossible to read.  We could do it, if we
 ;; really needed to, but it would be mechanical, repetitive, boring and error
@@ -157,21 +169,23 @@
 
 ;; Hmmmmmmm...
 
-;; Let's look at some easy cases (The quotes are just to stop the code being
-;; executed, whilst keeping the syntax highlighting. Ignore them.)
+;; Let's look at some easy cases of an imaginary program to write the code for
+;; us:
 
+
+;; The easiest case is:
 '(make-lookup-fn {} default)
 ;->
 'default
 
+;; The second easiest is:
 '(make-lookup-fn {10 yo} default)
 ;->
 '(fn[x] (if (< x 10) default yo))
-;; or we could also write it:
-'(fn[x] (if (< x 10) (make-lookup-fn {} default) yo))
-;;
+
+;; The third easiest is
 '(make-lookup-fn  {8 hey 10 yo 12 hi} default)
-;;->
+;; Which we could represent as:
 '(fn[x] (if (< x 10)
           (make-lookup-fn {8 hey} default)
           (make-lookup-fn {12 hi} yo)))
@@ -181,22 +195,21 @@
 (defn make-lookup-expression [var lookup-map lowdefault]
   (let [vmap (sort (seq lookup-map))
         vmcount (count vmap)]
-    (cond (= vmcount 0) lowdefault
-          (= vmcount 1) (let [[test high] (first vmap)]
+    (cond ;; base cases
+     (= vmcount 0) lowdefault
+     (= vmcount 1) (let [[test high] (first vmap)]
                           (list 'if (list '< var test) lowdefault high))
-          :else
-          (let [pivot (int (/ (count vmap) 2))
-                pre-pivot (dec pivot)
-                pre-pivot-element (nth vmap pre-pivot)
-                [test highdefault] (nth vmap pivot)
-                before-pivot (take pivot vmap)
-                after-pivot  (drop (inc pivot) vmap)]
-            (list 'if (list '< var test)
-                  (make-lookup-expression var before-pivot lowdefault)
-                  (make-lookup-expression var after-pivot highdefault))))))
+     :else ;; recursion (divide map at a pivot element half way along)
+     (let [pivot (int (/ (count vmap) 2))
+           [test highdefault] (nth vmap pivot)
+           before-pivot (take pivot vmap)
+           after-pivot  (drop (inc pivot) vmap)]
+       (list 'if (list '< var test) ;; and generate an if that chooses which half
+             (make-lookup-expression var before-pivot lowdefault)
+             (make-lookup-expression var after-pivot  highdefault))))))
 
-;; I actually found that easier to write than the hand-written nest of if statements above.
-;; It all just seemed to fit together according to plan.
+;; I actually found that easier to write than the hand-written nest of if
+;; statements above.  It all just seemed to fit together according to plan.
 
 ;; Let's try it on our example lookup table:
 (make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
@@ -214,8 +227,9 @@
 
 ;; If we can generate the code for the nest of ifs, we can generate the code for
 ;; a lookup function: We shouldn't use x as the variable though, just in case it
-;; somehow finds its way into the map! Let's use a gensym for the variable so that it
-;; can't capture anything:
+;; somehow finds its way into the map! Let's use a gensym for the variable so
+;; that it can't capture anything:
+
 (defn make-lookup-fn [lookup-map default]
   (let [var (gensym)]
     (list 'fn [var] (make-lookup-expression var lookup-map default))))
@@ -230,9 +244,10 @@
 
 ;; Compilers don't make those sorts of mistakes.
 
-;; So we now have the advantages of hard-coding, without the drawbacks. If we can
-;; construct our map, then we can construct our hand-coded function, it's just that it's
-;; being hand-coded by the compiler at runtime, which is the best sort of hand coding.
+;; So we now have the advantages of hard-coding, without the drawbacks. If we
+;; can construct our map, then we can construct our hand-coded function, it's
+;; just that it's being hand-coded by the compiler at runtime, which is the best
+;; sort of hand coding.
 
 ;; And it seems to do the business, speed-wise
 (def million (doall (range 1000000)))
@@ -251,22 +266,27 @@
 ;; 778 nanoseconds per operation, which is about (* 4.33 778)
 ;; 3300 cpu cycles per operation with my processor running at 4.33 GHz
 
+;; But we're still doing generic arithmetic on arrays of boxed objects.
+;; There is a two orders of magnitude cost for that sort of thing, which
+;; is why dynamic languages are often thought to be slow.
 
+;; Let's have a look at how we speed things up on the occasions when we need to.
+;; We end up writing code that looks like optimized C, but in return we get
+;; optimized C speeds.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Optimizing Clojure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; But we're still doing generic arithmetic on an array of boxed objects.
-;; There is a two orders of magnitude cost for that sort of thing, which
-;; is why dynamic languages are often thought to be slow.
-
-;; Things work faster if we work on primitive integers, although the semantics
-;; of this are surprisingly subtle. The compiler will not compile literals
-;; like 0 to primitive constants. I don't understand why.
+;; Things go faster if we work on primitive integers and native arrays, although
+;; the semantics of this are surprisingly subtle. The compiler will not compile
+;; literals like 0 to primitive constants without being told to. I don't
+;; understand why.
 
 ;; It's better to bind them to local variables, at which point the extremely
 ;; clever HotSpot JVM will notice and optimize at runtime!
+
+;; THIS ISNT TRUE. YOU CAN GET AWAY WITH (int 0)
 
 ;; Also, primitives will not survive function calls, which means that we have to throw
 ;; away the advantages of first order functions and abstractions like map,
