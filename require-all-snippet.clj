@@ -145,6 +145,7 @@
 
 ;; see http://blog.n01se.net/?p=85
 (println "setting *print-length* to 103, *print-level* to 13 to deal with infinities")
+(println "you have to do this before starting the swank server if you want it to work in emacs evaluations")
 (set! *print-length* 103)
 (set! *print-level* 13)
 
