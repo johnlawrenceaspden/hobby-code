@@ -29,12 +29,10 @@
 ;; If there are none, then give the default value.
 ;; Otherwise provide the value of the biggest key.
 (defn lookup-fn [map default]
-  (let [sorted (sort (seq lookup-table))]
-    (fn [n]
-      (if-let [[k v]
-               (last (filter (fn[[k v]] (<= k n)) sorted ))]
-        v
-        default))))
+  (fn [n]
+    (if-let [ [k v]  (last (filter (fn[[k v]] (<= k n)) map ))  ]
+      v
+      default)))
 
 ((lookup-fn lookup-table 0) 6) ;2
 
@@ -51,9 +49,7 @@
 
 (defn fn-to-map [fn range]
   "Evaluate fn everywhere in range. Return map of all values to all results."
-  (apply sorted-map
-         (apply concat 
-                (partition 2 (interleave range (map fn range))))))
+  (apply sorted-map (interleave range (map fn range))))
 
 (fn-to-map (lookup-fn lookup-table 0) (range -1 14))
 ;;{-1 0, 0 0, 1 1, 2 3, 3 4, 4 3, 5 3, 6 2, 7 2, 8 3, 9 3, 10 2, 11 1, 12 0, 13 0}
@@ -74,15 +70,14 @@
 "Elapsed time: 15.657764 msecs"
 
 ;; Not bad, but what if we wanted a performant version, to use on trillions of
-;; data points?
-;; Either version would take hours to run.
+;; data points? Either version would take hours to run.
 
 ;; And what if we were expecting our map to grow and grow until running
 ;; down the map list one by one was an insane option? This would affect the hard
 ;; coded version too, of course. The difference is only a constant factor.
 
 ;; Well, a binary search is one way to deal with the growth in the map.
-;; We could visualize it like this:
+;; We could visualize the binary search on our simple map like this:
 ;; (1 2 3 4 6 8 9 10 11 12)
 ;; test >= 8
 ;; Dividing and conquering at each step:
@@ -100,7 +95,8 @@
 ;; The corresponding values are:
 ;; ((((1) (2)) ((3) ((4) (6)))) (((8) (9)) ((10) ((11) (12)))))
 ;; ((((1) (3)) ((4) ((3) (2)))) (((3) (3)) ((2 ) ((1 ) (0 )))))
-;; so the sane way of proceeding would probably be to write a binary search
+
+;; So the sane way of proceeding would probably be to write a binary search
 ;; function and call it a day.
 
 
@@ -129,7 +125,7 @@
         0))))                           ; 12 <= x
           
 ;; I have seen this sort of code occasionally in dark corners.  When a man knows
-;; how his processor works, knows how his C compiler works, knows about data
+;; how his processor works, knows how his C compiler works, knows his data
 ;; structures, and really, really needs his loops to be fast then he will
 ;; occasionally write this sort of thing.
 
@@ -144,9 +140,9 @@
 (time (doall (map lookup-fn-handwritten (range 1000))))
 "Elapsed time: 1.442812 msecs"
 
-;; I'd hope it would be faster than the binary search, because it's implementing
-;; the same algorithm but replacing a lot of indirections with branches in the
-;; code.
+;; I'd hope it would be faster than the general binary search, because it's
+;; implementing the same algorithm but replacing a lot of indirections with
+;; branches in the code.
 
 ;; Every reference into the map gets replaced by a simple 'less than' test and
 ;; possibly a jump.
@@ -171,7 +167,6 @@
 
 ;; Let's look at some easy cases of an imaginary program to write the code for
 ;; us:
-
 
 ;; The easiest case is:
 '(make-lookup-fn {} default)
@@ -224,6 +219,8 @@
 
 ;; Looks like the sort of thing.
 
+;; A warning: As Meikel Brandmeyer points out in a comment below, it would be
+;; better to use `< than '< here in real code.
 
 ;; If we can generate the code for the nest of ifs, we can generate the code for
 ;; a lookup function: We shouldn't use x as the variable though, just in case it
@@ -277,9 +274,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Things go faster if we work on primitive integers and native arrays, although
-;; the semantics of this are surprisingly subtle. The compiler will not compile
-;; literals like 0 to primitive constants without being told to. I don't
-;; understand why.
+;; currently the semantics of this are surprisingly subtle. The compiler will
+;; not compile literals like 0 to primitive constants without being told to. I
+;; don't understand why.
 
 ;; It's better to bind them to local variables, at which point the extremely
 ;; clever HotSpot JVM will notice and optimize at runtime!
@@ -305,10 +302,8 @@
 "Elapsed time: 168.434663 msecs"
 ;; three quarters of a million machine cycles per loop!
 
-;; Take all the constants out of the inner loop, type hint them as integers And
-;; use unchecked-inc for the loop variable. It's an array. I don't think they
-;; can be larger than integer size.  Integer/MAX_VALUE is about 2 billion so it
-;; wouldn't fit in my 1GB memory anyway.
+;; Now all the constants out of the inner loop, type hint them as integers And
+;; use unchecked-inc for the loop variable. 
 (last (let [source (int-array (range 1000))
             destination (int-array (aclone source))
             length (alength source)
@@ -321,10 +316,12 @@
         destination))
 "Elapsed time: 1.1944 msecs"
 2997
-;; 5000 cycles per loop. Still not brilliant. It's great fun removing these optimizations
-;; one by one until suddenly the whole thing becomes 100 times slower!
+;; 5000 cycles per loop. Still not brilliant, but a lot better! It's great fun
+;; removing these optimizations one by one until suddenly the whole thing
+;; becomes 100 times slower!
 
-;; Now we've speeded it up, we can use it on much larger arrays. Try length 1000000 now.
+;; Now we've speeded it up, we can use it on much larger arrays. Try length
+;; 1000000 now.
 (last (let [source (int-array (range 1000000))
             destination (aclone source)
             length (alength source)
@@ -339,19 +336,21 @@
 2999997
 ;; 200 cycles per loop.
 
-;; The weird thing is that the loop seems to be sub-linear at first
+;; The loop seems to be sub-linear in the number of things its looping over!
+;; I figure that this must be HotSpot spotting something clever that it can do.
 
-;; And actually we're only down to 200 cycles/multiply even now. I guess we're
-;; reading and writing from RAM all the time?
+;; Although actually we're only down to 200 cycles/multiply even now. I guess
+;; we're reading and writing from RAM all the time?
 
-;; However:
-
+;; However, look how long it takes to make an array of a million integers
+;; in the first place:
 (time (int-array 1000000))
 "Elapsed time: 5.84744 msecs"
 
-;; Since the looping, multiplying and mapping is now only taking ten times longer than it
-;; takes to allocate a suitable destination array in the first place, let's
-;; call that a wrap, even though there might be another factor of ten hiding in there somewhere!
+;; Since the looping, multiplying and mapping is now only taking ten times
+;; longer than it takes to allocate a suitable destination array in the first
+;; place, let's call that a wrap, even though there might be another factor of
+;; ten hiding in there somewhere!
 
 ;; I'm told that this should be as fast as the equivalent Java.
 ;; I wonder if that's true? Only one way to find out, I suppose....
@@ -361,7 +360,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cheating Optimally
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;; So what would the handwritten map lookup loop look like in clojure's
 ;; equivalent of assembly language?  The nasty bit is that we have to hard-code
@@ -467,8 +465,8 @@ nil
 ;;(255 1 3 4 3 3 2 2 3 3 2 1 0 0 0 ......
 ;; bloody hell!
 
-;; Not only does it appear to be working, but the inner loop now appears to be
-;; down to twelve milliseconds.  50 cycles per number transformed.
+;; Not only does it appear to be working, but the inner loop now appears to down
+;; to twelve milliseconds.  50 cycles per number transformed.
 
 ;; However, if we time the whole thing:
 (time (never-going-to-work million-ints))
@@ -581,11 +579,126 @@ Too many arguments in method signature in class file user$eval23503$fn__23504$fn
 
 
 
+;; How necessary are the local constants?
 
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)]
+        (let  [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x n8) (if (< x n3) (if (< x n2) (if (< x n1) n255 n1) n3) (if (< x n6) (if (< x n4) n4 n3) n2)) (if (< x n11) (if (< x n10) (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))))
+                   (recur (unchecked-inc i)))))))
+        destination)
+;;60ms
 
-
-
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)
+      zero (int 0)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x (int 8))
+                                           (if (< x (int 3))
+                                             (if (< x (int 2))
+                                               (if (< x (int 1))
+                                                 255 1) 3)
+                                             (if (< x (int 6))
+                                               (if (< x (int 4))
+                                                 4 3) 2))
+                                           (if (< x (int 11))
+                                             (if (< x (int 10))
+                                               (if (< x (int 9))
+                                                 3 3) 2)
+                                             (if (< x (int 12))
+                                               1 0)))))
+                   (recur (unchecked-inc i))))))
+        destination)
+931 734 483 251 (all switches have int): 236
+change the 0 at the bottom that is most used to (int 0), though, and everything stops!
 
  
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)
+      zero (int 0)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x (int 12))
+                                               (int 1) (int 0))))
+                   (recur (unchecked-inc i))))))
+          destination)
+100ms
+
+(let [source (int-array million)
+      destination (aclone source)
+      length (alength source)
+      zero (int 0)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x (int 12))
+                                               1 0)))
+                   (recur (unchecked-inc i))))))
+          destination)
+200ms
+
+(def amillion (int-array million))
+(def another  (aclone amillion))
+(let [^ints source amillion
+      ^ints destination another
+      length (alength source)
+      zero (int 0)]
+          (time 
+           (loop [i (int 0)]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x (int 12))
+                                               (int 1) (int 0))))
+                   (recur (unchecked-inc i))))))
+          destination)
+98ms
+
+(let [^ints source amillion
+      ^ints destination another
+      length (int (alength source))
+      zero (int 0) one (int 1) twelve (int 12)]
+          (time 
+           (loop [i zero]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x twelve)
+                                               one zero)))
+                   (recur (unchecked-inc i))))))
+          destination)
+51ms
+
+(def anarray (int-array (range 5000000)))
+(def another (aclone anarray))
+(let [^ints source anarray
+      ^ints destination another
+      length (alength source)
+      zero (int 0) one (int 1) twelve (int 12)]
+          (time 
+           (loop [i zero]
+             (if (< i length)
+               (do (aset destination i (let [x (aget source i)]
+                                         (if (< x twelve)
+                                               one zero)))
+                   (recur (unchecked-inc i))))))
+          destination)
+;;33 cycles/loop
+(/ (* 160 1000000) 1.6 3000000)
+
+
+
+
 
 
