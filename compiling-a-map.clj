@@ -25,12 +25,12 @@
 (def lookup-table {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})
 
 ;; And given such a map, we might implement the function by this simple program:
-;; Take all the keys that are less than or equal to n.
+;; Take all the keys that are less than or equal to x.
 ;; If there are none, then give the default value.
-;; Otherwise provide the value of the biggest key.
+;; Otherwise provide the value of the biggest key which is less than or equal to x
 (defn lookup-fn [map default]
-  (fn [n]
-    (if-let [ [k v]  (last (filter (fn[[k v]] (<= k n)) map ))  ]
+  (fn [x]
+    (if-let [ [k v]  (last (filter (fn[[k v]] (<= k x)) map ))  ]
       v
       default)))
 
@@ -193,7 +193,7 @@
     (cond ;; base cases
      (= vmcount 0) lowdefault
      (= vmcount 1) (let [[test high] (first vmap)]
-                          (list 'if (list '< var test) lowdefault high))
+                     (list 'if (list '< var test) lowdefault high))
      :else ;; recursion (divide map at a pivot element half way along)
      (let [pivot (int (/ (count vmap) 2))
            [test highdefault] (nth vmap pivot)
@@ -207,7 +207,7 @@
 ;; statements above.  It all just seemed to fit together according to plan.
 
 ;; Let's try it on our example lookup table:
-(make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
+(make-lookup-expression 'x {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 'default)
 
 #_(if
  (< x 8)
@@ -261,12 +261,12 @@
 ;; 778 nanoseconds per operation, which is about (* 4.33 778)
 ;; 3300 cpu cycles per operation with my processor running at 4.33 GHz
 
-;; But we're still doing generic arithmetic on arrays of boxed objects.
-;; There is a two orders of magnitude cost for that sort of thing, which
-;; is why dynamic languages are often thought to be slow.
+;; That's still a lot of cycles! But we're still doing generic arithmetic on
+;; arrays of boxed objects.  There is a two orders of magnitude cost for that
+;; sort of thing, which is why dynamic languages are often thought to be slow.
 
-;; Let's have a look at how we speed things up on the occasions when we need to.
-;; We end up writing code that looks like optimized C, but in return we get
+;; Let's have a look at how we can speed things up on the occasions when we need
+;; to.  We end up writing code that looks like optimized C, but in return we get
 ;; optimized C speeds.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -281,19 +281,22 @@
 ;; It's better to bind them to local variables, at which point the extremely
 ;; clever HotSpot JVM will notice and optimize at runtime!
 
-;; ACTUALLY I DONT KNOW IF YOU NEED TO. IT HELPS A BIT. JUST (int 0) HELPS.
+;; It seems to be the case that replacing 0 with (int 0) speeds things up a lot,
+;; but that (let [zero (int 0)] ....) is even better. I'd love to know why.
 
-;; Also, primitives will not survive function calls, which means that we have to throw
-;; away the advantages of first order functions and abstractions like map,
+;; Also, primitives will not survive function calls, which means that we have to
+;; throw away the advantages of first order functions and abstractions like map,
 ;; and stick everything in a big loop, as if we were writing Java or C.
 
 ;; I'm told that these little idiosyncracies are being worked on....
+
+;; Meanwhile, ...
 
 ;; Here's an example loop, using the primitive types, but without the
 ;; type hints that reassure the compiler that there's nothing fishy going on.
 (last (let [source (into-array Integer/TYPE (range 1000))
             destination (aclone source)]
-        ;; after the arrays are created, time the inner loop
+        ;; after the arrays are created, time the inner loop:
         (time (loop [x 0]
                 (if (< x (alength source))
                   (do (aset destination x (* 3 (aget source x)))
@@ -302,7 +305,7 @@
 "Elapsed time: 168.434663 msecs"
 ;; three quarters of a million machine cycles per loop!
 
-;; Now all the constants out of the inner loop, type hint them as integers And
+;; Now move all the constants out of the inner loop, type hint them as integers And
 ;; use unchecked-inc for the loop variable. 
 (last (let [source (int-array (range 1000))
             destination (int-array (aclone source))
@@ -311,7 +314,7 @@
         ;; after the arrays are created, time the inner loop
         (time (loop [x zero]
                 (if (< x length)
-                  (do (aset destination x (* three (aget source x)))
+                  (do (aset destination x (*  three (aget source x)))
                       (recur (unchecked-inc x))))))
         destination))
 "Elapsed time: 1.1944 msecs"
@@ -322,7 +325,7 @@
 
 ;; Now we've speeded it up, we can use it on much larger arrays. Try length
 ;; 1000000 now.
-(last (let [source (int-array (range 1000000))
+(last (let [source (int-array million)
             destination (aclone source)
             length (alength source)
             zero (int 0) three (int 3)]
@@ -336,13 +339,13 @@
 2999997
 ;; 200 cycles per loop.
 
-;; The loop seems to be sub-linear in the number of things its looping over!
-;; I figure that this must be HotSpot spotting something clever that it can do.
+;; The loop seems to be sub-linear in the number of things it's looping over!  I
+;; figure that this must be HotSpot spotting something clever that it can do.
 
 ;; Although actually we're only down to 200 cycles/multiply even now. I guess
 ;; we're reading and writing from RAM all the time?
 
-;; However, look how long it takes to make an array of a million integers
+;; However, look how long it takes just to make an array of a million integers
 ;; in the first place:
 (time (int-array 1000000))
 "Elapsed time: 5.84744 msecs"
@@ -361,7 +364,7 @@
 ;; Cheating Optimally
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; So what would the handwritten map lookup loop look like in clojure's
+;; So what would the handwritten map-lookup loop look like in clojure's
 ;; equivalent of assembly language?  The nasty bit is that we have to hard-code
 ;; the constants, and we're going to need a lengthy let-expression and an
 ;; if-expression transformed to use the local variables.
@@ -391,7 +394,6 @@
 (clojure.walk/postwalk
  #(if (integer? %) (get {1 "1", 2 "2"} % %) %)
  '(+ 1 (* 2 3)))
-
 ;; Gives:
 ;; (+ "1" (* "2" 3))
 ;; See how it's changed 1 and 2 but left everything else alone?
@@ -443,13 +445,14 @@ nil
        `(fn[source#]
           (let [source# (int-array source#)
                 destination# (aclone source#)
-                length# (alength source#)]
+                length# (int (alength source#))]
             (time (let  ~let-expr
               (loop [i# (int 0)]
                 (if (< i# length#)
                   (do (aset destination# i# (let [~'x (aget source# i#)] ~if-expr))
                    (recur (unchecked-inc i#)))))))
-        destination#))))
+            destination#))))
+
 
 ;; Here's how we use it to make the loop code
 (generate-array-transformer {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
@@ -509,7 +512,7 @@ nil
 ;; As a stiffer test, let's make a completely random map with 100 entries:
 (def random-map (apply sorted-map (for [i (range 200)] (rand-int 100))))
 
-;; And generate and compile code to inline the binary search
+;; And generate and compile code to inline the binary search in this large random map
 (def large-random-step-function (eval (generate-array-transformer random-map 100)))
 
 ;; Let's see how it does:
@@ -522,6 +525,10 @@ nil
 ;; although there's still this completely silly second and a half where it's turning an array
 ;; of ints into an identical array of ints.
 
+;; I should be able to get rid of this using the type hint ^ints, but I can't
+;; make the expression generator use it.  Does anyone know how to modify it so
+;; this problem goes away?
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -531,14 +538,16 @@ nil
 
 ;; And so I wonder:
 
-;; This technique strikes me as very general, and very useful. All sorts of things can be
-;; represented as lookups in tables.
+;; This technique strikes me as very general, and very useful. All sorts of
+;; things can be represented as lookups in tables.
 
-;; This whole program took me one short day to write, and the whole time I was doing things
-;; that I've never done before, just going by intuition.
+;; This whole program took me one short day to write, and the whole time I was
+;; doing things that I've never done before, just going by intuition. Once
+;; you've got the hang of it, it's easy.
 
-;; I think that the program should be as fast as the equivalent java program would be, although
-;; I haven't got around to actually testing that, so I may have dropped the ball somewhere.
+;; I think that the program should be as fast as the equivalent java program
+;; would be, although I haven't got around to actually testing that, so I may
+;; have dropped the ball somewhere.
 
 ;; In any case, it's probably possible to generate code like this that does run
 ;; as fast as whatever the fastest Java implementation actually is.
@@ -567,8 +576,8 @@ nil
 ;; Then when you try to compile it:
 (def large-random-step-function (eval (generate-array-transformer random-map 100)))
 ;; The compilation fails with this interesting error:
-Too many arguments in method signature in class file user$eval23503$fn__23504$fn__23505
-[Thrown class java.lang.ClassFormatError]
+;; Too many arguments in method signature in class file user$eval23503$fn__23504$fn__23505
+;; [Thrown class java.lang.ClassFormatError]
 
 ;; Something tells me that the let-bound local variables are getting translated
 ;; to a function call (let/lambda equivalence and all that), and that Java has a
@@ -576,130 +585,9 @@ Too many arguments in method signature in class file user$eval23503$fn__23504$fn
 
 ;; I don't know whether there's any way round that. I'm too tired to think.
 
-
-
-
-;; How necessary are the local constants?
-
-(let [source (int-array million)
-      destination (aclone source)
-      length (alength source)]
-        (let  [n0 (int 0) n1 (int 1) n2 (int 2) n3 (int 3) n4 (int 4) n6 (int 6) n8 (int 8) n9 (int 9) n10 (int 10) n11 (int 11) n12 (int 12) n255 (int 255)]
-          (time 
-           (loop [i (int 0)]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x n8) (if (< x n3) (if (< x n2) (if (< x n1) n255 n1) n3) (if (< x n6) (if (< x n4) n4 n3) n2)) (if (< x n11) (if (< x n10) (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))))
-                   (recur (unchecked-inc i)))))))
-        destination)
-;;60ms
-
-(let [source (int-array million)
-      destination (aclone source)
-      length (alength source)
-      zero (int 0)]
-          (time 
-           (loop [i (int 0)]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x (int 8))
-                                           (if (< x (int 3))
-                                             (if (< x (int 2))
-                                               (if (< x (int 1))
-                                                 255 1) 3)
-                                             (if (< x (int 6))
-                                               (if (< x (int 4))
-                                                 4 3) 2))
-                                           (if (< x (int 11))
-                                             (if (< x (int 10))
-                                               (if (< x (int 9))
-                                                 3 3) 2)
-                                             (if (< x (int 12))
-                                               1 0)))))
-                   (recur (unchecked-inc i))))))
-        destination)
-931 734 483 251 (all switches have int): 236
-change the 0 at the bottom that is most used to (int 0), though, and everything stops!
-
- 
-(let [source (int-array million)
-      destination (aclone source)
-      length (alength source)
-      zero (int 0)]
-          (time 
-           (loop [i (int 0)]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x (int 12))
-                                               (int 1) (int 0))))
-                   (recur (unchecked-inc i))))))
-          destination)
-100ms
-
-(let [source (int-array million)
-      destination (aclone source)
-      length (alength source)
-      zero (int 0)]
-          (time 
-           (loop [i (int 0)]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x (int 12))
-                                               1 0)))
-                   (recur (unchecked-inc i))))))
-          destination)
-200ms
-
-(def amillion (int-array million))
-(def another  (aclone amillion))
-(let [^ints source amillion
-      ^ints destination another
-      length (alength source)
-      zero (int 0)]
-          (time 
-           (loop [i (int 0)]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x (int 12))
-                                               (int 1) (int 0))))
-                   (recur (unchecked-inc i))))))
-          destination)
-98ms
-
-(let [^ints source amillion
-      ^ints destination another
-      length (int (alength source))
-      zero (int 0) one (int 1) twelve (int 12)]
-          (time 
-           (loop [i zero]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x twelve)
-                                               one zero)))
-                   (recur (unchecked-inc i))))))
-          destination)
-51ms
-
-(def anarray (int-array 10000000))
-(def another (aclone anarray))
-(let [^ints source anarray
-      ^ints destination another
-      length (alength source)
-      zero (int 0) one (int 1) two (int 2) three (int 3)
-      four (int 4) five (int 5) twelve (int 12)]
-          (time 
-           (loop [i zero]
-             (if (< i length)
-               (do (aset destination i (let [x (aget source i)]
-                                         (if (< x twelve)
-                                            four five)))
-                   (recur (unchecked-inc i))))))
-          destination)
-;;300ms
-;;cycles/loop
-(/ (* 300 1000000) 1.6 10000000) ;;18.75
-
-
+;; If we change the program so that it just uses (int 0) instead of
+#_ (let [n0 (int 0)] ...)
+;; then we get most of the benefits of optimizing it, but not all.
 
 
 
