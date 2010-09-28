@@ -209,7 +209,7 @@
 ;; Let's try it on our example lookup table:
 (make-lookup-expression 'x (sort (seq {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0})) 'default)
 
-(if
+#_(if
  (< x 8)
  (if
   (< x 3)
@@ -380,7 +380,7 @@
 ;; Trying this on our example map
 (constant-helper {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
 ;; We can see what it does:
-([n0 (int 0) n1 (int 1) n2 (int 2) ............. n12 (int 12) n255 (int 255)]
+#_([n0 (int 0) n1 (int 1) n2 (int 2) ............. n12 (int 12) n255 (int 255)]
    {0 n0, 1 n1, 2 n2, 3 n3, 4 n4, 6 n6, 8 n8, 9 n9, 10 n10, 11 n11, 12 n12, 255 n255})
 
 
@@ -409,8 +409,8 @@
 ;; Evaluating:
 (transformed-exprs {1 1, 2 3, 3 4, 4 3, 6 2, 8 3, 9 3, 10 2, 11 1, 12 0} 255)
 ;; Gives us:
-((if (< x n8)   ...   (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0)))
- [n0 (int 0) n1 (int 1) ... n12 (int 12) n255 (int 255)])
+#_(((if (< x n8)   ...   (if (< x n9) n3 n3) n2) (if (< x n12) n1 n0))
+   [n0 (int 0) n1 (int 1) ... n12 (int 12) n255 (int 255)])
 ;; Which are the parts we need to make an optimal loop:
 
 ;; so the final expression we're looking at would be:
@@ -680,22 +680,24 @@ change the 0 at the bottom that is most used to (int 0), though, and everything 
           destination)
 51ms
 
-(def anarray (int-array (range 5000000)))
+(def anarray (int-array 10000000))
 (def another (aclone anarray))
 (let [^ints source anarray
       ^ints destination another
       length (alength source)
-      zero (int 0) one (int 1) twelve (int 12)]
+      zero (int 0) one (int 1) two (int 2) three (int 3)
+      four (int 4) five (int 5) twelve (int 12)]
           (time 
            (loop [i zero]
              (if (< i length)
                (do (aset destination i (let [x (aget source i)]
                                          (if (< x twelve)
-                                               one zero)))
+                                            four five)))
                    (recur (unchecked-inc i))))))
           destination)
-;;33 cycles/loop
-(/ (* 160 1000000) 1.6 3000000)
+;;300ms
+;;cycles/loop
+(/ (* 300 1000000) 1.6 10000000) ;;18.75
 
 
 
