@@ -24,6 +24,13 @@
              (recur (inc i)))))))
 
 ;;5.3ms  22 cycles/loop on my 1-processor 4.33GHz system
+;;12.5 in clojure-1.3
+
+(time (loop [i 0]
+        (if (< i 1000000)
+          (do
+            (recur (inc i))))))
+;;12.5 ms in clojure-1.3
 
 ;; What gain do we get from unchecked-inc?
 (let [^ints source anarray
@@ -38,6 +45,7 @@
              (recur (unchecked-inc i)))))))
 
 ;;4.5ms  19 cycles/loop, so unchecked-inc is worth 3 cycles/loop
+;; it doesn't exist in clojure-1.3
 
 
 
@@ -48,10 +56,10 @@
 
   (time
  
-     (loop [i (int 0)]
+     (loop [i 0]
        (if (< i length)
          (do (aget source i)
-             (recur (unchecked-inc i)))))))
+             (recur (inc i)))))))
 
 ;;13ms  56 cycles/loop, so it's 37 cycles for an array access
 
@@ -378,4 +386,43 @@
 
 
 
+
+
+
+
+;; How does this work in clojure 1.3?
+
+(do 
+  (def somenumbers (for [i (range 1000000)] (rand-int 20))) ;; note sensitive to this (rand-int 20) doubles time compared to (rand-int 10000)
+  (def anarray (long-array somenumbers))
+  (def another (aclone anarray))
+  (def length  (long (alength anarray))))
+
+
+(defn ^:static step ^long [^long x]
+  (if (< x 8)
+    (if (< x 3)
+      (if (< x 2)
+        (if (< x 1) 255 1) 3)
+      (if (< x 6)
+        (if (< x 4) 4 3) 2))
+    (if (< x 11)
+      (if (< x 10)
+        (if (< x 9) 3 3) 2)
+      (if (< x 12) 1 0))))
+
+
+(let [^longs source anarray
+      ^longs destination another
+      length  (int (alength anarray))]
+
+  (time
+     (loop [i 0]
+       (if (< i length)
+         (do (aset destination i (step (aget source i)))
+             (recur (inc i))))))
+
+  )
+;;39ms 168 cycles/loop with vast numbers of type hints in 1.2
+;;120ms with clojure 1.3, but can remove all type hints from literals
 
