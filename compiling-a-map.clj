@@ -256,7 +256,7 @@
 (time (dorun (map #(* 3 %) million)))
 "Elapsed time: 474.40039 msecs"
 
-;; So it seems that our lookup is now comparable in speed to multiplication.
+;; So it seems that our map lookup is now comparable in speed to multiplication.
 ;; In terms of cycles, 778 milliseconds for 1000000 operations means
 ;; 778 nanoseconds per operation, which is about (* 4.33 778)
 ;; 3300 cpu cycles per operation with my processor running at 4.33 GHz
@@ -342,8 +342,9 @@
 ;; The loop seems to be sub-linear in the number of things it's looping over!  I
 ;; figure that this must be HotSpot spotting something clever that it can do.
 
-;; Although actually we're only down to 200 cycles/multiply even now. I guess
-;; we're reading and writing from RAM all the time?
+;; Although actually we're only down to 200 cycles/multiply even now. I still
+;; think that's slow. But I guess we're reading and writing from RAM all the
+;; time?
 
 ;; However, look how long it takes just to make an array of a million integers
 ;; in the first place:
@@ -439,11 +440,19 @@ nil
 ;; expression above, which takes a java int array as input and gives back
 ;; another one, with all the values passed through the lookup table.
 
+`(let [iarray# ^"ints" iarray] ...).
+Or in case you don't know at macro writing time, yet, you can attach them manually:
+(let [array (gensym "array")] `(let [~array ~(with-meta array {:tag array-type)] ...)))
 
+(let [array (gensym "array")]
+  `(let [~array ~(with-meta array {:tag "ints"})]))
+
+
+;;Works but has stupid int-array thing.
 (defn generate-array-transformer [mp default]
   (let [[if-expr let-expr] (transformed-exprs mp default)]
        `(fn[source#]
-          (let [source# (int-array source#)
+          (let [source#  (int-array source#)
                 destination# (aclone source#)
                 length# (int (alength source#))]
             (time (let  ~let-expr
@@ -452,6 +461,156 @@ nil
                   (do (aset destination# i# (let [~'x (aget source# i#)] ~if-expr))
                    (recur (unchecked-inc i#)))))))
             destination#))))
+
+
+
+(defn generate-array-transformer [mp default]
+  (let [[if-expr let-expr] (transformed-exprs mp default)
+        array (gensym "array")]
+       `(fn[~array]
+          (let [~array  ~array ;~(with-meta array {:tag "[I"})
+                destination# (aclone ~array)
+                length# (int (alength ~array))]
+            (time (let  ~let-expr
+              (loop [i# (int 0)]
+                (if (< i# length#)
+                  (do (aset destination# i# (let [~'x (aget ~array i#)] ~if-expr))
+                   (recur (unchecked-inc i#)))))))
+            destination#))))
+
+
+
+
+(def g (generate-array-transformer {1 1} 255))
+(g (int-array (range 1000)))
+
+clojure.lang.Cons cannot be cast to clojure.lang.IFn
+[Thrown class java.lang.ClassCastException]
+
+
+(generate-array-transformer {1 1} 255)
+
+((clojure.core/fn [array13793]
+                  (clojure.core/let [array13793 array13793
+                                     destination__13771__auto__ (clojure.core/aclone array13793)
+                                     length__13772__auto__ (clojure.core/int (clojure.core/alength array13793))]
+                                    (clojure.core/time
+                                     (clojure.core/let [n1 (int 1) n255 (int 255)]
+                                                       (clojure.core/loop [i__13773__auto__ (clojure.core/int 0)]
+                                                                          (if (clojure.core/< i__13773__auto__ length__13772__auto__)
+                                                                            (do (clojure.core/aset destination__13771__auto__ i__13773__auto__
+                                                                                                   (clojure.core/let [x (clojure.core/aget array13793 i__13773__auto__)]
+                                                                                                                     (if (< x n1) n255 n1)))
+                                                                                (recur (clojure.core/unchecked-inc i__13773__auto__)))))))
+                                    destination__13771__auto__)) (int-array (range 1000)))
+
+
+
+
+(h (int-array (range 1000)))
+
+
+
+(let [array (gensym "array")]
+  `(let [~array ~(with-meta array {:tag "ints"})]))
+
+
+(let [~source (with-meta array {:tag "ints"})])
+(list 'let [~source (with-meta array {:tag "ints"})])
+
+
+
+
+(defn generate-array-transformer [mp default]
+  (let [[if-expr let-expr] (transformed-exprs mp default)]
+    (list 'fn '[sourcearray]
+          (list 'let
+                (vector (with-meta 'source {:tag "ints"})  'sourcearray
+                  'destination '(aclone source)
+                  'length '(int (alength source)))
+                
+                (list 'time (list 'let  let-expr
+                              (list 'loop '[i (int 0)]
+                                    (list 'if '(< i length)
+                                          (list 'do (list 'aset 'destination 'i (list 'let '[x (aget source i)] if-expr))
+                                                '(recur (unchecked-inc i)))))))
+                'destination))))
+
+
+(def g (generate-array-transformer {1 1} 255))
+(g (int-array 1000))
+
+
+(generate-array-transformer {1 1} 255)
+
+(fn [sourcearray] (let [source sourcearray destination (aclone source) length (int (alength source))] (time (let [n1 (int 1) n255 (int 255)] (loop [i (int 0)] (if (< i length) (do (aset destination i (let [x (aget source i)] (if (< x n1) n255 n1))) (recur (unchecked-inc i))))))) destination))
+
+(def g (fn [sourcearray] (let [source sourcearray destination (aclone source) length (int (alength source))] (time (let [n1 (int 1) n255 (int 255)] (loop [i (int 0)] (if (< i length) (do (aset destination i (let [x (aget source i)] (if (< x n1) n255 n1))) (recur (unchecked-inc i))))))) destination)))
+
+(g (int-array 1000))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(generate-array-transformer {1 1} 255)
+
+(fn [sourcearray]
+  (let [source sourcearray
+        destination (aclone source)
+        length (int (alength source))]
+    (time (let [n1 (int 1) n255 (int 255)]
+            (loop [i (int 0)] (if (< i length)
+                                (do (aset destination i (let [x (aget source i)] (if (< x n1) n255 n1)))
+                                    (recur (unchecked-inc i)))))))
+    destination))
+
+
+
+(def g (fn [sourcearray]
+  (let [(with-meta source {:tag "ints"}) sourcearray
+        destination (aclone source)
+        length (int (alength source))]
+    (time (let [n1 (int 1) n255 (int 255)]
+            (loop [i (int 0)] (if (< i length)
+                                (do (aset destination i
+                                          (let [x (aget source i)] (if (< x n1) n255 n1)))
+                                    (recur (unchecked-inc i)))))))
+    destination)))
+
+
+
+
+     
+
+
+(def f (fn [flaps]
+         (let [^ints source flaps
+               destination (aclone source)
+               length (int (alength source))]
+           (time (let [n1 (int 1) n255 (int 255)]
+                   (loop [i (int 0)]
+                     (if (< i length)
+                       (do (aset destination i
+                                 (let [x (aget source i)] (if (< x n1) n255 n1)))
+                           (recur (unchecked-inc i)))))))
+           destination)))
+
+(f  million-ints)
+
+
 
 
 ;; Here's how we use it to make the loop code
@@ -574,7 +733,7 @@ nil
 (def random-map (apply sorted-map (for [i (range 400)] (rand-int 1000))))
 
 ;; Then when you try to compile it:
-(def large-random-step-function (eval (generate-array-transformer random-map 100)))
+#_ (def large-random-step-function (eval (generate-array-transformer random-map 100)))
 ;; The compilation fails with this interesting error:
 ;; Too many arguments in method signature in class file user$eval23503$fn__23504$fn__23505
 ;; [Thrown class java.lang.ClassFormatError]
@@ -583,11 +742,13 @@ nil
 ;; to a function call (let/lambda equivalence and all that), and that Java has a
 ;; hard coded limit somewhere. May I guess that that limit is 256?
 
-;; I don't know whether there's any way round that. I'm too tired to think.
-
 ;; If we change the program so that it just uses (int 0) instead of
 #_ (let [n0 (int 0)] ...)
-;; then we get most of the benefits of optimizing it, but not all.
+;; then we get most of the benefits of optimizing it, but not all. It's about a
+;; factor of four slower.
+
+;; I don't know whether there's any way round that whilst keeping the full speed
+;; of the loops.
 
 
 
