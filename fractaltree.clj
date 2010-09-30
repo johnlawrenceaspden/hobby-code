@@ -8,8 +8,20 @@
 	  new-length (fn [] (* length (+ 0.75 (rand 0.1))))
 	  new-angle  (fn [op] (op angle (* branch-angle (+ 0.75 (rand)))))]
       (. g2d drawLine x y new-x new-y)
-      (#'draw-tree g2d (new-angle +) new-x new-y (new-length) branch-angle (- depth 1))
-      (#'draw-tree g2d (new-angle -) new-x new-y (new-length) branch-angle (- depth 1)))))
+      (draw-tree g2d (new-angle +) new-x new-y (new-length) branch-angle (- depth 1))
+      (draw-tree g2d (new-angle -) new-x new-y (new-length) branch-angle (- depth 1)))))
+
+(defn ^:static draw-tree [ #^Graphics g2d ^double angle ^double x ^double y ^double length ^double branch-angle ^long depth]
+  (if (> depth 0)
+    (let [new-x (- x (* length (Math/sin (Math/toRadians angle))))
+	  new-y (- y (* length (Math/cos (Math/toRadians angle))))
+	  new-length1 (* length (+ 0.75 (rand 0.1)))
+          new-length2 (* length (+ 0.75 (rand 0.1)))
+	  new-angle1  (+ angle (* branch-angle (+ 0.75 (rand))))
+          new-angle2  (- angle (* branch-angle (+ 0.75 (rand))))]
+      (. g2d drawLine x y new-x new-y)
+      (draw-tree g2d new-angle1 new-x new-y new-length1 branch-angle (- depth 1))
+      (draw-tree g2d new-angle2 new-x new-y new-length2 branch-angle (- depth 1)))))
 
 (defn render [ #^Graphics g w h ]
   (doto g
@@ -26,7 +38,9 @@
   (proxy [JPanel] []
     (paintComponent [g]
 		    (proxy-super paintComponent g)
-		    (time (render g (. this getWidth) (. this getHeight))))))
+		    (time (render g
+                                  (.getWidth  #^JPanel this)
+                                  (.getHeight #^JPanel this))))))
 
 
 (defn run []
