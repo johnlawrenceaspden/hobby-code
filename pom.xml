@@ -20,6 +20,13 @@
       <id>central</id>
       <url>http://repo1.maven.org/maven2</url>
     </repository>
+    <repository>
+      <id>jboss</id>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+    </repository>
+
+
+
   </repositories>
 
   <dependencies>
@@ -47,6 +54,11 @@
       <groupId>criterium</groupId>
       <artifactId>criterium</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>plaza</groupId>
+      <artifactId>plaza</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
