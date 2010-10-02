@@ -28,7 +28,7 @@ class MyPanel extends JPanel{
       g.fillRect( 0, 0, w, h)
       g.setColor (Color.GREEN)
       val initlength=if (w<h) w/5 else h/5
-      val branchangle=10*w/h
+      val branchangle=Math.Pi*2.0/36*w/h
       val maxdepth=12
       drawtree( g, 0.0, w/2.0, h ,initlength, branchangle, maxdepth)
       }
@@ -36,8 +36,8 @@ class MyPanel extends JPanel{
   def drawtree(g:Graphics, angle:Double, x:Double, y:Double, length:Double, 
                              branchangle:Double, depth:Double){
      if (depth>0){
-        val newx= x-length*(Math.sin(Math.toRadians( angle)))
-        val newy= y-length*(Math.cos(Math.toRadians( angle)))
+        val newx= x-length*(Math.sin(angle))
+        val newy= y-length*(Math.cos(angle))
         val newlength1 = length*(0.75+0.1*Math.random)
         val newlength2 = length*(0.75+0.1*Math.random)
         val newangle1  = angle+branchangle*(0.75+Math.random)
