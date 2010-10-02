@@ -7,14 +7,19 @@
   <name>clojure-bleeding-edge</name>
   <description>clojure-bleeding-edge</description>
 
+
   <repositories>
+    <repository>
+      <id>central</id>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
     <repository>
       <id>clojure</id>
       <url>http://build.clojure.org/releases</url>
     </repository>
     <repository>
-      <id>central</id>
-      <url>http://repo1.maven.org/maven2</url>
+      <id>clojars</id>
+      <url>http://clojars.org/repo/</url>
     </repository>
   </repositories>
 
