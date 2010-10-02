@@ -93,6 +93,8 @@
 
 ;;get the methods of a java object
 (defn meths [x] (println (apply str (interpose "\n" (map str (.getMethods (if (class? x) x (class x))))))))
+;;get just the names of the methods
+(defn meth-names[x] (map #(.getName %) (.getMethods (if (class? x) x (class x)))))
 
 
 ;;debugging macro                                try: (* 2 (dbg (* 3 4)))
