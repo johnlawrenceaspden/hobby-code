@@ -1,6 +1,0 @@
-lein deps
-lein swank
-lein repl
-lein test
-
-you must do lein deps before lein swank
