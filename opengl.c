@@ -3,7 +3,8 @@ http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-2:-Hello-World:
 
 Ubuntu 10.04 on dell-mini
 
-install freeglut3-dev libglew1.5-dev
+Install glut and glew libraries
+sudo apt-get install freeglut3-dev libglew1.5-dev
 
 $ cc -lglut -lGLEW opengl.c && ./a.out
 
