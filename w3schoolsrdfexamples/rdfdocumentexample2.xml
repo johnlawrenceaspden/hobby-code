@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:cd="http://www.recshop.fake/cd#">
+
+<rdf:Description
+rdf:about="http://www.recshop.fake/cd/Empire Burlesque">
+  <cd:artist>Bob Dylan</cd:artist>
+  <cd:country>USA</cd:country>
+  <cd:company>Columbia</cd:company>
+  <cd:price>10.90</cd:price>
+  <cd:year>1985</cd:year>
+</rdf:Description>
+
+<rdf:Description
+rdf:about="http://www.recshop.fake/cd/Beatles">
+  <cd:artist>
+    <rdf:Bag>
+      <rdf:li>John</rdf:li>
+      <rdf:li>Paul</rdf:li>
+      <rdf:li>George</rdf:li>
+      <rdf:li>Ringo</rdf:li>
+    </rdf:Bag>
+  </cd:artist>
+</rdf:Description>
+
+
+</rdf:RDF>

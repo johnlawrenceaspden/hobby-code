@@ -151,4 +151,4 @@ alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/sdg/uni
 alias sw='cd /home/john/hobby-code && mvn -f pom.xml clojure:swank'
 alias ssw='cd /home/john/hobby-code && mvn -f simple.pom.xml clojure:swank'
 alias cgg='cd /home/john/hobby-code/ && git pull origin master && git gui'
-
+alias lsrt='command ls -al --reverse --sort=time'

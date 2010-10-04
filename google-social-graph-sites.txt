@@ -1,0 +1,6 @@
+http://www.learningclojure.com
+http://www.aspden.com
+http://stackoverflow.com/users/254837/john-lawrence-aspden
+http://www.google.com/profiles/106504543498932189914
+http://www.linkedin.com/in/johnlawrenceaspden
+http://learnclojure.blogspot.com/

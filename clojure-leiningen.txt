@@ -1,0 +1,104 @@
+Clojure Leiningen Setup for EMACS and REPL 
+
+Install maven:
+
+$ sudo apt-get install mvn2
+
+Download the leiningen master script:
+
+$ wget http://github.com/technomancy/leiningen/raw/stable/bin/lein
+
+Make it executable:
+
+$ chmod +x lein
+
+Run it:
+
+$ ./lein
+
+There will be a certain amount of churning as leiningen downloads stuff.
+
+That's the installation part over with.
+
+Trying it out:
+
+Now create a file project.clj, where you specify which versions of everything that you want.
+
+(defproject trial "1.0.0-SNAPSHOT"
+  :description "FIXME: write"
+  :dependencies [[org.clojure/clojure "1.2.0"]
+                 [org.clojure/clojure-contrib "1.2.0"]]
+  :dev-dependencies [[swank-clojure "1.2.0"]])
+
+*Make sure you don't have a subdirectory libs, or leiningen will destroy it without warning.*
+
+If you don't then type:
+
+$ ./lein deps
+
+You will see the unmistakeable signs of maven downloading the internet. Make tea.
+
+Once all that's done, you can start a command line REPL with:
+
+$ ./lein repl
+
+"REPL started; server listening on localhost:48202."
+user=> (clojure-version)
+"1.2.0"
+user=> 
+
+We have a working clojure, with contrib libraries on the classpath.
+
+Anyway, using the REPL directly is not a great deal of fun, so kill it with Ctrl-D, and now we try 
+
+$ ./lein swank
+user=> Connection opened on local port  4005
+#<ServerSocket ServerSocket[addr=localhost/127.0.0.1,port=0,localport=4005]>
+
+And we can connect directly to this from emacs with M-x slime-connect
+
+
+
+
+Caveats
+
+I am a new user of Leiningen, having been an entirely happy maven user for the last year.
+
+I am tempted by the short project files and by the fact that leiningen appears to be the most common way to run clojure amongst clojure fans, but discomforted by the idea of putting an abstraction layer over the beautiful simplicity of maven. That sort of thing tends to set my hair on fire.
+
+On the other hand, who better than a sceptical newbie to write an installation tutorial?
+
+
+Notes:
+
+I've tried this in a clean guest account under Ubuntu 10.04. It probably works the same way on other UNIXes, and I imagine that something similar might work on Windows.
+
+Don't call your new project "test"! I did at first, and that resulted in some weird errors because the name was conflicting with a clojure built-in. 
+So I called it trial instead.
+
+Weirdly, the REPL that is produced here sometimes forgets to give me a prompt, leading me to believe that it's hung. Typing something (particularly close brackets, in case it's waiting for you to finish something you started typing earlier) tends to wake it up.
+
+You can put the lein script somewhere on your path instead of running it directly. I have a ~/bin directory where executables live, and I'll put it there.
+
+If you change project.clj, leiningen won't notice until you redo ./lein deps. At least I think that's what's happening.
+
+After running the above, you can look around to see what it's done. 
+As far as I can tell:
+It has created a local maven repository in ~/.m2, where jar files are all stored in a directory structure organised by their version number.
+It has made physical copies of some of these files (not soft links as you'd expect) in the libs subdirectory that it has created, and these are the ones that it puts on the classpath for running clojure. I think this is what the lein deps step is about. I'm not quite sure why it does this. It seems ugly, but maybe it safeguards the copies in the maven repository against accidental changes?
+It's made a .lein directory, in which there are no files.
+
+
+I don't think the ./lein deps step is necessary if you type ./lein repl. It seems to do it for you.
+
+On the other hand, if you change the project.clj file, then ./lein repl doesn't react to the changes. You need to do ./lein deps manually.
+
+As soon as I create project.clj, I immediately want to type ./lein swank, to start a clojure image that can talk to emacs, but for some reason this doesn't work. Leiningen says: 
+That's not a task. Use "lein help" to list all tasks. 
+You have to do either ./lein repl or ./lein deps first.
+
+The main attraction of leiningen for me at the moment is the short project.clj files compared to maven's verbose pom.xml.
+
+There is a polyglot Maven project, aiming at exactly this problem, which I shall have to investigate. But it is almost certainly worth learning to use leiningen, which is so widely popular amongst Clojure developers. It may have advantages due to its clojure-specifity. Does anyone know of any interesting things that it can do that maven-clojure-plugin either can't or makes difficult?
+
+I have heard recently of other clojure-specific dependency management tools, like cake and cljr. I don't know anything about them, but they sound interesting. Does anyone have any opinions about them to share?

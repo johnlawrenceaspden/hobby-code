@@ -28,15 +28,13 @@
   (doto g
     (.setColor @paper-color)
     (.fillRect 0 0 w h))
-    (draw-lines lines g (/ w @width) (/ h @height)))
+    (draw-lines lines g w h))
 
 (defn- primitive-repaint [plotter]
   (. (plotter :panel) repaint))
 
-(defn create-plotter [title width height ink paper]
+(defn create-plotter [title width height ink paper xmin xmax ymin ymax]
   (let [lines       (atom [])
-        height      (atom height)
-        width       (atom width)
         paper-color (atom paper)
         panel       (proxy [JPanel] []
                       (paintComponent [g]
@@ -51,21 +49,26 @@
       (.add panel)
       ;; The extra space 2,32 is taken up by the window decorations
       ;; in GNOME. How to get that from the OS? 
-      (.setSize (+ @width 2) (+ @height 32))
+      (.setSize (+ width 2) (+ height 32))
       (.setVisible true))
-    {:height height
-     :width  width
-     :ink-color (atom ink)
+    {:ink-color (atom ink)
      :paper-color paper-color
      :current-position (atom [0,0])
      :lines lines
-     :panel panel}))
+     :panel panel
+     :xfn (fn[x] (/ (- x xmin) (- xmax xmin)))
+     :yfn (fn[y] (/ (- ymax y) (- ymax ymin)))
+     :size {:xmin xmin :xmax xmax :ymin ymin :ymax ymax}}))
 
+(defn- very-primitive-line [plotter x1 y1 x2 y2]
+  (let [ink @(:ink-color plotter)]
+    (swap! (:lines plotter) conj [x1 y1 x2 y2 ink])
+    (primitive-repaint plotter)))
 
 (defn- primitive-line [plotter x1 y1 x2 y2]
-  (let [ink @(:ink-color plotter)]
-    (swap! (:lines plotter) conj [x1 y1 x2 y2 ink]))
-  (primitive-repaint plotter))
+  (let [xfn (:xfn plotter)
+        yfn (:yfn plotter)]
+        (very-primitive-line plotter (xfn x1) (yfn y1) (xfn x2) (yfn y2))))
 
 (defn- set-paper-color [plotter color]
   (swap! (plotter :paper-color) (constantly color))
@@ -96,8 +99,9 @@
   ([] (create-window "Simple Plotter"))
   ([title] (create-window title 1024 768))
   ([title width height] (create-window title width height white black ))
-  ([title width height ink paper]
-     (let [plotter (create-plotter title width height ink paper)]
+  ([title width height ink paper] (create-window title width height ink paper 0 width height 0))
+  ([title width height ink paper xmin xmax ymin ymax]
+     (let [plotter (create-plotter title width height ink paper xmin xmax ymin ymax)]
        (swap! current-plotter (constantly plotter))
        plotter)))
 
@@ -140,9 +144,17 @@
     (primitive-line plotter x1 y1 x2 y2)
     (set-current-position plotter [x2 y2])))
 
+(ddefn axes[]
+       (let [{:keys [xmin xmax ymin ymax]} (:size plotter)]
+         (primitive-line plotter xmin 0 xmax 0)
+         (primitive-line plotter 0 xmin 0 xmax)))
+
 (ddefn line [x1 y1 x2 y2]
    (plot plotter x1 y1)
    (draw plotter (- x2 x1) (- y2 y1)))
+
+
+       
 
 (ddefn ink   [color] (set-ink-color plotter color))
 
@@ -177,9 +189,18 @@
   ;; axes
   (ink yellow)
   (plot 0 384) (draw 1024 0)
-  (line 512 0 512 1024))
+  (line 512 0 512 1024)
 
-;;(sine-example)
+  ;; Now in more normal coordinates
+  (create-window "sine in sane coords" 200 100 black white -7.0 7.0 -1.0 1.0)
+  (doseq [x (range -7 7 0.01)]
+    (draw-to x (Math/sin (* Math/PI x))))
+  ;; axes
+  (ink lightgray)
+  (axes)
+  )
+
+(sine-example)
 
 ;; (defn examples []
 ;;   (sine-example)
