@@ -87,6 +87,7 @@
 
 (defmacro fdn [symbol-or-string] `(find-doc-names (stringify '~symbol-or-string)))
 
+;; find the source file which defines a thing:
 (defn source-file* [symbol] (:file (meta (resolve symbol))))
 
 (defmacro source-file [symbol-or-string] `(source-file* (symbol (stringify '~symbol-or-string))))
