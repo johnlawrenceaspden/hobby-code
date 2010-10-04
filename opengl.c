@@ -1,6 +1,11 @@
 /*
 http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-2:-Hello-World:-The-Slideshow.html
 
+Ubuntu 10.04 on dell-mini
+
+install freeglut3-dev libglew1.5-dev
+
+$ cc -lglut -lGLEW opengl.c && ./a.out
 
 
 */
