@@ -200,7 +200,7 @@
   (axes)
   )
 
-(sine-example)
+;; (sine-example)
 
 ;; (defn examples []
 ;;   (sine-example)
