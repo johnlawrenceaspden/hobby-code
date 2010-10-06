@@ -12,6 +12,7 @@ $ cc -lglut -lGLEW opengl.c && ./a.out
 */
 
 #include <stdlib.h>
+#include <math.h>
 #include <stdio.h>
 #include <GL/glew.h>
 #ifdef __APPLE__
@@ -208,6 +209,8 @@ static int make_resources(void)
                                          GL_VERTEX_SHADER,
                                          "hello-gl.v.glsl"
                                          );
+
+
   if(g_resources.vertex_shader == 0)
     return 0;
 
@@ -243,6 +246,9 @@ static int make_resources(void)
 
 static void update_fade_factor(void)
 {
+  int milliseconds = glutGet(GLUT_ELAPSED_TIME);
+  g_resources.fade_factor = sinf((float) milliseconds * 0.001f) * 0.5f + 0.5f;
+  glutPostRedisplay();
 }
 
 static void render(void)
@@ -256,27 +262,27 @@ static void render(void)
   glBindTexture(GL_TEXTURE_2D, g_resources.textures[1]);
   glUniform1i(g_resources.uniforms.textures[1], 1);
   glBindBuffer(GL_ARRAY_BUFFER, g_resources.vertex_buffer);
-    glVertexAttribPointer(
-        g_resources.attributes.position,  /* attribute */
-        2,                                /* size */
-        GL_FLOAT,                         /* type */
-        GL_FALSE,                         /* normalized? */
-        sizeof(GLfloat)*2,                /* stride */
-        (void*)0                          /* array buffer offset */
-    );
-    glEnableVertexAttribArray(g_resources.attributes.position);
- glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_resources.element_buffer);
-    glDrawElements(
-        GL_TRIANGLE_STRIP,  /* mode */
-        4,                  /* count */
-        GL_UNSIGNED_SHORT,  /* type */
-        (void*)0            /* element array buffer offset */
-    );
-
- glDisableVertexAttribArray(g_resources.attributes.position);
-
+  glVertexAttribPointer(
+                        g_resources.attributes.position,  /* attribute */
+                        2,                                /* size */
+                        GL_FLOAT,                         /* type */
+                        GL_FALSE,                         /* normalized? */
+                        sizeof(GLfloat)*2,                /* stride */
+                        (void*)0                          /* array buffer offset */
+                        );
+  glEnableVertexAttribArray(g_resources.attributes.position);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_resources.element_buffer);
+  glDrawElements(
+                 GL_TRIANGLE_STRIP,  /* mode */
+                 4,                  /* count */
+                 GL_UNSIGNED_SHORT,  /* type */
+                 (void*)0            /* element array buffer offset */
+                 );
+  
+  glDisableVertexAttribArray(g_resources.attributes.position);
+  
   glutSwapBuffers();
-
+    
   fprintf(stderr, "yo");
 }
 
