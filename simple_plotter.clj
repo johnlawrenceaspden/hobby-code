@@ -166,7 +166,7 @@
         (plot (* (xsc x))
               (* (ysc y))))))
 
-(defn window [plotter]
+(defn window! [plotter]
   (swap! current-plotter (fn[x] plotter)))
 
 (ddefn get-height [] @(plotter :height))
