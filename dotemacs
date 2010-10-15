@@ -80,7 +80,7 @@
 ;; disable toolbar
 (tool-bar-mode -1)
 ;; disable scrollbar
-;(toggle-scroll-bar -1)
+(toggle-scroll-bar -1)
 ;; disable menu bar
 ;(menu-bar-mode -1)
 ;; disable splash screen
