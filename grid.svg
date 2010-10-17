@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN"
+ "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+
+<svg width="800" height="500">
+  <defs>
+    <pattern id="checkerPattern" width="80" height="80"
+      patternUnits="userSpaceOnUse">
+
+      <rect fill="red" x="0" y="0" width="40" height="40" />
+
+      <rect fill="blue" x="40" y="0" width="40" height="40" />
+
+
+    </pattern>
+  </defs>
+
+  <g transform="translate(50,50)">
+    <rect fill="url(#checkerPattern)" style="stroke:white" x="0"
+      y="0" width="400" height="400" />
+  </g>
+</svg>
