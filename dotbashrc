@@ -122,12 +122,7 @@ export -f doc
 
 
 
-#jla added this for clojure, after http://riddell.us/tutorial/clojure/clojure.html
-export CLOJURE_EXT=~/.clojure
-
-
-PATH=$PATH:~/opt/clojure-contrib/launchers/bash
-alias clj='rlwrap clj-env-dir'
+alias clj='rlwrap clojure'
 
 #life is too short
 #alias fnd='find . -iname'

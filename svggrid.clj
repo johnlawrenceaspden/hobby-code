@@ -1,97 +1,42 @@
-(use ['clojure.contrib.lazy-xml :as 'lazy-xml])
+;; The other day, I wanted to make some graph paper.
 
-(defn xstr [x] (str (* 80 x)))
-(defn ystr [y] (str (* 80 (inc y))))
-(defn yhighstr[y] (str (- (* 80 (inc y)) 40)))
+;; While experimenting with inkscape, I noticed that svg is actually an xml file format.
 
+;; Since clojure is good with xml, that means that it's actually easier to make such a drawing with a program:
 
-(defn year->xy [year]
-  (let [year (- year 1)
-        lastdigit (mod year 10)
-        decade (/ (- (mod year 100) (mod year 10)) 10)]
-    (if (even? decade) [ lastdigit (- 9 decade)]
-        [(- 9 lastdigit) (- 9 decade)])))
+;; Each element of the drawing is represented as a map
 
-(= (map year->xy '(1900 1901 1909 1910 1911 1920 1921)) '([0 0] [1 0] [9 0] [9 1] [8 1] [0 2] [1 2]))
-
-
-
-(defn make-rect [[x y] style]
+(defn make-rect [i j squaresize]
   {:tag :rect
-   :attrs {:x (xstr x)
-           :y (xstr y)
-           :width "80"
-           :height "80"
-           :style style}})
+   :attrs {:x (str (* squaresize i))
+           :y (str (* squaresize j))
+           :width  (str squaresize)
+           :height (str squaresize)
+           :style "fill:white;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"}})
 
-(defn make-coloured-rect [[x y] colour]
-  (make-rect [x y] (str "fill:"colour";stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")))
+;; The whole file is represented as a map containing those maps
 
+(defn make-svg [gridsize squaresize]
+  {:tag :svg
+   :attrs {:width "100%"
+           :height "100%"
+           :version "1.1"
+           :xmlns "http://www.w3.org/2000/svg"}
+   :content (for [i (range gridsize) j (range gridsize)] (make-rect i j squaresize))})
 
-(defn make-red-rect [[x y]]
-  (make-coloured-rect [x y] "#ff0000"))
+;; The library clojure.contrib.lazy-xml will turn the nested map into xml:
 
-(defn make-white-rect [[x y]]
-  (make-coloured-rect [x y] "#ffffff"))
+(require 'clojure.contrib.lazy-xml)
 
-(defn make-transparent-rect [[x y]]
-  (make-coloured-rect [x y] "none"))
+;; We can use with-out-str to capture the output, which is unaccountably printed
+;; rather than given back as a string, and spit to write it to a file.
 
+(spit "squares.svg" (with-out-str (clojure.contrib.lazy-xml/emit (make-svg 10 80))))
 
-(defn make-text [[x y] text]
-  {:tag :text
-   :attrs {:x (xstr x) :y (ystr y) :style "font-family:Verdana;font-size:24"}
-   :content (list text)})
-
-(defn make-high-text [[x y] text]
-  {:tag :text
-   :attrs {:x (xstr x) :y (yhighstr y) :style "font-family:Verdana;font-size:24"}
-   :content (list text)})
-
-
-
-(def grid (for [i (range 10) j (range 10)] (make-transparent-rect [i j])))
+;; The nice thing about this is that you can then use inkscape to modify the
+;; file, and then diff to work out how to take the modifications back into the
+;; program. Does anybody know how to make the emit function format the xml so
+;; that the output file is nicely readable?
 
 
 
-(defn yearlabels [century] (map (fn [y] (make-text (year->xy y) (str y))) (range (inc (* 100 (dec century))) (inc (* 100 century)) )))
-
-(defn make-war [start end label labelyear] (concat (map (fn[y](make-red-rect (year->xy y))) (range start (inc end))) (list (make-high-text (year->xy labelyear) label))))
-
-
-
-(def c20 (concat
-           (make-war 1914 1918 "The Great War" 1918)
-           (make-war 1939 1945 "The Second World War" 1941)
-           (yearlabels 20)))
-
-;; Making a simple one:
-(def-let [svgfile
-          (with-out-str
-            (clojure.contrib.lazy-xml/emit
-             {:tag :svg
-              :attrs {:width "100%"
-                      :height "100%"
-                      :version "1.1"
-                      :xmlns "http://www.w3.org/2000/svg"}
-              :content  (concat grid c20)}))]
-  (spit "file.svg" svgfile))
-
-
-
-
-
-;;(clojure.xml/parse "file.svg")
-;; Reading an svg image file
-;;(pp/pprint (clojure.xml/parse "10x10.svg"))
-
-;;(def labels (for [i (range 10)
-;;                  j (range 10)]
-;;              (make-text [i j] (str [i j]))))
-
-
-;;(make-transparent-rect [10 10])
-;;(make-white-rect [10 10])
-;;(lazy-xml/emit (make-rect [0 0] "fill:#012345"))
-;;(lazy-xml/emit (make-white-rect [0 0]))
-;;(lazy-xml/emit (make-text [0 0] "hello"))
