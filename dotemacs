@@ -11,7 +11,7 @@
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
-(color-theme-initialize)
+;;(color-theme-initialize)
 ;;here are the ones I find usable
 (color-theme-billw)
 ;(color-theme-gtk-ide)
@@ -219,19 +219,8 @@
 (add-hook 'clojure-mode-hook 
           (lambda () (highlight-parentheses-mode t)))
 
-
-
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
-
+;; change assignment operator shortcut in ESS
+(ess-toggle-underscore nil)
 
 
     (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
@@ -242,3 +231,20 @@
                                     ("\\.m$" . mercury-mode))
                                    auto-mode-alist))
     
+;; I occasionally find myself needing to gather lines up one by one and paste them all somewhere
+;; You can do C-space, end, Cxx, M-C-w, M-w to get an appending yanking version of C-k
+;; Or this function should do the same thing.
+(defun yank-append-line (arg)
+  "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
+  (interactive "p")
+  (append-next-kill)
+  (kill-ring-save (point)
+                  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+(define-key global-map (kbd "M-k") 'yank-line)
+
+;; keyboard macro of the gods:
+;; evaluates the expression on the line BELOW, and pastes the result afterwards
+(setq last-kbd-macro
+  [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
