@@ -197,3 +197,14 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; In this case, it's easy enough to do the tail call transformation, but to my surprise,
+;; it doesn't seem much quicker.
+
+(defn fact
+  ([n acc] (if (< n 2) acc (recur (dec n) (* acc n))))
+  ([n] (fact n 1N)))
+
+(time (fact 5000)) "Elapsed time: 273.485278 msecs"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
