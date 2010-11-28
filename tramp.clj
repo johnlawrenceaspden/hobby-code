@@ -12,12 +12,19 @@
 
 ;; Note that this is nothing to do with the lack of tail-call optimization in Java.
 
-;; The problem here is that there is a hard limit on the size of the stack, which is set far too low to do
-;; sensible recursive programming.
+;; The problem here is that there is a hard limit on the size of the stack, which is set too low.
 
 ;; What are my options?
 
 ;; I can transform the algorithm into an iteration, which can be expressed nicely in clojure using recur.
+
+(defn fact
+  ([n acc] (if (< n 2) acc (recur (dec n) (* acc n))))
+  ([n] (fact n 1N)))
+
+(time (fact 5000)) "Elapsed time: 273.485278 msecs"
+
+;; But although this is easy enough in this case, it won't always be possible.
 
 ;; Or I can keep the list of tasks to do somewhere other than the JVM's tiny stack.
 
@@ -114,7 +121,7 @@
 (fact 5) ; 120N
 (pop-task!) ; nil
 
-;; Once we've run out of tasks, we can re-ask original question
+;; Once we've run out of tasks, we can re-ask the original question
 (fact 5) ; 120N
 
 ;; But of course we could just use eval to execute the code returned by pop-task.
@@ -174,7 +181,7 @@
 
 (time (calculate-fact 5000)) "Elapsed time: 31004.287913 msecs"
 
-;; We can recover some speed by keeping actual functions on the list rather than code, and executing them
+;; We can recover the speed by keeping actual functions on the list rather than code, and executing them
 ;; instead of evaluating the code.
 
 (defn fact[n]
@@ -196,15 +203,5 @@
 (time (calculate-fact 5000))  "Elapsed time: 219.510832 msecs"
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; In this case, it's easy enough to do the tail call transformation, but to my surprise,
-;; it doesn't seem much quicker.
-
-(defn fact
-  ([n acc] (if (< n 2) acc (recur (dec n) (* acc n))))
-  ([n] (fact n 1N)))
-
-(time (fact 5000)) "Elapsed time: 273.485278 msecs"
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; I'm surprised to find that this seems to be slightly faster than the tail-call version.
+;; I wasn't expecting that at all, and wonder if I've just made some ghastly mistake.
