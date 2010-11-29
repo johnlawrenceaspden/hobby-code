@@ -70,11 +70,11 @@
            :else (let [fdn (@fact-list (dec n))   ;; but if we need to recurse
                        fddn (@fact-list (dec (dec n)))] ;;check that the prerequisites have already been calculated
                    (if (and fdn fddn)                   ;; and if they have 
-                     (return (+ fdn fddn))              ;; calculates as above
+                     (return (+ fdn fddn))              ;; calculate as above
                      (do                                ;; but if not
                        (add-task! (list 'fib n))                    ;; re-queue this task
                        (when (nil? fdn) (add-task! (list 'fib (dec n)))) ;; to be done after whichever of the two prerequisites 
-                       (when (nil? fddn) (add-task! (list 'fib (dec (dec n))))) ;; needs doing first
+                       (when (nil? fddn) (add-task! (list 'fib (dec (dec n))))) ;; need doing first
                         :tasks-added-to-do-list))))))
 
 (time (calculate-fib 30)) ; "Elapsed time: 94.69365 msecs"
@@ -114,8 +114,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; And of course, using eval at run-time is slow, so instead we can redefine the task runner and
-;; the fib function so:
+;; And of course, using eval at run-time is slow, so instead we can redefine the
+;; task runner and the fib function so:
 
 (defn run-list! []
   (let [a (pop-task!)]
@@ -133,13 +133,15 @@
             (do (add-tasks! (list #(fib (dec (dec n))) #(fib (dec n)) #(fib n)))
                 :tasks-added-to-do-list))))))
 
-;; Which again gives us a 100x speed up, at the cost of not being so easy to understand using peek-lists:
+;; Which again gives us a 100x speed up, at the cost of not being so easy to
+;; understand using peek-lists:
 
 (time (calculate-fib 30)) ; "Elapsed time: 0.864894 msecs"
 ;; 832040
 
-;; This time, the make-your-own-stack version is considerably slower than the natural version.
-;; (About a factor of 8)
+;; This time, the make-your-own-stack version is considerably slower than the
+;; natural version.  (By about a factor of 8).
+
 ;; Which is as it should be!
 
 ;; But we have a non-stack-blowing program
