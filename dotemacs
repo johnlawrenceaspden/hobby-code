@@ -242,7 +242,7 @@
                   (line-beginning-position (+ 1 arg)))
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 
-(define-key global-map (kbd "M-k") 'yank-line)
+(define-key global-map (kbd "M-k") 'yank-append-line)
 
 ;; keyboard macro of the gods:
 ;; evaluates the expression on the line BELOW, and pastes the result afterwards
