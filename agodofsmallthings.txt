@@ -234,7 +234,7 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 "Computers are superhuman chess players, but they still suck at go, even though on the surface they're the same sort of game, and they feel similar in complexity.
 <br />
 <br />
-"Oh come on", said Tom, "How can two totally different things 'feel similar in complexity'?". "What would that even mean?"
+"Oh come on", said Tom, "How can two totally different things 'feel similar in complexity'? What would that even mean?"
 <br />
 <br />
 "Easy", said Frank. "Do you know noughts and crosses?"
@@ -484,7 +484,7 @@ He thought of a simple test.
 "There are many possible 'penny blacks'. Does anything available from e-bay with that description count?"
 <br />
 <br />
-"No, they have to be Original British Penny Black Postage Stamps".
+"No, they have to be Original British Penny Black Postage Stamps."
 <br />
 <br />
 "OK, I understand. So my goal is to get the biggest number of original british penny black postage stamps that I can delivered to your address in the next seven days. What is your address?".
@@ -737,7 +737,7 @@ It was a good suggestion. U would be 1000000+ with virtual certainty.
 But she still had forty trillion goddess-days to think of a better plan.
 <br />
 <br />
----------------------------------------
+<hr />
 <br />
 <br />
 Tom tried to phone his parents, but the phone was dead, like all the other electronics in the world. It was three o'clock in the morning.
