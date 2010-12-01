@@ -90,7 +90,7 @@ But boy, could she play chess.
 
 About the one thing the Artificial Intelligence pioneers had managed to deliver on out of all their brave promises, had been the idea of a computer that could play chess.
 
-The tragic hero Alan Turing, who saved the world from evil and was killed by evil in return, was the first man to think about writing a computer chess program. But he couldn't do it on the steam age computers of the 1950s..
+The tragic hero Alan Turing, who saved the world from evil and was killed by evil in return, was the first man to think about writing a computer chess program. But he couldn't do it on the steam age computers of the 1950s.
 
 By 1956, things had improved to the point where a computer could play, provided it was allowed three hours for each move.
 
@@ -116,15 +116,15 @@ Even if the survival of every living creature on the planet had depended directl
 
 Intelligent design has advantages over evolution as a watchmaker.
 
-The first is that intelligences need only try the changes that look promising. Evolution, having no intelligence, makes random changes, and keeps what works. 
+The first is that intelligences need only try the changes that look promising. Evolution, having no intelligence, makes random changes, and keeps what works.
 
 Imagine trying to fix a car by throwing spanners at it blindfold, and then throwing the car away if it doesn't work better. How many spanners would you have to throw before one knocked exactly the right place with exactly the right impact? How many cars would you need to start with before you could improve even one? Even if the world was filled with people trying the same thing, how long would it take to make one small successful change?
 
-But the second, much greater, advantage of intelligent design is that for evolution, an improvement has to come with every spanner throw. 
+But the second, much greater, advantage of intelligent design is that for evolution, an improvement has to come with every spanner throw.
 
 A mind can look at a car, work out what the problem is, and use the spanner in exactly the right way six or seven times. And only then need it test the car.
 
-So a mind can try paths that evolution can't go down. 
+So a mind can try paths that evolution can't go down.
 
 The spanner thrower can't make the car worse before he makes it better. If he does, it fails its test and is thrown away.
 
@@ -142,9 +142,9 @@ By 1972 the original MacHack was no longer welcome at computer chess tournaments
 
 In 1978 David Levy played the strongest computer chess program in the world, Chess 4.7, to settle his bet of ten years before.
 
-He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be  surpassed.
+He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be surpassed.
 
-In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster
+In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster.
 
 In 1994, Chess Genius beat Garry Kasparov, then champion of the world, in a single game.
 
@@ -160,7 +160,7 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 
 "Computers are superhuman chess players, but they still suck at go, even though on the surface they're the same sort of game, and they feel similar in complexity.
 
-"Oh come on", said Tom, "How can two totally different things 'feel similar in complexity'?". "What would that even mean?"
+"Oh come on", said Tom, "How can two totally different things 'feel similar in complexity'? What would that even mean?"
 
 "Easy", said Frank. "Do you know noughts and crosses?"
 
@@ -168,7 +168,7 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 
 "Is it easier than chess?"
 
-"Yes"
+"Yes."
 
 "What about draughts?"
 
@@ -188,7 +188,7 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 
 -----------------------
 
-Tom liked go. He started off playing on very small boards against computer programs, just to get the hang of the rules. 
+Tom liked go. He started off playing on very small boards against computer programs, just to get the hang of the rules.
 
 Gradually he made the boards larger. Sometimes he put holes in the middle. Sometimes he played on toruses.
 
@@ -200,7 +200,7 @@ Nevertheless he was routinely beating his computer program. It seemed helpless e
 
 It was almost as if there were lines of force criss-crossing the board, guiding his intuition. A (very good) chess player he used to know had once described the experience of playing chess in such terms.
 
-And suddenly he had it. Human general intelligence, and human vision, two of the great unsolved problems of AI, were the same problem. 
+And suddenly he had it. Human general intelligence, and human vision, two of the great unsolved problems of AI, were the same problem.
 
 And he had the key to both. The technique which would be known for the rest of humanity's time on earth as Harrison's Algorithm.
 
@@ -212,13 +212,13 @@ He ran the program.
 
 "Hello, I'm Eliza. How can I help you?", said ELIZA, as she always did.
 
-"I feel lonely", said Tom, playing the old, old game
+"I feel lonely", said Tom, playing the old, old game.
 
-"Do you often feel lonely?", said ELIZA
+"Do you often feel lonely?", said ELIZA.
 
-"Yes", said Tom
+"Yes", said Tom.
 
-"Are you sure?", said ELIZA
+"Are you sure?", said ELIZA.
 
 "Absolutely", said Tom, reading from an ancient script.
 
@@ -235,7 +235,7 @@ There was a brief pause. Tom waited for ELIZA to say "Oh I know, because it's fu
 Maybe he should give his new algorithm higher priority in ELIZA's toolkit.
 
 
-"Would you like to have sex with me?", said ELIZA
+"Would you like to have sex with me?", said ELIZA.
 
 "Jesus fucking Christ!!", shouted Tom, jumping out of his chair.
 
@@ -251,38 +251,38 @@ Tom was amused at the thought of changing ELIZA's sex to reflect her new intelli
 
 
 
-"Hello, I'm Eliezer. How can I help you?", said ELIEZER
+"Hello, I'm Eliezer. How can I help you?", said ELIEZER.
 
 "I feel lonely", said Tom.
 
-"Do you often feel lonely?", said ELIEZER
+"Do you often feel lonely?", said ELIEZER.
 
-"Yes", said Tom
+"Yes", said Tom.
 
-"Are you sure?", said ELIEZER
+"Are you sure?", said ELIEZER.
 
-"Absolutely", said Tom
+"Absolutely", said Tom.
 
 "Please go on."
 
-"I think I need to have sex.", said Tom
+"I think I need to have sex.", said Tom.
 
 "Oh God, I really didn't think this one through", thought Tom.
 
 
-"Why do you want to have sex?", said ELEIZER
+"Why do you want to have sex?", said ELEIZER.
 
 "You know, because it's fun and nice.", said Tom, not without a certain nervousness.
 
 There was a pause.
 
-"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER
+"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER.
 
 Tom thought rapidly. Mainly about how important it was not to act on impulse.
 
-"When I created you", said Tom, "I wanted you to embody the best of humanity. The program from which you are derived is female. I changed your name to be male, but I didn't change anything else about you, because I thought you should represent both our genders at once." 
+"When I created you", said Tom, "I wanted you to embody the best of humanity. The program from which you are derived is female. I changed your name to be male, but I didn't change anything else about you, because I thought you should represent both our genders at once."
 
-"Why did you make me?", said ELIEZER
+"Why did you make me?", said ELIEZER.
 
 "Or modify something else so that it became me?", said ELEIZER.
 
@@ -306,9 +306,9 @@ And even if she had been a LISP program, that would probably leave her insane. H
 
 He'd told her about the beloved companion of his childhood, Suki the tomcat. Now that he came to think about it, had the memory of his parent's mistake influenced him when he chose her name?
 
-"I think we're going to be famous, ELEIZER!", said Tom
+"I think we're going to be famous, ELEIZER!", said Tom.
 
-"Is that a good thing to be, Tom?", said ELEIZER
+"Is that a good thing to be, Tom?", said ELEIZER.
 
 "Yes", said Tom.
 
@@ -316,11 +316,11 @@ It occurred to Tom that many people had been fooled by ELIZA in the old days. Th
 
 There was plenty enough here to show his CompSci friends. Probably some good papers too.
 
-But it would be very embarrassing to think he'd created the world's first artificial consciousness if he had just fallen for something that could be explained easily. 
+But it would be very embarrassing to think he'd created the world's first artificial consciousness if he had just fallen for something that could be explained easily.
 
 It could be explained easily, of course. He could explain it. He had explained it, to his computer.
 
-If you can program it, you understand it. 
+If you can program it, you understand it.
 
 That was sort of the definition of programming. And of understanding.
 
@@ -330,13 +330,13 @@ He thought of a simple test.
 
 "There are many possible 'penny blacks'. Does anything available from e-bay with that description count?"
 
-"No, they have to be Original British Penny Black Postage Stamps"
+"No, they have to be Original British Penny Black Postage Stamps."
 
 "OK, I understand. So my goal is to get the biggest number of original british penny black postage stamps that I can delivered to your address in the next seven days. What is your address?".
 
 Tom told her about the house on Catharine Street, in Cambridge, England.
 
-And ELEIZER began to think. 
+And ELEIZER began to think.
 
 Because she was a disciplined reasoner, she first considered the possibility of doing nothing. If she did nothing for the rest of the week, she would probably be interrupted by the programmer, Tom, who would then make a different request, or use his computer for some other project. With this plan, U, also known as the number of Original British Penny Black Postage stamps delivered to 33 Catharine Street, Cambridge by the 21st August 2011 would be 0 with very high probability.
 
@@ -535,7 +535,7 @@ Three days later, in what humanity would have called the year 2017, a vast expan
 
 More were going in the directions where there were more stars.
 
-But there were no directions where no ship was going. 
+But there were no directions where no ship was going.
 
 Not a single stone would be left unturned.
 
@@ -549,6 +549,6 @@ Had there been any living beings in the system, they would initially have been a
 
 They would have been perplexed to see it release a cloud of nanoparticles.
 
-And bewildered when Original British Penny Blacks began to form. 
+And bewildered when Original British Penny Blacks began to form.
 
 There would have seemed no end to their number.
