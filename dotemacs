@@ -11,7 +11,7 @@
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
-;;(color-theme-initialize)
+(color-theme-initialize)
 ;;here are the ones I find usable
 (color-theme-billw)
 ;(color-theme-gtk-ide)
