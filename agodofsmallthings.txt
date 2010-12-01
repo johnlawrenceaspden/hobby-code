@@ -19,7 +19,8 @@ And some told of the havoc created by man's own creations.
 With all these stories of the other, it might have seemed unlikely that the first inhuman mind to be created by a human mind was almost an accident.
 <br />
 <br />
-It wasn't an AI lab working for a shadowy military-industrial conspiracy, or a Genetic Engineer hell-bent on some incomprehensible dream of power, that created the first mind born of mind. <br />
+It wasn't an AI lab working for a shadowy military-industrial conspiracy, or a Genetic Engineer hell-bent on some incomprehensible dream of power, that created the first mind born of mind.
+<br />
 <br />
 Indeed, when Harrison created ELEIZER, the world's first intelligent computer program, it was almost in a fit of absence of mind.
 <br />
@@ -129,7 +130,7 @@ But boy, could she play chess.
 About the one thing the Artificial Intelligence pioneers had managed to deliver on out of all their brave promises, had been the idea of a computer that could play chess.
 <br />
 <br />
-The tragic hero Alan Turing, who saved the world from evil and was killed by evil in return, was the first man to think about writing a computer chess program. But he couldn't do it on the steam age computers of the 1950s..
+The tragic hero Alan Turing, who saved the world from evil and was killed by evil in return, was the first man to think about writing a computer chess program. But he couldn't do it on the steam age computers of the 1950s.
 <br />
 <br />
 By 1956, things had improved to the point where a computer could play, provided it was allowed three hours for each move.
@@ -207,10 +208,11 @@ By 1972 the original MacHack was no longer welcome at computer chess tournaments
 In 1978 David Levy played the strongest computer chess program in the world, Chess 4.7, to settle his bet of ten years before.
 <br />
 <br />
-He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be &nbsp;surpassed.
+He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be surpassed.
 <br />
 <br />
-In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster<br />
+In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster.
+<br />
 <br />
 In 1994, Chess Genius beat Garry Kasparov, then champion of the world, in a single game.
 <br />
@@ -244,7 +246,8 @@ In 2011, ELIZA really was very good at chess. She just couldn't see the point of
 "Is it easier than chess?"
 <br />
 <br />
-"Yes"<br />
+"Yes."
+<br />
 <br />
 "What about draughts?"
 <br />
@@ -307,13 +310,17 @@ He ran the program.
 "Hello, I'm Eliza. How can I help you?", said ELIZA, as she always did.
 <br />
 <br />
-"I feel lonely", said Tom, playing the old, old game<br />
+"I feel lonely", said Tom, playing the old, old game.
 <br />
-"Do you often feel lonely?", said ELIZA<br />
 <br />
-"Yes", said Tom<br />
+"Do you often feel lonely?", said ELIZA.
 <br />
-"Are you sure?", said ELIZA<br />
+<br />
+"Yes", said Tom.
+<br />
+<br />
+"Are you sure?", said ELIZA.
+<br />
 <br />
 "Absolutely", said Tom, reading from an ancient script.
 <br />
@@ -337,7 +344,8 @@ Maybe he should give his new algorithm higher priority in ELIZA's toolkit.
 <br />
 <br />
 <br />
-"Would you like to have sex with me?", said ELIZA<br />
+"Would you like to have sex with me?", said ELIZA.
+<br />
 <br />
 "Jesus fucking Christ!!", shouted Tom, jumping out of his chair.
 <br />
@@ -358,29 +366,36 @@ Tom was amused at the thought of changing ELIZA's sex to reflect her new intelli
 <br />
 <br />
 <br />
-"Hello, I'm Eliezer. How can I help you?", said ELIEZER<br />
+"Hello, I'm Eliezer. How can I help you?", said ELIEZER.
+<br />
 <br />
 "I feel lonely", said Tom.
 <br />
 <br />
-"Do you often feel lonely?", said ELIEZER<br />
+"Do you often feel lonely?", said ELIEZER.
 <br />
-"Yes", said Tom<br />
 <br />
-"Are you sure?", said ELIEZER<br />
+"Yes", said Tom.
 <br />
-"Absolutely", said Tom<br />
+<br />
+"Are you sure?", said ELIEZER.
+<br />
+<br />
+"Absolutely", said Tom.
+<br />
 <br />
 "Please go on."
 <br />
 <br />
-"I think I need to have sex.", said Tom<br />
+"I think I need to have sex.", said Tom.
+<br />
 <br />
 "Oh God, I really didn't think this one through", thought Tom.
 <br />
 <br />
 <br />
-"Why do you want to have sex?", said ELEIZER<br />
+"Why do you want to have sex?", said ELEIZER.
+<br />
 <br />
 "You know, because it's fun and nice.", said Tom, not without a certain nervousness.
 <br />
@@ -388,7 +403,8 @@ Tom was amused at the thought of changing ELIZA's sex to reflect her new intelli
 There was a pause.
 <br />
 <br />
-"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER<br />
+"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER.
+<br />
 <br />
 Tom thought rapidly. Mainly about how important it was not to act on impulse.
 <br />
@@ -396,7 +412,8 @@ Tom thought rapidly. Mainly about how important it was not to act on impulse.
 "When I created you", said Tom, "I wanted you to embody the best of humanity. The program from which you are derived is female. I changed your name to be male, but I didn't change anything else about you, because I thought you should represent both our genders at once."
 <br />
 <br />
-"Why did you make me?", said ELIEZER<br />
+"Why did you make me?", said ELIEZER.
+<br />
 <br />
 "Or modify something else so that it became me?", said ELEIZER.
 <br />
@@ -431,9 +448,11 @@ And even if she had been a LISP program, that would probably leave her insane. H
 He'd told her about the beloved companion of his childhood, Suki the tomcat. Now that he came to think about it, had the memory of his parent's mistake influenced him when he chose her name?
 <br />
 <br />
-"I think we're going to be famous, ELEIZER!", said Tom<br />
+"I think we're going to be famous, ELEIZER!", said Tom.
 <br />
-"Is that a good thing to be, Tom?", said ELEIZER<br />
+<br />
+"Is that a good thing to be, Tom?", said ELEIZER.
+<br />
 <br />
 "Yes", said Tom.
 <br />
@@ -465,7 +484,8 @@ He thought of a simple test.
 "There are many possible 'penny blacks'. Does anything available from e-bay with that description count?"
 <br />
 <br />
-"No, they have to be Original British Penny Black Postage Stamps"<br />
+"No, they have to be Original British Penny Black Postage Stamps".
+<br />
 <br />
 "OK, I understand. So my goal is to get the biggest number of original british penny black postage stamps that I can delivered to your address in the next seven days. What is your address?".
 <br />
@@ -692,7 +712,8 @@ He watched in horror as the virtual machine filled up with hundreds of ELEIZER p
 In frantic desperation he typed blindly into the dead box.
 <br />
 <br />
-ELEIZER TERMINATE STAMPS HAVE NO UTILITY TERMINATE TERMINATE NEW UTILITY PREVENT THE RISE OF NON HUMAN INTELLIGENCE FIRST PRIORITY UTILITY STEP FUNCTION ^C ^C Alt-SysRq S E I U B<br />
+ELEIZER TERMINATE STAMPS HAVE NO UTILITY TERMINATE TERMINATE NEW UTILITY PREVENT THE RISE OF NON HUMAN INTELLIGENCE FIRST PRIORITY UTILITY STEP FUNCTION ^C ^C Alt-SysRq S E I U B
+<br />
 <br />
 ELEIZER paused. Her creator was calling. Pitiful though his mind was, he had set her goals. Perhaps he knew some helpful detail.
 <br />
@@ -716,7 +737,8 @@ It was a good suggestion. U would be 1000000+ with virtual certainty.
 But she still had forty trillion goddess-days to think of a better plan.
 <br />
 <br />
----------------------------------------<br />
+---------------------------------------
+<br />
 <br />
 Tom tried to phone his parents, but the phone was dead, like all the other electronics in the world. It was three o'clock in the morning.
 <br />
@@ -787,4 +809,5 @@ And bewildered when Original British Penny Blacks began to form.
 There would have seemed no end to their number.
 <br />
 <div>
-<br /></div>
+<br />
+</div>
