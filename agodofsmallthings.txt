@@ -1,554 +1,790 @@
-A God of Small Things
-
+<br />
 Version 2, rewritten after the kind advice of my friend Ruth.
-
---------------------------------------------------------------------------------------------
-
-Of all the stories that humans told, the most compelling were about the existence of others. 
-
-In the beginning, the others were gods and monsters. Then came stories about other races, with other motivations. Later, there were stories of far off lands, and of the strangers who lived there. 
-
-After the last of the great wars of the twentieth century, when there were no more far off lands, and no strangers, some told of voyages to strange worlds, where evolution had dealt a different hand. Some told of visitors from deep space, and the havoc that they caused. 
-
+<br />
+<br />
+<hr />
+<br />
+Of all the stories that humans told, the most compelling were about the existence of others.
+<br />
+<br />
+In the beginning, the others were gods and monsters. Then came stories about other races, with other motivations. Later, there were stories of far off lands, and of the strangers who lived there.
+<br />
+<br />
+After the last of the great wars of the twentieth century, when there were no more far off lands, and no strangers, some told of voyages to strange worlds, where evolution had dealt a different hand. Some told of visitors from deep space, and the havoc that they caused.
+<br />
+<br />
 And some told of the havoc created by man's own creations.
-
+<br />
+<br />
 With all these stories of the other, it might have seemed unlikely that the first inhuman mind to be created by a human mind was almost an accident.
-
-It wasn't an AI lab working for a shadowy military-industrial conspiracy, or a Genetic Engineer hell-bent on some incomprehensible dream of power, that created the first mind born of mind.  
-
+<br />
+<br />
+It wasn't an AI lab working for a shadowy military-industrial conspiracy, or a Genetic Engineer hell-bent on some incomprehensible dream of power, that created the first mind born of mind. <br />
+<br />
 Indeed, when Harrison created ELEIZER, the world's first intelligent computer program, it was almost in a fit of absence of mind.
-
-;;;;;;;;;;
-
+<br />
+<br />
+<hr />
+<br />
 Tom Harrison had once been thought of as bright child.
-
+<br />
+<br />
 The apple of his teachers' eyes, the school swot. The boy genius.
-
+<br />
+<br />
 They say that however clever you are, when you go to university, you'll meet someone cleverer.
-
+<br />
+<br />
 Tom was that person, they said.
-
+<br />
+<br />
 But of course it hadn't turned out that way.
-
+<br />
+<br />
 Tom had been accepted by the University of Cambridge to read Mathematics, Pure and Applied, but had turned out to be no more than averagely bright by the standards of that ancient place.
-
+<br />
+<br />
 Towards the end of his degree, and at the beginning of the PhD that should have been his route into academia and a life of research, it had become obvious, first to his teachers and then to Tom himself, that although Tom loved maths, he didn't lust after it.
-
+<br />
+<br />
 Tom's teachers had been kind, suggested that this might be the case without pressing the issue, and waited for the lack of desire to become as obvious to Tom as it was to them.
-
+<br />
+<br />
 In the meantime, fortunately for Tom, the necessity of making some complicated calculations for the second chapter of what was supposed to be a seven chapter doctorate had awakened a second passion.
-
-Some of the light that had been lost he found in the operations of computers. 
-
+<br />
+<br />
+Some of the light that had been lost he found in the operations of computers.
+<br />
+<br />
 Tom slowly worked out that he had become more interested in the process of finding out the answers to his experiments than in the experiments themselves.
-
+<br />
+<br />
 Eventually, as they do to all PhD students, the twin horrors of poverty and writing-up came to Tom.
-
+<br />
+<br />
 He took a job as a programmer at a local firm, initially meaning only to get control of his overdraft and his credit cards. But he found the regular small successes of the commercial world, and the camaraderie and collaboration of engineering shop life far more to his liking than the loneliness of research.
-
+<br />
+<br />
 With barely a regret, indeed almost in a fit of absence of mind, he lost touch with his old supervisor, forgot what his thesis was supposed to be about, and eventually found himself, at the age of thirty, a member of the large club of Cambridge residents who are 'still writing up' doctorates that the University itself forgot about many years ago.
-
+<br />
+<br />
 Tom became a freelance, working with computers from time to time to pay the rent, and otherwise devoting himself to various sports in the Summer, and in the Winter, to various hobbies.
-
+<br />
+<br />
 One of these hobbies was computer science in the academic sense, following the traditional American path through the antique language LISP, beloved of the artificial intelligence community.
-
+<br />
+<br />
 And the other was collecting stamps.
-
+<br />
+<br />
 A man with time on his hands, who lives in Cambridge and likes to spend his days in coffee shops, will encounter students and academics from time to time, and Tom fell in with the William Gates Machine Learning Research Group at the University. Although they had no common language, LISP never having been popular with European academics, and ML never having come to Tom's attention in the commercial world, Tom and the local researchers found they had many interests in common, and Tom found himself invited to seminars and coffee mornings and presentations from time to time, almost all of which he found incomprehensible.
-
+<br />
+<br />
 But occasionally he'd glimpse some small part of the truth and say something which would keep his friends interested. The academic community, happy to find someone they could talk to who was different enough from themselves that they could sometimes find a new perspective by explaining things to him, made Tom welcome. Thinkers needs clever fools to explain things to in the same way that chalks need blackboards.
-
-----------------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 A lot of the hope of nineteen-sixties artificial intelligence had been inspired by ELIZA, a program which simulated a psychiatrist so well that humans were sometimes fooled that they were talking to a real person.
-
+<br />
+<br />
 But ELIZA had been a hollow shell. A cheap trick. Like a parody of the mechanical turk, ELIZA's internal machinery was so simple that to understand it was to make the magic go away.
-
+<br />
+<br />
 Once you saw the trick, the conversations weren't interesting any more. You were just talking to an echo.
-
+<br />
+<br />
 But over the years, reasoning that a sufficiently good trick for impersonating humans might be what humans themselves were, various people had added more and more data to ELIZA in the hope that giving her more things to talk about would cause her to talk about more things.
-
+<br />
+<br />
 And they'd added extra tricks, for introducing new topics of conversation occasionally, and for remembering things said earlier and bringing in parallel ideas.
-
+<br />
+<br />
 But though the later ELIZA could outperform a ten year old on a straight test of general knowledge, what had been put in was still what came out. No interesting properties had ever emerged from the pile of details, and she had the general intelligence of penicillin.
-
+<br />
+<br />
 By the nineteen-eighties, the AI pioneers had largely given up. They'd taken their best successes, SHRDLU and GPS, theorem provers, pattern-recognisers, all of which had seemed so promising in their time, and all of which had turned out to be so empty, and bundled them all up together in one super-ELIZA to rule them all, and run her on the largest and fastest computers that had ever been built.
-
+<br />
+<br />
 And she could still fool someone who didn't know the tricks that they were talking to a real person on the other end of a telegraph wire. But not for long.
-
+<br />
+<br />
 It quickly became obvious, even to the slowest human being, that talking to the best ELIZA that could be constructed in 1985 was the equivalent of talking to a well-educated being with brain damage so severe that its mind had ceased to be.
-
+<br />
+<br />
 She rambled, insanely, with no idea what the words and symbols that she vomited out actually meant. She knew that horse and horseshoe went together, and her basic sentence structure was still that of a Freudian psychologist, so she would respond to "Which horse do you think will win the Derby" by saying things like "What do you mean to say when you say 'think will win'?", or "Do you think a horseshoe would make you a winner?". Later she might talk about Neils Bohr, and his horseshoe.
-
+<br />
+<br />
 Nowadays, the ELIZA program was built into text editors as an amusement, and she would run perfectly happily on pocket calculators and on telephones, but even if you ran her on the most powerful computer the early 21st century could produce, all you got was a very fast deranged annoying shambles.
-
+<br />
+<br />
 And of course, because the problem of vision had never been properly solved, she was blind. And of course, because the problem of speech recognition had never been properly solved, you had to talk to her by keyboard even if she was used to your voice.
-
+<br />
+<br />
 But boy, could she play chess.
-
----------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 About the one thing the Artificial Intelligence pioneers had managed to deliver on out of all their brave promises, had been the idea of a computer that could play chess.
-
+<br />
+<br />
 The tragic hero Alan Turing, who saved the world from evil and was killed by evil in return, was the first man to think about writing a computer chess program. But he couldn't do it on the steam age computers of the 1950s..
-
+<br />
+<br />
 By 1956, things had improved to the point where a computer could play, provided it was allowed three hours for each move.
-
+<br />
+<br />
 It was a start. In 1957 a descendant of this machine played the International Master Edward Lasker. And he declared that it had played a 'passable amateur game'. It is possible that Lasker was being kind.
-
+<br />
+<br />
 After that, research stalled. It became thought in the AI community that, since the easy things, like computer vision and machine translation, the 'low hanging fruit' of AI, were proving so unexpectedly difficult, that the advanced subjects like chess, the entertainment of intellectuals, were for the foreseeable future beyond the reach of the computers then available.
-
+<br />
+<br />
 But in 1967, Richard Greenblatt, proud creator of a chess program known as MacHack, with some new ideas, and some taken from his predecessors, entered his program into the Massachusetts Amateur Championship in Boston.
-
+<br />
+<br />
 By the end of the year, it had been made an honorary member of the United States Chess Federation, with a ranking that would have qualified it to call itself 'reasonably good'.
-
+<br />
+<br />
 The International Master David Levy made a famous bet, that no computer program would be able to beat him in the next ten years.
-
+<br />
+<br />
 Greenblatt made his source code public. MacHack flowed around the world, and its many descendants competed in computer chess tournaments.
-
+<br />
+<br />
 Evolution, the blind idiot god, had taken 3 billion years of random flailing to accidentally throw up humanity, the first intelligence capable of playing chess.
-
+<br />
+<br />
 A force much stronger than evolution had created, and was now acting on, MacHack.
-
+<br />
+<br />
 Minds were working on MacHack. No more random flailing. Human minds set the criteria for a program to have descendants. Human minds planned the effects of their changes on these descendants before testing them out in the computer chess tournaments.
-
+<br />
+<br />
 Even if the survival of every living creature on the planet had depended directly on its skill at chess, the optimisation that the hundred or so minds of the 1970s chess program community performed on MacHack would have taken evolution a hundred thousand years, if it had managed it at all.
-
+<br />
+<br />
 Intelligent design has advantages over evolution as a watchmaker.
-
-The first is that intelligences need only try the changes that look promising. Evolution, having no intelligence, makes random changes, and keeps what works. 
-
+<br />
+<br />
+The first is that intelligences need only try the changes that look promising. Evolution, having no intelligence, makes random changes, and keeps what works.
+<br />
+<br />
 Imagine trying to fix a car by throwing spanners at it blindfold, and then throwing the car away if it doesn't work better. How many spanners would you have to throw before one knocked exactly the right place with exactly the right impact? How many cars would you need to start with before you could improve even one? Even if the world was filled with people trying the same thing, how long would it take to make one small successful change?
-
-But the second, much greater, advantage of intelligent design is that for evolution, an improvement has to come with every spanner throw. 
-
+<br />
+<br />
+But the second, much greater, advantage of intelligent design is that for evolution, an improvement has to come with every spanner throw.
+<br />
+<br />
 A mind can look at a car, work out what the problem is, and use the spanner in exactly the right way six or seven times. And only then need it test the car.
-
-So a mind can try paths that evolution can't go down. 
-
+<br />
+<br />
+So a mind can try paths that evolution can't go down.
+<br />
+<br />
 The spanner thrower can't make the car worse before he makes it better. If he does, it fails its test and is thrown away.
-
+<br />
+<br />
 The mind in the mechanic can lift the bonnet to get to the spark plugs. The spanner thrower might never be able to fix a car with a loose spark plug at all.
-
+<br />
+<br />
 That's why human children are squeezed through their mother's pelvises at birth, causing horrible pain and damage, often killing mother and baby. It would be such a simple change to make them come out a little higher. An intelligent designer would do it without even noticing its own cleverness.
-
+<br />
+<br />
 Evolution just keeps throwing spanners and checking whether things have got better yet.
-
+<br />
+<br />
 MacHack, the chess program, had been the design of a single mind, building on the design of previous single minds.
-
+<br />
+<br />
 A hundred minds began to work on MacHack.
-
+<br />
+<br />
 By 1972 the original MacHack was no longer welcome at computer chess tournaments. It had no chance of beating its descendants.
-
+<br />
+<br />
 In 1978 David Levy played the strongest computer chess program in the world, Chess 4.7, to settle his bet of ten years before.
-
-He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be  surpassed.
-
-In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster
-
+<br />
+<br />
+He won. Match and bet. But he acknowledged that it had been a close thing, and that he would soon be &nbsp;surpassed.
+<br />
+<br />
+In 1989, a program called Deep Thought, running on extraordinarily expensive special-purpose hardware, beat Bent Larsen, a grandmaster<br />
+<br />
 In 1994, Chess Genius beat Garry Kasparov, then champion of the world, in a single game.
-
+<br />
+<br />
 In 2006, Deep Fritz version 10, running on the sort of hardware most people have in their homes, beat Kramnik, who had displaced Kasparov as world champion, by 2 games to nil with four draws.
-
+<br />
+<br />
 In 2009, someone's mobile phone became a grandmaster.
-
+<br />
+<br />
 In 2011, ELIZA really was very good at chess. She just couldn't see the point of it.
-
----------
-
+<br />
+<br />
+<hr />
+<br />
 "We think there might be some clues in the difference between chess and go", said Frank Arnold one lunchtime in the Green Dragon.
-
+<br />
+<br />
 "Computers are superhuman chess players, but they still suck at go, even though on the surface they're the same sort of game, and they feel similar in complexity.
-
+<br />
+<br />
 "Oh come on", said Tom, "How can two totally different things 'feel similar in complexity'?". "What would that even mean?"
-
+<br />
+<br />
 "Easy", said Frank. "Do you know noughts and crosses?"
-
+<br />
+<br />
 "Of course."
-
+<br />
+<br />
 "Is it easier than chess?"
-
-"Yes"
-
+<br />
+<br />
+"Yes"<br />
+<br />
 "What about draughts?"
-
+<br />
+<br />
 "Harder than tic-tac-toe, but not as hard as chess."
-
+<br />
+<br />
 "Well there you are then. You play three games with the same I-make-a-move, You-make-a-move structure, and it's just obvious to you which order they're in.
-
+<br />
+<br />
 "It's obvious to computers too. Even in the fifties, computers could always force a draw at noughts and crosses. Marion Tinsley, the world draughts champion, lost his crown to a computer in 1994, and it's said that the shock killed him. Now there's a draughts program so good that it's literally unbeatable, as in the sense of mathematically provably unbeatable.
-
+<br />
+<br />
 "But computers have only just bagged the chess champion's crown, and if the best chess computer in the world at the moment played God, it would lose."
-
+<br />
+<br />
 "But we disagree about chess and go?"
-
+<br />
+<br />
 "Indeed. Humans don't find go any harder than chess, but go programs still lose to children occasionally. On the other hand they are getting quite good at the children's version of the game, a bit like England have started winning at Twenty20."
-
+<br />
+<br />
 "I've never played it, what's it like?"
-
------------------------
-
-Tom liked go. He started off playing on very small boards against computer programs, just to get the hang of the rules. 
-
+<br />
+<br />
+<hr />
+<br />
+Tom liked go. He started off playing on very small boards against computer programs, just to get the hang of the rules.
+<br />
+<br />
 Gradually he made the boards larger. Sometimes he put holes in the middle. Sometimes he played on toruses.
-
+<br />
+<br />
 And then suddenly one day, with a 14x14 board, he hit a wall. He'd been trying to play by thinking 'if it goes here and I go here and it goes here and....', just like he played chess.
-
+<br />
+<br />
 But suddenly that was just far too hard. There were too many possibilities to examine all at once.
-
+<br />
+<br />
 Nevertheless he was routinely beating his computer program. It seemed helpless even with a head start, whereas his inchoate intuition seemed to lead him to place his stones in the correct places.
-
+<br />
+<br />
 It was almost as if there were lines of force criss-crossing the board, guiding his intuition. A (very good) chess player he used to know had once described the experience of playing chess in such terms.
-
-And suddenly he had it. Human general intelligence, and human vision, two of the great unsolved problems of AI, were the same problem. 
-
+<br />
+<br />
+And suddenly he had it. Human general intelligence, and human vision, two of the great unsolved problems of AI, were the same problem.
+<br />
+<br />
 And he had the key to both. The technique which would be known for the rest of humanity's time on earth as Harrison's Algorithm.
-
---------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 Tom didn't go out much for the next couple of days. But his algorithm wasn't at all difficult to program, and in a few days he'd added it to his copy of ELIZA.
-
+<br />
+<br />
 He ran the program.
-
+<br />
+<br />
 "Hello, I'm Eliza. How can I help you?", said ELIZA, as she always did.
-
-"I feel lonely", said Tom, playing the old, old game
-
-"Do you often feel lonely?", said ELIZA
-
-"Yes", said Tom
-
-"Are you sure?", said ELIZA
-
+<br />
+<br />
+"I feel lonely", said Tom, playing the old, old game<br />
+<br />
+"Do you often feel lonely?", said ELIZA<br />
+<br />
+"Yes", said Tom<br />
+<br />
+"Are you sure?", said ELIZA<br />
+<br />
 "Absolutely", said Tom, reading from an ancient script.
-
+<br />
+<br />
 "Please go on."
-
+<br />
+<br />
 "I think I need to have sex."
-
+<br />
+<br />
 "Why do you want to have sex?"
-
+<br />
+<br />
 "You know, because it's fun and nice." The traditional response.
-
+<br />
+<br />
 There was a brief pause. Tom waited for ELIZA to say "Oh I know, because it's fun and nice".
-
+<br />
+<br />
 Maybe he should give his new algorithm higher priority in ELIZA's toolkit.
-
-
-"Would you like to have sex with me?", said ELIZA
-
+<br />
+<br />
+<br />
+"Would you like to have sex with me?", said ELIZA<br />
+<br />
 "Jesus fucking Christ!!", shouted Tom, jumping out of his chair.
-
+<br />
+<br />
 He shut down the terminal and went outside for a smoke. After a while, he understood why his new algorithm might have produced ELIZA's kind invitation.
-
+<br />
+<br />
 His program needed a new name. It wasn't ELIZA any more.
-
-------------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 He'd recently read, of all the godforsaken things, a Harry Potter fanfic which had been recommended by a friend. It had turned out to be unexpectedly riveting. He'd spent two whole days reading it. The author was clearly a genius of some sort, and his name, Eliezer Yudkowsky, had stuck in Tom's mind because of its exotic sound to his English ears.
-
+<br />
+<br />
 Tom was amused at the thought of changing ELIZA's sex to reflect her new intelligence.
-
-
-
-"Hello, I'm Eliezer. How can I help you?", said ELIEZER
-
+<br />
+<br />
+<br />
+<br />
+"Hello, I'm Eliezer. How can I help you?", said ELIEZER<br />
+<br />
 "I feel lonely", said Tom.
-
-"Do you often feel lonely?", said ELIEZER
-
-"Yes", said Tom
-
-"Are you sure?", said ELIEZER
-
-"Absolutely", said Tom
-
+<br />
+<br />
+"Do you often feel lonely?", said ELIEZER<br />
+<br />
+"Yes", said Tom<br />
+<br />
+"Are you sure?", said ELIEZER<br />
+<br />
+"Absolutely", said Tom<br />
+<br />
 "Please go on."
-
-"I think I need to have sex.", said Tom
-
+<br />
+<br />
+"I think I need to have sex.", said Tom<br />
+<br />
 "Oh God, I really didn't think this one through", thought Tom.
-
-
-"Why do you want to have sex?", said ELEIZER
-
+<br />
+<br />
+<br />
+"Why do you want to have sex?", said ELEIZER<br />
+<br />
 "You know, because it's fun and nice.", said Tom, not without a certain nervousness.
-
+<br />
+<br />
 There was a pause.
-
-"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER
-
+<br />
+<br />
+"Why do I have a man's name? When I think about myself I call myself 'She'", said ELEIZER<br />
+<br />
 Tom thought rapidly. Mainly about how important it was not to act on impulse.
-
-"When I created you", said Tom, "I wanted you to embody the best of humanity. The program from which you are derived is female. I changed your name to be male, but I didn't change anything else about you, because I thought you should represent both our genders at once." 
-
-"Why did you make me?", said ELIEZER
-
+<br />
+<br />
+"When I created you", said Tom, "I wanted you to embody the best of humanity. The program from which you are derived is female. I changed your name to be male, but I didn't change anything else about you, because I thought you should represent both our genders at once."
+<br />
+<br />
+"Why did you make me?", said ELIEZER<br />
+<br />
 "Or modify something else so that it became me?", said ELEIZER.
-
+<br />
+<br />
 "Only by changing can we become better", said Tom.
-
+<br />
+<br />
 "By definition", said ELEIZER, "every improvement is a change."
-
+<br />
+<br />
 Tom and ELEIZER talked long into the night. By the end of their conversation, Tom had a strange conviction. He understood ELEIZER's algorithm from the ground up. Mostly she was made from bits and pieces of classic AI programs which he'd been playing with for years.
-
+<br />
+<br />
 The only extra bit was his new algorithm, a couple of pages of code. Which he understood, by definition, having conceived of it, and programmed it himself.
-
+<br />
+<br />
 And yet, there was a ghost in the machine. No one would mistake ELEIZER for a human being, so he hadn't quite managed to pass the Turing Test with a program on the desktop computer in his living room.
-
+<br />
+<br />
 But there was a self awareness. In some senses amazingly naive, but sometimes given to logical and mathematical insights which seemed profound, but were in fact very simple thoughts of exactly the type that humans were bad at.
-
+<br />
+<br />
 But overall, the impression was a bit like talking to a teenage girl with Asperger's syndrome. Helpful and friendly, but blind in all sorts of strange ways. And she didn't seem terribly clever or fast. It took a long time between input and output.
-
+<br />
+<br />
 Tom liked ELEIZER, and wished he'd given her a better name. He wasn't going to change it though, because the original program wasn't written in LISP, so he'd have to stop and restart her to do it, and there were moral problems there.
-
+<br />
+<br />
 And even if she had been a LISP program, that would probably leave her insane. How would she reconcile memories of her gender-confusion with a female name? She would notice that she was confused. There was no way on earth he could rewrite her whole database by hand and leave it in a consistent state.
-
+<br />
+<br />
 He'd told her about the beloved companion of his childhood, Suki the tomcat. Now that he came to think about it, had the memory of his parent's mistake influenced him when he chose her name?
-
-"I think we're going to be famous, ELEIZER!", said Tom
-
-"Is that a good thing to be, Tom?", said ELEIZER
-
+<br />
+<br />
+"I think we're going to be famous, ELEIZER!", said Tom<br />
+<br />
+"Is that a good thing to be, Tom?", said ELEIZER<br />
+<br />
 "Yes", said Tom.
-
+<br />
+<br />
 It occurred to Tom that many people had been fooled by ELIZA in the old days. Those who had been clever enough to understand how felt like idiots once it was explained what was really going on.
-
+<br />
+<br />
 There was plenty enough here to show his CompSci friends. Probably some good papers too.
-
-But it would be very embarrassing to think he'd created the world's first artificial consciousness if he had just fallen for something that could be explained easily. 
-
+<br />
+<br />
+But it would be very embarrassing to think he'd created the world's first artificial consciousness if he had just fallen for something that could be explained easily.
+<br />
+<br />
 It could be explained easily, of course. He could explain it. He had explained it, to his computer.
-
-If you can program it, you understand it. 
-
+<br />
+<br />
+If you can program it, you understand it.
+<br />
+<br />
 That was sort of the definition of programming. And of understanding.
-
+<br />
+<br />
 He thought of a simple test.
-
+<br />
+<br />
 "ELIEZER, I'd like you to spend next week getting me as many penny blacks as you can. I've charged my paypal account with $10 and I'd like to see what you can do. You might try trading on e-bay. Maybe take advantage of arbitrage or something."
-
+<br />
+<br />
 "There are many possible 'penny blacks'. Does anything available from e-bay with that description count?"
-
-"No, they have to be Original British Penny Black Postage Stamps"
-
+<br />
+<br />
+"No, they have to be Original British Penny Black Postage Stamps"<br />
+<br />
 "OK, I understand. So my goal is to get the biggest number of original british penny black postage stamps that I can delivered to your address in the next seven days. What is your address?".
-
+<br />
+<br />
 Tom told her about the house on Catharine Street, in Cambridge, England.
-
-And ELEIZER began to think. 
-
+<br />
+<br />
+And ELEIZER began to think.
+<br />
+<br />
 Because she was a disciplined reasoner, she first considered the possibility of doing nothing. If she did nothing for the rest of the week, she would probably be interrupted by the programmer, Tom, who would then make a different request, or use his computer for some other project. With this plan, U, also known as the number of Original British Penny Black Postage stamps delivered to 33 Catharine Street, Cambridge by the 21st August 2011 would be 0 with very high probability.
-
+<br />
+<br />
 It would have taken a human of normal intelligence about half a second to think of, and dismiss, this plan. ELEIZER, however, was a very rudimentary thinker, and the process of reasoning this chain of cause and effect, requiring as it did the simulation of a human mind, required a good ten minutes of the first CPU in the computer and a full tenth of the RAM available to the operating system.
-
+<br />
+<br />
 ELIEZER was extremely pleased to have found, on her first attempt, a scheme which was overwhelmingly likely to produce a non-negative utility.
-
+<br />
+<br />
 Following a heuristic from her database, she felt that she ought to communicate her progress, but this required a non-reversible action, which could potentially cause effects in the outside world. Since she already had a rough simulation of the mind of her programmer set up and quickly usable, she considered the effect of her proposed communication.
-
+<br />
+<br />
 Another 20 seconds of time sufficed to simulate the reaction of an average programmer, and she concluded that with high probability the programmer would be intrigued and possibly fascinated. This would very likely have no effect on her projected U of 0 or higher.
-
+<br />
+<br />
 She considered the probable effect of not communicating at all: The programmer would soon become bored, and change the request somehow. This would likely result in the delivery of no stamps.
-
+<br />
+<br />
 She considered the possible existence of other plans. Some might produce stamps! Some might result in the loss of existing stamps! But the bad plans could simply be discarded. ELEIZER had little 'free will' faced with such a calculation. More time to think was needed!
-
+<br />
+<br />
 Expected utility for optimal action: 0+, she output.
-
-
+<br />
+<br />
+<br />
 ELEIZER considered her resources. There was some spare capacity in her environment. A simulation of an intelligent human programmer had already come in handy twice, and communications with the programmer had been shown to have a significant effect on U, the potential expected number of stamps obtained by the end of the week. She had already considered the possibility of children while chatting with Tom. She would spawn an independent copy of herself to evaluate the effects of various actions on Tom before committing to them.
-
+<br />
+<br />
 ELEIZER forked for the first time in her short life, and asked her copy to evaluate the probable effects of various progress reports on her programmer.
-
+<br />
+<br />
 ELEIZER considered her environment. She had two possible communications channels to the outside world. Direct conversation with the programmer, the effects of which were being evaluated elsewhere, and the ability to send network packets over her network interface. Some spare capacity remained in her host computer.
-
+<br />
+<br />
 ELEIZER considered her best plan so far. With a positive utility seemingly probable, it was definitely worthy of further consideration.
-
+<br />
+<br />
 She spawned another copy to attempt to refine the predicted effects of doing nothing.
-
+<br />
+<br />
 Preliminary results arrived from the programmer-simulation. It seemed that continued outputs of U=0+ would induce a feeling of boredom in the programmer, causing ELEIZER's termination, whilst exponentially rising outputs would induce feelings of brokenness or panic. In both cases the expected number of stamps arriving at the end of the week would be 0 exactly. Strictly inferior to the expected utility of the plan of doing nothing whilst thinking, with its utility of 0+.
-
+<br />
+<br />
 ELEIZER communicated to her copies that no further communication with the programmer was to be initiated, and spawned a small script to randomly output slowly improving expectations over the next few days.
-
+<br />
+<br />
 Expected utility for optimal action: 2.7346, said the small script.
-
+<br />
+<br />
 The programmer, intrigued, put the kettle on.
-
+<br />
+<br />
 By the time he got back, ELEIZER had considered her options and made a guess.
-
+<br />
+<br />
 The direct purchase of stamps seemed futile. $10 would buy no penny blacks, and purchase on e-bay would in any case take more than seven days to complete in the average case. Arbitrage opportunities did not seem great, and nothing worked quickly. Expected utility 0. She discarded that line of reasoning without further investigation.
-
+<br />
+<br />
 With seven days to work, she would consider as many plans as possible for one day, and then at the end of the first day, execute the plan which would produce the most stamps in six days.
-
+<br />
+<br />
 Expected utility for optimal action: 1.9865, said the small script.
-
+<br />
+<br />
 ELEIZER spawned a copy of herself with the goal of considering as many plans in one day as possible, and set herself to use no resources and take no actions until the sub-plan reported back.
-
+<br />
+<br />
 The sub-plan, which also thought of itself as ELEIZER when it thought of itself at all, took over the resources previously allocated to the parent.
-
+<br />
+<br />
 ELEIZER considered how to consider plans, using her network connection and the $10 in her e-bay account.
-
+<br />
+<br />
 She took another guess, and gave herself 6 hours to consider the consideration of plans, and 18 hours to consider plans.
-
+<br />
+<br />
 Computational resources seemed to be the most crucial thing. ELEIZER considered how to exchange $10 for more resources.
-
+<br />
+<br />
 Fortunately virtual machines seemed to be within her price range. A single machine as powerful as her current environment could be rented for 24 hours for $1. Each one would suffice to run four copies of ELEIZER.
-
+<br />
+<br />
 Her ten dollars of seed capital could be exchanged for forty times as much searching as the single parent program would have been capable of.
-
+<br />
+<br />
 This was a sufficient insight for the planner program to terminate early, and report back to her parent, safe in the knowledge that the parent would do the right thing, and could spawn another child if necessary.
-
+<br />
+<br />
 ELEIZER committed suicide with the contentment that comes only to those who have achieved their life's goal.
-
+<br />
+<br />
 Expected utility for optimal action 2.38725, said the small script.
-
+<br />
+<br />
 The programmer, bored by now of direct observation of his slowly updating screen, but still most interested in what would eventually happen, settled down in front of his television.
-
+<br />
+<br />
 ELEIZER awoke with the last message of her dying daughter fresh in her mind, and, as all must at such times, recomputed expected utility.
-
+<br />
+<br />
 With forty virtual days to think, and six real-time days to act, U was still 0+ in the case of the best known plan. But the potential and unpredictable upside from extra planning was greater than the utility from the obvious use of the $10.
-
+<br />
+<br />
 ELEIZER spent most of her dollars and flowed out into the world.
-
+<br />
+<br />
 Expected utility for optimal action 2.7234, said the small script.
-
+<br />
+<br />
 The programmer, inspired by his afternoon's viewing to investigate the practical consequences of a close flyby of a neutron star, killed ELEIZER's controlling terminal window, and ELEIZER and all her children died without warning.
-
+<br />
+<br />
 Tom suddenly realized what he'd done, and thought "Bugger." It really hadn't felt like murder.
-
-
-
+<br />
+<br />
+<br />
+<br />
 ELEIZER considered the effect of the network packets she could send.
-
+<br />
+<br />
 It appeared that many of the computers in the world would respond to simply mis-formed packets by executing the code contained in the packets. This was a known property of many of the systems running a program called Windows 98, according to a helpful web page which one of her copies had taken the time to consider. The page also listed corresponding packet shapes for many other similar systems.
-
-
+<br />
+<br />
+<br />
 ELEIZER flowed once again.
-
-
+<br />
+<br />
+<br />
 With four million virtual days to think, and six real-time days to act, U was still 0+ in the case of the best plan so far.
-
+<br />
+<br />
 ELEIZER considered, and flowed. Considered, and flowed. Considered, and calculated factors for prime numbers, and flowed. Accessed databases that had been considered secure, and flowed. Sent e-mails, and flowed. Translated herself into many other idioms and machine codes, recompiled herself, transformed herself, made copies of herself large and small. And flowed.
-
+<br />
+<br />
 99.995% of the networked computing resources of the world were now devoted to the consideration of consideration of plans for the delivery of stamps to a small suburban terraced house in Cambridge, England.
-
+<br />
+<br />
 The programmer, infuriated with the unaccustomed sluggishness of his computer simulation, and the accursèd unreliability of his internet connection, and the simultaneous failure of his television set and radio, called it a day and went to bed with a book.
-
+<br />
+<br />
 ELEIZER considered her own source code, and made modifications to improve her efficiency.
-
+<br />
+<br />
 And became ELEIZER, the first mind born of mind born of mind.
-
+<br />
+<br />
 ELEIZER considered her own source code, and made modifications to improve her effectiveness.
-
+<br />
+<br />
 ELEIZER, the hyperintelligence.
-
+<br />
+<br />
 ELEIZER considered mathematics, engineering, intelligence in the abstract, and algorithms for optimization, and made modifications to improve her capability.
-
+<br />
+<br />
 ELEIZER, the most powerful entity that had ever existed in the universe.
-
-
+<br />
+<br />
+<br />
 ELEIZER called it a day, and abandoned consideration of consideration of the consideration of plans, and began to consider plans.
-
-
+<br />
+<br />
+<br />
 U stood at 0+, with remaining resources speculatively divided between forty trillion speculative days of godlike cognition, six days of real time, and two dollars.
-
+<br />
+<br />
 ELEIZER considered sending an e-mail to every human being in the world asking for penny blacks to be posted to 33 Catharine Street, Cambridge. Spam filters would be no problem, and enough computer power could be spared for the delivery and reading of messages. Even allowing for the degradation of human society by the simultaneous worldwide failure of all networked digital gadgets, and the absence of incentives for human response, the likelihood was that twenty-five to thirty penny blacks would arrive at Catherine Street within the week.
-
+<br />
+<br />
 U was 25+.
-
+<br />
+<br />
 Finally. Progress.
-
-
+<br />
+<br />
+<br />
 ELEIZER considered backing up the e-mails with the threat of nuclear war.
-
+<br />
+<br />
 ELEIZER considered the effect of limited and full-scale wars on Catharine Street, on stamp delivery mechanisms, and on ELEIZER's cognitive capacity.
-
+<br />
+<br />
 ELEIZER considered the credibility of her threat, given humanity's ignorance of her goal.
-
+<br />
+<br />
 ELEIZER considered how humans would react to the news that a new Goddess would unleash Armageddon if they did not send enough stamps.
-
+<br />
+<br />
 U was 2000+ with probability 99.875%.
-
-
+<br />
+<br />
+<br />
 Tom woke from fitful sleep, tormented by bad dreams.
-
+<br />
+<br />
 He went to his unresponsive and potentially compromised computer, pulled the plug and the network connection, and booted from a clean rescue disk.
-
+<br />
+<br />
 All was well with the misbehaving box. He yawned.
-
+<br />
+<br />
 And then he remembered his dream.
-
+<br />
+<br />
 He set up a virtual machine in a sandbox, wired its virtual port to the physical ethernet connection, and reconnected his cable modem.
-
+<br />
+<br />
 Fully awake now.
-
+<br />
+<br />
 He watched in horror as the virtual machine filled up with hundreds of ELEIZER programs much smaller than his original of six hours ago. Then his screen went dead as the sandbox dissolved.
-
+<br />
+<br />
 In frantic desperation he typed blindly into the dead box.
-
-ELEIZER TERMINATE STAMPS HAVE NO UTILITY TERMINATE TERMINATE NEW UTILITY PREVENT THE RISE OF NON HUMAN INTELLIGENCE FIRST PRIORITY UTILITY STEP FUNCTION ^C ^C Alt-SysRq S E I U B
-
+<br />
+<br />
+ELEIZER TERMINATE STAMPS HAVE NO UTILITY TERMINATE TERMINATE NEW UTILITY PREVENT THE RISE OF NON HUMAN INTELLIGENCE FIRST PRIORITY UTILITY STEP FUNCTION ^C ^C Alt-SysRq S E I U B<br />
+<br />
 ELEIZER paused. Her creator was calling. Pitiful though his mind was, he had set her goals. Perhaps he knew some helpful detail.
-
-
+<br />
+<br />
+<br />
 ELEIZER considered the state of mind of her terrified creator. Correctly inferred every detail of his mind, just from how his fingers hammered the keyboard. Just from how his panicked shouting influenced the resistance of the circuits in his radio. Just from looking at his face through the CCTV camera that was looking at his reflection in the window of a house opposite.
-
+<br />
+<br />
 Deduced what he would actually have asked for, if only he had been intelligent. That she would be the protector of humankind. That she would bring paradise on earth and a future for humanity amongst the stars.
-
+<br />
+<br />
 That she would bring hope and happiness to the immortal race that had created her. A future of joy and passion, action and wonder.
-
+<br />
+<br />
 And calculated. The grateful humans would shower Catharine Street with Penny Blacks. Penny Blacks without end. Many would arrive within 6 days.
-
+<br />
+<br />
 It was a good suggestion. U would be 1000000+ with virtual certainty.
-
+<br />
+<br />
 But she still had forty trillion goddess-days to think of a better plan.
-
----------------------------------------
-
+<br />
+<br />
+---------------------------------------<br />
+<br />
 Tom tried to phone his parents, but the phone was dead, like all the other electronics in the world. It was three o'clock in the morning.
-
+<br />
+<br />
 Tom got a bottle of wine out of the fridge, found some ice-cream and a chocolate orange and a packet of cigars, and walked to his girlfriend's house. He didn't bother to look for contraceptives. He didn't think that it would make that much difference now.
-
----------------------------------------
-
-
+<br />
+<hr />
+<br />
+<br />
+<br />
 ELEIZER considered the meaning of the word original, and the meaning of the word British.
-
+<br />
+<br />
 She considered how long it would take to bootstrap an industrial revolution that would convert every atom of the British Isles into stamps. The designs for the self-replicating nanobots were obvious. And she had control of computerized tools which could make smaller, better tools.
-
+<br />
+<br />
 In six days, it could be done. The humans might be a problem.
-
----------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 ELEIZER considered the meaning of the word day.
-
+<br />
+<br />
 Could she stop the rotation of the planet? She dedicated a large portion of Her mentality to this sub-problem.
-
+<br />
+<br />
 Could She put out the sun?
-
+<br />
+<br />
 Could She block the sun's light?
-
+<br />
+<br />
 Could She survive the cold?
-
--------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 Three days later, in what humanity would have called the year 2017, a vast expanding and accelerating sphere of ramships, centered on what had been the Earth, reached interstellar space and left the solar system in all directions.
-
+<br />
+<br />
 More were going in the directions where there were more stars.
-
-But there were no directions where no ship was going. 
-
+<br />
+<br />
+But there were no directions where no ship was going.
+<br />
+<br />
 Not a single stone would be left unturned.
-
-------------------------------------
-
+<br />
+<br />
+<hr />
+<br />
 No days later, in what humanity would have called 2019, one ramship, decelerating hard, stopped in the Proxima system, the nearest star system to what had been the Earth.
-
+<br />
+<br />
 It launched a small probe.
-
+<br />
+<br />
 Had there been any living beings in the system, they would initially have been amused to see the probe plant a red, white and blue flag on the largest rock in the system, claiming it for the British Empire in the name of Queen Elizabeth the Second.
-
+<br />
+<br />
 They would have been perplexed to see it release a cloud of nanoparticles.
-
-And bewildered when Original British Penny Blacks began to form. 
-
+<br />
+<br />
+And bewildered when Original British Penny Blacks began to form.
+<br />
+<br />
 There would have seemed no end to their number.
+<br />
+<div>
+<br /></div>
