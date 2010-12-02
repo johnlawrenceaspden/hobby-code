@@ -254,3 +254,9 @@
 ;; evaluates the expression on the line BELOW, and pastes the result afterwards
 (setq last-kbd-macro
   [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
+
+;; Compile and goto repl
+(fset 'compile-and-goto-repl
+   "\C-x\C-s\C-c\C-k\C-c\C-z")
+;; would be great if we could also add C-c M-p to change package somehow
+(global-set-key [f6] 'compile-and-goto-repl)
