@@ -38,5 +38,7 @@ public class AppTest
         assertTrue( App.factorial(5) == 1*2*3*4*5 );
         assertTrue( App.factorial(0) == 1 );
         assertTrue( (new app()).factorial(4) == 1*2*3*4 );
+        //deliberate fail
+        assertTrue( (new app()).factorial(5) == 1*2*3*4 );
     }
 }

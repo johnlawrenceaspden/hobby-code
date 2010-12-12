@@ -1,0 +1,14 @@
+Runs all the tests
+mvn test
+Runs only the clojure tests
+mvn clojure:test
+
+mvn compile
+mvn clean
+
+
+mvn clojure:run
+mvn clojure:swank
+
+Runs the main method of the java class com.aspden.App
+$ mvn exec:java -Dexec.mainClass="com.aspden.App"
