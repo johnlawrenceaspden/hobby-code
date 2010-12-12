@@ -1,14 +1,26 @@
-Runs all the tests
-mvn test
-Runs only the clojure tests
-mvn clojure:test
+Clean out the files that have been left lying around
+$ mvn clean
 
-mvn compile
-mvn clean
+Compile the java and clojure files
+$ mvn compile
 
+Run all the tests
+$ mvn test
 
-mvn clojure:run
-mvn clojure:swank
+Run just the clojure tests
+$ mvn clojure:test
+
+Various ways of running runscript.clj, which is specified
+in the pom.xml as both script and replScript
+
+just run it
+$ mvn clojure:run
+
+run it and give me a swank server
+$ mvn clojure:swank
+
+run it and give me a repl (with jline)
+$ mvn clojure:repl
 
 Runs the main method of the java class com.aspden.App
 $ mvn exec:java -Dexec.mainClass="com.aspden.App"

@@ -1,11 +1,6 @@
 (println "running the code from runscript.clj")
 
 ;script code:  intended to be the target of mvn clojure:run, clojure:repl, clojure:swank
-;unfortunately even with the latest maven-clojure-plugin, it only works with the first two.
-
-(comment ;from swank use
-  (load-file "/home/john/hobby-code/bloody-maven/maven-test-project/runscript.clj")
-)
 
 (defn get-classpath-urls []
   (seq (.getURLs (java.lang.ClassLoader/getSystemClassLoader))))
@@ -50,5 +45,3 @@
 ;;sanity check to tell what we have loaded in an uncontaminated REPL (plus the functions we've just defined)
 (print-current-environment)
 
-(use 'clojure.contrib.repl-utils)
-(use 'clojure.contrib.pprint)
