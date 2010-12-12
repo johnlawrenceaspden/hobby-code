@@ -15,10 +15,12 @@
       (is ( = (factorial 1000) (apply * (range 1 1001))) "big"))
     (testing "bad arguments"
       (is (thrown? java.lang.StackOverflowError (factorial 10000)) "not tail recursive")
+      ;; deliberate fail. 
       (is (thrown? java.lang.StackOverflowError (factorial -1))))))
 
 (deftest java-tests
-  (testing "java factorial" 
+  (testing "java factorial"
+    ;;deliberate fail
     (is (= (. App factorial 10) (* 1 2 3 4 5 6 7 8 9)))
     (is (= (. App factorial 100) (apply * (range 1 101))) "arithmetic problems")))
 

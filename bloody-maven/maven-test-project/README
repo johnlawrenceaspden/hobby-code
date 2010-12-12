@@ -1,10 +1,13 @@
 Clean out the files that have been left lying around
 $ mvn clean
 
-Compile the java and clojure files
+Compile the clojure files
+$ mvn clojure:compile
+
+Compile the java files
 $ mvn compile
 
-Run all the tests
+Run all the tests (stops on the failure of a test)
 $ mvn test
 
 Run just the clojure tests
