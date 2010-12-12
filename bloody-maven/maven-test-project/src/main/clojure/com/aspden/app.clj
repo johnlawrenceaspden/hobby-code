@@ -17,7 +17,6 @@
 
 
 
-
 ;;defining a clojure version of factorial, with some associated tests
 
 (with-test

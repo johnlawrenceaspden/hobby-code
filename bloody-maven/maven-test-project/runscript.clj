@@ -45,3 +45,27 @@
 ;;sanity check to tell what we have loaded in an uncontaminated REPL (plus the functions we've just defined)
 (print-current-environment)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; We can use the classes defined lower in the tree:
+
+;; import the java class 
+(import com.aspden.App)
+
+;; use it
+(time (App/factorial 12))
+(time (App/factorial 123))
+
+;; import the clojure namespace and use its factorial function
+(require ['com.aspden.app :as 'caa])
+(time (caa/factorial 12))
+(time (caa/factorial 123.0))
+(time (caa/factorial 123))
+
+;; import the clojure-generated class and use its functions
+(import com.aspden.app)
+(def a (new com.aspden.app))
+(class a)
+(into [] (. (class a) getMethods))
+(time (. a factorial 10))
+(time (. a factorial 100))
