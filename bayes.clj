@@ -449,7 +449,7 @@
 ;; Some H1-type hypothesis is almost always the maximum likelihood estimator!
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Brief mathematical aside on how to generate H1 samples
 
 ;; How would we generate samples for general H1?
@@ -462,7 +462,7 @@
 ;; c = 1/2-m/4
 
 ;; The cumulative frequency function for H1(m) is therefore 
-;; = 0.25 m x^2 + 0.5 x + 0.5 - 0.25 m
+;; 0.25 m x^2 + 0.5 x + 0.5 - 0.25 m
 
 ;; so if we can generate a random number between 0 and 1, then solve
 ;; 0.25 m x^2 + 0.5 x + (0.5-0.25m-rand) = 0 for the root between -1 and 1
@@ -477,9 +477,11 @@
       (/ (+ (- b) (Math/sqrt (- (* b b) (* 4 a c)))) (* 2 a)))))
 
 (defn H1samples [m n]
-  (if (= m 0) (H0samples n)
-      (let [sampler (makeH1sampler m)]
-        (map (fn[x] (sampler)) (range n)))))
+  (if (= m 0) (H0samples n) ; m zero is a special case, but we can use the H0 generator
+      (let [sampler (makeH1sampler m)] 
+        (map (fn[x] (sampler)) (range n))))) 
+
+;; Here are some tests that suggest we got it right!
 
 (reduce max (H1samples -1 100)) ; 0.7900622011350507
 (reduce min (H1samples -1 100)) ; -0.9965276294448893
@@ -496,19 +498,21 @@
 (reduce max (H1samples 1 100)) ; 0.9909238165578513
 (reduce min (H1samples 1 100)) ; -0.7313143327689071
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(bayesdiagram (H1samples 1 20)) ;; H1 wins by miles, every time
+
+
+(bayesdiagram (H1samples 1 20))   ;; H1 usually wins by miles
 (bayesdiagram (H1samples 0.5 20)) ;; H1 often wins, but sometimes not
 (bayesdiagram (H1samples 0.3 20)) ;; H1 sometimes wins, but sometimes H0 wins by razor
 (bayesdiagram (H1samples 0.1 20)) ;; H1 sometimes wins, but sometimes H0 wins by razor
 
 
-;; Sequences of 20 observations aren't really enough to decide the issue. I should rephrase the whole thing
-;; in terms of log-likelihoods or bigdecimals
+;; Sequences of 20 observations aren't really enough to decide the issue. I should rephrase the whole thing in terms of log-likelihoods or bigdecimals
 
 
 
-
+(bayesdiagram (H1samples 0.1 20)) ;; H1 sometimes wins, but sometimes H0 wins by razor
 
 
 
