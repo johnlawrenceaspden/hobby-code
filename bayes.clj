@@ -286,21 +286,24 @@
 ;; either model is equally likely, then after seeing those five data points,
 ;; we'll think that H1, the biased model, is in the lead by about three to one.
 
-;; And we also have a fair feeling for what sort of value of me we're going to expect to
-;; find if we ever know the true process generating our data.
+;; And we also have a fair feeling for what sort of value of m we're going to
+;; expect to find if we ever know the true process generating our data (and it
+;; turns out to be one of our two candidates)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Now let's look at some other sequences of data that we could have got.
 
-;; Suppose that we'd only ever seen 0
+;; Suppose that we'd only ever seen zeroes
 (bayesdiagram '(0 0 0))
 
 ;; All our models are equally likely to generate zeroes. We don't have any new
 ;; information that lets us choose between one and the other.
 
 ;; If we're sure that they're the only two plausible models, then we've drawn a blank here.
+;; We have the same estimates of their likelihood that we had before.
+
 ;; But we might well come up with another plausible model after looking at the data!
 
 ;; What about if we only see 0.5?
@@ -312,14 +315,21 @@
 
 ;; What about if we see twenty -0.9s in a row?
 (bayesdiagram (repeat 20 -0.9))
-;; A landslide victory for low-m H1. No model except H1 with 0 < m < 0.25 is even worth
-;; considering out of our initial candidates.
+;; A landslide victory for low-m H1. No model except H1 with 0 < m < 0.25 is
+;; even worth considering any more (out of our initial candidates with equal
+;; weights).  Of course if we'd been convinced that H0 was the true model before
+;; we started, then we might not believe that we've seen enough data to refute
+;; it.
+
+;; What we do know is that we should have vastly less confidence in it than we
+;; did before.
 
 
 ;; That's about it for constant data. If the constant is a long way from 0, then we quickly
 ;; come to prefer a version of H1 to all other hypotheses. If it's close to 0
 (bayesdiagram (repeat 20 -0.01))
-;; then even twenty trials are not enough to make much of a difference.
+;; then even twenty trials are not enough to make much of a difference. All our models
+;; predict this sort of behaviour about equally.
 
 
 ;; What about data that actually looks to the intuition that it might have been
@@ -339,28 +349,34 @@
 ;; Most of the versions of H1 actually do worse than H0.
 
 ;; So if we'd started out thinking for some reason that we had an even choice
-;; between H0 and H1(with m ~ 0.3), we might now think that H1 was most likely.
+;; between H0 and H1(with m ~ 0.3), we might now be starting to think that H1
+;; was most likely.
 
 ;; But if we started out thinking that H1 and H0 were equal, but that we knew nothing about
-;; the parameter m, we'd be rooting slightly for H0.
+;; the parameter m, we'd be rooting slightly for H0, by comparing the areas under the curves.
 
-(bayesdiagram (map (fn[x](- (rand 2) 1)) (range 25)))
 
-;; Here are some sequences actually pulled from an H0 style generator
+;; Let's look now at what we get by actually generating data using H0
+;; This expression will generate 20 samples drawn evenly from -1 to 1, and
+;; plot our diagram on the basis. 
+(bayesdiagram (map (fn[x](- (rand 2) 1)) (range 20)))
+
+
+;; Here are some sequences which were actually pulled from an H0 style generator
 ;; i.e. uniformly distributed over -1, 1, but truncated to two significant
 ;; figures for readability
 
 (bayesdiagram '(0.98 0.97 0.93 0.75 -0.53 -0.95 0.97 -0.88 0.97 -0.94))
 ;; Here we see a clear victory for H0. The superior performance of the version of H1
 ;; which has been tuned for this exact data set is drowned out by the poor performance of
-;; all the other H1s. Even though H1 (m~0.5) is a clear winner, we end up preferring H0
+;; all the other H1s. Even though H1 (m~0.5) is the clear winner, we end up preferring H0
 ;; as a hypothesis.
 
-;; Here's a generator for such a sequence of ten rounded samples
+;; Here's a generator for such a sequence of rounded samples
 (defn H0samples [n]
   (map (fn[x] (/ (Math/round (* 100 (- (rand 2) 1))) 100.0)) (range n)))
 
-;; And here are three more randomly generated sequences.
+;; And here are three more randomly generated sequences of ten.
 (bayesdiagram '(-0.44 0.52 0.04 0.86 0.43 0.21 -0.52 -0.38 0.45 0.29))
 (bayesdiagram '(-0.13 0.78 -0.11 0.1 -0.86 0.15 -0.15 -0.73 -0.63 -0.45))
 (bayesdiagram '(-0.95 -0.83 -0.85 0.19 -0.75 -0.38 -0.34 0.2 0.93 0.32))
@@ -382,10 +398,20 @@
 (bayesdiagram '(-0.96 0.01 0.42 -0.07 0.37 0.54 -0.32 0.71 0.37 0.55 0.26 0.73 -0.34 0.28 -0.98 -0.29 0.58 -0.42 0.1 -0.87))
 ;; H0 wins
 
+;; There's not enough data here to determine the decision. What I think is going on is that even
+;; a sequence of 20 samples will often look biased one way or another, and if it does, then
+;; Bayes comes down on the side of the model that best represents that bias.
 
-;; Here's some more rather contrived data, in an attempt to throw some illumination on this subject
+;; If, on the other hand, the data looks even (a bit too even to be true, in fact), which is to say
+;; that it looks like what we'd expect a uniform distribution to generate, then Bayes decides for the uniform model.
 
-;; Here's some very extreme data. H1(m=0) is as good at explaining this as H0, but all the other H1s have trouble with it.
+;; FIX ME
+;; What I'd like to do here is to throw a thousand samples in, and see what happens. But the program breaks for some reason.
+
+;; In an attempt to throw some illumination on this subject, 
+
+;; Here's some very extreme data. H1(m=0) is, of course, as good at explaining
+;; this as H0, but all the other H1s have trouble with it.
 (bayesdiagram '( 1 -1 0))
 (bayesdiagram '( 1 -1 0 1 -1 0))
 (bayesdiagram '( 1 -1 0 1 -1 0 1 -1 0))
@@ -395,6 +421,9 @@
 
 ;; Here are twenty points exactly conforming to the H0 distribution (too good to be true!)
 (bayesdiagram (range -1 1 0.1))
+;; This diagram is what we'd expect if we used the method on a long series of
+;; randomly generated data (so long that the histogram begins to approximate the
+;; actual distribution)
 
 ;; Here's a seriously positively biased sequence
 (bayesdiagram '(0.1))
@@ -410,17 +439,29 @@
   (map (fn[x] (/ (Math/round (* 100 x)) 100.0))
        (map (fn[x] (+ -1 (* 2 (Math/sqrt (rand))))) (range n))))
 
-(bayesdiagram (H0samples 20))
+;; It appears that 20 samples from the H1(m=1) distribution are almost always enough
+;; to convince our method that H1 is the true hypothesis:
 (bayesdiagram (H1samples 20))
 
-;; How would we generate samples for H1?
+;; Which is emphatically not the case for H0 samples, which may or may not appear to be H1 samples
+(bayesdiagram (H0samples 20))
+;; However we do notice here that in the cases where H1 wins, it is always a version of H1 with a strong bias.
+;; Some H1-type hypothesis is almost always the maximum likelihood estimator!
+
+
+
+;; Brief mathematical aside on how to generate H1 samples
+
+;; How would we generate samples for general H1?
+;; We have to integrate the pdf to find the cumulative frequency function
 ;; P(x) = 1/2 (1+mx)
 ;; integrates to 1/2 (x + m x^2/2) + c
-;; we want c such that 1/2 (-1 + m /2) +c = 0
-;; we want c = 1/2-m/4
+;; We want the cumulative frequency at -1 to be zero, which lets us choose
+;; the integration constant:
+;; i.e. we want c such that 1/2 (-1 + m /2) +c = 0
+;; c = 1/2-m/4
 
-
-
+;; The cumulative frequency function for H1(m) is therefore 
 ;; = 0.25 m x^2 + 0.5 x + 0.5 - 0.25 m
 
 ;; so if we can generate a random number between 0 and 1, then solve
