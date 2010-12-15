@@ -14,25 +14,28 @@
 (defmacro- defcolours [& colours]
   (list* 'do (map #(list 'def  (symbol (. (str %) toLowerCase)) (symbol (str "Color/" (str %)))) colours)))
 
+;; (macroexpand '(defcolours black white)) -> (do (def black Color/black) (def white Color/white))
+
 (defcolours black blue cyan darkGray gray green lightGray magenta orange pink red white yellow)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Private machinery
-
-(defn- draw-lines [lines #^Graphics2D g2d xs ys]
-  (doseq [[x1 y1 x2 y2 color] @lines]
-    (. g2d setColor color)
-    (. g2d drawLine (* xs x1) (* ys y1) (* xs x2) (* ys y2))))
 
 (defn- render-lines-to-graphics [lines paper-color height width
                                  #^Graphics2D g w h ]
-  (doto g
-    (.setColor @paper-color)
+  (doto g ;set the background
+    (.setColor @paper-color) 
     (.fillRect 0 0 w h))
-    (draw-lines lines g w h))
+    
+  (doseq [[x1 y1 x2 y2 color] @lines]  ;draw all the lines
+    (. g setColor color)
+    (. g drawLine (* w x1) (* h y1) (* w x2) (* h y2))))
 
-(defn- primitive-repaint [plotter]
-  (. (plotter :panel) repaint))
 
+;; a plotter object is a map containing data about what is to be drawn (some of it mutable)
+;; when one is created, it also creates a JFrame, or window. The panel element of the map
+;; is a JPanel which is attached to this frame, and which reacts to repaint requests by
+;; rendering the data in the map.
 (defn create-plotter [title width height ink paper xmin xmax ymin ymax]
   (let [lines       (atom [])
         paper-color (atom paper)
@@ -58,42 +61,48 @@
      :panel panel
      :xfn (fn[x] (/ (- x xmin) (- xmax xmin)))
      :yfn (fn[y] (/ (- ymax y) (- ymax ymin)))
-     :size {:xmin xmin :xmax xmax :ymin ymin :ymax ymax}}))
+     :size {:xmin xmin :xmax xmax :ymin ymin :ymax ymax}
+     :original-width width
+     :original-height height}))
 
+;; cause the plotter to repaint itself
+(defn- primitive-repaint [plotter]
+  (. (plotter :panel) repaint))
+
+;; add a line to the plotter in its current ink colour, and then cause a repaint
 (defn- very-primitive-line [plotter x1 y1 x2 y2]
   (let [ink @(:ink-color plotter)]
     (swap! (:lines plotter) conj [x1 y1 x2 y2 ink])
     (primitive-repaint plotter)))
 
+;; add a line, but transform the coordinates according to the plotter's
+;; coordinate transformation functions
 (defn- primitive-line [plotter x1 y1 x2 y2]
   (let [xfn (:xfn plotter)
         yfn (:yfn plotter)]
         (very-primitive-line plotter (xfn x1) (yfn y1) (xfn x2) (yfn y2))))
 
+;; change the paper colour and then repaint
 (defn- set-paper-color [plotter color]
   (swap! (plotter :paper-color) (constantly color))
   (primitive-repaint plotter))
 
+;; change the ink colour. no need to repaint.
 (defn- set-ink-color [plotter color]
   (swap! (plotter :ink-color) (constantly color)))
 
+;; change the current position
 (defn- set-current-position [plotter [x y]]
   (swap! (plotter :current-position) (constantly [x y])))
 
+;; delete all the lines in the plotter
 (defn- remove-lines [plotter] (swap! (plotter :lines) (constantly [])))
 
-(defn- make-scalars [points xleft xright ytop ybottom]
-  (let [xmax (reduce max (map first points))
-        xmin (reduce min (map first points))
-        ymax (reduce max (map second points))
-        ymin (reduce min (map second points))]
-    [(fn[x] (+ xleft (* (/ (- x xmin) (- xmax xmin))    (- xright xleft))))
-     (fn[y] (+ ybottom  (* (/ (- y ymin) (- ymax ymin)) (- ytop ybottom))))]))
-
-
+;; We have an idea of the current plotter
 (defvar- current-plotter (atom nil))
 
-;; ;; Public Interface
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Public Interface
 
 (defn create-window
   ([] (create-window "Simple Plotter"))
@@ -106,7 +115,7 @@
        plotter)))
 
 ;;Makes a version of a function with an implicit first argument of plotter, and
-;;a default version with no first argument is not supplied, and which uses
+;;also a default version where the first argument is not supplied, which uses
 ;;current-plotter instead.
 (defmacro ddefn [fnname args & body]
   `(defn ~fnname
@@ -153,12 +162,18 @@
    (plot plotter x1 y1)
    (draw plotter (- x2 x1) (- y2 y1)))
 
-
-       
-
 (ddefn ink   [color] (set-ink-color plotter color))
 
 (ddefn paper [color] (set-paper-color plotter color))
+
+(defn- make-scalars [points xleft xright ytop ybottom]
+  (let [xmax (reduce max (map first points))
+        xmin (reduce min (map first points))
+        ymax (reduce max (map second points))
+        ymin (reduce min (map second points))]
+    [(fn[x] (+ xleft (* (/ (- x xmin) (- xmax xmin))    (- xright xleft))))
+     (fn[y] (+ ybottom  (* (/ (- y ymin) (- ymax ymin)) (- ytop ybottom))))]))
+
 
 (ddefn scaled-scatter-plot [points xleft xright ytop ybottom scalepoints]
   (let [[xsc ysc] (make-scalars (take scalepoints points) xleft xright ytop ybottom)]
@@ -169,9 +184,9 @@
 (defn window! [plotter]
   (swap! current-plotter (fn[x] plotter)))
 
-(ddefn get-height [] @(plotter :height))
+(ddefn get-original-height [] (plotter :original-height))
 
-(ddefn get-width  [] @(plotter :width))
+(ddefn get-original-width  [] (plotter :original-width))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Examples
@@ -202,13 +217,13 @@
 
 ;; (sine-example)
 
-;; (defn examples []
-;;   (sine-example)
-;;   (in-ns 'user)
-;;   (use 'simple-plotter)
-;;   (load-file "fractal-fern.clj")
-;;   (load-file "zxsin.clj")
-;;   (load-file "gridpattern.clj") )
+(defn examples []
+  (sine-example)
+  (in-ns 'user)
+  (use 'simple-plotter)
+  (load-file "fractal-fern.clj")
+  (load-file "zxsin.clj")
+  (load-file "gridpattern.clj") )
 
 ;;(examples)
 
