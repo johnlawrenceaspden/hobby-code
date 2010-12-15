@@ -1,0 +1,89 @@
+When we left Mr Spock, he had a decision to make. 
+
+In order to make that decision, he needs to know whether he's in an evil or a good universe.
+
+The only evidence he has is one coin toss that came up tails. 
+
+He knows that in evil universes, the coin is more likely to come up tails.
+
+But he also knows that in good universes, the coin will come up tails one time in three.
+
+So he might figure out that he's more likely to be in an evil universe. So he should probably fire.
+
+But how confident should he be of his conclusion?
+
+And if he'd had time to toss the coin twice, and it had come up tails both times, how confident should he be then?
+
+We can address the first question by thinking about six parallel universes side by side.
+In all of them, Spock appears in the captain's cabin and tosses the coin.
+
+Three of the universes are evil, and three good.
+
+In one of the evil universes, Spock sees a head. In two of them, he sees a tail.
+In one of the good universes, Spock sees a tail. In two of them, he sees a head.
+
+So our copy of Spock, who has to decide whether to shoot or not, who only knows that he's seen a tail, can be the copy in three of the six universes. 
+
+They are two of the evil ones and one of the good ones.
+
+If all Spock knows is that he's in one of these three, he should reckon that the odds of being in an evil universe are two to one, or equivalently he should say that there's a probability of 2/3.
+
+If he's seen two tails, then we need to think about nine good universes and nine evil ones.
+
+On the first toss, they split into:
+good,tail (there are 3 like this) 
+good,head (6)
+evil,tail (6)
+evil,head (3)
+
+And then on the second, these groups divide further 
+
+good, tail, tail (1)
+good, tail, head (2)
+good, head, tail (2)
+good, head, head (4)
+evil, tail, tail (4)
+evil, tail, head (2)
+evil, head, tail (2)
+evil, head, head (1)
+
+So now if Spock has seen tail, tail, he can be in one of four evil universes or one good one.
+
+His odds are four to one on being in an evil universe.
+
+
+This conclusion is known as Bayes' Theorem, after the Reverend Thomas Bayes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
