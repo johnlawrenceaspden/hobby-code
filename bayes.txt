@@ -1,0 +1,43 @@
+Captain Kirk, being a man who likes to gamble, carries with him at all times a biased coin. Being one of the good guys, his coin is biased so that it returns mainly heads.
+
+In a evil parallel universe where everyone wears a moustache, the evil version of Kirk carries a coin biased towards tails. Apart from this detail and the moustaches, the universes physically resemble each other with uncanny accuracy. But the moralities on which they operate could not be more different.
+
+--
+
+After a transporter accident, Mr Spock find himself in the captain's stateroom on board the (an?) Enterprise.
+
+On the dressing table, the captain's wallet, phaser and communicator lie neatly next to the captain's trick coin.
+
+Spock tosses the coin thoughtfully.
+
+It comes up tails. This is very bad news. If the evil Kirk discovers Spock in his room, he will almost certainly suspect a plot, and have Spock executed. Spock grimaces and draws his phaser.
+
+But of course, if he's in his own universe, the captain will just be pleased to see him safe and well, and amused by the accident that he was transported directly into the officer's quarters.
+
+Spock, about to toss the coin again, wonders if he should set his phaser to stun.
+
+Suddenly, Spock hears the whirr of the captain's bedroom door. He whirls and...?
+
+What should Spock do?
+
+--
+
+Specifically, good!Kirk's coin comes up heads 2 times out of 3, and evil!Kirk's coin comes up heads 1 time in 3.
+
+The transporter accident, involving reversed polarities, has almost certainly sent Spock into a parallel universe. There are, however, millions of parallel universes. Half are good, half are evil.
+
+If Spock fires, he will kill the captain. In a good universe this is a tragedy that Spock would die to prevent. In an evil universe, he's killed a tyrant who deserved to die, and saved his own life. He can then plot to return home, which shouldn't be too difficult.
+
+If Spock doesn't fire, the captain will pull off some superheroic trick as usual and somehow get the drop on Spock. In a good universe, this will result in much good humor, and the eventual return of Spock to his home universe, where he won't have to put up with having an identical twin.
+
+In an evil universe, not firing will result in Spock's execution.
+
+Spock needs an estimate of the probability that his current universe is evil, and he needs it fast. His only evidence is the one coin toss, which came up tails. What should he reckon the chances are that the universe is evil?
+
+--
+
+For bonus points, in a parallel group of parallel universes, Spock had managed to make ten coin tosses before the door whirred. His results were H H H H T H T H T H . What's his estimate now? 
+
+
+
+
