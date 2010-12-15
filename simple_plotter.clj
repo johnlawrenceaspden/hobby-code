@@ -156,7 +156,7 @@
 (ddefn axes[]
        (let [{:keys [xmin xmax ymin ymax]} (:size plotter)]
          (primitive-line plotter xmin 0 xmax 0)
-         (primitive-line plotter 0 xmin 0 xmax)))
+         (primitive-line plotter 0 ymin 0 ymax)))
 
 (ddefn line [x1 y1 x2 y2]
    (plot plotter x1 y1)
@@ -223,9 +223,11 @@
   (use 'simple-plotter)
   (load-file "fractal-fern.clj")
   (load-file "zxsin.clj")
-  (load-file "gridpattern.clj") )
+  (load-file "gridpattern.clj")
+  (load-file "tinyfn.clj")
+  )
 
-;;(examples)
+;; (examples)
 
 
 

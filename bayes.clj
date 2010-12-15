@@ -242,8 +242,8 @@
 
 ;; When we add in the 0.7, though:
 (bayesdiagram (take 3 data))
-;; It looks as though the H1 curve has more area underneath it in total, even
-;; though the low-m H1 models now look vanishingly unlikely. high-m H1 seems to
+;; It looks now as though the H1 curve has more area underneath it in total.
+;; Even though the low-m H1 models now look very unlikely, high-m H1 seems to
 ;; be dominating the picture.
 
 ;; This is what we'd expect, I think. It's stretching it a bit to say that H0 produces three
@@ -360,6 +360,7 @@
 ;; This expression will generate 20 samples drawn evenly from -1 to 1, and
 ;; plot our diagram on the basis. 
 (bayesdiagram (map (fn[x](- (rand 2) 1)) (range 20)))
+(bayesdiagram (map (fn[x](- (rand 2) 1)) (range 100)))
 
 
 ;; Here are some sequences which were actually pulled from an H0 style generator
@@ -416,7 +417,7 @@
 (bayesdiagram '( 1 -1 0 1 -1 0))
 (bayesdiagram '( 1 -1 0 1 -1 0 1 -1 0))
 (bayesdiagram '( 1 -1 0 1 -1 0 1 -1 0 1 -1 0))
-(bayesdiagram (take 21 (apply concat (repeat '(-1 0 1)))))
+(bayesdiagram (take 1000 (apply concat (repeat '(-1 0 1)))))
 
 
 ;; Here are twenty points exactly conforming to the H0 distribution (too good to be true!)
@@ -424,6 +425,9 @@
 ;; This diagram is what we'd expect if we used the method on a long series of
 ;; randomly generated data (so long that the histogram begins to approximate the
 ;; actual distribution)
+
+;; here are 200
+(bayesdiagram (range -1 1 0.01))
 
 ;; Here's a seriously positively biased sequence
 (bayesdiagram '(0.1))
@@ -512,7 +516,8 @@
 
 
 
-(bayesdiagram (H1samples 0.1 20)) ;; H1 sometimes wins, but sometimes H0 wins by razor
+(bayesdiagram (H1samples 0.1 500)) ;; H1 sometimes wins, but sometimes H0 wins by razor
+;;1150 samples breaks this and I don't know why
 
 
 
