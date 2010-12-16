@@ -54,6 +54,14 @@ His odds are four to one on being in an evil universe.
 
 This conclusion is known as Bayes' Theorem, after the Reverend Thomas Bayes.
 
+It tells you how to update your beliefs when you seen evidence of their truth and falsehood.
+
+Spock's initial belief is that the chances of being in an evil universe are even, or 1:1, or probability 1/2
+
+After he sees one tail, he should believe that the chances are 2:1, or probability 2/3
+
+After he sees the second, he should believe that the chances are 4:1 in favour of evil, or probability 4/5.
+
 
 
 

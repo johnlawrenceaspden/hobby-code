@@ -1,0 +1,175 @@
+We can watch Spock's beliefs update as the evidence comes in:
+
+Suppose that he thinks that he's in an evil universe with odds 400:35
+
+He tosses a coin. The 400 evil universes divide into 1200, of which there are 400 heads and 800 tails
+And the 35 good universes divide into 105, of which there are 35 tails and 70 heads.
+
+So if the coin comes down heads, Spock knows that he's in one of either 400 evil universes or 70 good ones
+
+And if it comes down tails, he knows he's in one of either 800 evil universes or 35 good ones.
+
+If he sees tails, his odds become 800:35
+
+If he sees heads, then his odds become 400:70
+
+The rule is: 
+
+If you see tails, double the odds for evil.
+If you see good, double the odds for good.
+
+So what about the case where the sequence that he sees is HHHHTHTHTH?
+
+He starts out believing that there's an equal chance that he's ended up in a good or evil place.
+Let's write the odds as good:evil.
+
+1:1
+
+He sees a head
+
+2:1
+
+He sees another head
+
+4:1
+
+another head
+
+8:1
+
+another
+
+16:1
+
+now a tail:
+
+16:2
+
+now a head
+
+32:2
+
+now a tail
+
+32:4
+
+head
+
+64:4
+
+tail
+
+64:8
+
+head 
+
+128:8
+
+At this point, the captain opens the door. 128:8 is the same odds as 16:1.
+
+At 16:1 Spock holds his fire.
+
+-----------------------------------------------------------
+
+This case, where the two hypotheses have simple symmetrical 2:1 odds, is contrived.
+
+But only in the sense that I chose it to make the arithmetic particularly easy.
+
+In this case, by the reasoning above, the rule is:
+
+If you see heads, double the good number.
+If you see tails, double the evil number.
+
+In fact, any application of Bayes' Theorem, to any set of prior beliefs about any set of hypotheses, with any arbitrary set of chances of producing different experimental results, is in the end the same calculation.
+
+When your computer reads data off its hard disk, it uses Bayes Theorem to work out, from a noisy electrical signal, whether the bit it is reading from the disk is a zero or a one. By their Bayesian calculations, which are in spirit similar to the one above, the engineers who designed it could make a very fast, very reliable system out of dirt cheap commodity parts.
+
+When your mobile phone or your television listen to noisy, crackly, faint radio signals coming from a long way away, they use Bayes' Theorem to reconstruct exactly the message that was sent, and you hear clear voice, and see perfect picture.
+
+Most people are familiar with both the way analogue signals degrade. As you get further away from the transmitter, you get noise and hiss and crackling in the sound, which eventually gets so bad that you can't tell what the speaker is saying at all. And you get snow in the picture, which eventually gets so bad that you can't see what's going on.
+
+Most people are familiar with the way digital signals degrade. As you get further away from the transmitter, everything stays exactly the same until suddenly everything goes pear-shaped at once, and sound and picture dissolve together.
+
+When you are watching and listening to a noisy analogue signal, the reason that you can still work out what is going oin in spite of the interference and distortion and snow and crackling is that your brain is using a version of Bayes' Theorem to reconstruct what is going on.
+
+When you are watching or listening to a noisy digital signal (which is of course, just as affected by hiss and crackle and interference as an analogue one) the reason that it still looks perfect to you is that your mobile phone or television is using a Bayesian algorithm to work out what the original message must have been and displaying that instead of the message it actually received.
+
+The reason that they both become unwatchable at the same time is that eventually there is so much noise that the original message gets 'lost in the noise'. At that point, the best Bayesian corrective methods that evolution could give you, or the best Bayesian methods that engineers could design, can't recover the original message. There is a whole subject called information theory that is about how much noise a signal can tolerate. It doesn't really matter whether it's brain-Bayes or electronics-Bayes. The signal to noise ratio that can be tolerated is roughly the same.
+
+In low level systems, Bayes is everywhere. Routine. 
+
+But in our thinking about the world, our thinking about what to believe, how to interpret evidence to choose between theories, how to work out what is true and what is not true, it is not so widespread.
+
+We think that we use classical logic to reason. We do not.
+
+When someone says 'I believe what I see', and someone else snidely remarks 'He doesn't see what he doesn't believe', then according to classical logic they have made the same statement.
+
+In actual human reasoning, we see shades of meaning everywhere. We make judgements on very little evidence (as Spock can make accurate, good judgements on the basis of one or two coin flips) which are in no way valid in terms of classical logic or classical statistics.
+
+Unfortunately, unlike Spock and the coins, we often get these judgements wrong.
+
+Why? It is not because we are wrong to try to make judgements with little evidence. There is a surprisingly large amount that can be accurately learned from surprisinly little evidence. Bayes theorem shows us how. Low level systems use it all the time to make good judgements under conditions of great uncertainty.
+
+The reason that we get these judgements wrong is because our brains are hack-jobs. Botches. Kludges.
+
+Evolution is a shoddy designer, and whatever our brains were designed for by this shoddy designer, it wasn't abstract reasoning.
+
+We're terrible at it. 
+
+
+
+
+
+
+-------------------------------------------------------------
+
+This is the lesson of Bayes' Theorem:
+
+Work out what you believe. 
+
+Work out how your different theories will affect what you see.
+
+Work out how what you see should affect what you believe.
+
+As the evidence comes in, update what you believe. This will, on average, make your beliefs closer to the truth.
+
+-------------------------------------------------------------
+
+In Spock's case, at first, he believes that the chances of good and evil are equal.
+He may believe this on the basis of thousands of previous episodes, in which he was involved in transporter accidents.
+
+Long experience may have convinced him that there is as much good as evil in the multiverse.
+
+Or he may just not have the faintest idea! He may think, "I just don't know. I've no reason to prefer one idea to the other, so I'll start out assuming that they're equal and let the evidence decide for me."
+
+It really makes no difference. Whatever has caused him to believe 1:1, that's what he starts with.
+
+The second thing is to work out how what you see depends on what's true.
+
+If the truth is that you're in a good universe, you'll see heads 2/3 of the time, and tails 1/3 of the time.
+
+If the truth is that you're in an evil universe, you'll see heads 1/3 of the time, and tails 2/3 of the time.
+
+Now from this, you can work out a procedure for updating your beliefs as each new piece of evidence comes in.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
