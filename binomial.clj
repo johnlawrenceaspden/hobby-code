@@ -34,7 +34,6 @@
 ;; If we call f 1/3 and g = 2/3 = 1-f
 ;; Then P(2)=f P(1) + g P(2) from the previous distribution
 
-
 ;; Let us call P(r, N, f) the probability of r heads in N trials given
 ;; probability f of a head in a single trial.
 
@@ -84,17 +83,6 @@
 (P  4 3 1/3) ; 0N
 
 ;; What about an explicit formula?
-
-1
-
-(1-f) f
-
-(1-f)*(1-f) (1-f)*f + f*(1-f) f*f
-
-HH f*f
-HT f*(1-f)
-TH (1-f)*f
-TT (1-f)*(1-f)
 
 ;; If we have a sequences of H and T which are N long, how many have r H's?
 
@@ -199,7 +187,52 @@ TT (1-f)*(1-f)
 
 
 
+;; What about generating samples from this distribution?
 
+(defn binomial-sample [f N]
+  (if (= N 1)
+    (if (< (rand) f) 1 0)
+    (+ (binomial-sample f 1) (binomial-sample f (dec N)))))
+
+(binomial-sample 0.3 10)
+
+(defmacro sample-seq [sexp]
+  `(map #(%) (repeat (fn[] ~sexp))))
+
+(def myseq (sample-seq (binomial-sample 0.3 10)))
+
+(defn seq-sums [sq] (reductions (fn [a x] (+ a x)) 0 sq))
+(defn seq-sqsums [sq] (reductions (fn [a x] (+ a (* x x))) 0 sq))
+(defn scaledown [sq] (map / sq (drop 1 (range))))
+
+(def samplemeans (map float (scaledown (seq-sums myseq))))
+(def samplesqmeans (map float (scaledown (seq-sqsums myseq))))
+
+(def ssq-smeans (map - samplesqmeans (map #(* % %) samplemeans)))
+
+(take 10 (drop 100000 ssq-smeans))
+
+
+     
+
+(defn sample-mean [sq]  (/ (reduce + sq) (count sq)))
+(defn sample-var [sq]
+  (let [sm (sample-mean sq)]
+    (/ (reduce + (map #(* (- % sm) (- % sm)) sq)) (count sq))))
+
+
+(sample-mean (take 100 (map #(* % %) (map #(- % 3) myseq))))
+
+;; Sample mean should head for 3 = 10 * 0.3
+(map float (map #(sample-mean (take % myseq)) (drop 1 (range))))
+
+;; Sample variance should head for 2.1 = 10 * 0.3 (1 - 0.3) = 3 * 0.7
+(map float (map #(sample-var (take % myseq)) (drop 1 (range))))
+
+(* 10 0.3 (- 1 0.3))
+
+(sample-mean (take 100 myseq))
+  
 
 
 
