@@ -9,11 +9,11 @@
 
 (defn corrupt[f sq] (map #(flip-rand f %) sq))
 
-(defn corrupt[f sq]
-  (lazy-seq
-   (when-let [sq (seq sq)]
-     (cons (if (< (rand) f) (flip (first sq)) (first sq))
-           (corrupt f (rest sq))))))
+;; (defn corrupt[f sq]
+;;   (lazy-seq
+;;    (when-let [sq (seq sq)]
+;;      (cons (if (< (rand) f) (flip (first sq)) (first sq))
+;;            (corrupt f (rest sq))))))
 
 
 (defn binary-symmetric-channel[f] (fn[sq] (corrupt f sq)))
@@ -33,20 +33,20 @@
 
 
 ;; repetition codes just repeat each bit n times
-(defn repetition-code [n sq]
-  (lazy-seq
-   (when-let [sq (seq sq)]
-     (concat (repeat n (first sq)) (repetition-code n (rest sq))))))
+;; (defn repetition-code [n sq]
+;;   (lazy-seq
+;;    (when-let [sq (seq sq)]
+;;      (concat (repeat n (first sq)) (repetition-code n (rest sq))))))
 
 (defn repetition-code [n sq] (mapcat #(repeat n %) sq))
 
 
-(defn repetition-decode [n sq]
-  (lazy-seq
-   (when-let [sq (seq sq)]
-     (let [ssq (take n sq)
-           d (first (last (sort-by second (frequencies ssq))))]
-       (cons d (repetition-decode n (drop n sq)))))))
+;; (defn repetition-decode [n sq]
+;;   (lazy-seq
+;;    (when-let [sq (seq sq)]
+;;      (let [ssq (take n sq)
+;;            d (first (last (sort-by second (frequencies ssq))))]
+;;        (cons d (repetition-decode n (drop n sq)))))))
 
 (defn repetition-decode [n sq]
   (map ffirst
@@ -82,6 +82,7 @@
         [1 1 1] 2
         [0 1 1] 3
         'ok))
+
 (defn hamming-7-4-correct [[a b c d e f g :as v]]
   (def-let [syn (apply syndrome-to-bit (hamming-7-4-syndrome v))]
     (if (= syn 'ok) [a b c d]
@@ -123,7 +124,6 @@
   (is (= (hamming-7-4 '(1 0 0 0)) [1 0 0 0 1 0 1]))
   (is (= (hamming-7-4 '(1 0 0 1)) [1 0 0 1 1 1 0]))
   (is (= (hamming-7-4 '(1 0 1 0)) [1 0 1 0 0 1 0]))
-
   
   (is (= (hamming-7-4-correct [0 0 0 0 0 0 0]) [0 0 0 0]))
   (is (= (hamming-7-4-correct [0 0 0 0 0 0 1]) [0 0 0 0]))
@@ -157,11 +157,6 @@
   (is (= (hamming-7-4-decoder (hamming-7-4-encoder '(0 1 0 1 0 0 1 0 1 0 1 1 )))
          '(0 1 0 1 0 0 1 0 1 0 1 1 )))
 
-
-
-
-
-
   )
 (run-tests)
 
@@ -174,5 +169,66 @@
 ;; Theory predicts 0.36 = 4*0.1*0.9 asymptotically
 (map float (map / (drop 1 errrates) errrates)) ;; (0.372 0.290 0.37 0.5)
 
-
 (float (estimate-bit-error hamming-7-4-encoder hamming-7-4-decoder 10000))
+
+
+(defn binaries[n]
+  (if (= n 0) '(())
+      (apply concat (for [x (binaries (dec n))]
+                (list (cons 0 x) (cons 1 x))))))
+
+(binaries 0)
+(binaries 1)
+(binaries 2) ; ((0 0) (1 0) (0 1) (1 1))
+(def hvectors (map hamming-7-4 (binaries 4)))
+
+hvectors
+([0 0 0 0 0 0 0]
+[1 0 0 0 1 0 1]
+[0 1 0 0 1 1 0]
+[1 1 0 0 0 1 1]
+[0 0 1 0 1 1 1]
+[1 0 1 0 0 1 0]
+[0 1 1 0 0 0 1]
+[1 1 1 0 1 0 0]
+[0 0 0 1 0 1 1]
+[1 0 0 1 1 1 0]
+[0 1 0 1 1 0 1]
+[1 1 0 1 0 0 0]
+[0 0 1 1 1 0 0]
+[1 0 1 1 0 0 1]
+[0 1 1 1 0 1 0]
+[1 1 1 1 1 1 1])
+
+(defn hamming-distance [a b]
+  (reduce + (map bit-xor a b)))
+
+(hamming-distance [0 0] [0 1])
+
+(frequencies (for [a hvectors
+                   b hvectors]
+               (hamming-distance a b)))
+
+(defn noise-vectors [n]
+  (for [i (range n)]
+    (concat (repeat i 0) (list 1) (repeat (- n i 1) 0))))
+
+(noise-vectors 7)
+
+(defn add [v w]
+  (map bit-xor v w))
+
+(for [j (range 16)]
+  (frequencies (map hamming-7-4-correct
+       (for [i (range 7)] (add (nth hvectors j) (nth (noise-vectors 7) i))))))
+
+                  
+
+
+
+
+
+
+
+
+
