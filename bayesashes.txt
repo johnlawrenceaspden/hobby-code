@@ -1,0 +1,47 @@
+What can the Reverend Bayes tell us about the Ashes?
+
+Let's imagine three models:
+
+In the first model, the two teams are equal in strength:
+In that case, let's imagine that there's a 1/3 chance of win, draw and loss. 1:1:1
+
+In the second model, we'll believe that Australia are stronger than England, in which case, we'll imagine that the odds go 1:2:3 of English win, draw, Australia win.
+
+Third, we can imagine that England are stronger, and say that in that case the odds are 3:2:1
+
+Suppose that we have no reason, before the series begins, to believe in any one of these models particularly, so we'll imagine that they're equally distributed over all the possible worlds.
+
+So we'll believe in initial odds of 1:1:1.
+
+The first match was a draw. All the models predict an equal chance of a draw, so the odds 
+stay at 1:1:1. We learned nothing from the first match.
+
+The second match was an England win. The even model gives a 1/3 probability of an England win, the England stronger model gives a 1/2 chance of it, and the Australia stronger model gives 1/6
+
+So after the second game, the odds become 1/2:1/3:1/6, or 3:2:1.
+
+After seeing England winning the second game, we should believe that it's three times more likely that England are the stronger team.
+
+The third game was a win for Australia. We now multiply by 1/6:1/3:1/2, giving 3/6:2/3:1/2, or 3:4:3.
+
+So our initial odds, whatever they were, have been multiplied by 3:4:3. 
+
+Whatever we started off believing, the results Draw, England, Australia should have made us slightly more likely to believe that the teams are evenly matched.
+
+In other words, if we believe that one of our three models is something like the truth, then the series so far has told us almost nothing. If, before the series, you believed that England were the stronger team, you've seen nothing to change your mind, and vice versa if you believed that Australia were.
+
+However, whatever you started out believing, you should now be more open to the idea that the teams are evenly matched, and probably rather less open to extreme models where one team is much stronger than the other. There are also models where, say, both sides' batting is very strong, and both sides' bowling is very weak, which will have been pretty much ruled out by two results in three games.
+
+Nothing too surprising here, I hope. And that's kind of the point. Bayes' Theorem, in spite of having some rather hairy philosophy behind it, is nothing more than a formalized, precise version of common sense.
+
+
+
+
+
+
+
+
+
+
+
+
