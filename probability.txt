@@ -1,0 +1,97 @@
+Let's imagine that we live in a universe that splits whenever anything random happens.
+
+So say we've got a coin which lands heads up 2:1, and another which lands heads up 1:2
+
+Every time we toss either coin, the universe splits, but we don't know which copy we end up in, and our task is to try to narrow down where we are!
+
+The original split happens when we pick a coin from our pile of two coins. 
+
+This is a random event. There are now two copies of the universe. In one we've got a heads biased coin, in the other we've got a tails biased one. But we could be in either, as far as we know.
+
+We toss the coin, and so does our copy in the parallel universe.
+
+Both universes split into three. Of the three heads-biased coin universes that have come into being, there are two where the coin shows heads, and one where it's tails.
+
+Of the three tails-biased universes, there's two where it's heads, and one where it's tails.
+
+And we notice that our coin came down heads. Where can we be?
+
+We are in one of the three universes where the coin came down heads.
+
+How many of those are also universes where we picked the tails biased coin? One.
+
+How many of them are also universes where we picked the heads biased coin? Two.
+
+What are the odds that we are in a heads-biased-coin universe? Two to one.
+
+Obviously this little story is nonsense, and yet it seems to catch the essence of both probability and inference. And it makes it very easy to think about.
+
+I've been using it for a few weeks now to think about probability. It hasn't led me astray yet. I think it might be isomorphic to the real theory, as long as you stick to rational numbers.
+
+Whatever the real theory is. I've never heard any description of probability that wasn't gibberish.
+So just because this one is gibberish too doesn't count against it as much as it might.
+
+I write it down only because I was just thinking about an urn with two white balls and one black ball, and drawing balls from it, and wondering what the histogram would look like. And this view seemed to make it pretty transparent what is going on, even though before there had only been fractions to multiply. 
+
+I mean don't get me wrong. I was taught to do all that 20 years ago, and I could do it then, and I haven't thought about it all since, but I can still derive the relevant proofs from first principles. Which shows me that I understood it at the time. One remembers that which one understands as if one had been born knowing it. That not understood, even if mastered, fades with the years.
+
+But I don't remember it being so blisteringly clear, and beautiful, and inevitable back in the day. Probability, let alone statistics, seemed a bit fiddly. And not too interesting. Now it all looks like one of the big secrets of the universe. Maybe it is just that I am getting old, and am a bit more easily impressed than I was once.
+
+The wellsprings of intuition in mathematics are secrets. I don't know why. Sometimes they are literally incommunicable. I don't know how I could show someone who doesn't know how to do it how to make animated pictures of mathematical concepts in my head, which is a skill that carried me effortlessly through the half of pure mathematics known as analysis. 
+
+But I could at least have told people that that was how you were supposed to do it. No one ever showed me. It was a habit I picked up by accident when I was very small, and I imagine I got better at it by practice. I remember with utter clarity a clever thing my mother made for me to help me understand fractions. That might have been the start of it. It might also be my earliest memory. I can't remember whether it was while I was at school, or before.
+
+I've no idea what the equivalent talent for the other half of pure maths (algebra) is. In all that time, no-one ever told me, and it never occurred to me to ask. Maybe it can't be put into words.
+
+Certainly recently I was playing around with permutations, and learned about the cycle notation for groups, and thought about them like that instead of how I'd been taught, where it's all rather abstract and beautiful, but where I have no intuition whatsoever. And it made more sense from that point of view.
+
+Maybe this classical many-worlds picture is one of the keys to thinking about probability.
+
+Lots of things seem obvious now. You meet a woman, and she says she has two children, and that one's called Arthur. What is the probability that both her children are boys?
+
+Look. When she gave birth, the universe split into two. When she had her second child it split again. There are four now. In one she's got two boys. In one she's got two girls. 
+
+You're not in the one where she's got two girls. You could be in any of the other three.
+
+That's supposed to be a paradoxical, counter-intuitive result, as I remember.
+
+You meet a woman with two children. One's a boy. What's the chance they both are? One in three.
+
+Most people guess a half. 
+
+I remember that that used to be the obvious answer. I'm not sure I can understand why now. 
+
+King Arthur was one of two children. What's the chance he had a sister?
+
+Actually I suspect subtleties here. But I know how to think about them now.
+
+
+
+
+
+
+
+
+
+
+
+Right until halfway into a PhD that I didn't find interesting. At that point the wellspring failed, and within twelve months of realising that it was gone I wasn't a mathematician any more. Part of the problem was that I'd never had to try at anything before, and I didn't know how to deal with anything that required effort.
+
+Would you believe that at the time I sat my finals, I still thought that practising exam questions was cheating. I thought it was vulgar. Like you were trying to fool the examiners into thinking you were cleverer than you were.
+
+I realized that I wasn't clever enough to bank on a first (I mean I still thought I'd get one, it's just that I'd realized there was a *chance* I wouldn't), so towards the end of my third year, I cheated a bit. But it was far too little too late, and it didn't help. I got the second I'd feared.
+
+This only confirmed me in my belief that it was silly to try. That nothing that had to be worked at was worth having. It was easy to maintain this belief. 
+
+Lots of people have to try very hard to get into university. They slog away at A-levels, ruining evenings and weekends that should be spent being young and happy. And when they crowbar their way in, somehow managing to convince an interviewer far cleverer than they are that the lights are on in their heads, they find that it's all ashes. For nothing. 
+
+For it gets harder once you're not at school. And the only strategy these people have is to work harder. But they already worked as hard as they could.
+
+They react predictably. They burn the candle at both ends for three years, and at the end of it they scrape seconds and thirds. Some, released from parental pressure, realize that the game isn't worth it and drop out, pretending they didn't care in the first place.
+
+I was terrified of being one of these people. I guess I still am.
+
+
+
+
+
