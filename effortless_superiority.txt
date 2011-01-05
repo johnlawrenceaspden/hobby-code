@@ -188,41 +188,41 @@ And it taught me that if you work at something intellectual, you get better at i
 
 Which I didn't believe for the first thirty years of my life. 
 
-I thought that you were born good at things. I thought if you weren't good at things, working hard at them was just a path to ruining your life with fruitless toil, to fail one level higher than you would have failed anyway.
+I thought that you were born good at things. I thought if you weren't good at things, working hard at them was just a path to ruining your life with fruitless toil, to fail one level higher than you would have failed anyway. To be honest, I still believe something like that, just not as extreme a version as I once did.
 
 
 Why would I not have believed this? You cannot move without people praising the special quality of genius. You cannot read without finding out that authors and poets and musicians have their works come to them fully formed. The special genius of my heroes, Feynman, Einstein, Newton, Conway is trumpeted from rooftops. You never hear that they lifted a finger apart from doing exactly what seemed most amusing to them at the time.
 
 And it had been absolutely true for me for twenty years. I'd been told over and over again that I needed to work harder. And every time I'd ignored the advice and turned out to be right.
 
-And when I was twenty one the 'problem of induction' hit me over the head with a whisky bottle during my final exams. And I was stone dead and I didn't even notice because twenty years of confirming evidence isn't overturned by a human being just like that.
+And when I was twenty one the 'problem of induction' hit me over the head with a whisky bottle during my final exams. And I was stone dead and I didn't even notice because twenty years of confirming evidence isn't overturned by a human mind just like that.
+
 
 And I've only just noticed.
-
 
 
 Recently, I was asked to teach a young friend enough maths to get him onto an engineering degree. I loved doing this. Sitting down and talking with him and taking him through trial problems and trying to work out where his mental blocks were and blowing them away was the best fun I've had in ages. And he's now doing his engineering degree, although he's going to screw it up by, ironically, spending so much time rowing really seriously that he'll be too tired to think about engineering.
 
 
-And I've been reading the collected works of the brilliant self-taught philosopher Eliezer Yudkowsky, who's built a whole philosophy and predicted the entire future of the human race convincingly using Bayes' Theorem, a trivial piece of arithmetic with profound implications.
+And I've been reading the collected works of the brilliant philosopher Eliezer Yudkowsky, who's built a whole philosophy and predicted the entire future of the human race convincingly using amongst other intellectual tools Bayes' Theorem, a trivial piece of arithmetic with profound implications.
 
 And I figured if I'm going to understand Eliezer Yudkowsky's thoughts I'd better understand Bayes' Theorem and its consequences as well as he does, which I'm still arrogant enough to think that I can do.
 
 
-And so from a combination of these effects, I've started doing mathematics, recreationally, for the first time in my life.
+And so from a combination of these effects, I've started doing mathematics, recreationally, for the first time in my life. And indeed mathematics at all, for the first time in about fifteen years.
 
 
 And it turns out I'm pretty damned good at it. I shouldn't be, because I'm forty years old now, and no one's as good at maths at forty as they were at twenty. But if my powers have declined I can't tell.
 
-I'm reading David MacKay's beautiful book Information Theory, Inference, and Learning Algorithms, and it's like reading a thriller. I've patiently worked through the examples in the first two or three chapters, even the ones that look boring, because I remember that the boring examples in SICP always turned out to teach unique and thrilling lessons.
+I'm reading David MacKay's beautiful book Information Theory, Inference, and Learning Algorithms, and it's like reading a thriller. I've patiently worked through the examples in the first two or three chapters, even the ones that look boring, because I remember that the boring looking examples in SICP always turned out to teach unique and thrilling lessons.
 
 I've sort of got my head round the introductions to Information Theory and Inference, and I think I already see why the Noisy-Channel Coding Theorem is going to turn out to be true in chapter 6 or wherever it is, and why it is also going to turn out to be of little practical value. And I can't wait to find out if I'm right.
 
 
 
-And this has brought back memories, and when I start remembering things these days I start writing, and all this has come out like a flood, and suddenly it occurs to me, because I promise you that the above is as true as human memory can make it, that I may actually have been as good as I once thought I was.
+And this has brought back memories, and when I start remembering things these days I start writing, and all this has come out like a flood, and suddenly it occurs to me, because I promise you that the above is as true as my fallible memory can make it, that I may actually have been as good as I once thought I was.
 
-And fuck the research angle and doctorates and names on interesting discoveries. I love teaching. And I'm good at it. And that's what I should have been doing with my life. Finding better ways to teach mathematics and computers to bright young people. I would have loved it. And I didn't do it. And it's too late now.
+And fuck the research angle and doctorates and names on interesting discoveries. I love teaching. And I'm good at it. And that's what I should have been doing with my life. Teaching mathematics and computers to bright young people. I would have loved it. And I didn't do it. And it's too late now.
 
 
 And I want to call bullshit on the idea of Effortless Superiority, which it now occurs to me I may have been the only human on the planet stupid enough to take seriously (6).
@@ -242,9 +242,9 @@ Footnotes
 
 Somehow, at around this same time, I was teaching myself Latin to O-level standard out of a book my father had left lying around where I could find it. Latin was interesting and useful, because you could read about the Roman Empire and other cool things in the Romans' own words. And you could see where lots of our words came from. And their poetry was better than ours.
 
-I've wondered if I'd have done modern languages for my degree if my school had managed to make living German and French anything like as interesting as Francis Kinchin Smith managed to make dead Latin and Greek in his two Teach Yourself ... books. Cheap self-help manuals that were doubtless intended by the publishers to be read only as far as the third chapter. From the love and care and scholarship and cleverness lavished on them I think Francis had higher goals for them. I wonder if he ever got fan mail. If I could go back and write it I would. What did a child know? I've just googled him. He died in 1958 apparently. Too early for him to have got my letter even if I had thought to write. Grand Le Feu. The fact that I can remember his name after 25 years tells you how much I liked those books.
+I've wondered if I'd have done modern languages for my degree if my school had managed to make living German and French anything like as interesting as Francis Kinchin Smith managed to make dead Latin and Greek in his two Teach Yourself ... books. Cheap self-help manuals that were doubtless intended by the publishers to be read only as far as the third chapter. From the love and care and scholarship and cleverness lavished on them I think Francis had higher goals for them. I wonder if he ever got fan mail? If I could go back and write it I would. What did a child know? I've just googled him. He died in 1958 apparently. Too early for him to have got my letter even if I had thought to write. The fact that I can remember his name after 28 years tells you how much I liked those books. I wish I'd had a chance to tell him.
 
-But the tedium of French and German was as nothing compared to the horror of Music and the calvary of Religious Education. 
+But the tedium of French and German was as nothing compared to the horror of Music and the Calvary of Religious Education. 
 
 How, how for the love of Christ did they manage to make Music boring to a human child?
 
@@ -268,9 +268,9 @@ I am as bleak an atheist as it is possible to be, and yet I often read the Gospe
 
 (6) I'm not whining for the sake of it, by the way. I've loved life, and I'd do the first forty years over again exactly the same way like a shot if I had the chance.
 
-But if you recognise yourself in the above, young person, for God's sake do the exercises in the textbooks, and practice exam questions. It's not cheating. It helps you understand. A lot.
+But if you recognise yourself in the above, young person, for God's sake do the exercises in the textbooks, and practise exam questions. It's not cheating. It helps you understand. A lot.
 
-If you do the exercises, and play with the examples, then you will find that your intuition, already powerful, starts to get brighter, and rather than finding as I did that as you go forwards, you start to run out of dry places to stand in the swamp, until eventually there's nowhere new to go, you'll find that as you grow the swamp recedes ahead of you faster than you can walk.
+If you do the exercises, and play with the examples, then you will find that your intuition, already powerful, starts to get brighter, and rather than finding as I did that as you go forward, you start to run out of dry places to stand in the swamp, until eventually there's nowhere new to go, you'll find that as you brighten the swamp recedes ahead of you faster than you can walk.
 
 On the other hand, if you find yourself working every hour God sends on something and you're not enjoying it for its own sake, give up. Nothing's worth that sort of life. I still think success probably comes fairly easily if you're any good. What I'm trying to warn against is pig-headedly not lifting a fucking finger to practise something you enjoy because you think that's something lesser beings have to do to make up for being lesser.
 
@@ -287,7 +287,7 @@ On the other hand, if you find yourself working every hour God sends on somethin
 
 
 
-Some bits of text from the essay I started writing before it turned into the above self indulgent whine.
+Some bits of text from the essay I started writing before it turned into the above whine.
 
 
 
