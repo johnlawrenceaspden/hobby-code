@@ -86,8 +86,11 @@
 (defn split-keyword [a] (map #(keyword (str %)) (drop 1 (str a))))
 
 
-(defn make-combination-encoder [code n] (fn [s] (encoder code (map #(apply combine-keywords %) (partition n s)))))
-(defn make-combination-decoder [code-tree] (fn [s] (mapcat split-keyword (decoder code-tree s))))
+(defn make-combination-encoder [code n]
+  (fn [s] (encoder code (map #(apply combine-keywords %) (partition n s)))))
+
+(defn make-combination-decoder [code-tree]
+  (fn [s] (mapcat split-keyword (decoder code-tree s))))
 
 (cost (make-combination-encoder code 2) (make-combination-decoder code-tree) (take 10000 unfair-stream)) ; £8460
 

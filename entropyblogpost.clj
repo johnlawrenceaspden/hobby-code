@@ -1,136 +1,138 @@
-;; Entropy and Huffman Coding
-
-;; What is the 'information content' of a random process?
-
-;; We might think about a Victorian bookmaker transmitting horse racing results
-;; over an expensive telegraph connection. A more modern example would be
-;; streaming files over an internet connection.
-
-;; To think about the essence of these things, let us choose very simple models
-;; for both the random process and the channel over which the message is to be
-;; sent.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Setting up a model problem
-
-;; Our communications channel will be a device over which we can transmit either
-;; 0 or 1, paying a cost of £1 for every symbol.
-
-;; Our random number generators will make arbitrary symbols from a known set,
-;; one a second, with simple integer odds.
-
-;; One example might produce the symbols A B and C, with A:B:C in a 2:1:1 ratio.
-
-;; Sample output from this particular random number generator might be
-;; BACAAAABCAACBCAACAAABAABCBAAACBC....
-
-;; And our challenge is to send a message down our channel that will allow our
-;; friend at the other end to reconstruct the random stream.
-
-;; We'd be interested in minimizing the cost, but not at the expense of accuracy.
-
-;; If the random number generator is someone repeatedly tossing a fair coin, then we can say:
-
-(def fair-coin {:H 1 :T 1})
+;; Here's the essential code from part I, which I'm not going to explain again:
 
 (defn random-stream [P]
   (let [pseq (vec (mapcat (fn[[k v]](repeat v k )) P))]
     (for [i (range)] (rand-nth pseq))))
 
-;; And if the fair coin were to come up with:
-
-(def coin-stream (random-stream fair-coin))
-
-(take 20 coin-stream) ; (:T :H :H :T :H :H :T :H :T :T :T :T :H :T :T :T :T :H :T :T)
-
-;; We might want to transmit them by sending 1 for tails and 0 for heads
-
-(defn coin-coder [sq] (map #(if (= % :T) 0 1) sq))
-
-(take 20 (coin-coder (random-stream fair-coin))) ; (1 0 0 1 0 0 0 0 1 0 0 1 0 0 1 1 1 0 1 0)
-
-;; Our friend on the other end, with whom we have agreed this scheme, might decode like this:
-
-(defn coin-decoder [sq] (map #(if (= % 0) :T :H) sq))
-
-(take 20 (coin-decoder (coin-coder coin-stream))) ; (:T :H :H :T :H :H :T :H :T :T :T :T :H :T :T :T :T :H :T :T)
-
-;; And finally, the world might judge our scheme thus:
-
 (defn cost [encoder decoder message]
   (let [coded (encoder message)]
     (if (= (decoder coded) message) (count coded) :fail)))
 
-(cost coin-coder coin-decoder (take 200000 coin-stream)) ; £200000
+(def unfair-pairs {:HH 9, :HT 3, :TH 3, :TT 1})
 
-;; Under this scheme, our message gets through accurately, and we have spent £200000 to transmit 200000 symbols.
+;; We're trying to transit the output of the random process represented by:
 
-;; If anyone can think of a better encoding scheme, please let me know. Until I
-;; see a counter-example, I'll take the information content of a fair coin under
-;; these conditions to be £1/symbol.
+(def stream (random-stream unfair-pairs))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; A 'less random' random generator
+(take 20 stream) ;(:HH :HH :HH :HH :HH :HH :HH :HH :HT :HH :HH :TH :HH :HH :HH :TT :HH :HH :HT :HT)
+
+;; And we're using the code HH -> 1, HT ->01 TH->001, TT-> 000
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Our code seems to have something of a tree structure
+
+;; 1-> :HH
+;; 0-> 1 -> :HT
+;;     0 -> 1 -> :TH
+;;          0 -> :TT
+
+
+;; Let's see if we can find some way of expressing that, so that we don't have to hand-code a decoder
+;; for every different code.
+
+(def code-tree [ :HH [ :HT [ :TH :TT]]])
+
+(defn decoder
+  ([code-tree stream] (decoder code-tree code-tree stream))
+  ([current-code-tree code-tree stream]
+     (lazy-seq
+        (if (keyword? current-code-tree)
+          (cons current-code-tree (decoder code-tree code-tree stream))
+          (if-let [stream (seq stream)]
+            (if (= (first stream) 1)
+              (decoder (first current-code-tree)  code-tree (rest stream))
+              (decoder (second current-code-tree) code-tree (rest stream))))))))
+
+(decoder code-tree '(0 1 1 0 1 0 1 1 0 0 0)) ;(:HT :HH :HT :HT :HH :TT)
+  
+;; A general encoder, by comparison, is fairly straightforward:
+
+(def code {:HH '(1) :HT '(0 1) :TH '(0 0 1) :TT '(0 0 0)})
+
+(defn encoder [code stream]
+  (mapcat code stream))
+
+(take 20 (encoder code stream)) ;(1 1 1 1 1 1 1 1 0 1 1 1 0 0 1 1 1 1 0 0)
+
+;; Trying the two together:
+
+(take 20  (decoder code-tree (encoder code stream))) ;(:HH :HH :HH :HH :HH :HH :HH :HH :HT :HH :HH :TH :HH :HH :HH :TT :HH :HH :HT :HT)
+
+;; And finally:
+
+(defn make-encoder [code]  (fn [s] (encoder code s)))
+(defn make-decoder [code-tree] (fn[s] (decoder code-tree s)))
+
+(cost (make-encoder code) (make-decoder code-tree) (take 10000 stream)) ; £16992
+
+;; It costs us £16992 to send 10000 symbols.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; We can use our code to send the output from the original biased coin very easily
 
 (def unfair-coin {:H 3 :T 1})
 
 (def unfair-stream (random-stream unfair-coin))
 
-(take 20 unfair-stream) ; (:T :H :H :T :H :H :H :H :H :H :H :H :H :H :T :H :H :H :H :H)
+(take 20 unfair-stream) ; (:H :H :H :H :H :H :T :H :H :H :H :H :H :H :T :H :H :H :H :T)
 
-;; It seems as though there might be less information in the unfair coin tosses.
+(defn combine-keywords [& a] (keyword (apply str (mapcat #(drop 1 (str %)) a))))
+(defn split-keyword [a] (map #(keyword (str %)) (drop 1 (str a))))
 
-;; Why do I say this?
 
-;; Well, memory is a kind of channel. You put something in, and later you get
-;; something out, and it costs you something to hold the memory.
+(defn make-combination-encoder [code n] (fn [s] (encoder code (map #(apply combine-keywords %) (partition n s)))))
+(defn make-combination-decoder [code-tree] (fn [s] (mapcat split-keyword (decoder code-tree s))))
 
-;; And the 20 tosses of the unfair coin above seem easier to remember than 20
-;; tosses of the fair coin would be.
+(cost (make-combination-encoder code 2) (make-combination-decoder code-tree) (take 10000 unfair-stream)) ; £8460
 
-;; It's quite hard to make this intuition precise, though. After all, all HT sequences are still possible.
-;; But it does seem as though, on average, we should be able to send these sorts of streams through our
-;; channel for less cost than the fair coin streams, ON AVERAGE.
+;; So our method of coding for {:HH 9, :HT 3, :TH 3, :TT 1} has given us a method of coding for {:H 3, :T 1}
+;; which is 16% more efficient than the obvious one.
 
-;; To think about how that might work, let's consider what the stream above looks like when split into pairs.
+;; What if we try it on the output from the fair coin?
 
-(take 20 (partition 2 unfair-stream)) ;;((:T :H) (:H :T) (:H :H) (:H :H) (:H :H) (:H :H) (:H :H) (:T :H) (:H :H) (:H :H) (:T :H) (:H :H) (:H :H) (:T :H) (:H :H) (:T :H) (:H :T) (:T :H) (:T :H) (:T :H))
+(def fair-stream (random-stream {:H 1 :T 1}))
 
-(frequencies (take 16000 (partition 2 unfair-stream)))
-;; {(:T :H) 2981, (:H :T) 3083, (:H :H) 8964, (:T :T) 972}
+(cost (make-combination-encoder code 2) (make-combination-decoder code-tree) (take 10000 fair-stream)) ; £ 11257
 
-;; Because the frequencies of the underlying coin are distorted 3:1, the
-;; frequencies of the pairs are even more distorted, it looks like 1:3:3:9
+;; Using this code on the output from an unbiased coin actually makes it more expensive to transmit!
 
-;; A little bird is telling me that the next random number generator we try to code should be
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def unfair-pairs {:HH 9, :HT 3, :TH 3, :TT 1})
+;; To recap:
 
-(def unfair-pair-stream (random-stream unfair-pairs))
+;; We can transmit the output from a series of coin tosses, or other random
+;; processes, down a binary channel, if we choose a code.
 
-(take 15 unfair-pair-stream ) ; (:HH :HH :HH :HH :TT :HH :TT :HT :TH :HT :HH :HT :TH :HT :HH)
+;; The code can be trivial, like :H -> 0 :T -> 1,
+;; or it can be complex, like :HH -> 1, :HT -> 01, :TH ->001, :TT -> 000
 
-;; How might we go about endcoding this to send through our channel?
+;; Different codes can result in different costs of transmission for the outputs
+;; of different processes
 
-;; If we do it the obvious way:
+;; So far, we've seen costs of £1/symbol for the fair coin with the trivial code
+;; or £1.12/symbol with the more complex code
 
-(defn pair-coder [sq] (mapcat #(case % :HH '(0 0) :HT '(0 1) :TH '(1 0) :TT '(1 1)) sq))
+;; And we've seen costs of £1/symbol and £0.84/symbol for the unfair coin with
+;; the trivial and complex code respectively.
 
-(take 20 (pair-coder unfair-pair-stream)) ; (0 0 0 0 0 0 0 0 1 1 0 0 1 1 0 1 1 0 0 1)
+;; It seems that choosing the right code can make transmission cheaper, and
+;; choosing the wrong code can make it more expensive.
 
-(defn pair-decoder [sq] (map #(case % '(0 0) :HH '(0 1) :HT '(1 0) :TH '(1 1) :TT) (partition 2 sq)))
 
-(take 20 (pair-decoder (pair-coder unfair-pair-stream))) ; (:HH :HH :HH :HH :TT :HH :TT :HT :TH :HT :HH :HT :TH :HT :HH :HH :HH :HH :HH :HH)
 
-(cost pair-coder pair-decoder (take 200000 unfair-pair-stream)) ; £400000
 
-;; Then we can see that it costs £2 per symbol to transmit the data now, which
-;; sounds about right, since we made each symbol out of a pair of the previous
-;; symbols, so we could use them as a cheaper transmission method if they cost
-;; any less.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Sneaking more data down the telegraph
+
+
+
+
+
+
+
+
+
 
 
 
