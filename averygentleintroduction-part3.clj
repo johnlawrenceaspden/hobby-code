@@ -57,7 +57,7 @@
 ;; We found that
 
 (defn estimate-cost [P encoder decoder]
-  (let [n 10000
+  (let [n 100000
         c (cost encoder decoder (take n (random-stream P)))]
     (if (number? c) (float (/ c n)) c)))
 
@@ -68,15 +68,15 @@
 
 ;; But that we could come up with a code for pairs of coin tosses
 ;; which did substantially better for pairs of unfair coin tosses
-(estimate-cost unfair-pairs (make-encoder unfair-code) (make-decoder unfair-code-tree)) ; 1.6928
+(estimate-cost unfair-pairs (make-encoder unfair-code) (make-decoder unfair-code-tree)) ; 1.68338
 ;; but substantially worse for pairs of fair coin tosses
-(estimate-cost fair-pairs   (make-encoder unfair-code) (make-decoder unfair-code-tree)) ; 2.2549
+(estimate-cost fair-pairs   (make-encoder unfair-code) (make-decoder unfair-code-tree)) ; 2.24722
 ;; remember that that's the transmission cost per symbol, and that each symbol represents two coin tosses
 
 ;; In case you think there's any sleight of hand going on there, here's how we'd use the pairs code to transmit
 ;; the original unpaired streams
-(estimate-cost unfair-coin  (make-combination-encoder unfair-code 2) (make-combination-decoder unfair-code-tree)) ; 0.8508
-(estimate-cost fair-coin    (make-combination-encoder unfair-code 2) (make-combination-decoder unfair-code-tree)) ; 1.1255
+(estimate-cost unfair-coin  (make-combination-encoder unfair-code 2) (make-combination-decoder unfair-code-tree)) ; 0.84561
+(estimate-cost fair-coin    (make-combination-encoder unfair-code 2) (make-combination-decoder unfair-code-tree)) ; 1.12407
 ;; Notice that the costs here are per-toss, showing that the unfair code is actually an improvement 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,8 +122,8 @@
 ;; At the end, we get a sort of nested binary probability distribution
 ;; You could think of this as being a way to generate the triples by tossing strangely biased coins!
 
-;; From that, we can generated our code tree directly by just throwing away the numbers
-
+;; From that, we can generate our code tree directly by just throwing away the numbers
+(require 'clojure.walk)
 (defn make-code-tree [P]
   (clojure.walk/postwalk #(if (map? %) (into[] (map first  %)) %)
                          (nth (iterate huffman-combine P) (dec (dec (count P))))))
@@ -145,10 +145,31 @@
 ;; {:HHT (0 0 0), :HTH (0 0 1), :THH (0 1 0), :TTT (0 1 1 0 0), :HTT (0 1 1 0 1), :THT (0 1 1 1 0), :TTH (0 1 1 1 1), :HHH (1)}
 
 ;; Let's see how this does
-(estimate-cost unfair-triples (make-encoder triple-code) (make-decoder triple-code-tree)) ;; 2.4728
+(estimate-cost unfair-triples (make-encoder triple-code) (make-decoder triple-code-tree)) ; 2.4615
 
-;; £2.47 per symbol, or 0.8242666666666666
+;; £2.46 per symbol, or 0.82p per toss
 
+;; So while going from single tosses to pairs allowed us to go from 1->0.85, going from pairs to triples only allowed us to get from 0.85->0.82.
 
+;; Is there an end to this process?
 
+(defn bit-rate [P n]
+  (let [Pn (apply combine-distributions (repeat n P))
+        tree (make-code-tree Pn)]
+    (/ (estimate-cost Pn (make-encoder (make-code tree)) (make-decoder tree)) n)))
 
+(bit-rate unfair-coin 1) ; 1.0
+(bit-rate unfair-coin 2) ; 0.844435
+(bit-rate unfair-coin 3) ; 0.82466
+(bit-rate unfair-coin 4) ; 0.8196275
+(bit-rate unfair-coin 5) ; 0.818912
+(bit-rate unfair-coin 6) ; 0.81896996
+(bit-rate unfair-coin 7) ; 0.8166514
+(bit-rate unfair-coin 8) ; 0.815995
+(bit-rate unfair-coin 9) ; 0.81352335
+(bit-rate unfair-coin 10) ; 0.81462896
+(bit-rate unfair-coin 11) ; 0.8137691
+
+;; To me, this is at least suggestive that there might be something fundamental
+;; about a cost of 82p to transmit the result of a 3:1 random result over a
+;; binary channel.
