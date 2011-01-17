@@ -6,10 +6,6 @@
 
 ;; Probability distributions
 
-(defn random-stream [P]
-  (let [pseq (vec (mapcat (fn[[k v]](repeat v k )) P))]
-    (for [i (range)] (rand-nth pseq))))
-
 (defn combine-keywords [& a] (keyword (apply str (mapcat #(drop 1 (str %)) a))))
 (defn split-keyword [a] (map #(keyword (str %)) (drop 1 (str a))))
 
@@ -40,17 +36,7 @@
 (defn make-encoder [code]  (fn [s] (encoder code s)))
 (defn make-decoder [code-tree] (fn[s] (decoder code-tree s)))
 
-;; Generating Huffman codes for probability distributions
-
-(defn huffman-combine [P]
-  (let [plist (sort-by second P)
-        newelement (into {} (take 2 plist))]
-    (into {} (cons [newelement (reduce + (vals newelement))] (drop 2 plist)))))
-
-(require 'clojure.walk)
-(defn make-code-tree [P]
-  (clojure.walk/postwalk #(if (map? %) (into[] (map first  %)) %)
-                         (nth (iterate huffman-combine P) (dec (dec (count P))))))
+;; Huffman encoding
 
 (defn symbols [prefix code-tree]
   (if (keyword? code-tree) (list prefix code-tree)
@@ -60,11 +46,28 @@
 (defn make-code [code-tree]
   (into {} (map (fn[[c s]][s (reverse c)]) (partition 2 (symbols '() code-tree)))))
 
-;; Send a message, verify that it gets decoded correctly, report the cost or :fail
+;; The original make-code-tree was very slow, because it re-sorts the list every
+;; iteration. We can speed it up considerably by using a priority queue instead
+;; of sorting the list every iteration. Clojure doesn't have one built in, so
+;; here's a poor man's version built out of a sorted map of lists.
 
-(defn cost [encoder decoder message]
-  (let [coded (encoder message)]
-    (if (= (decoder coded) message) (count coded) :fail)))
+(defn madd [m [k p]] (assoc m p (cons k (m p))))
+
+(defn mpop [m]
+  (let [[k vlist] (first m)]
+    [k (first vlist)
+    (if (empty? (rest vlist))
+      (dissoc m k)
+      (assoc m k (rest vlist)))]))
+
+(defn mcombine [m]
+  (let [[pa a pop1] (mpop m)
+        [pb b pop2] (mpop pop1)]
+    (madd pop2 [[a b] (+ pa pb)])))
+
+(defn make-code-tree [P]
+  (second (mpop
+          (nth (iterate mcombine (reduce madd (sorted-map) P)) (dec (count P))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -78,16 +81,12 @@
 
 ;; We don't need to estimate the cost of a code by generating a long random stream and transmitting it.
 
-;; Given a probability distribution and a code, we can just calculate the average cost:
+;; Given a probability distribution and a code, we can just calculate the expected cost:
 
-;; A distribution, e.g. unfair-triples:
-{:HHH 27, :HHT 9, :HTH 9, :HTT 3, :THH 9, :THT 3, :TTH 3, :TTT 1}
-;; And a code: e.g. triple-code
-'{:HHT (1 1 1), :HTH (1 1 0), :THH (1 0 1), :TTT (1 0 0 1 1), :HTT (1 0 0 1 0), :THT (1 0 0 0 1), :TTH (1 0 0 0 0), :HHH (0)}
-
-;; Give us, as long as the code can encode every possible output of the distribution, a distribution of transmitted codes:
+;; We make a distribution over the transmitted symbols
 (defn code-distribution [P code]  (for [s (keys P)] [(P s) (code s)]))
 
+;; e.g.
 (code-distribution unfair-triples triple-code)
 ;;([27 (0)] [9 (1 1 1)] [9 (1 1 0)] [3 (1 0 0 1 0)] [9 (1 0 1)] [3 (1 0 0 0 1)] [3 (1 0 0 0 0)] [1 (1 0 0 1 1)])
 
@@ -106,7 +105,7 @@
 
 (defn cost-for-n-code [ P n ]
      (let [Pn (apply combine-distributions (repeat n P))
-           code (make-code (make-code-tree Pn))]
+           code (make-code (fast-make-code-tree Pn))]
        (float (/ (expected-code-length Pn code) n))))
 
 (cost-for-n-code unfair-coin 1) ; 1.0
@@ -120,67 +119,28 @@
 (cost-for-n-code unfair-coin 9) ; 0.81493336
 (cost-for-n-code unfair-coin 10) ; 0.8141917
 (cost-for-n-code unfair-coin 11) ; 0.8137328
+(cost-for-n-code unfair-coin 12) ; 0.81351095
+(cost-for-n-code unfair-coin 13) ; 0.81351334
+(cost-for-n-code unfair-coin 14) ; 0.8134368
+(cost-for-n-code unfair-coin 15) ; 0.8132458
+(cost-for-n-code unfair-coin 16) ; 0.8131608
 
-;; It looks like something is converging. 
+
+;; It looks like something is converging, although the convergence isn't monotonic. 
 ;; I'm now revising my estimate of the cost of sending the results of a 1:3 process to be about 0.813
 
-;; But we don't know whether that's the limit of the coding process, or a quality of the 1:3 distribution,
+;; But we don't know whether that's the limit of the coding process, or a property of the 1:3 distribution,
 ;; or whether it's in some way specific to transmitting over a binary channel.
 
 ;; Let's look at some other distributions.
 
-;; But first, make-code-tree is rather slow
-(defn huffman-combine [P]
-  (let [plist (sort-by second P)
-        newelement (into {} (take 2 plist))]
-    (into {} (cons [newelement (reduce + (vals newelement))] (drop 2 plist)))))
+;; For the fair coin distribution, huffman coding triples doesn't help at all.
+(cost-for-n-code fair-coin 1) ; 1.0
+(cost-for-n-code fair-coin 2) ; 1.0
+(cost-for-n-code fair-coin 3) ; 1.0
+(cost-for-n-code fair-coin 4) ; 1.0
 
-(require 'clojure.walk)
-(defn make-code-tree [P]
-  (clojure.walk/postwalk #(if (map? %) (into[] (map first  %)) %)
-                         (nth (iterate huffman-combine P) (dec (dec (count P))))))
-
-;; And it's obvious why. The size of the distribution to be partitioned is
-;; doubling, every time, which there's no avoiding, but for a size n
-;; distribution, the huffman-combine function is run (n-2) times, and its
-;; algorithm is to sort the distribution, then add a new element, then turn it
-;; back into a hash-map. Any of those steps might itself be order n, so we're
-;; squaring a number that's growing exponentially.
-
-;; The proper data structure to use when you just want the two smallest values
-;; from a list is called a priority queue, or heap. I don't think clojure's got
-;; one, so we'll see what we can do with a simple sorted list, which might be a
-;; little slower but still an improvement.
-(map float (map / '(0.3 5 3 19 48 121 213 495 1325 3470 8817) '(1 2 4 8 16 32 64 128 256 512 1024)))
-;; actually it's really not that good. Wonder what's going on here.
-(map float (map / '(0.3 0.7 1.46 8.92 19.93 62 115 426 1763 7482) '(1 2 4 8 16 32 64 128 256 512 1024)))
-
-(def a (combine-distributions sextet sextet sextet sextet sextet))
-
-(defn priority-compare [a b]
-  (if (= (first a) (first b))
-    (.compareTo (str (second a)) (str (second b)))
-    (< (first a) (first b))))
-
-(def b (apply sorted-set-by priority-compare (map vec (map reverse a))))
-
-(defn huffman-combine-sorted-set[s]
-  (let [[a b :as c] (take 2 s)
-        d (disj s a)
-        e (disj d b)]
-    (conj e [ (reduce + (map first c)) (vec (map second c)) ])))
-    
-(defn fast-make-code-tree [P]
-  (let [b (apply sorted-set-by priority-compare (map vec (map reverse P)))
-        tree (nth (iterate huffman-combine-sorted-set b) (dec (count b)))]
-    (second (first (vec tree)))))
-
-(fast-make-code-tree (apply combine-distributions (repeat 1 sextet)))
-        
- 
-
-
-
+;; But for an even choice between three things, it does:
 (def triad {:A 1 :B 1 :C 1})
 
 (cost-for-n-code triad 1) ; 1.6666666
@@ -189,22 +149,32 @@
 (cost-for-n-code triad 4) ; 1.6049383
 (cost-for-n-code triad 5) ; 1.5893004
 (cost-for-n-code triad 6) ; 1.5992227
+(cost-for-n-code triad 7) ; 1.5895878
+(cost-for-n-code triad 8) ; 1.5939262
+(cost-for-n-code triad 9) ; 1.5928015
 
+
+;; For a choice between four things, it makes no difference
 (def quad {:A 1 :B 1 :C 1 :D 1})
 
 (cost-for-n-code quad 1) ; 2.0
 (cost-for-n-code quad 2) ; 2.0
 (cost-for-n-code quad 3) ; 2.0
 (cost-for-n-code quad 4) ; 2.0
-2.5893004(cost-for-n-code quad 5) ; 2.0
+(cost-for-n-code quad 5) ; 2.0
 
+;; For five it's a good thing to do
 (def quint {:A 1 :B 1 :C 1 :D 1 :E 1})
 
 (cost-for-n-code quint 1) ; 2.4
 (cost-for-n-code quint 2) ; 2.36
 (cost-for-n-code quint 3) ; 2.3253334
 (cost-for-n-code quint 4) ; 2.3404
+(cost-for-n-code quint 5) ; 2.337856
+(cost-for-n-code quint 6) ; 2.3252373
 
+
+;; And again, for the next power of two, no difference.
 (def octet {:A 1 :B 1 :C 1 :D 1 :E 1 :F 1 :G 1 :H 1})
 
 (cost-for-n-code octet 1) ; 3.0
@@ -221,6 +191,7 @@
 
 (map bits (range 2 10)) ; (1.0 1.5849625007211563 2.0 2.321928094887362 2.584962500721156 2.807354922057604 3.0 3.1699250014423126)
 
+;; So let's make a prediction
 (def sextet {:A 1 :B 1 :C 1 :D 1 :E 1 :F 1})
 (bits 6) ;; 2.584962500721156
 
@@ -228,9 +199,10 @@
 (cost-for-n-code sextet 2) ; 2.6111112
 (cost-for-n-code sextet 3) ; 2.6049383
 (cost-for-n-code sextet 4) ; 2.6049383
-(cost-for-n-code sextet 5) ; 
+(cost-for-n-code sextet 5) ; 2.5893004
+(cost-for-n-code sextet 6) ; 2.5992227
 
-
-;; It looks as though the 
+;; It looks as though the cost of coding an even distribution using huffman
+;; encoding of runs is pretty close to being the logarithm (to base 2) of the number of symbols.
 
 
