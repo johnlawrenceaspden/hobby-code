@@ -7,7 +7,6 @@
 ;; Probability distributions
 
 (defn combine-keywords [& a] (keyword (apply str (mapcat #(drop 1 (str %)) a))))
-(defn split-keyword [a] (map #(keyword (str %)) (drop 1 (str a))))
 
 (defn combine-distributions
   ([P] P)
@@ -46,7 +45,7 @@
 (defn make-code [code-tree]
   (into {} (map (fn[[c s]][s (reverse c)]) (partition 2 (symbols '() code-tree)))))
 
-;; The original make-code-tree was very slow, because it re-sorts the list every
+;; The original make-code-tree was very slow, because it re-sorted the list every
 ;; iteration. We can speed it up considerably by using a priority queue instead
 ;; of sorting the list every iteration. Clojure doesn't have one built in, so
 ;; here's a poor man's version built out of a sorted map of lists.
@@ -105,7 +104,7 @@
 
 (defn cost-for-n-code [ P n ]
      (let [Pn (apply combine-distributions (repeat n P))
-           code (make-code (fast-make-code-tree Pn))]
+           code (make-code (make-code-tree Pn))]
        (float (/ (expected-code-length Pn code) n))))
 
 (cost-for-n-code unfair-coin 1) ; 1.0
@@ -120,11 +119,6 @@
 (cost-for-n-code unfair-coin 10) ; 0.8141917
 (cost-for-n-code unfair-coin 11) ; 0.8137328
 (cost-for-n-code unfair-coin 12) ; 0.81351095
-(cost-for-n-code unfair-coin 13) ; 0.81351334
-(cost-for-n-code unfair-coin 14) ; 0.8134368
-(cost-for-n-code unfair-coin 15) ; 0.8132458
-(cost-for-n-code unfair-coin 16) ; 0.8131608
-
 
 ;; It looks like something is converging, although the convergence isn't monotonic. 
 ;; I'm now revising my estimate of the cost of sending the results of a 1:3 process to be about 0.813
@@ -151,7 +145,7 @@
 (cost-for-n-code triad 6) ; 1.5992227
 (cost-for-n-code triad 7) ; 1.5895878
 (cost-for-n-code triad 8) ; 1.5939262
-(cost-for-n-code triad 9) ; 1.5928015
+
 
 
 ;; For a choice between four things, it makes no difference
@@ -181,7 +175,6 @@
 (cost-for-n-code octet 2) ; 3.0
 (cost-for-n-code octet 3) ; 3.0
 
-
 ;; I think that we might have guessed that it would take three bits to decide between
 ;; eight equally likely things, and two bits for four things, but what about the other numbers?
 
@@ -193,7 +186,7 @@
 
 ;; So let's make a prediction
 (def sextet {:A 1 :B 1 :C 1 :D 1 :E 1 :F 1})
-(bits 6) ;; 2.584962500721156
+(bits 6) ; 2.584962500721156
 
 (cost-for-n-code sextet 1) ; 2.6666667
 (cost-for-n-code sextet 2) ; 2.6111112
@@ -201,6 +194,7 @@
 (cost-for-n-code sextet 4) ; 2.6049383
 (cost-for-n-code sextet 5) ; 2.5893004
 (cost-for-n-code sextet 6) ; 2.5992227
+
 
 ;; It looks as though the cost of coding an even distribution using huffman
 ;; encoding of runs is pretty close to being the logarithm (to base 2) of the number of symbols.
