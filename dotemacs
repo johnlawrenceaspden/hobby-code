@@ -8,7 +8,6 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
-
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
 (color-theme-initialize)
@@ -220,7 +219,7 @@
           (lambda () (highlight-parentheses-mode t)))
 
 ;; change assignment operator shortcut in ESS
-(ess-toggle-underscore nil)
+;; (ess-toggle-underscore nil)
 
 
     (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
