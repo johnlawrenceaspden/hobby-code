@@ -17,8 +17,10 @@
 (take-while-unstable (iterate collatz 100)) ; (100 76 58 88 34 52 40 16 4)
 
 ;; You can see how it works here:
+(require 'clojure.contrib.trace)
+
 (binding  [*print-length* 20] ; taking care not to look at the medusa
-  (cct/dotrace (take-while-unstable) (take-while-unstable (iterate collatz 100))))
+  (clojure.contrib.trace/dotrace (take-while-unstable) (take-while-unstable (iterate collatz 100))))
 
 ;; TRACE t15884: (take-while-unstable (100 76 58 88 34 52 40 16 4 4 4 4 4 4 4 4 4 4 4 4 ...))
 ;; TRACE t15885: |    (take-while-unstable (76 58 88 34 52 40 16 4 4 4 4 4 4 4 4 4 4 4 4 4 ...) 100)
