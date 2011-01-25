@@ -1,7 +1,5 @@
 ;; K-means
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; K-means is a Clustering Algorithm.
 
 ;; We use it when we have some data, and we want to split the data into separate categories.
@@ -27,8 +25,6 @@
 ;; Theoretically, this process could continue further, extracting 'natural
 ;; categories' from the observed structure of the data.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Let's consider a very simple clustering situation. We have some numbers,
 ;; and we'd like to see if they form groups.
 
@@ -39,6 +35,10 @@
 ;; It's easy enough to say how far one number is from another
 (defn distance[a b] = (if (< a b) (- b a) (- a b)))
 
+(distance 0 10)                         ; 10
+(distance 5 -2)                         ; 7
+
+
 ;; To do K-means, we need to start with some guesses about where the clusters are.
 ;; They don't have to be terribly good guesses.
 (def guessed-means '(0 10))
@@ -47,7 +47,12 @@
 (defn closest [point means distance]
   (first (sort-by #(distance % point) means)))
 
-;; In our little dataset, 2 is closest to the guess of 0, and 100 is closest to the guess of 10
+;; (defn closest [point means distance]
+;;   (second (first (sort-by first (for [m means] [(distance point m) m])))))
+
+
+
+;; From our actual data, 2 is closest to the guess of 0, and 100 is closest to the guess of 10
 (closest 2   guessed-means distance) ; 0
 (closest 100 guessed-means distance) ; 10
 
@@ -63,7 +68,7 @@
 
 (average 6 10 11 100 101 102) ; 55
 
-;; So we can take the average of each group, and use it as a new guess for
+;; So now we can take the average of each group, and use it as a new guess for
 ;; where the clusters are.
 (defn new-means [average point-groups]
   (for [[m pts] point-groups]
@@ -107,7 +112,7 @@
                                         ; (([2 3 5] [6 10 11 100 101 102])
                                         ;  ([2 3 5 6 10 11] [100 101 102]))
 
-;; Shows that our first guesses group 2,3 and 5 (nearer to 0 than 10) vs all the rest.
+;; Shows that our first guesses group 2,3,and 5 (nearer to 0 than 10) vs all the rest.
 ;; K-means modifies that instantly to separate out the large group of three.
 
 (defn k-groups [data distance average]
@@ -131,6 +136,28 @@
 
 ;; We have to be careful not to start off with too many means, or we just get our data back:
 (grouper (range 200)) ; (([2] [3] [100] [5] [101] [6] [102] [10] [11]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+  
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Nothing we said above limits us to only having two guesses
+(iterate (iterate-means data distance average) '(1 5 10)) ; ((1 5 10) (5/2 11/2 324/5) (5/2 8 101) (10/3 9 101) (4 21/2 101) (4 21/2 101)
+(vals (point-groups '(4 21/2 101) data distance)) ;; ([2 3 5 6] [10 11] [100 101 102])
+
+;; Notice how trial means get thrown away if they don't best explain any point.
+(iterate (iterate-means data distance average) '(0 1 2 3 4)) ; ((0 1 2 3 4) (2 3 335/7) (2 7 101) (5/2 8 101) (10/3 9 101) (4 21/2 101) ..
+(vals (point-groups '(4 21/2 101) data distance)) ;; ([2 3 5 6] [10 11] [100 101 102])
+
+;; We have to be careful not to start off with too many means, or we just get our data back:
+(iterate (iterate-means data distance average) (range 10)) ; ((0 1 2 3 4 5 6 7 8 9) (2 3 5 6 324/5) (2 3 5 9 101) (2 3 11/2 21/2 101) (2 3 11/2 21/2 101) ....
+(vals (point-groups '(2 3 11/2 21/2 101) data distance)) ; ([2] [3] [5 6] [10 11] [100 101 102])
+
+;; But even here, because means have been thrown away, we don't just get a cluster for every point.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
