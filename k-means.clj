@@ -65,17 +65,24 @@
 
 ;; So we can take the average of each group, and use it as a new guess for
 ;; where the clusters are.
-(defn new-means [average point-groups]
-  (for [[m pts] point-groups]
-    (apply average pts)))
 
-(new-means average (point-groups guessed-means data distance)) ; (10/3 55)
+;; (defn new-means [average point-groups]
+;;   (for [[m pts] point-groups]
+;;     (apply average pts)))
+
+
+(defn new-means [average point-groups old-means]
+  (for [o old-means]
+    (if (contains? point-groups o)
+      (apply average (get point-groups o)) o)))
+
+(new-means average (point-groups guessed-means data distance) guessed-means) ; (10/3 55)
 
 ;; So if we know we've got a particular set of points, and a particular idea of
 ;; distance, and a way of averaging things, that gives us a way of making a new
 ;; list of guesses from our original list of guesses
 (defn iterate-means [data distance average]
-  (fn [means] (new-means average (point-groups means data distance))))
+  (fn [means] (new-means average (point-groups means data distance) means)))
 
 ((iterate-means data distance average) '(0 10)) ; (10/3 55)
 
@@ -118,25 +125,41 @@
 
 (def grouper (k-groups data distance average))
 
-(grouper '(0 10)) ;; (([2 3 5] [6 10 11 100 101 102]) ([2 3 5 6 10 11] [100 101 102]))
+(grouper '(0 10))
+                                        ; (([2 3 5] [6 10 11 100 101 102])
+                                        ;  ([2 3 5 6 10 11] [100 101 102]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Nothing we said above limits us to only having two guesses
-(grouper '(1 5 10)) ; (([2 3] [5 6] [10 11 100 101 102]) ([2 3] [5 6 10 11] [100 101 102]) ([2 3 5] [6 10 11] [100 101 102]) ([2 3 5 6] [10 11] [100 101 102]))
+(grouper '(1 2 3))
+                                        ; (([2] [3 5 6 10 11 100 101 102])
+                                        ;  ([2 3 5 6 10 11] [100 101 102])
+                                        ;  ([2 3] [5 6 10 11] [100 101 102])
+                                        ;  ([2 3 5] [6 10 11] [100 101 102])
+                                        ;  ([2 3 5 6] [10 11] [100 101 102]))
 
-;; Notice how trial means get thrown away if they don't best explain any point.
-(grouper '(0 1 2 3 4)) ; (([2] [3] [5 6 10 11 100 101 102]) ([2] [3 5 6 10 11] [100 101 102]) ([2 3] [5 6 10 11] [100 101 102]) ([2 3 5] [6 10 11] [100 101 102]) ([2 3 5 6] [10 11] [100 101 102]))
+
+;; The more means we start with, the more detailed our clustering.
+(grouper '(0 1 2 3 4))
+                                        ; (([2] [3] [5 6 10 11 100 101 102])
+                                        ;  ([2] [3 5 6 10 11] [100 101 102])
+                                        ;  ([2 3] [5 6 10 11] [100 101 102])
+                                        ;  ([2 3 5] [6 10 11] [100 101 102])
+                                        ;  ([2] [3 5 6] [10 11] [100 101 102])
+                                        ;  ([2 3] [5 6] [10 11] [100 101 102]))
 
 ;; We have to be careful not to start off with too many means, or we just get our data back:
 (grouper (range 200)) ; (([2] [3] [100] [5] [101] [6] [102] [10] [11]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; In fact, nothing we said above depends on our inputs being numbers
 
 ;; Similarly, nothing limited us to numbers. We can use anything where we can define a distance, and a method of averaging:
 
-;; One of the easiest things to do this for would be vectors
+;; One of the easiest things to do this for would be vectors of numbers
 
 (defn vec-distance [a b] (reduce + (map #(* % %) (map - a b))))
 (defn vec-average  [& l]  (map #(/ % (count l)) (apply map + l)))
@@ -144,64 +167,78 @@
 (vec-distance [1 2 3][5 6 7]) ; 48
 (vec-average  [1 2 3][5 6 7]) ; (3 4 5)
 
+(def vector-data '( [1 2 3] [3 2 1] [100 200 300] [300 200 100] [50 50 50]))
 
-;; But we can be a little more ambitious: Here are the results of Adam's original survey
-(def eden-objects '((python red yellow slithers scales)
-                    (trout brown swims tasty)
-                    (lion yellow walks runs fast)
-                    (lamb white cute tasty walks runs)
-                    (crab orange tasty swims painful)
-                    (eve sexy walks runs)
-                    (brocolli green tasty)
-                    (oranges orange tasty)
-                    (sprouts green tasty)))
+((k-groups vector-data vec-distance vec-average) '([1 1 1] [2 2 2] [3 3 3]))
+                                        ; (([[1 2 3] [3 2 1]] [[100 200 300] [300 200 100] [50 50 50]])
 
-;; Which can be transformed into a map of maps without too much trouble
-(def eden-map
-     (into {}
-           (map
-            (fn [ [name & features]] [name (apply hash-map (interleave features (repeat 1)))])
-            eden-objects)))
+                                        ;  ([[1 2 3] [3 2 1] [50 50 50]]
+                                        ;   [[100 200 300] [300 200 100]])
 
-(eden-map 'crab) ; {tasty 1, orange 1, painful 1, swims 1}
+                                        ;  ([[1 2 3] [3 2 1]]
+                                        ;   [[100 200 300] [300 200 100]]
+                                        ;   [[50 50 50]]))
 
-;; We want to be able to extract a set of characteristics with its name
-(defn eden-entry [s] [s (eden-map s)])
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(eden-entry 'crab) ; [crab {tasty 1, orange 1, painful 1, swims 1}]
+;; Pedantic Footnote
 
-;; Now we need distance and averaging functions for the maps
-(defn map-distance [a b] (reduce + (map #(* % %) (vals (merge-with - (second a) (second b))))))
-(defn map-average  [& l] ['composite (into {} (map (fn [[a b]] [a (/ b (count l))]) (apply merge-with + (map second l))))])
+;; Note that the algorithm as described above isn't quite the classic K-means.
+;; I don't think the difference is terribly important, and I thought it would complicate the explanation to deal with it.
 
-;; Which are very similar to the ones for vectors
-(map-distance (eden-entry 'eve) (eden-entry 'lion)) ; 3
-(map-average (eden-entry 'eve) (eden-entry 'lion) (eden-entry 'brocolli)) ; [composite {walks 2/3, yellow 1/3, runs 2/3, tasty 1/3, fast 1/3, green 1/3, sexy 1/3}]
+;; In the usual K-means, if you have two identical means, then you're only supposed to update one of them.
 
-(defn eden-means [archetypes its]
-  (nth (iterate (iterate-means eden-map map-distance map-average) archetypes) its))
+;; Here our two identical guesses are both getting updated
+(new-means average (point-groups '(0 0) '(0 1 2 3 4) distance) '(0 0)) ; (2 2)
 
-(defn eden-groups [archetypes its]
-  (map #(map first %) (vals
-       (point-groups (eden-means archetypes its) eden-map map-distance))))
+;; Our update function:
+(defn new-means [average point-groups old-means]
+  (for [o old-means]
+    (if (contains? point-groups o)
+      (apply average (get point-groups o)) o)))
+
+;; Needs to be changed so that if there are two identical means only one of them will be changed:
+
+(defn update-seq [sq f]
+  (let [freqs (frequencies sq)]
+    (apply concat
+     (for [[k v] freqs]
+       (if (= v 1) (list (f k))
+           (cons (f k) (repeat (dec v) k)))))))
 
 
+(defn new-means [average point-groups old-means]
+  (update-seq old-means (fn[o]
+                          (if (contains? point-groups o)
+                            (apply average (get point-groups o)) o))))
 
-(eden-groups (list (eden-entry 'eve) (eden-entry 'lion)) 3) ; ((lamb sprouts trout brocolli eve crab oranges) (python lion))
-(eden-groups (list (eden-entry 'crab) (eden-entry 'lion)) 3) ; ((lamb python eve lion) (sprouts trout brocolli crab oranges))
-
-(eden-groups (list (eden-entry 'sprouts) (eden-entry 'brocolli)) 3) ; ((lamb sprouts python trout brocolli eve lion crab oranges))
-(eden-groups (list (eden-entry 'python) (eden-entry 'lion)) 10) ; ((lamb eve lion) (sprouts python trout brocolli crab oranges))
-
-(eden-groups (list (eden-entry 'eve) (eden-entry 'lion)) 5) ; ((lamb sprouts trout brocolli eve crab oranges) (python lion))
+;; Now only one will get updated at once
+(new-means average (point-groups '(0 0) '(0 1 2 3 4) distance) '(0 0)) ; (2 0)
 
 
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'eve) (eden-entry 'lion)) 0) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'eve) (eden-entry 'lion)) 1) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'eve) (eden-entry 'lion)) 2) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'eve) (eden-entry 'lion)) 3) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'eve) (eden-entry 'lion)) 4) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
-(eden-groups (list (eden-entry 'brocolli) (eden-entry 'trout) (eden-entry 'lion)) 5) ; ((lamb eve) (sprouts python trout brocolli crab oranges) (lion))
+;; Now we don't lose groups when the means get aliased.
+((k-groups '(0 1 2 3 4) distance average) '(0 1)) ; (([0] [1 2 3 4]) ([0 1] [2 3 4]))
+((k-groups '(0 1 2 3 4) distance average) '(0 0)) ; (([0 1 2 3 4]) ([0] [1 2 3 4]) ([0 1] [2 3 4]))
+
+((k-groups vector-data vec-distance vec-average) '([1 1 1] [1 1 1] [1 1 1])) ;
+                                        ; (([[1 2 3] [3 2 1] [100 200 300] [300 200 100] [50 50 50]])
+                                        ;  ([[1 2 3] [3 2 1]] [[100 200 300] [300 200 100] [50 50 50]])
+                                        ;  ([[1 2 3] [3 2 1] [50 50 50]] [[100 200 300] [300 200 100]])
+                                        ;  ([[1 2 3] [3 2 1]] [[100 200 300] [300 200 100]] [[50 50 50]]))
+
+;; Although it's still possible that a mean never acquires any points, so we can still get out fewer groups than means.
+((k-groups '(0 1 2 3 4) distance average) '(0 5 10)) ; (([0 1 2] [3 4]))
+
+
+    
+
+
+
+
+
+
+
+
 
 
 
