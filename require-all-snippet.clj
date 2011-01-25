@@ -163,3 +163,8 @@
 (def require-all-agent (agent "not done"))
 (send-off require-all-agent (fn[agent] (with-out-str (require-all-namespaces-starting-with "clojure"))))
 
+;; I often find myself restarting clojure in order to check that there aren't any old definitions hanging about.
+;; This is sort-of-equivalent
+(defn shred-user []
+  (doseq [s (map first (ns-interns 'user))](ns-unmap 'user s))
+  (load-file "require-all-snippet.clj"))
