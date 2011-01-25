@@ -25,7 +25,8 @@
 ;; and the Animals into Mammals, Birds, and Fish.
 
 ;; Theoretically, this process could continue further, extracting 'natural
-;; categories' from the observed structure of the data.
+;; categories' from the observed structure of the data, without any theory about
+;; how the various properties come about
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -63,14 +64,9 @@
 
 (average 6 10 11 100 101 102) ; 55
 
-;; So we can take the average of each group, and use it as a new guess for
-;; where the clusters are.
-
-;; (defn new-means [average point-groups]
-;;   (for [[m pts] point-groups]
-;;     (apply average pts)))
-
-
+;; So we can take the average of each group, and use it as a new guess for where
+;; the clusters are. If a mean doesn't have a group, then we'll leave it where
+;; it is.
 (defn new-means [average point-groups old-means]
   (for [o old-means]
     (if (contains? point-groups o)
@@ -90,7 +86,7 @@
 ((iterate-means data distance average) '(10/3 55)) ; (37/6 101)
 
 ;; We can do this repeatedly until it settles down.
-(iterate (iterate-means data distance average) '(0 10)) ; ((0 10) (10/3 55) (37/6 101) (37/6 101) .....
+(iterate (iterate-means data distance average) '(0 10)) ; ((0 10) (10/3 55) (37/6 101) (37/6 101) .....)
 
 ;; K-means with two means seems to be trying to tell us that we've got a group
 ;; centered around 6 and another centred around 101
@@ -102,7 +98,8 @@
 (groups data distance '(37/6 101)) ; ([2 3 5 6 10 11] [100 101 102])
 
 ;; Ideally we'd like to iterate until the groups stop changing.
-(defn take-while-unstable ;; See previous post
+;; I described a function for doing this in a previous post:
+(defn take-while-unstable 
   ([sq] (lazy-seq (if-let [sq (seq sq)]
                     (cons (first sq) (take-while-unstable (rest sq) (first sq))))))
   ([sq last] (lazy-seq (if-let [sq (seq sq)]
@@ -117,6 +114,10 @@
 ;; Shows that our first guesses group 2,3 and 5 (nearer to 0 than 10) vs all the rest.
 ;; K-means modifies that instantly to separate out the large group of three.
 
+
+;; We can make a function, which takes our data, notion of distance, and notion of average,
+;; and gives us back a function which, for a given set of initial guesses at the means,
+;; shows us how the group memberships change.
 (defn k-groups [data distance average]
   (fn [guesses]
     (take-while-unstable
@@ -127,6 +128,7 @@
 
 (grouper '(0 10))
                                         ; (([2 3 5] [6 10 11 100 101 102])
+                                        ;  
                                         ;  ([2 3 5 6 10 11] [100 101 102]))
 
 
@@ -138,6 +140,7 @@
                                         ;  ([2 3 5 6 10 11] [100 101 102])
                                         ;  ([2 3] [5 6 10 11] [100 101 102])
                                         ;  ([2 3 5] [6 10 11] [100 101 102])
+                                        ;
                                         ;  ([2 3 5 6] [10 11] [100 101 102]))
 
 
@@ -148,6 +151,7 @@
                                         ;  ([2 3] [5 6 10 11] [100 101 102])
                                         ;  ([2 3 5] [6 10 11] [100 101 102])
                                         ;  ([2] [3 5 6] [10 11] [100 101 102])
+                                        ;
                                         ;  ([2 3] [5 6] [10 11] [100 101 102]))
 
 ;; We have to be careful not to start off with too many means, or we just get our data back:
@@ -155,11 +159,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Generalizing to Other Spaces
+
 ;; In fact, nothing we said above depends on our inputs being numbers
 
-;; Similarly, nothing limited us to numbers. We can use anything where we can define a distance, and a method of averaging:
+;; We can use any data where we can define a distance, and a method of averaging:
 
-;; One of the easiest things to do this for would be vectors of numbers
+;; One of the easiest things to do this for would be vectors:
 
 (defn vec-distance [a b] (reduce + (map #(* % %) (map - a b))))
 (defn vec-average  [& l]  (map #(/ % (count l)) (apply map + l)))
@@ -167,8 +173,11 @@
 (vec-distance [1 2 3][5 6 7]) ; 48
 (vec-average  [1 2 3][5 6 7]) ; (3 4 5)
 
+;; Here's a little set of vectors
 (def vector-data '( [1 2 3] [3 2 1] [100 200 300] [300 200 100] [50 50 50]))
 
+;; And choosing three guesses in a fairly simple-minded manner, we can see how the algorithm
+;; divides them into three different groups.
 ((k-groups vector-data vec-distance vec-average) '([1 1 1] [2 2 2] [3 3 3]))
                                         ; (([[1 2 3] [3 2 1]] [[100 200 300] [300 200 100] [50 50 50]])
 
