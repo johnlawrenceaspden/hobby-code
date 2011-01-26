@@ -168,7 +168,7 @@
 ;; One of the easiest things to do this for would be vectors:
 
 (defn vec-distance [a b] (reduce + (map #(* % %) (map - a b))))
-(defn vec-average  [& l]  (map #(/ % (count l)) (apply map + l)))
+(defn vec-average  [& l] (map #(/ % (count l)) (apply map + l)))
 
 (vec-distance [1 2 3][5 6 7]) ; 48
 (vec-average  [1 2 3][5 6 7]) ; (3 4 5)
