@@ -168,3 +168,8 @@
 (defn shred-user []
   (doseq [s (map first (ns-interns 'user))](ns-unmap 'user s))
   (load-file "require-all-snippet.clj"))
+
+(defn lsrt
+  ([] (lsrt 10))
+  ([n]
+  (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. "."))))))))))
