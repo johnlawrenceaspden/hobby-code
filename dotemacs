@@ -259,3 +259,9 @@
    "\C-x\C-s\C-c\C-k\C-c\C-z")
 ;; would be great if we could also add C-c M-p to change package somehow
 (global-set-key [f6] 'compile-and-goto-repl)
+
+
+;;eval and move forwards
+(fset 'running-eval
+      "\M-\C-x\M-\C-e")
+(global-set-key [f5] 'running-eval)
