@@ -173,3 +173,8 @@
   ([] (lsrt 10))
   ([n]
   (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. "."))))))))))
+
+
+(defmacro tryc[ & e]
+  `(try (doall ~@e)
+       (catch Throwable a# a#)))
