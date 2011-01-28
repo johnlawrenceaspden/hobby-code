@@ -25,27 +25,35 @@
 
   <dependencies>
 
-    <!-- <dependency> -->
-    <!--   <groupId>org.clojure</groupId> -->
-    <!--   <artifactId>clojure</artifactId> -->
-    <!--   <version>1.3.0-alpha4</version> -->
-    <!-- </dependency> -->
-    <!-- <dependency> -->
-    <!--   <groupId>org.clojure.contrib</groupId> -->
-    <!--   <artifactId>standalone</artifactId> -->
-    <!--   <version>1.3.0-alpha4</version> -->
-    <!-- </dependency> -->
+    <dependency>
+      <groupId>clojure-csv</groupId>
+      <artifactId>clojure-csv</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
+    <!-- usual suspects  -->
 
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure</artifactId>
-      <version>1.2.0</version>
+      <version>1.3.0-alpha4</version>
     </dependency>
     <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>clojure-contrib</artifactId>
-      <version>1.2.0</version>
+      <groupId>org.clojure.contrib</groupId>
+      <artifactId>standalone</artifactId>
+      <version>1.3.0-alpha4</version>
     </dependency>
+
+    <!-- <dependency> -->
+    <!--   <groupId>org.clojure</groupId> -->
+    <!--   <artifactId>clojure</artifactId> -->
+    <!--   <version>1.2.0</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>org.clojure</groupId> -->
+    <!--   <artifactId>clojure-contrib</artifactId> -->
+    <!--   <version>1.2.0</version> -->
+    <!-- </dependency> -->
 
     <dependency>
       <groupId>jline</groupId>
