@@ -170,9 +170,9 @@
   (load-file "require-all-snippet.clj"))
 
 (defn lsrt
-  ([] (lsrt 10))
-  ([n]
-  (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. "."))))))))))
+  ([] (lsrt 10 "."))
+  ([n dirstr]
+  (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. dirstr))))))))))
 
 
 (defmacro tryc[ & e]
