@@ -3,7 +3,7 @@
        (catch Exception a# a#)))
 
 
-(t (java.io.File ".")) ;; #<ClassCastException java.lang.ClassCastException: java.lang.Class cannot be cast to clojure.lang.IFn>
+(tryc (java.io.File ".")) ;; #<ClassCastException java.lang.ClassCastException: java.lang.Class cannot be cast to clojure.lang.IFn>
 
 (defmacro guru [& e]
   `(try ~@e
