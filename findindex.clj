@@ -1,12 +1,15 @@
-;; Indexing into a vector: a sequence of better answers
+;; Indexing Into a Vector: A Sequence of Answers
+
+
 ;; The other day, I had a csv file to read (csv files are comma-separated
 ;; values, often produced by exporting spreadsheets, or a reasonably standard
 ;; human-readable format for grids of data)
 
 
-;; There's a lovely library which takes all the hard work out of reading csv files
+;; There's a lovely library which takes all the hard work out of reading csv
+;; files
 
-;; The library's on clojars, so you use it by adding this to your maven classpath
+;; The library's on clojars, so you use it by adding this to your maven pom.xml
 
 ;; <dependency>
 ;;   <groupId>clojure-csv</groupId>
@@ -14,17 +17,21 @@
 ;;   <version>1.2.0</version>
 ;; </dependency>
 
-;; and then you can use clojure-csv/parse-csv to read your file in as a
+;; and then you can use clojure-csv.core/parse-csv to read your file in as a
 ;; sequence.  It seems to magically handle all the intricies of all the
 ;; different possible csv file arrangements.
 
-;; But then I hit a problem: I wanted to read the email-addresses from every record.
+;; Thankyou David Santiago, it works like a charm.
 
-;; I've rather simplified here, but let's imagine that the data looked like this:
+;; But then I hit a problem: I wanted to read the email-addresses from every
+;; record.
+
+;; I've rather simplified here, but let's imagine that the data after parsing
+;; looked like this:
 
 (def csv-data
      [["Name" "E-mail 1" "Address" "E-mail 2" "E-mail 3"]
-      ["John" "john@mailinator.com" "3 Round Church St" "xyz@learnclojure.com" ""]
+      ["John" "john@mailinator.com" "3 Church St" "xyz@learnclojure.com" ""]
       ["Fred" "fred@mailinator.com" "7 Park Street" "fred@gmail.com" "fred@googlemail.com" ]])
 
 (def header (first csv-data))
@@ -40,14 +47,16 @@
 ;; possibly 5. What if the program introduced another field entirely?
 
 ;; So obviously I needed a function to look up things in the header row somehow.
-;; And there didn't seem to be one, although there were the interesting functions
-;; keep-indexed and map-indexed, which I hadn't noticed before.
+;; And there didn't seem to be one, although there were the interesting
+;; functions keep-indexed and map-indexed, which I hadn't noticed before.
 
-;; And I couldn't find one. So I figured that I could write one, or I could ask
-;; on Stack Overflow.
+;; And I couldn't find one. So I figured that I could either write one, or I
+;; could ask on Stack Overflow.
 
 ;; And so I did both, expecting to find that I'd re-invent something in the
 ;; standard library, or at least in contrib, that I hadn't been able to find.
+
+;; http://stackoverflow.com/questions/4830900/how-do-i-find-the-index-of-an-item-in-a-vector
 
 ;; So the function(s) I came up with were:
 
@@ -66,7 +75,6 @@
 (indices-of (partial re-matches #".*E-mail.*") header) ; (1 3 4)
 (first-index-of #(= "Name" %) header) ; 0
 (find-thing "Name" header) ; 0
-
 
 ;; But I was a bit nervous about these solutions, because I thought I must just
 ;; have re-invented some sort of wheel, and also because they're happy to return
@@ -87,24 +95,27 @@
 
 (.indexOf header "Name") ; 0
 
-;; Which I hadn't noticed because my clever documentation-searching functions don't include
-;; Java methods, and which is clearly the answer for searching vectors.
+;; Which is clearly the answer for searching vectors.
 
-;; And XXXXXXX pointed out this lovely thing, originally due to Stuart Sierra:
+;; And ponzao pointed out this lovely thing, originally due to Stuart Halloway:
 (require 'clojure.contrib.seq)
-(first (clojure.contrib.seq/positions #{"Name"} header))
+(first (clojure.contrib.seq/positions #{"Name"} header)) ; 0
 
-;; positions is basically my indices-of, but using a set as the predicate is really clever.
+;; positions is like indices-of, but using a set as the predicate is really clever.
 
 ;; anyway, now I could say:
-(map #( % (.indexOf header "Name")) data)
-(map #( % (.indexOf header "E-mail 1")) data)
+(map #( % (.indexOf header "Name")) data) ; ("John" "Fred")
+(map #( % (.indexOf header "E-mail 1")) data) ; ("john@mailinator.com" "fred@mailinator.com")
 
-;; Or even, for fans of crypticity, something like:
+;; Or even, for fans of terseness and crypticity (and forgive me Lord, for I am
+;; such a fan), something like:
 (map #(vector (% (.indexOf header "Name"))
               (for [i (clojure.contrib.seq/positions
                        (partial re-matches #"E-mail \d+") header)]
                 (% i))) data)
+
+;; (["John" ("john@mailinator.com" "xyz@learnclojure.com" "")]
+;;  ["Fred" ("fred@mailinator.com" "fred@gmail.com" "fred@googlemail.com")])
 
 ;; But a little later, there was another answer from cgrand, who warned me
 ;; against using indices on general principles. And I agree with that, so I
@@ -116,7 +127,7 @@
 (def hmap (zipmap header (iterate inc 0)))
 
 ;; And use it like this:
-(map #(% (hmap "Name")) data)
+(map #(% (hmap "Name")) data) ; ("John" "Fred")
 
 ;; or this:
 (def e-mails (filter (partial re-matches #"E-mail \d+") header))
@@ -129,27 +140,29 @@
        (for [e (filter (partial re-matches #"E-mail \d+") header)]
          (% (hmap e)))) data)
 
+;; to get:
+;; (["John" ("john@mailinator.com" "xyz@learnclojure.com" "")]
+;;  ["Fred" ("fred@mailinator.com" "fred@gmail.com" "fred@googlemail.com")])
+
 ;; or even this (although now you do have to rely on the name coming before the e-mails):
 (map #(for [e (filter (partial re-matches #"E-mail \d+|Name") header)]
         (% (hmap e)))
      data)
 
+;; to get:
+;; (("John" "john@mailinator.com" "xyz@learnclojure.com" "")
+;;  ("Fred" "fred@mailinator.com" "fred@gmail.com" "fred@googlemail.com"))
+
 ;;If we want to abstract out a pattern, then:
-
-;; either:
 (defn columns [f header data]
-  (for [e (clojure.contrib.seq/positions f header)]
-    (map #(% e) data )))
+  (let [hmap (zipmap header (iterate inc 0))
+        cols (filter f header)
+    (map #(for [e cols] (% (hmap e))) data)))
 
-;; or:
-(defn columns [f header data]
-  (let [hmap (zipmap header (iterate inc 0))]
-    (map #(for [e (filter f header)] (% (hmap e))) data)))
+;; allows:
+(columns #{"Name"} header data) ; (("John") ("Fred"))
+(columns (partial re-matches #"E-mail \d+") header data) ; (("john@mailinator.com" "xyz@learnclojure.com" "") ("fred@mailinator.com" "fred@gmail.com" "fred@googlemail.com"))
 
-;; allow:
-(zipmap
- (apply concat (columns #{"Name"} header data))
- (columns (partial re-matches #"E-mail \d+") header data))
 
 
 
