@@ -169,12 +169,43 @@
   (doseq [s (map first (ns-interns 'user))](ns-unmap 'user s))
   (load-file "require-all-snippet.clj"))
 
+;;ls --reverse --time
 (defn lsrt
   ([] (lsrt 10 "."))
   ([n dirstr]
   (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. dirstr))))))))))
 
-
+;; Exception to return value
 (defmacro tryc[ & e]
   `(try (doall ~@e)
-       (catch Throwable a# a#)))
+        (catch Throwable a# a#)))
+
+
+;; And also I find some of the errors rather mystifying, so I decided to keep a list of hints towards common causes 
+(defn interpret [e]
+  (cond (and
+         (= (class e) java.lang.ClassCastException)
+         (= (.getMessage e) "java.lang.Class cannot be cast to clojure.lang.IFn"))
+        "Possibly you forgot a dot.\n(java.Class arg) rather than\n(java.Class. arg)\n can cause this.",
+        ;; but I've only got one so far
+        :else
+        "Confucius he largely mystified by this.")) ; so my guru is not as helpful as he could be
+
+;; Exception interpretation AI
+(defmacro guru [& e]
+  `(try ~@e
+     (catch Exception a#
+       (let [message# (.getMessage a#) 
+             st# (seq (.getStackTrace a#))
+             unusual# (filter #(let [fn# (.getFileName %)]
+                                (and (not (re-matches #".*\.java" fn#))
+                                     (not (#{"basic.clj" "core.clj"} fn# ))))  st#)]
+         ;; print formatted
+         (println (class a#) message# "\n--")
+         (pp/pprint (map #(vector (.getFileName %)(.getLineNumber %)(.getClassName %)) unusual#))
+         (println "--\n" (interpret a#))
+         ;; return value
+         (list (class a#) message#
+               (map #(vector (.getFileName %)(.getLineNumber %)(.getClassName %)) unusual#)
+               (interpret a#)))))))
+
