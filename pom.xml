@@ -33,6 +33,13 @@
       <version>1.2.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>9.0-801.jdbc4</version>
+    </dependency>
+
+
     <!-- unstable clojure  -->
 
     <dependency>
