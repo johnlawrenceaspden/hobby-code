@@ -147,9 +147,9 @@
 (println "(require-all-namespaces-starting-with \"example\")")
 
 ;; see http://blog.n01se.net/?p=85
-(println "setting *print-length* to 103, *print-level* to 13 to deal with infinities")
+(println "setting *print-length* to 13, *print-level* to 13 to deal with infinities")
 (println "you have to do this before starting the swank server if you want it to work in emacs evaluations")
-(set! *print-length* 103)
+(set! *print-length* 13)
 (set! *print-level* 13)
 
 ;; but we don't need this bit, 
