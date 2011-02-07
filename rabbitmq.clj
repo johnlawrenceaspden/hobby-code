@@ -59,21 +59,22 @@
 (dotimes [ i 10 ]
   (. channel basicPublish "" "hello" nil (. (format "Hello World! (%d)" i) getBytes)))
 
-(. channel basicPublish "" "hello" nil (. "quit" getBytes))
-
 ;; Create a consumer, which will block waiting for messages
 (def consumer (new QueueingConsumer channel))
 
 ;; Attach it to the channel
 (. channel basicConsume "hello" true consumer)
 
-(tryc
- (loop []
-   (if-let [delivery (. consumer nextDelivery)]
-      (let [str (String. (. delivery getBody))]
-        (if (= str "quit")
-          (println "exiting...")
-          (do 
-            (println str)
-            (recur)))))))
+(loop []
+  (if-let [delivery (. consumer nextDelivery)]
+    (let [str (String. (. delivery getBody))]
+      (if (= str "quit")
+        (println "exiting...")
+        (do 
+          (println str)
+          (recur))))))
+
+
+;; this message will kill it
+(. channel basicPublish "" "hello" nil (. "quit" getBytes))
 
