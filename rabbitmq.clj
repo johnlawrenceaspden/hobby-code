@@ -1,9 +1,14 @@
+;; RabbitMQ is a way for different processes to talk to one another.
+
 ;; Here we're going to start two separate processes and use them to send
 ;; messages to one another via rabbitMQ.
 
-;; First we need to install rabbitmq
+;; First we need to install rabbitmq. I'm using Ubuntu 10.10.
 
-;; Unfortunately Ubuntu has an old version, which our client library is unable to talk to.
+;; $ sudo apt-get install rabbitmq-server
+
+;; Unfortunately Ubuntu has an old version, which the current client library is unable to talk to.
+
 ;; Since the protocol has changed, it seems silly to use the old version, especially since rabbit provide a
 ;; debian package which seems to work fine:
 
@@ -11,7 +16,12 @@
 ;; $ wget http://www.rabbitmq.com/releases/rabbitmq-server/v2.3.1/rabbitmq-server_2.3.1-1_all.deb
 ;; sudo dpkg -i rabbitmq-server_2.3.1-1_all.deb
 
-;; This checks that it's working (woc-desktop is the name of my machine)
+;; I installed this over the top of the default ubuntu installation and this seems to work fine.
+;; I don't know what happens if you install it out-of-the-blue. Things may not get set up right, although the
+;; rabbitmq website seems to indicate that it will be ok.
+
+;; This checks that rabbitMQ is working (woc-desktop is the name of my machine)
+
 ;; sudo rabbitmqctl -n rabbit@woc-desktop status
 ;; Status of node 'rabbit@woc-desktop' ...
 ;; [{running_applications,[{rabbit,"RabbitMQ","2.3.1"},
@@ -33,10 +43,11 @@
 ;; And this program can be run with
 ;; $ mvn -Dclojure.script=rabbitmq.clj clojure:run
 
-
+;; First we have to import the classes from the java library.
 (import (com.rabbitmq.client ConnectionFactory Connection Channel QueueingConsumer))
 
-;; We are going into Java-land so there is a certain amount of bollocks to endure:
+;; And then we have to translate the java hello world program using Clojure's excellent interop
+;; It feels very strange writing this sort of ceremony-oriented imperative code in Clojure:
 
 ;; Make a connection factory on the local host
 (def connection-factory
@@ -49,15 +60,20 @@
 ;; get that to make you a channel
 (def channel (. connection createChannel))
 
-;; And on that channel, create a queue, named "hello", which is neither durable nor exclusive nor autodelete
+;; And on that channel, create (or at least ensure the existence of) a queue,
+;; named "hello", which is neither durable nor exclusive nor auto-deleted:
 (. channel queueDeclare "hello" false false false nil)
 
 ;; Now to send a message to that "hello" queue, you need to ask the channel to
 ;; publish a message to the exchange "", using "hello" as the routing key.
-;; Christ knows what the nil is for, and then the message body is the bytes of the legendary string
-;; "Hello World!"
+;; There is then a mysterious nil, and following that, the message body is the
+;; a java byte-array.
+
+;; We'll send ten messages to the queue.
 (dotimes [ i 10 ]
   (. channel basicPublish "" "hello" nil (. (format "Hello World! (%d)" i) getBytes)))
+
+;; Now we want to retrieve our messages from the queue.
 
 ;; Create a consumer, which will block waiting for messages
 (def consumer (new QueueingConsumer channel))
@@ -65,16 +81,20 @@
 ;; Attach it to the channel
 (. channel basicConsume "hello" true consumer)
 
+;; Now keep looping, and print every received message:
 (loop []
-  (if-let [delivery (. consumer nextDelivery)]
-    (let [str (String. (. delivery getBody))]
-      (if (= str "quit")
-        (println "exiting...")
-        (do 
+  (let [delivery (. consumer nextDelivery)
+        str (String. (. delivery getBody))]
           (println str)
-          (recur))))))
+          (recur)))
 
+;; If you're using the maven-clojure-plugin, then the command to run this script from the command line
+;; is:
 
-;; this message will kill it
-(. channel basicPublish "" "hello" nil (. "quit" getBytes))
+;; $ mvn -Dclojure.script=rabbitmq.clj clojure:run
+
+;; So you can run it on various seperate terminals at once.
+
+;; The first one you run will just send messages to itself and print them out.
+;; Later copies will send messages over which earlier ones will fight. It's most entertaining!
 
