@@ -175,37 +175,66 @@
   ([n dirstr]
   (map second (take n (reverse (sort (map #(vector (java.util.Date. (.lastModified %))(.getName %) ) (seq (.listFiles (java.io.File. dirstr))))))))))
 
-;; Exception to return value
+;; Convert an exception to a return value, even if it's the sort of exception that only happens when you
+;; try to print the sequence.
 (defmacro tryc[ & e]
-  `(try (doall ~@e)
-        (catch Throwable a# a#)))
+  `(try (let [r# ~@e]
+          (if (seq? r#)
+            (doall r#)
+            r#))
+          (catch Throwable a# a#)))
 
+
+(tryc (filter #(/ 1 %) '( 3 2 1 0))) ; #<RuntimeException java.lang.RuntimeException: java.lang.ArithmeticException: Divide by zero>
+(tryc (filter #(/ 1 %) '( 3 2 1 1))) ; (3 2 1 1)
+(tryc (/ 1 0)) ; #<ArithmeticException java.lang.ArithmeticException: Divide by zero>
+(tryc (/ 1 1)) ; 1
 
 ;; And also I find some of the errors rather mystifying, so I decided to keep a list of hints towards common causes 
 (defn interpret [e]
   (cond (and
          (= (class e) java.lang.ClassCastException)
          (= (.getMessage e) "java.lang.Class cannot be cast to clojure.lang.IFn"))
-        "Possibly you forgot a dot.\n(java.Class arg) rather than\n(java.Class. arg)\n can cause this.",
-        ;; but I've only got one so far
+        "Possibly you forgot a dot.\n(java.Class arg) rather than\n(java.Class. arg)\n can cause this."
+        (and
+         (= (class e) com.rabbitmq.client.MalformedFrameException)
+         (re-matches #"AMQP protocol version mismatch; we are version .*, server is .*" (.getMessage e)))
+        "RabbitMQ version mismatch error",
+        ;; but I've only got two so far
         :else
         "Confucius he largely mystified by this.")) ; so my guru is not as helpful as he could be
 
+(defn interpret-exception [a]
+  (loop [a a]
+    (let [type (class a)
+          message (.getMessage a) 
+          st (seq (.getStackTrace a))
+          unusual (filter #(let [filename (.getFileName %)
+                                 classname (.getClassName %)]
+                             (and (not (#{"basic.clj" "core.clj"} filename))
+                                  (not (re-matches #".*\.java" filename))
+                                  (not (re-matches #"clojure\.lang.*" classname))))
+                          st)]
+      ;; print formatted
+      (println type)
+      (println message)
+      (println "--")
+      (pp/pprint (map #(vector (.getFileName %)(.getLineNumber %)(.getClassName %)) unusual))
+      (println "--\n" (interpret a)))
+    (when-let[cause (.getCause a)]
+      (println "cause:")
+      (interpret-exception cause))))
+
+
 ;; Exception interpretation AI
-(defmacro guru [& e]
-  `(try ~@e
-     (catch Exception a#
-       (let [message# (.getMessage a#) 
-             st# (seq (.getStackTrace a#))
-             unusual# (filter #(let [fn# (.getFileName %)]
-                                (and (not (re-matches #".*\.java" fn#))
-                                     (not (#{"basic.clj" "core.clj"} fn# ))))  st#)]
-         ;; print formatted
-         (println (class a#) message# "\n--")
-         (pp/pprint (map #(vector (.getFileName %)(.getLineNumber %)(.getClassName %)) unusual#))
-         (println "--\n" (interpret a#))
-         ;; return value
-         (list (class a#) message#
-               (map #(vector (.getFileName %)(.getLineNumber %)(.getClassName %)) unusual#)
-               (interpret a#))))))
+(defmacro guru[ & e]
+  `(try (let [r# ~@e]
+          (if (seq? r#)
+            (doall r#)
+            r#))
+        (catch Throwable e#
+          (interpret-exception e#)
+          e#)))
+
+
 
