@@ -1,9 +1,9 @@
 ;; RabbitMQ is a way for different processes to talk to one another.
 
-;; Here we're going to start two separate processes and use them to send
-;; messages to one another via rabbitMQ.
+;; Here we're going to start a process and get it to send
+;; messages to itself via rabbitMQ.
 
-;; First we need to install rabbitmq. I'm using Ubuntu 10.10.
+;; First we need to install rabbitmq. I'm using Ubuntu 10.10, so that's:
 
 ;; $ sudo apt-get install rabbitmq-server
 
@@ -12,17 +12,20 @@
 ;; Since the protocol has changed, it seems silly to use the old version, especially since rabbit provide a
 ;; debian package which seems to work fine:
 
-;; Install the latest rabbitmq release (2.3.1 at time of writing)
+;; To install the latest rabbitmq release (2.3.1 at time of writing)
 ;; $ wget http://www.rabbitmq.com/releases/rabbitmq-server/v2.3.1/rabbitmq-server_2.3.1-1_all.deb
 ;; sudo dpkg -i rabbitmq-server_2.3.1-1_all.deb
 
-;; I installed this over the top of the default ubuntu installation and this seems to work fine.
+;; I installed this over the top of the default ubuntu installation and this seems to work.
 ;; I don't know what happens if you install it out-of-the-blue. Things may not get set up right, although the
 ;; rabbitmq website seems to indicate that it will be ok.
 
-;; This checks that rabbitMQ is working (woc-desktop is the name of my machine)
+;; You can check that rabbitMQ is working (woc-desktop is the name of my machine) with
 
-;; sudo rabbitmqctl -n rabbit@woc-desktop status
+;; $ sudo rabbitmqctl -n rabbit@woc-desktop status
+
+;; Which should respond:
+
 ;; Status of node 'rabbit@woc-desktop' ...
 ;; [{running_applications,[{rabbit,"RabbitMQ","2.3.1"},
 ;;                         {mnesia,"MNESIA  CXC 138 12","4.4.12"},
@@ -33,21 +36,25 @@
 ;;  {nodes,[{disc,['rabbit@woc-desktop']}]},
 ;;  {running_nodes,['rabbit@woc-desktop']}]
 
-;; The corresponding java client library is in the central maven repository
+;; The corresponding java client library is in the central maven repository so
+;; you should add this snippet to your pom.xml or the corresponding incantation
+;; to your project.clj if you use leiningen:
+
 ;;    <dependency>
 ;;      <groupId>com.rabbitmq</groupId>
 ;;      <artifactId>amqp-client</artifactId>
 ;;      <version>2.3.1</version>
 ;;    </dependency>
 
-;; And this program can be run with
-;; $ mvn -Dclojure.script=rabbitmq.clj clojure:run
 
 ;; First we have to import the classes from the java library.
 (import (com.rabbitmq.client ConnectionFactory Connection Channel QueueingConsumer))
 
-;; And then we have to translate the java hello world program using Clojure's excellent interop
-;; It feels very strange writing this sort of ceremony-oriented imperative code in Clojure:
+;; And then we have to translate the equivalent java hello world program using
+;; Clojure's excellent interop.
+
+;; It feels very strange writing this sort of ceremony-oriented imperative code
+;; in Clojure:
 
 ;; Make a connection factory on the local host
 (def connection-factory
@@ -64,32 +71,33 @@
 ;; named "hello", which is neither durable nor exclusive nor auto-deleted:
 (. channel queueDeclare "hello" false false false nil)
 
-;; Now to send a message to that "hello" queue, you need to ask the channel to
-;; publish a message to the exchange "", using "hello" as the routing key.
-;; There is then a mysterious nil, and following that, the message body is the
-;; a java byte-array.
-
-;; We'll send ten messages to the queue.
+;; Now we'll send ten messages to that queue:
 (dotimes [ i 10 ]
   (. channel basicPublish "" "hello" nil (. (format "Hello World! (%d)" i) getBytes)))
 
+;; Strictly we're sending the messages to the default exchange "", using the
+;; routing key "hello"
+
 ;; Now we want to retrieve our messages from the queue.
 
-;; Create a consumer, which will block waiting for messages
+;; We create a consumer
 (def consumer (new QueueingConsumer channel))
 
-;; Attach it to the channel
+;; And attach it to the channel
 (. channel basicConsume "hello" true consumer)
 
-;; Now keep looping, and print every received message:
+;; consumer.nextDelivery() will block waiting for a message to arrive in the
+;; queue, so we can just keep looping
 (loop []
   (let [delivery (. consumer nextDelivery)
         str (String. (. delivery getBody))]
           (println str)
           (recur)))
 
-;; If you're using the maven-clojure-plugin, then the command to run this script from the command line
-;; is:
+;; The fun part is that we could run several copies of this program simultaneously
+
+;; If you're using the maven-clojure-plugin, then the command to run this script
+;; from the command line is:
 
 ;; $ mvn -Dclojure.script=rabbitmq.clj clojure:run
 
