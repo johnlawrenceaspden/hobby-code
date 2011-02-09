@@ -28,6 +28,18 @@
     <!-- libraries -->
 
     <dependency>
+      <groupId>cdt</groupId>
+      <artifactId>cdt</artifactId>
+      <version>1.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.clojars.gjahad</groupId>
+      <artifactId>debug-repl</artifactId>
+      <version>0.3.1</version>
+    </dependency>
+
+    <dependency>
       <groupId>clojure-csv</groupId>
       <artifactId>clojure-csv</artifactId>
       <version>1.2.0</version>
