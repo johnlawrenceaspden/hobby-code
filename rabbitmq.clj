@@ -1,26 +1,29 @@
 ;; RabbitMQ is a way for different processes to talk to one another.
 
-;; Here we're going to start a process and get it to send
-;; messages to itself via rabbitMQ.
+;; Here we're going to start a process and get it to send messages to itself via
+;; rabbitMQ.
 
 ;; First we need to install rabbitmq. I'm using Ubuntu 10.10, so that's:
 
 ;; $ sudo apt-get install rabbitmq-server
 
-;; Unfortunately Ubuntu has an old version, which the current client library is unable to talk to.
+;; Unfortunately Ubuntu has an old version, which the current client library is
+;; unable to talk to.
 
-;; Since the protocol has changed, it seems silly to use the old version, especially since rabbit provide a
-;; debian package which seems to work fine:
+;; Since the protocol has changed, it seems silly to use the old version,
+;; especially since rabbit provide a debian package which seems to work fine:
 
 ;; To install the latest rabbitmq release (2.3.1 at time of writing)
 ;; $ wget http://www.rabbitmq.com/releases/rabbitmq-server/v2.3.1/rabbitmq-server_2.3.1-1_all.deb
-;; sudo dpkg -i rabbitmq-server_2.3.1-1_all.deb
+;; $ sudo dpkg -i rabbitmq-server_2.3.1-1_all.deb
 
-;; I installed this over the top of the default ubuntu installation and this seems to work.
-;; I don't know what happens if you install it out-of-the-blue. Things may not get set up right, although the
-;; rabbitmq website seems to indicate that it will be ok.
+;; I installed this over the top of the default ubuntu installation and this
+;; seems to work.  I don't know what happens if you install it
+;; out-of-the-blue. Things may not get set up right, although the rabbitmq
+;; website seems to indicate that it will be ok.
 
-;; You can check that rabbitMQ is working (woc-desktop is the name of my machine) with
+;; You can check that rabbitMQ is working (woc-desktop is the name of my
+;; machine, don't ask..) with
 
 ;; $ sudo rabbitmqctl -n rabbit@woc-desktop status
 
@@ -101,7 +104,7 @@
 
 ;; $ mvn -Dclojure.script=rabbitmq.clj clojure:run
 
-;; So you can run it on various seperate terminals at once.
+;; So you can run it on various separate terminals at once.
 
 ;; The first one you run will just send messages to itself and print them out.
 ;; Later copies will send messages over which earlier ones will fight. It's most entertaining!
