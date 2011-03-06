@@ -12,12 +12,17 @@
 ;; 'clojure.repl/source'.
 ;; This also means that emacs tab completion can find them with e.g. r/<TAB>
 
+;;bring useful clojure namespaces into your current namespace with short names
 (defn sn[]
   "require clojure.contrib.trace as cct, etc"
-  (require '(clojure [test :as t]
-                     [inspector :as i]
-                     [repl :as r]
-                     [pprint :as pp])) 
+  (require '(clojure [test :as ct]
+                     [inspector :as ci]
+                     [repl :as cr]
+                     [pprint :as pp]
+                     [string :as cs]
+                     ))
+  (require '(clojure.java
+             [javadoc :as cjj]))
   (require '(clojure.contrib
              [trace :as cct]
              [repl-utils :as ccr])))
