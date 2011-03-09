@@ -86,8 +86,16 @@
 (toggle-scroll-bar -1)
 ;; disable menu bar
 ;(menu-bar-mode -1)
-;; disable splash screen
-(custom-set-variables '(inhibit-startup-screen t))
+
+;; disable splash screen and show unknown files in speedbar
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(inhibit-startup-screen t)
+ '(speedbar-show-unknown-files t))
+
 ;; start emacs server
 (server-start)
 
