@@ -1,6 +1,8 @@
 [extensions]
 hgext.extdiff =
+hgext.record =
 hgk=
+purge = 
 
 [extdiff]
 cmd.xxdiff = xxdiff
