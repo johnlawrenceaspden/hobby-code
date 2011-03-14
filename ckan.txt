@@ -1,0 +1,103 @@
+CKAN: Data is Code
+
+I'm consulting for the open knowledge foundation, okfn, and the first thing they've asked me to do is to try to describe, as a newbie who knows nothing, what it is they're trying to do.
+
+Their insight, and it is an old insight, is that data is code.
+
+Imagine that someone somewhere is compiling a list of gold prices, and that they record the closing prices, every day, of gold on the most popular exchange, in dollars.
+
+Imagine that someone else is compiling a list of dollar sterling exchange rates, and that they record the price, minute by minute, of a GBP in USD.
+
+And imagine that a third person wishes to know the price of gold, day by day, in sterling.
+
+The third person has to write a program to read in the data sets of the first two, and perform a fairly simple transformation. 
+
+But it's not a trivial transformation. Should he use the average exchange rate over the day, the highest, the lowest, or whatever? And maybe the price of gold in London is different from the price in New York because there is a cost of transportation. It's even possible that he needs to use other data sets.
+
+But in the end, he will produce a program which will get the latest copies of all his data sets and produce another one. 
+
+He faces many of the issues that a programmer faces when trying to write a program using libraries that others have written.
+
+....obvious stuff... dependencies, versioning, cleaning up data, filters, only known to work with data set so far, new entries could break it. A versioned directed graph is formed. There may be cycles. His data might be used to compile a data set on which he depends. Why not? Compilers compile their own code. As Dennis Ritchie showed, the stable state is not determined by either source or executable file. ..end wool-gather...
+
+Users of data may wish to clean it up. If the data is a simple table, possibly manually compiled, then it may be much more useful once people have edited it. They may be editing it by hand, producing different versions of the same data set, or they may themselves write programs to edit it, and wish to publish their results as a new dataset.
+
+And he faces issues not faced by programmers.
+
+Data may be a live feed. You may just always want the latest data, and it may be updated second by second.
+
+A running program can deal with this, of course, and produce its own live feed.
+
+Our London goldbug may wish to publish his data. If he is a government statistician or an academic, he may wish to publish both his feed and the method that he uses to derive it.
+
+If he is a professional analyst, he may wish to publish his feed but keep his methods secret.
+
+If he works for a bank, he may wish to publish it internally, so that other people in his own ecosystem can see it, but not anybody else.
+
+-----------------------------------------------------------------------------------------
+
+Programmers have fine tools to deal with the horrifyingly complex issues that arise when trying to create programs that rely on other programs.
+
+They are:
+
+Programming languages (lisp, python, java)
+Version control (mercurial, git)
+Source Stores (github, bitbucket)
+Packaging systems (dpkg, rpm, setup.exe)
+Dependency management (maven, apt, yum)
+Software distributions (debian)
+Build systems. (make, ant)
+Diffing tools (xxdiff, beyond compare)
+Type systems (Hindley Milner, duck typing, inheritance, interface, aspects)
+Parsers (yacc, pcre)
+Validators (lint)
+Serialization formats (xml/json/sexps)
+Standard data structures (maps, sets, trees/lists, vectors)
+Algorithms (A*, neural nets, K-means, dijkstras algorithm)
+Patterns (subroutines, visitors, iterative-improve, first class functions)
+
+
+CKAN's insight is that these tools, which are not at all well understood for programming, are, or would be if their analogues existed, also useful for people who manipulate or use data for a living.
+
+What tools do statisticians have?
+
+Are there members of the general public interested in statistical data? In the same way as non-programmers often like to use programs? Certainly newspapers and websites contain graphs often. I wonder where they are from? I have made such myself, but I am a programmer and in a small way a statistician.
+
+Tools statisticians use (speculative)
+
+R
+incanter
+graph plotting programs
+excel
+statistical methods (moving averages, bayes theorem, chi-squared, rank correlation....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
