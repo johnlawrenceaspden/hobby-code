@@ -1,0 +1,17 @@
+The install instructions from the SWIG website at 
+http://www.swig.org/Doc1.3/Python.html#Python_nn4
+
+$ swig -python example.i
+$ gcc -O2 -fPIC -c example.c
+$ gcc -O2 -fPIC -c example_wrap.c -I/usr/local/include/python2.5
+
+$ gcc -shared example.o example_wrap.o -o _example.so
+
+On John's Ubuntu box with python2.6, use:
+
+$ gcc -O2 -fPIC -c example_wrap.c -I/usr/include/python2.6
+
+
+Once this is done, you can 
+>>> import example
+>>> example.fact(10)
