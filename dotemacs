@@ -42,6 +42,14 @@
 ; means that hard links survive editing.
 (setq backup-by-copying t)
 
+; __init__.py, indeed
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)   
+(setq uniquify-separator "/")   
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
+    
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers (or Gnus mail buffers)   
+
 ; make emacs use the clipboard
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
