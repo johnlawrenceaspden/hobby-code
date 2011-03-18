@@ -8,3 +8,5 @@ purge =
 cmd.xxdiff = xxdiff
 opts.xxdiff = -r
 
+[ui]
+username = John Lawrence Aspden <okfn@aspden.com>
