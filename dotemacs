@@ -298,3 +298,5 @@
        (let* ((fn-list (dired-get-marked-files nil arg)))
          (mapc 'find-file fn-list)))))
 
+(add-to-list 'load-path "~/python.el/")
+(require 'python)

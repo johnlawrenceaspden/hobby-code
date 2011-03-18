@@ -1,0 +1,33 @@
+#!/bin/bash
+
+GUI=yes
+
+cur=`pwd` 
+echo saving directory $cur
+for i in /home/okfn/hobby-code/ /home/okfn/data;
+do
+  echo ---------$i------------
+  cd $i
+  if [ -z $1 ]
+  then
+      git status 
+  else
+      git gui
+  fi
+done;
+
+for i in /home/okfn/pyenv/src/ckan ;
+do
+    echo ----------$i-----------
+    cd $i
+    if [ -z $1 ]
+    then
+        hg status 
+    else
+        hgtk commit
+    fi
+done
+
+echo ---------------------
+echo returning to $cur
+cd $cur
