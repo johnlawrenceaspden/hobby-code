@@ -21,7 +21,7 @@ do
   fi
 done
 
-for i in /home/okfn/pyenv/src/ckan ;
+for i in /home/okfn/pyenv/src/ckan /home/okfn/pyenv/src/ckanext-admin ;
 do
     echo ----------$i-----------
     cd $i
