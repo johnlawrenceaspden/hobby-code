@@ -8,7 +8,7 @@ Revised intro to leiningen
 
 PostgreSQL
 
-
+How to make and distribute a clojure library. Simple-plotter.
 
 
 
