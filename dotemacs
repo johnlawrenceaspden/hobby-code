@@ -21,7 +21,7 @@
 ;(color-theme-scintilla)
 
 ;read desktop file from starting directory
-(desktop-save-mode t)
+;(desktop-save-mode t)
 
 ;;lisp editing is better with flashing brackets
 (show-paren-mode)
