@@ -4,7 +4,7 @@ GUI=yes
 
 cur=`pwd` 
 echo saving directory $cur
-for i in /home/okfn/hobby-code/ /home/okfn/data;
+for i in ~/hobby-code/ ~/data;
 do
   echo ---------$i------------
   cd $i
@@ -21,7 +21,7 @@ do
   fi
 done
 
-for i in /home/okfn/pyenv/src/ckan /home/okfn/pyenv/src/ckanext-admin ;
+for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ;
 do
     echo ----------$i-----------
     cd $i
