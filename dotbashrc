@@ -140,7 +140,8 @@ PATH=$PATH:~/bin
 
 alias cda='cd ~/hobby-code/agora'
 
-alias unisondesktop2mini='unison /home/john/Desktop/unison ssh://john@dell-mini//home/john/Desktop/unison'
+alias unisondesktop2dellmini='unison /home/john/Desktop/unison ssh://john@dell-mini//home/john/Desktop/unison'
+alias unisondesktop2mini2='unison /home/john/Desktop/unison ssh://john@mini-2//home/john/Desktop/unison'
 alias unisonmini2desktop='unison /home/john/Desktop/unison ssh://john@ssh.aspden.com//home/john/Desktop/unison'
 alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/wdexternal/unison'
 alias sw='cd /home/john/hobby-code && mvn -f pom.xml clojure:swank'
