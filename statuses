@@ -17,6 +17,9 @@ do
       elif [ $1 = 'pull' ] ;
       then
           git pull
+      elif [ $1 = 'push' ] ;
+      then
+          git push
       else
           echo "unknown command $1"
       fi
@@ -39,6 +42,9 @@ do
       then
           hg pull
           hg update
+      elif [ $1 = 'push' ] ;
+      then
+          hg push
       else
           echo "unknown command $1"
       fi
