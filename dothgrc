@@ -1,8 +1,12 @@
 [extensions]
 hgext.extdiff =
+hgext.record =
 hgk=
+purge = 
 
 [extdiff]
 cmd.xxdiff = xxdiff
 opts.xxdiff = -r
 
+[ui]
+username = John Lawrence Aspden <okfn@aspden.com>

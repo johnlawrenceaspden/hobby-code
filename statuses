@@ -1,0 +1,44 @@
+#!/bin/bash
+
+GUI=yes
+
+cur=`pwd` 
+echo saving directory $cur
+for i in /home/okfn/hobby-code/ /home/okfn/data;
+do
+  echo ---------$i------------
+  cd $i
+  if [[ -z $1 ]] ; then 
+      git status
+  elif [ $1 = 'gui' ] ;
+  then
+      git gui
+  elif [ $1 = 'pull' ] ;
+  then
+      git pull
+  else
+      echo "unknown command $1"
+  fi
+done
+
+for i in /home/okfn/pyenv/src/ckan /home/okfn/pyenv/src/ckanext-admin ;
+do
+    echo ----------$i-----------
+    cd $i
+    if [[ -z $1 ]] ; then
+        hg status
+    elif [ $1 = 'gui' ] ;
+    then
+        hgtk commit
+    elif [ $1 = 'pull' ] ;
+    then
+        hg pull
+        hg update
+    else
+        echo "unknown command $1"
+    fi
+done
+
+echo ---------------------
+echo returning to $cur
+cd $cur

@@ -111,6 +111,9 @@
         </configuration>
       </plugin>
 
+      <!-- The versions plugin allows you to find out what you can upgrade -->
+      <!-- mvn versions:help -->
+      <!-- mvn versions:display-dependency-updates -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>

@@ -148,4 +148,5 @@ alias ssw='cd /home/john/hobby-code && mvn -f simple.pom.xml clojure:swank'
 alias cgg='cd /home/john/hobby-code/ && git pull origin master && git gui'
 alias lsrt='command ls -al --reverse --sort=time'
 alias go='gnome-open'
+alias ck='cd ~/pyenv/src/ckan && source ~/pyenv/bin/activate'
 
