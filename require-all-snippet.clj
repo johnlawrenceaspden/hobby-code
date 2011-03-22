@@ -5,6 +5,9 @@
 
 ;; Firstly we want to 'require' all the namespaces on the classpath
 ;; This ensures that find-doc and the like will work
+
+(require 'clojure.string 'clojure.inspector)
+
 (require 'clojure.contrib.find-namespaces)
 
 ;; Some namespaces may fail to load, so catch any exceptions thrown
@@ -147,10 +150,10 @@
 (println "(require-all-namespaces-starting-with \"example\")")
 
 ;; see http://blog.n01se.net/?p=85
-(println "setting *print-length* to 13, *print-level* to 13 to deal with infinities")
+(println "setting *print-length* to 103, *print-level* to 103 to deal with infinities")
 (println "you have to do this before starting the swank server if you want it to work in emacs evaluations")
-(set! *print-length* 13)
-(set! *print-level* 13)
+(set! *print-length* 103)
+(set! *print-level* 103)
 
 ;; but we don't need this bit, 
 ;; (require 'clojure.contrib.repl-utils)
