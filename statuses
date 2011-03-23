@@ -28,7 +28,7 @@ do
   fi
 done
 
-for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ;
+for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ~/pyenv/src/ckanext-community;
 do
   echo ---------$i------------
   if [[ -d $i ]] ; then
