@@ -156,12 +156,23 @@
 
 ;; use the version of python.el in fgallina's github repository
 ;; which should be a sub-repo of hobby-code:
-;; cd ~/hobby-code &&  git://github.com/fgallina/python.el.git
-(add-to-list 'load-path "~/python.el/")
+;; cd ~/hobby-code &&  git clone git://github.com/fgallina/python.el.git
+(add-to-list 'load-path "~/hobby-code/python.el/")
 (require 'python)
 
-;; use python3.1
-;(setq python-python-command "/usr/bin/python3.1")
+(setq python-shell-process-environment
+      (list
+       (format "PATH=%s" (mapconcat
+                          'identity
+                          (reverse
+                           (cons (getenv "PATH")
+                                 '("~/pyenv/bin/")))
+                          ":"))
+       "VIRTUAL_ENV=~/pyenv"))
+
+(setq python-shell-exec-path '("~/pyenv/bin/"))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure-related stuff
