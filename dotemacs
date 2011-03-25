@@ -160,6 +160,7 @@
 (add-to-list 'load-path "~/hobby-code/python.el/")
 (require 'python)
 
+;; use the ~/pyenv virtual environment
 (setq python-shell-process-environment
       (list
        (format "PATH=%s" (mapconcat
