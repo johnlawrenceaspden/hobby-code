@@ -1,4 +1,4 @@
-;;; This was installed by package-install.el.
+;;; this was installed by package-install.el.
 ;;; This provides support for the package system and
 ;;; interfacing with ELPA, the package archive.
 ;;; Move this code earlier if you want to reference
@@ -42,18 +42,9 @@
 ; means that hard links survive editing.
 (setq backup-by-copying t)
 
-; __init__.py, indeed
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)   
-(setq uniquify-separator "/")   
-(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
-    
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers (or Gnus mail buffers)   
-
 ; make emacs use the clipboard
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-
 
 ;make the set-fill-column key, which I never use, go away and stop
 ;interfering with C-x C-f for find-file
@@ -70,14 +61,14 @@
 
 (setq-default indent-tabs-mode nil)
 
-;; disable overwrite mode, so that accidentally hitting the insert key asks for confirmation
+;; disable overwrite mode, so that accidentally hitting the insert key asks for
+;; confirmation
 (put 'overwrite-mode 'disabled t)
 
 ;; ========== Place Backup Files in Specific Directory ==========
 ;; Enable backup files.
 (setq make-backup-files t)
-;; Enable versioning with default values (keep five last versions, I think!)
-;; actually no, seems to only make the one
+;; Keep last five versions
 (setq version-control t)
 ;; Save all backup file in this directory.
 (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
@@ -86,8 +77,9 @@
 (setq frame-title-format '("%b" (buffer-file-name ": %f")))
 
 ;; Save the history of kills, and searches
-(savehist-mode 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+(savehist-mode t)
 
 ;; disable bell function
 (setq ring-bell-function 'ignore)
@@ -100,50 +92,90 @@
 
 ;; disable splash screen and show unknown files in speedbar
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
  '(inhibit-startup-screen t)
  '(speedbar-show-unknown-files t))
 
 ;; start emacs server
 (server-start)
 
-;; scala-mode
-;; (add-to-list 'load-path "~/opt/scala-mode")
-;; (require 'scala-mode)
-;; (setq auto-mode-alist (cons '("\\.scala$" . scala-mode) auto-mode-alist))
+;; Unique names for buffers with identical filenames
+; __init__.py, indeed
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)   
+(setq uniquify-separator "/")   
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
 
-;;clojure/slime/swank setup adapted from:
-;;http://riddell.us/tutorial/slime_swank/slime_swank.html
-;;################################################################
 
-;; clojure-mode
-;; (add-to-list 'load-path "~/opt/clojure-mode")
-;;(require 'clojure-mode)
+;; Swap windows with C-x 8
+;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
+(defun swap-windows ()
+  "If you have 2 windows, it swaps them." 
+  (interactive) 
+  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (first (window-list)))
+                (w2 (second (window-list)))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1)))))
 
-;; swank-clojure
-;; (add-to-list 'load-path "~/opt/swank-clojure/src/emacs")
+(define-key global-map (kbd "C-x 8") 'swap-windows)
 
-;;(setq swank-clojure-jar-path "~/.clojure/clojure.jar"
-;;        swank-clojure-extra-classpaths (list
-;;				      "~/.clojure/clojure-contrib.jar"
-;;                                      "~/opt/swank-clojure/src/main/clojure"
-;;				      ))
+;; Dired command for finding all marked files, use F in dired mode
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map "F" 'my-dired-find-file)
+     (defun my-dired-find-file (&optional arg)
+       "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
+       (interactive "P")
+       (let* ((fn-list (dired-get-marked-files nil arg)))
+         (mapc 'find-file fn-list)))))
 
-;; (require 'swank-clojure-autoload)
+;; I occasionally find myself needing to gather lines up one by one and paste
+;; them all somewhere You can do C-space, end, Cxx, M-C-w, M-w to get an
+;; appending yanking version of C-k Or this function should do the same thing.
+(defun yank-append-line (arg)
+  "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
+  (interactive "p")
+  (append-next-kill)
+  (kill-ring-save (point)
+                  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 
-;; slime
-;;(eval-after-load "slime"
-;;  '(progn (slime-setup '(slime-repl))))
-;;
-;;(add-to-list 'load-path "~/opt/slime")
+(define-key global-map (kbd "M-k") 'yank-append-line)
 
-;;(slime-setup)
 
-;;end of clojure/slime/swank setup from:
-;;http://riddell.us/tutorial/slime_swank/slime_swank.html
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python
+
+;; use the version of python.el in fgallina's github repository
+;; which should be a sub-repo of hobby-code:
+;; cd ~/hobby-code &&  git clone git://github.com/fgallina/python.el.git
+(add-to-list 'load-path "~/hobby-code/python.el/")
+(require 'python)
+
+(setq python-shell-process-environment
+      (list
+       (format "PATH=%s" (mapconcat
+                          'identity
+                          (reverse
+                           (cons (getenv "PATH")
+                                 '("~/pyenv/bin/")))
+                          ":"))
+       "VIRTUAL_ENV=~/pyenv"))
+
+(setq python-shell-exec-path '("~/pyenv/bin/"))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Clojure-related stuff
 
 ;;bind the slime selector to f12 and add a method for finding clojure buffers
 (require 'slime)
@@ -151,37 +183,6 @@
 (def-slime-selector-method ?j
   "most recently visited clojure-mode buffer."
   (slime-recently-visited-buffer 'clojure-mode))
-
-
-;;################################################################
-;;################################################################
-;;################################################################
-
-
-;; to use the code from the book Programming Clojure, this fragment can be used
-;; (swank-clojure-config
-;;  (setq swank-clojure-jar-path "~/clojure-programs/programming-clojure/lib/clojure.jar")
-;;  (setq swank-clojure-extra-classpaths
-;;        (mapcar 
-;; 	(lambda (s) (concat "~/clojure-programs/programming-clojure/" s)) 
-;; 	(list "." 
-;; 	      "lib/commons-io-1.4.jar" 
-;; 	      "lib/commons-fileupload-1.2.1.jar"
-;; 	      "lib/commons-codec-1.3.jar" 
-;; 	      "lib/jline-0.9.94.jar"
-;; 	      "lib/clojure.jar"
-;; 	      "lib/clojure-contrib.jar"
-;; 	      "lib/ant.jar:lib/ant-launcher.jar" 
-;; 	      "lib/compojure.jar" 
-;; 	      "lib/hsqldb.jar" 
-;; 	      "lib/jetty-6.1.14.jar" 
-;; 	      "lib/jetty-util-6.1.14.jar" 
-;; 	      "lib/servlet-api-2.5-6.1.14.jar" 
-;; 	      "classes"))))
-
-
-;;for lensfield, it is better to use the maven-clojure-plugin to connect to a swank-server which will 
-;;already have the relevant insanely long classpath.
 
 ;;copy last expression to repl
 (defun copy-last-expression-to-clojure-slime-repl()
@@ -205,67 +206,15 @@
 
 (define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-clojure-slime-repl)
 
-;;stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
-(defun swap-windows ()
-  "If you have 2 windows, it swaps them." 
-  (interactive) 
-  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-        (t
-         (let* ((w1 (first (window-list)))
-                (w2 (second (window-list)))
-                (b1 (window-buffer w1))
-                (b2 (window-buffer w2))
-                (s1 (window-start w1))
-                (s2 (window-start w2)))
-           (set-window-buffer w1 b2)
-           (set-window-buffer w2 b1)
-           (set-window-start w1 s2)
-           (set-window-start w2 s1)))))
-
-(define-key global-map (kbd "C-x C-8") 'swap-windows)
-
-;;rainbow brackets
+;; rainbow brackets in clojure mode, relies on highlight-parentheses.el in 
+;; ~/hobby-code
 (add-to-list 'load-path "~/hobby-code")
-
-
-
 (require 'highlight-parentheses)
 (setq hl-paren-colors
-      '(;"#8f8f8f" ; this comes from Zenburn
-                   ; and I guess I'll try to make the far-outer parens look like this
-        "orange1" "yellow1" "greenyellow" "green1"
+      '("orange1" "yellow1" "greenyellow" "green1"
         "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
-
-;(setq-default highlight-parentheses-mode t)
 (add-hook 'clojure-mode-hook 
           (lambda () (highlight-parentheses-mode t)))
-
-;; change assignment operator shortcut in ESS
-;; (ess-toggle-underscore nil)
-
-
-    (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
-    (autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
-    (autoload 'mercury-mode "prolog" "Major mode for editing Mercury programs." t)
-    (setq prolog-system 'swi)
-    (setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)
-                                    ("\\.m$" . mercury-mode))
-                                   auto-mode-alist))
-    
-;; I occasionally find myself needing to gather lines up one by one and paste them all somewhere
-;; You can do C-space, end, Cxx, M-C-w, M-w to get an appending yanking version of C-k
-;; Or this function should do the same thing.
-(defun yank-append-line (arg)
-  "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
-  (interactive "p")
-  (append-next-kill)
-  (kill-ring-save (point)
-                  (line-beginning-position (+ 1 arg)))
-  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
-
-(define-key global-map (kbd "M-k") 'yank-append-line)
-
-
 
 ;; this one takes .clj.html to blogger in clipboard
 (fset 'clj-html-to-blogger-copy
@@ -288,15 +237,8 @@
       "\M-\C-x\M-\C-e")
 (global-set-key [f5] 'running-eval)
 
-;; Dired command for finding all marked files, use F in dired mode
-(eval-after-load "dired"
-  '(progn
-     (define-key dired-mode-map "F" 'my-dired-find-file)
-     (defun my-dired-find-file (&optional arg)
-       "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
-       (interactive "P")
-       (let* ((fn-list (dired-get-marked-files nil arg)))
-         (mapc 'find-file fn-list)))))
 
-(add-to-list 'load-path "~/python.el/")
-(require 'python)
+
+
+
+

@@ -5,6 +5,8 @@
 
 (ns u)
 
+(require 'clojure.pprint)
+
 ;; This file conditions a repl in various ways that I do all the time.
 
 ;; Some of clojure's extra namespaces are so useful at the REPL that I want them
