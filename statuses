@@ -20,8 +20,7 @@ do
   if [[ -d $i ]] ; then
       cd $i
       if [[ -z $1 ]] ; then 
-          git status --porcelain
-          echo "result:" $?
+          git status
       elif [ $1 = 'gui' ] ;
       then
           git status
@@ -59,7 +58,6 @@ do
       cd $i
       if [[ -z $1 ]] ; then 
           hg status
-          echo "result:" $?
       elif [ $1 = 'gui' ] ;
       then
           hg status
