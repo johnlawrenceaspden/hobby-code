@@ -2,17 +2,36 @@
 
 cur=`pwd` 
 echo saving directory $cur
-for i in `find ~ -name ".git" -printf '%h\n' | grep -v ~/.local/share/Trash`;
-#for i in ~/hobby-code/ ~/data;
+
+GITREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -name ".git" -printf '%h\n'`
+HGREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -name ".hg" -printf '%h\n'`
+
+
+echo "Checking" 
+echo "$GITREPOS"
+echo "$HGREPOS"
+
+
+#Git Repositories
+#for i in ~/hobby-code/ ~/data ;
+for i in $GITREPOS ;
 do
   echo ---------$i------------
   if [[ -d $i ]] ; then
       cd $i
       if [[ -z $1 ]] ; then 
-          git status
+          git status --porcelain
+          echo "result:" $?
       elif [ $1 = 'gui' ] ;
       then
-          git gui
+          git status
+          unset modified
+          eval `git status --porcelain | sed 's/.*/modified=yes/'`
+          echo modified = $modified
+          if [ "$modified" = 'yes' ] ;
+          then
+              git gui
+          fi
       elif [ $1 = 'fetch' ] ;
       then
           git fetch
@@ -30,17 +49,27 @@ do
   fi
 done
 
-for i in `find ~ -name ".hg" -printf '%h\n' | grep -v ~/.local/share/Trash`;
+
+#Mercurial Repositories
 #for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ~/pyenv/src/ckanext-community;
+for i in $HGREPOS ;
 do
   echo ---------$i------------
   if [[ -d $i ]] ; then
       cd $i
       if [[ -z $1 ]] ; then 
           hg status
+          echo "result:" $?
       elif [ $1 = 'gui' ] ;
       then
-          hgtk commit
+          hg status
+          unset modified
+          eval `hg status | sed 's/.*/modified=yes/'`
+          echo modified = $modified
+          if [ "$modified" = 'yes' ] ;
+          then
+              hgtk commit
+          fi
       elif [ $1 = 'fetch' ] ;
       then
           hg pull
