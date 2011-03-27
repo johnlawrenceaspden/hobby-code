@@ -1,10 +1,9 @@
 #!/bin/bash
 
-GUI=yes
-
 cur=`pwd` 
 echo saving directory $cur
-for i in ~/hobby-code/ ~/data;
+for i in `find ~ -name ".git" -printf '%h\n' | grep -v ~/.local/share/Trash`;
+#for i in ~/hobby-code/ ~/data;
 do
   echo ---------$i------------
   if [[ -d $i ]] ; then
@@ -14,6 +13,9 @@ do
       elif [ $1 = 'gui' ] ;
       then
           git gui
+      elif [ $1 = 'fetch' ] ;
+      then
+          git fetch
       elif [ $1 = 'pull' ] ;
       then
           git pull
@@ -28,7 +30,8 @@ do
   fi
 done
 
-for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ~/pyenv/src/ckanext-community;
+for i in `find ~ -name ".hg" -printf '%h\n' | grep -v ~/.local/share/Trash`;
+#for i in ~/pyenv/src/ckan ~/pyenv/src/ckanext-admin ~/pyenv/src/ckanext-community;
 do
   echo ---------$i------------
   if [[ -d $i ]] ; then
@@ -38,6 +41,9 @@ do
       elif [ $1 = 'gui' ] ;
       then
           hgtk commit
+      elif [ $1 = 'fetch' ] ;
+      then
+          hg pull
       elif [ $1 = 'pull' ] ;
       then
           hg pull
