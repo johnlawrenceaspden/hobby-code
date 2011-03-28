@@ -107,3 +107,76 @@ for row in session.query(User, User.name).all():
     print row.User, row.name
 
 
+from sqlalchemy.orm import aliased
+user_alias = aliased(User, name='user_alias')
+for row in session.query(user_alias, user_alias.name.label('name_label')).all():
+    print row.user_alias, row.name_label
+
+
+for u in session.query(User).order_by(User.id)[0:6]:
+    print u
+
+for u in session.query(User.name).filter_by(name='john'):
+    print u
+
+for u in session.query(User.name).filter(User.name=='john'):
+    print u
+
+for u in session.query(User).filter(User.name=='ed').filter(User.fullname=='Ed Jones'):
+    print u
+
+q=session.query(User)
+eq=q.filter(User.name == 'ed')
+
+weq=q.filter(or_(User.name == 'ed', User.name == 'wendy'))
+
+
+for u in weq: 
+    print u
+
+try:
+    weq.one()
+except Exception as e:
+    print e
+
+for u in session.query(User).filter("id<3").order_by('id').all():
+    print u, u.id
+
+session.query(User).from_statement("SELECT * FROM users where name=:name").params(name='ed').all()
+
+session.query(User).filter(User.name.like('%e%')).all()
+
+
+from sqlalchemy.orm import relation, backref
+
+class Address(Base):
+    __tablename__='addresses'
+    id = Column(Integer, primary_key=True)
+    email_address = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
+
+    user = relation(User, backref=backref('addresses', order_by=id))
+
+    def __init__(self, email_address):
+        self.email_address = email_address
+
+    def __repr__(self):
+        return "<Address('%s')>" % self.email_address
+
+
+jack = User('jack', 'Jack Bean', 'gqohfqop')
+
+jack.addresses = [Address(email_address='jack@google.com'), Address(email_address='j25@yahoo.com')]
+
+print jack.addresses
+print jack.addresses[1]
+print jack.addresses[1].user
+
+
+session.query(User).all()
+
+session.add(jack)
+session.dirty
+session.new
+
+session.query(User).all()
