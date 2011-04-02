@@ -2,5 +2,7 @@ bloody-maven/maven-test-project/target/
 *.class
 *.clj.html
 *~
+.emacs.desktop
+.emacs.desktop.lock
 data
 
