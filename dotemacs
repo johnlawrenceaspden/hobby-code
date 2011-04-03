@@ -155,9 +155,9 @@
 ;; python
 
 ;; use the version of python.el in fgallina's github repository
-;; which should be a sub-repo of hobby-code:
-;; cd ~/hobby-code &&  git clone git://github.com/fgallina/python.el.git
-(add-to-list 'load-path "~/hobby-code/python.el/")
+;; which should be checked out in the root directory:
+;; cd &&  git clone git://github.com/fgallina/python.el.git
+(add-to-list 'load-path "~/python.el/")
 (require 'python)
 
 ;; use the ~/pyenv virtual environment
