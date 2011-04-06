@@ -22,10 +22,6 @@
   (let [a (+ (/ l 10) 1)]
     (line -7 a +7 a)))
 
-;(for [l (range 0 -10 -1)] (log-likelihood-line l))
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; the integral over R of e^{-x^2} is sqrt{tau}
@@ -119,9 +115,15 @@
 (lldg-change 1 4 0.1 0) ; 0.033849244645473675
 (lldg-change 1 4 0 0.1) ; 0.007052710759177572
 
-;; so for best improvement with least movement, we should go in the
+;; We see that if we change m1 by 0.1 then the likelihood
+;; goes up by 0.03
+;; And if we change m2 by the same amount, then it goes up
+;; by only 0.007
+
+;; For best improvement with least movement, we should go in the
 ;; 0.03,0.007 direction
 
+;; Here are some steps in that direction
 (try-ms 1.03 4.007) ; -5.6114200093098745
 (try-ms 1.06 4.014) ; -5.600057744971212
 (try-ms 1.09 4.021) ; -5.589155679777338
@@ -158,7 +160,8 @@
 (lldg-change 1.6 4.14 0.01 0) ; 1.321861857217499E-5
 (lldg-change 1.6 4.14 0 0.01) ; 0.0016007117192540221
 
-;; looks like our favourite direction is now 0,0.001
+;; looks like our favourite direction is now 0,0.001,
+;; but we can only expect small improvements from now on.
 
 (try-ms 1.6 4.141) ; -5.481000063373828
 (try-ms 1.6 4.142) ; -5.480835863989811
@@ -188,7 +191,7 @@
 (try-ms 1.6 4.35) ; -5.471218203375829
 (try-ms 1.6 4.40) ; -5.4757278738800155
 
-
+;; We were getting tiny improvements 
 
 
 
