@@ -95,6 +95,13 @@
  '(inhibit-startup-screen t)
  '(speedbar-show-unknown-files t))
 
+;; stop the speedbar jumping around
+(require 'speedbar)
+(speedbar-disable-update)
+;; and make it show all files (original behaviour comes back with:
+;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+(setq speedbar-directory-unshown-regexp "^$")
+
 ;; start emacs server
 (server-start)
 
@@ -223,6 +230,7 @@
 
 ;; keyboard macro of the gods:
 ;; evaluates the expression on the line BELOW, and pastes the result afterwards
+;; set it to be the last keyboard macro, which means that it's executable with f4
 (setq last-kbd-macro
   [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
 
@@ -238,8 +246,12 @@
       "\M-\C-x\M-\C-e")
 (global-set-key [f5] 'running-eval)
 
+(defun desktop-okfn ()
+  (interactive)
+  (desktop-read "~/data/okfn"))
 
-
-
+(defun desktop-read-okfn ()
+  (interactive)
+  (desktop-read "~/data/okfn"))
 
 
