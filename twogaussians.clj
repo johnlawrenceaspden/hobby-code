@@ -193,6 +193,94 @@
 
 ;; We were getting tiny improvements 
 
+;; We'd like to get rid of all the single stepping
+
+;; Suppose our best guess so far was 1, 4
+
+;; Then we can work out what direction to go in
+
+(lldg-change 1 4 0.1 0) ; 0.033849244645473675
+(lldg-change 1 4 0 0.1) ; 0.007052710759177572
+
+;; And then we can say that the direction (33,7) is the best one to go in.
+
+;; If we move a distance 1 in the direction 33,7, what changes to the coordinates would we make?
+
+(defn length-squared [dx,dy] = (+ (* dx dx) (* dy dy)))
+(defn length [dx,dy] (Math/sqrt (length-squared dx dy)))
+
+(/ 33 (length 33 7)) ; 0.9782341251024412
+(/ 7  (length 33 7)) ; 0.20750420835506328
+
+;; Let's check that!
+
+(length 0.978 0.207) ; 0.9996664443703209 ;close enough for government work
+
+;; And now we can wrap that up:
+
+(defn unit-direction-to-go-in [m1 m2]
+  (let [dx (lldg-change m1 m2 0.0001 0)
+        dy (lldg-change m1 m2 0 0.0001)
+        len (length dx dy)]
+    [(/ dx len) (/ dy len)]))
+
+(unit-direction-to-go-in 1 4) ; [0.926708151670451 0.3757818537762786]
+
+;; But how much change are we expecting when we go in this direction?
+
+(lldg 1 4) ; -5.623243186987147
+
+(defn change-for-small-step [m1 m2 step]
+  (let [[dx dy] (unit-direction-to-go-in m1 m2)]
+    (-
+     (lldg (+ m1 (* step dx)) (+ m2 (* step dy)))
+     (lldg m1 m2))))
+
+(change-for-small-step 1 4 0.00001) ; 3.961153764997505E-6
+(change-for-small-step 1 4 0.0001) ; 3.9609271810014945E-5
+(change-for-small-step 1 4 0.001) ; 3.958661797289764E-4
+(change-for-small-step 1 4 0.01) ; 0.003936053241869075
+(change-for-small-step 1 4 0.1) ; 0.03713992121104681
+
+;; Notice how as the jump size gets ten times bigger, the effect size also
+;; gets about ten times bigger.
+
+;; It seems that we can predict the effect of a largish jump (0.1)
+;; from the effect of a small jump.
+
+;; Of course this can't go on for ever!
+
+(change-for-small-step 1 4 0.1) ; 0.03713992121104681
+(change-for-small-step 1 4 1) ; 0.12767056083647343
+(change-for-small-step 1 4 10) ; -37.168227127341524
+
+;; What we'd like to do is to keep moving forward in small steps until
+
+
+
+
+
+
+
+
+      
+
+
+    
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
