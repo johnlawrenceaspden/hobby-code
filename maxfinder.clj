@@ -27,19 +27,19 @@
 
 ;; We can see how it might be improved by small movements in various directions
 
-(df [0.0001 0 0]) ; -2.000100000003613E-4
-(df [0 0.0001 0]) ; -4.0000999999989517E-4
-(df [0 0 0.0001]) ; -6.000100000012054E-4
+(df123 [0.0001 0 0]) ; -2.000100000003613E-4
+(df123 [0 0.0001 0]) ; -4.0000999999989517E-4
+(df123 [0 0 0.0001]) ; -6.000100000012054E-4
 
-(df [0.000001 0 0]) ; -2.0000010003684565E-6
-(df [0 0.000001 0]) ; -4.0000010006480125E-6
-(df [0 0 0.000001]) ; -6.000001000927568E-6
+(df123 [0.000001 0 0]) ; -2.0000010003684565E-6
+(df123 [0 0.000001 0]) ; -4.0000010006480125E-6
+(df123 [0 0 0.000001]) ; -6.000001000927568E-6
 
 ;; Notice how smaller changes produce smaller changes, and also how the first few figures seem to
 ;; be constant even as the exponents shrink.
 
 ;; If we divide by the value of the small change, we get an idea of how much the value will change
-;; in response to any small change.
+;; in response to any change.
 
 (defn direction [eps]
   (fn [f]
@@ -76,7 +76,7 @@
 ;; Much better!
 
 ;; What we did once, we can do twice
-(def x2 (map #(+ %1 (* 0.1 %2)) x1 (gf x1)))
+(def x2 (map #(+ %1 (* 0.1 %2)) x1 (gf x1))) 
 (f x2) ; 4.265738239031679
 
 ;; Or many times:
@@ -98,7 +98,7 @@
 (take 2 (drop 300 (map f (iterate (improve 0.001) x))))
 ;; then our improvement takes much longer
 ;; If we try a larger one
-(take 5 (map f (iterate (improve 0.5) x))))
+(take 5 (map f (iterate (improve 0.5) x)))
 ;; Then it's instantaneous
 
 ;; But if we over-reach
