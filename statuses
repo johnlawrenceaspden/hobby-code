@@ -58,6 +58,8 @@ do
       cd $i
       if [[ -z $1 ]] ; then 
           hg status
+          hg incoming
+          hg outgoing
       elif [ $1 = 'gui' ] ;
       then
           hg status
