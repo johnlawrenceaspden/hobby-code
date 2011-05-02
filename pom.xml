@@ -27,35 +27,35 @@
   <!-- libraries -->
   <dependencies>
 
-    <dependency>
-      <groupId>cdt</groupId>
-      <artifactId>cdt</artifactId>
-      <version>1.2.4</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>cdt</groupId> -->
+    <!--   <artifactId>cdt</artifactId> -->
+    <!--   <version>1.2.4</version> -->
+    <!-- </dependency> -->
 
-    <dependency>
-      <groupId>org.clojars.gjahad</groupId>
-      <artifactId>debug-repl</artifactId>
-      <version>0.3.1</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.clojars.gjahad</groupId> -->
+    <!--   <artifactId>debug-repl</artifactId> -->
+    <!--   <version>0.3.1</version> -->
+    <!-- </dependency> -->
 
-    <dependency>
-      <groupId>clojure-csv</groupId>
-      <artifactId>clojure-csv</artifactId>
-      <version>1.2.0</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>clojure-csv</groupId> -->
+    <!--   <artifactId>clojure-csv</artifactId> -->
+    <!--   <version>1.2.0</version> -->
+    <!-- </dependency> -->
 
-    <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>9.0-801.jdbc4</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>postgresql</groupId> -->
+    <!--   <artifactId>postgresql</artifactId> -->
+    <!--   <version>9.0-801.jdbc4</version> -->
+    <!-- </dependency> -->
 
-    <dependency>
-      <groupId>com.rabbitmq</groupId>
-      <artifactId>amqp-client</artifactId>
-      <version>2.3.1</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.rabbitmq</groupId> -->
+    <!--   <artifactId>amqp-client</artifactId> -->
+    <!--   <version>2.3.1</version> -->
+    <!-- </dependency> -->
 
     <dependency>
       <groupId>incanter</groupId>
@@ -117,7 +117,7 @@
                 <version>1.3.5</version>
                 <!-- always run this before starting a repl -->
                 <configuration>
-                  <replScript>require-all-snippet.clj</replScript>
+                  <replScript>u.clj</replScript>
                 </configuration>
       </plugin>
 
