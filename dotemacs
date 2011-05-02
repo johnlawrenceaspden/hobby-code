@@ -252,8 +252,8 @@
   (interactive)
   (desktop-read "~/data/okfn"))
 
-(defun desktop-read-okfn ()
+(defun desktop-okfn-save ()
   (interactive)
-  (desktop-read "~/data/okfn"))
+  (desktop-save "~/data/okfn"))
 
 
