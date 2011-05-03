@@ -1,12 +1,12 @@
 ;; Chapter 22 of ITILA, question about window and stars
 
-;; Let the whole space be divided into N bits
+;; Let the whole space be divided into discrete bins
 
 ;; Then we can make random star fields like
 (defn random-star-field [chance-of-star]
   (repeatedly #(if (< (rand) chance-of-star) 1 0)))
 
-(random-star-field 0.1) ; (0 0 0 1 0 0 1 0 0 0 0 ...)
+(random-star-field 0.1) ; (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ...)
 
 (defn leftmost-star [starfield]
   (count (take-while #{0} starfield)))
@@ -16,8 +16,8 @@
 (defn sky-view [sky-size wall-position chance-of-star]
   {:wall-position wall-position
    :chance-of-star chance-of-star
-   :star-field (concat (take wall-position (random-star-field 0))
-                       (take (- N wall-position) (random-star-field chance-of-star)))})
+   :star-field (concat (take (inc wall-position) (random-star-field 0))
+                       (take (dec (- sky-size wall-position)) (random-star-field chance-of-star)))})
 
 (sky-view 10 3 0.95 )
 ;; {:wall-position 3, :chance-of-star 0.95, :star-field (0 0 0 1 0 1 1 1 1 1)}
@@ -26,7 +26,7 @@
 
 (defn make-random-sample [sky-size chance-of-star]
      "uniform distribution of wall, fixed starfield density"
-     (random-star-field-with-wall sky-size (rand-int sky-size) chance-of-star))
+     (sky-view sky-size (rand-int sky-size) chance-of-star))
 
 (repeatedly #(make-random-sample 10 0.1))
 
@@ -36,25 +36,26 @@
    :wall-pos (sky-view :wall-position)})
 
 
-
-(def data (repeatedly #(make-random-sample 10 0.5)))
-
-(def s (map stats data))
-
-(view (scatter-plot
-       (map :leftmost s)
-       (map :wall-pos s)))
-
-
-(defn wall-by-first-star [pos]
-  (map :wall-pos (filter #(= (:leftmost %) pos) s)))
-
-(view (histogram (wall-by-first-star 5)))
-
-
-
 (use '(incanter core charts stats))
-(view (histogram  :nbins 100))
+
+(defn sample-data [sample-size sky-size avg-stars]
+  (let [star-chance (/ avg-stars sky-size)]
+    (take sample-size
+          (map stats
+               (repeatedly #(make-random-sample sky-size star-chance))))))
+
+(let [s (sample-data 100 10 6)]
+  (view (scatter-plot
+         (map :leftmost s)
+         (map :wall-pos s))))
+
+(defn wall-positions-by-first-star [sky-size avg-stars star-position sample-size]
+  (map :wall-pos
+       (filter #(= (:leftmost %) star-position)
+               (sample-data sample-size sky-size avg-stars))))
+
+(for [pos (range 1 (inc 20))]
+  (view (histogram (wall-positions-by-first-star 20 4 pos 10000) :nbins pos)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
