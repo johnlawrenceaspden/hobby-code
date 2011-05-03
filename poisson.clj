@@ -319,23 +319,21 @@
 ;; This half-witted way of thinking about what the calculations mean is my own,
 ;; and I don't want to blame it on Bayes or anyone else. But it works for me.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 
+;; This is a more conventional way to calculate the chance of a Poisson
+;; distribution with constant 9 producing 7 events:
+
+(/
+ (* (Math/exp -9)
+    (reduce * (repeat 7 9)))
+ (reduce * (map inc (range 7)))) ; 0.11711612445290907
+
+;; But it produces the same answer as mine.
+
+(nth (poisson 9) 7) ; 0.11711612445290907
+
+;; Proof by it totally works on this example.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-(reduce + (take 10 (poisson 1)))
-
-(/ (* (Math/exp -9) (reduce * (repeat 9 9))) (reduce * (range 1 10)))
-
-(clojure.pprint/cl-format nil "~{~$~^,~}" (map #(nth (poisson %) 9) (range 0 20 0.1)))
 
