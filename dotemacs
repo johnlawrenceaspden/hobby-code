@@ -256,4 +256,10 @@
   (interactive)
   (desktop-save "~/data/okfn"))
 
-
+(defun path-to-clipboard ()
+  "Copy the current file's path to the clipboard.
+  If the current buffer has no file, copy the buffer's default directory."
+  (interactive)
+  (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
+    (kill-new path)
+    (message "%s" path)))
