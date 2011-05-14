@@ -96,7 +96,7 @@
 (likelihood [100 100 100] 100 1) ; 0.06349363593424098
 
 ;; As sigma reduces, it should blow up violently
-(likelihood [0 0 0] 0 1) ; 63.49363593424098
+(likelihood [0 0 0] 0 1) ; 0.06349363593424098
 (likelihood [0 0 0] 0 0.1) ; 63.49363593424098
 (likelihood [0 0 0] 0 0.01) ; 63493.63593424098
 
@@ -188,42 +188,79 @@
 ;; Which does actually tend to the true variance
 (running-average (map frigged-sample-variance g-samples))
 ;; Note to the variance, which is the standard deviation squared
-(drop 1000 (running-average (map frigged-sample-variance (partition 5 (repeatedly #(g-sample -1 2))))))
+(map #(Math/sqrt %)
+     (drop 5000 (running-average
+            (map frigged-sample-variance
+                 (partition 5 (repeatedly #(g-sample -1 2)))))))
+;; The average square roots don't head for the right answer
+(drop 1000 (running-average
+            (map #(Math/sqrt %) (map frigged-sample-variance
+                                     (partition 5 (repeatedly #(g-sample -1 2)))))))
 
 ;; What about the a priori?
 
 ;; An improper prior flat in mu and in log sigma
-(defn prior [mu sigma]
-  (/ sigma))
+(defn scaly-prior [mu sigma] (/ sigma))
+;; And here's a flat prior
+(defn flat-prior [mu sigma] 1)
 
-(defn apriori [xs mu sigma]
+;; Neither of these priors are integrable! We need to understand the calculations below as
+;; some sort of limiting procedure!
+
+(defn apriori [xs mu sigma prior]
   (* (likelihood xs mu sigma) (prior mu sigma)))
 
 ;; to find P(xs|sigma) we want to marginalize over mu
 
 ;; Approximate the integral over all mu with
-(defn marginal [xs sigma]
-  (integrate #(apriori xs % sigma) -10 10 1000)))
+(defn marginal [xs sigma prior]
+  (integrate #(apriori xs % sigma prior) -100 100 1000)))
 
-(marginal [-1 0 1] 0.1) ; 3.41830896457454E-42
-(marginal [-1 0 1] 1) ; 0.03380376099157293
-(marginal [-1 0 1] 10) ; 8.339892543370214E-5
-(marginal [-1 0 1] 2) ; 0.008945320322591334
-(marginal [-1 0 1] 0.5) ; 0.013463921276626987
-(marginal [-1 0 1] 0.4) ; 0.002771654027575139
-(marginal [-1 0 1] 0.6) ; 0.026450396844351777
-(marginal [-1 0 1] 0.7) ; 0.034805679362073204
-(marginal [-1 0 1] 0.79) ; 0.03754092781628644
-(marginal [-1 0 1] 0.8) ; 0.03761875473497534
-(marginal [-1 0 1] 0.81) ; 0.037659199213729164
-(marginal [-1 0 1] 0.815) ; 0.03766606741719416
-(marginal [-1 0 1] 0.82) ; 0.03766438264111172
-(marginal [-1 0 1] 0.83) ; 0.03763638664326089
-(marginal [-1 0 1] 0.9) ; 0.036674647553058506
-(marginal [-1 0 1] 0.99) ; 0.034138269413039005
-(marginal [-1 0 1] 1) ; 0.03380376099157293
-(marginal [-1 0 1] 1.01) ; 0.033462487198114656
+(marginal [-1 0 1] 0.1 flat-prior) ; 4.747442358295283E-43
+(marginal [-1 0 1] 0.5 flat-prior) ; 0.006731960638313491
+(marginal [-1 0 1] 0.4 flat-prior) ; 0.0011086616110382909
+(marginal [-1 0 1] 0.6 flat-prior) ; 0.015870238106611062
+(marginal [-1 0 1] 0.7 flat-prior) ; 0.024363975553451225
+(marginal [-1 0 1] 0.79 flat-prior) ; 0.029657332974866286
+(marginal [-1 0 1] 0.8 flat-prior) ; 0.030095003787980325
+(marginal [-1 0 1] 0.81 flat-prior) ; 0.030503951363120632
+(marginal [-1 0 1] 0.815 flat-prior) ; 0.03069784494501325
+(marginal [-1 0 1] 0.82 flat-prior) ; 0.030884793765711644
+(marginal [-1 0 1] 0.83 flat-prior) ; 0.031238200913906517
+(marginal [-1 0 1] 0.9 flat-prior) ; 0.03300718279775266
+(marginal [-1 0 1] 0.99 flat-prior) ; 0.03379688671890863
+(marginal [-1 0 1] 1 flat-prior) ; 0.033803760991572916
+(marginal [-1 0 1] 1.01 flat-prior) ; 0.03379711207009581
+(marginal [-1 0 1] 2 flat-prior) ; 0.017890640645182674
+(marginal [-1 0 1] 4 flat-prior) ; 0.0053950579819349595
+(marginal [-1 0 1] 8 flat-prior) ; 0.0014134930551064637
+(marginal [-1 0 1] 16 flat-prior) ; 3.5753871598834274E-4
 
+;; With a flat prior, say our adversary is choosing sigma by randomly rolling a d1000000 and dividing by 1000000, three points is just enough to give sigma a maximum at 1,
+;; I calculate it should be at sqrt (2), and that the die off of this function should be 1/sigma
+;; meaning that although the posterior has a mode, its mean or median are determined by
+;; the adversary's range.
 
+(marginal [-1 0 1] 0.1 scaly-prior) ; 4.747442358295282E-42
+(marginal [-1 0 1] 0.5 scaly-prior) ; 0.013463921276626982
+(marginal [-1 0 1] 0.4 scaly-prior) ; 0.0027716540275957266
+(marginal [-1 0 1] 0.6 scaly-prior) ; 0.02645039684435177
+(marginal [-1 0 1] 0.7 scaly-prior) ; 0.034805679362073176
+(marginal [-1 0 1] 0.79 scaly-prior) ; 0.037540927816286436
+(marginal [-1 0 1] 0.8 scaly-prior) ; 0.03761875473497538
+(marginal [-1 0 1] 0.81 scaly-prior) ; 0.03765919921372918
+(marginal [-1 0 1] 0.815 scaly-prior) ; 0.037666067417194166
+(marginal [-1 0 1] 0.82 scaly-prior) ; 0.03766438264111176
+(marginal [-1 0 1] 0.83 scaly-prior) ; 0.03763638664326088
+(marginal [-1 0 1] 0.9 scaly-prior) ; 0.03667464755305852
+(marginal [-1 0 1] 0.99 scaly-prior) ; 0.03413826941303902
+(marginal [-1 0 1] 1 scaly-prior) ; 0.033803760991572916
+(marginal [-1 0 1] 1.01 scaly-prior) ; 0.03346248719811465
+(marginal [-1 0 1] 2 scaly-prior) ; 0.008945320322591337
+(marginal [-1 0 1] 4 scaly-prior) ; 0.0013487644954837399
+(marginal [-1 0 1] 8 scaly-prior) ; 1.7668663188830796E-4
+(marginal [-1 0 1] 16 scaly-prior) ; 2.234616974927142E-5
 
-;; Hmm. Looks like it's 0.81 again, which it really shouldn't be!
+;; With a scaly prior, it looks as though the best estimate for sigma is 0.81
+;; again, which it really shouldn't be!, and as though the prior dies off as 1/sigma^3
+
