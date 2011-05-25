@@ -1,6 +1,6 @@
-;; Numerical Integration: Some more difficult functions
+;; Numerical Integration: Harder Functions
 
-;; So far we've found a couple of approximations to 'the area under a graph'
+;; So far we've found a couple of approximations to 'the area under a graph'.
 
 (defn trapezium-rule [f a b]
   (* 1/2 (- b a) (+ (f a) (f b))))
@@ -28,7 +28,7 @@
 
 ;; How do we do with some other functions?
 
-;; Another one where we can calculate the answer directly is sine
+;; Another function where we can calculate the answer directly is sine
 (defn sine [x] (Math/sin x))
 
 ;; The integral of sine over a half-turn (i.e. over the interval [0,pi]) is exactly 2.
@@ -40,25 +40,6 @@
 ;; Simpson's rule also settles down to 2, but it's much quicker.
 (take 10 (map (partial iterated-rule simpson-rule sine 0 Math/PI) (iterate inc 0))) ; (2.094395102393196 2.0045597549844216 2.000269169948388 2.0000165910479364 2.000001033369414 2.0000000645300027 2.000000004032258 2.000000000252003 2.000000000015751 2.000000000000985)
 
-;; What about if we're integrating a badly behaved function?:
-
-(defn inverse [x] (/ x))
-
-;; the real answer, by devious mathematical trickery is (log a) - (log b)
-
-;; So if we integrate over the region [0.0001, 1], where the values of 1/x are
-;; sometimes very large, we should get:
-
-(- (Math/log 1) (Math/log 0.0001)) ; 9.210340371976182
-
-(take 10 (map (partial iterated-rule trapezium-rule inverse 0.0001 1) (iterate inc 0))) ; (4999.99995 2500.9997750199977 1251.8327765203333 627.5916420975113 315.8156999790102 160.27209317742054 82.84288624590312 44.46707207824598 25.61044440290146 16.499072595032356)
-
-(take 10 (map (partial iterated-rule simpson-rule inverse 0.0001 1) (iterate inc 0))) ; (1667.9997166933313 835.4437770204453 419.5112639565708 211.89038593950997 108.42422424355732 57.03315060206397 31.67513402236028 19.324901844453297 13.461948659075995 10.812578055293251)
-
-;; It looks like both the rules are converging to something, and maybe even the
-;; right answer, but the convergence is very slow.  Remember that to get the
-;; tenth element of this sequence we're splitting the interval up into 1024
-;; pieces.
 
 ;; Another type function that doesn't do so well is:
 
@@ -80,6 +61,32 @@
 (take 10 (map (partial iterated-rule trapezium-rule evil-step 0. 1) (iterate inc 0))) ; (0.5 0.25 0.375 0.4375 0.46875 0.484375 0.4921875 0.49609375 0.498046875 0.4990234375)
 (take 10 (map (partial iterated-rule simpson-rule evil-step 0. 1) (iterate inc 0))) ; (0.1666666666666667 0.4166666666666668 0.4583333333333335 0.4791666666666668 0.4895833333333335 0.4947916666666668 0.4973958333333335 0.4986979166666668 0.4993489583333335 0.4996744791666668)
 
+
+
+;; What about if we're integrating a badly behaved function?:
+
+(defn inverse [x] (/ x))
+
+;; the real answer, by devious mathematical trickery is (log a) - (log b)
+
+;; So if we integrate over the region [0.0001, 1], where the values of 1/x are
+;; sometimes very large, we should get:
+
+(- (Math/log 1) (Math/log 0.0001)) ; 9.210340371976182
+
+(take 10 (map (partial iterated-rule trapezium-rule inverse 0.0001 1) (iterate inc 0))) ; (4999.99995 2500.9997750199977 1251.8327765203333 627.5916420975113 315.8156999790102 160.27209317742054 82.84288624590312 44.46707207824598 25.61044440290146 16.499072595032356)
+
+(take 10 (map (partial iterated-rule simpson-rule inverse 0.0001 1) (iterate inc 0))) ; (1667.9997166933313 835.4437770204453 419.5112639565708 211.89038593950997 108.42422424355732 57.03315060206397 31.67513402236028 19.324901844453297 13.461948659075995 10.812578055293251)
+
+;; It looks like both the rules after starting off with appalling first guesses,
+;; are converging to something, and maybe even the right answer, but the
+;; convergence is very slow.  Remember that to get the tenth element of this
+;; sequence we're splitting the interval up into 1024 pieces, and we haven't
+;; even got the answer right to one significant figure.
+
+;; Numerical Integration can give very misleading answers if it's used naively.
+;; Quite often, the results of a numerical simulation will just look wrong to a
+;; trained eye, and in those cases it's usually the eye that's in the right.
 
 
 
