@@ -123,15 +123,10 @@
 
 ;; I think that's pretty good.
 
-(- (Math/log 10000000) (Math/log 1)) ; 16.11809565095832
-(time
- (integrate (fn[x] (/ 1.0 x)) 1 10000000))
-
-;; "Elapsed time: 447.804094 msecs"
-;; 16.118095650998594
-
 ;; Unfortunately, we can still lock up the computer by asking the wrong question
+
 (- (Math/log 100000000) (Math/log 1)) ; 18.420680743952367
+;; but:
 (time
  (integrate (fn[x] (/ 1.0 x)) 1 100000000)) ; Freezes REPL
 
