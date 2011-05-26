@@ -119,7 +119,21 @@
 (go 1000) ; [34.53877639491147 4.549938203979309E-11]
 (go 10000) ; [34.53877639491065 9.361001557239845E-16]
 
+(defn integrate[ f a b n ]
+  (let [things (evil-improve-loop booles-rule f a b n)]
+    [(reduce + (map second things))
+     (reduce + (map first things))]))
 
+
+(integrate square 0 2 10) ; [8/3 0]
+(integrate sine 0 Math/PI 10) ; [1.9999999999725113 1.7383848804897184E-9]
+(integrate sine 0 Math/PI 30) ; [1.9999999999999762 1.463142107471782E-12]
+(integrate sine 0 Math/PI 100) ; [1.9999999999999991 3.1931922384043077E-15]
+(integrate sine 0 Math/PI 1000) ; [1.999999999999999 2.526233413538588E-17]
+
+(integrate inverse 0.0001 2 10) ; [10.004656962088271 0.33632812781504795]
+(integrate inverse 0.0001 2 20) ; [9.903491702279531 1.5952362483767635E-4]
+(integrate inverse 0.0001 2 1000) ; [9.903487552536125 7.435024818036595E-15]
 
 
     
