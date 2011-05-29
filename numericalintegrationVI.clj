@@ -323,7 +323,7 @@ errorstructs
 (iterated-rule trapezium-rule sine80squared 0 Math/PI 9) ; 1.5707963267948957
 (iterated-rule trapezium-rule sine80squared 0 Math/PI 10) ; 1.5707963267948963
 
-;; With booles' rule the story is the same:
+;; With Booles' rule the story is the same:
 (iterated-rule booles-rule sine80squared 0 Math/PI 1) ; 3.1974110932118413E-28
 (iterated-rule booles-rule sine80squared 0 Math/PI 2) ; 3.7074689566598855E-28
 (iterated-rule booles-rule sine80squared 0 Math/PI 3) ; 2.2340214425527414
