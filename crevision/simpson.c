@@ -24,6 +24,11 @@ double normal(double x)
   return gaussian(x,0,1);
 }
 
+double cauchy(double x)
+{
+  return 1.0/(pow (1+x*x), 0.5);
+}
+
 double xtothefour(double x)
 {
   return x*x*x*x;
