@@ -1,0 +1,71 @@
+Smartgauge people say:
+
+no charging below 12.5 volts
+10-15 year old alternator charges at 13.8 volts, takes 72 hours to fill batteries
+4-5 hours cruising will get batteries to 65% charge state.
+batteries should not be run down to less than 50% charge state. Causes sulphation.
+Alternator controller takes voltage up to 14.4 volts
+energy returned to battery is square of difference from 12.5 so 1.6->4 at 12.5 volts
+
+some alternator controllers cycle around 14.4, occasional bursts of 14.8 to increase charge rate and desulphate a little.
+
+-------------------------------------------------------
+
+my system (with engine running, light green for float charge)
+12.86 volts across domestic bank
+14.0 across starter bank.
+
+why this difference? alternator regulator is connected across domestic batteries.
+
+0.03 volts lost between plug at front and across batteries
+
+-------------------------------------------------------------
+
+wikipedia
+
+typical voltages (at temperature of 20C)
+for 6-cell lead acid batteries
+quiescent (open circuit) at full charge 12.6-12.8 volts.
+open circuit at full discharge 11.8-12.0 volts
+loaded at full discharge 10.5v
+float charge (continuous preservation charge) 13.8v
+typical daily charging 14.2-14.5v
+equalization charging 15v for no more than 2 hours. battery temperature must be monitored.
+gassing threshold 14.4v
+after full charge, terminal voltage drops quickly to 13.2 volts and then slowly to 12.6 volts.
+
+--------------------------------------------------------------
+
+http://www.solar-facts.com/batteries/battery-charging.php
+
+12v = 50% charge (on battery which has been left alone for a couple of hours) 
+12-12.5 roughly linear in charge state
+11.75 = 30%
+11.25 = 10%
+12.25 = 70%
+12.5 = 95%
+11.5 = 20%
+
+inverters usually cut out at 11v (7% charge) so as not to completely discharge the battery, which is very bad for it.
+
+efficiency level is 85% (less power out than in), drops to 60% when battery above 80% charged. however if a battery is never fully charged, then efficiency reduces with each cycle.
+
+------------------------------------------
+
+Jeremy Solar-Panel fitting man
+
+claims 12.4 is half-full and 12v is almost empty.
+
+--------------------------------------------
+http://www.buchanan1.net/lead_acid.shtml
+calculations from yuasa battery book
+
+Temperature: 77 degrees Fahrenheit
+
+ Percent  Hydrometer  Unloaded
+  charge     reading   voltage
+     100       1.265     12.63
+      75       1.210     12.30
+      50       1.160     12.00
+      25       1.120     11.76
+       0       1.100     11.64
