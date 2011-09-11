@@ -38,10 +38,6 @@
 ;stop messing about
 (setq even-window-heights nil)
 
-; make a copy for backup rather than moving the file and writing a new one.
-; means that hard links survive editing.
-(setq backup-by-copying t)
-
 ; make emacs use the clipboard
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
@@ -68,10 +64,21 @@
 ;; ========== Place Backup Files in Specific Directory ==========
 ;; Enable backup files.
 (setq make-backup-files t)
-;; Keep last five versions
-(setq version-control t)
-;; Save all backup file in this directory.
+; make a copy for backup rather than moving the file and writing a new one.
+; means that hard links survive editing.
+(setq backup-by-copying t)
+;; Save all backup file in this directory. Argument one is a regexp so .* matches everything.
 (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+;; Keep several previous versions too
+(setq version-control t)
+;; Just delete the excess old versions without asking
+(setq delete-old-versions t)
+;; No of versions to keep. probably excessive, but disk space is cheap.
+(setq 
+  kept-new-versions 60
+  kept-old-versions 60)
+
+
 
 ;; Put the full path of the file being edited in the titlebar
 (setq frame-title-format '("%b" (buffer-file-name ": %f")))
