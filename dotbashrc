@@ -73,12 +73,18 @@ esac
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     eval "`dircolors -b`"
     alias ls='ls --color=auto'
-    #alias dir='ls --color=auto --format=vertical'
-    #alias vdir='ls --color=auto --format=long'
+    alias lsal='ls --color=auto -al'
+    alias lsa='ls --color=auto -a'
+    alias lsl='ls --color=auto -l'
+#    alias dir='ls --color=auto --format=vertical'
+#    alias vdir='ls --color=auto --format=long'
+#    alias ll='ls --color=auto -Falh'
+#    alias la='ls --color=auto -A'
 
-    #alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias cgrep='grep --color=auto --context=10'
 fi
 
 # some more ls aliases
@@ -104,10 +110,6 @@ shopt -s histappend
 PROMPT_COMMAND='history -a' #fix new window problem
 
 #Remember M-. gets the arguments of previous commands
-
-#long format listing
-function ll {  command ls -Falh "$@" ; }
-export -f ll
 
 #show doc files for command
 function doc {  pushd "/usr/share/doc/$1" && ls ; }
