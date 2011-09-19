@@ -143,6 +143,18 @@
 
 (define-key global-map (kbd "C-x 8") 'swap-windows)
 
+;; Buffer switching foolishness from http://www.telecom.otago.ac.nz/tele402/emacs.html
+;; Make it easier to navigate buffers
+(iswitchb-mode t)
+(add-to-list 'iswitchb-buffer-ignore "*Messages*")
+(add-to-list 'iswitchb-buffer-ignore "*Completions")
+(add-to-list 'iswitchb-buffer-ignore "*ftp ")
+(add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
+
+
+
+
+
 ;; Dired command for finding all marked files, use F in dired mode
 (eval-after-load "dired"
   '(progn
