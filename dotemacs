@@ -202,6 +202,15 @@
 (setq python-shell-exec-path '("~/pyenv/bin/"))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C compilation using F9 for make, F7 and F8 to jump around the errors
+(global-set-key [(f9)] 'compile)
+(global-set-key [(f7)] 'previous-error)
+(global-set-key [(f8)] 'next-error)
+(setq compilation-ask-about-save nil)
+(setq compilation-window-height 8)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure-related stuff
