@@ -9,3 +9,6 @@ $endif
 #Changed "\M-s" to "\es" below, because it works on ubuntu. Some mysterious, but known, bug.
 set show-all-if-ambiguous on
 "\es": menu-complete
+
+#Attempt to force delete key to behave on various different boxen
+"\e[3~": delete-char
