@@ -5,10 +5,6 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
-# ... and ignore same sucessive entries.
-export HISTCONTROL=ignoreboth
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -99,11 +95,12 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-#jla added things below here
-shopt -s cmdhist #multiline commands are one history item
-export HISTIGNORE="&:ls:[bf]g:exit"  #ignore duplicates, ls, bg, fg & exit in history
-export HISTFILESIZE=5000
-export HISTSIZE=5000
+# don't put duplicate lines in the history. See bash(1) for more options
+export HISTCONTROL=ignoredups
+shopt -s cmdhist                     #multiline commands are one history item
+export HISTIGNORE="ls:[bf]g:exit"  #ignore ls, bg, fg & exit in history
+export HISTFILESIZE=50000
+export HISTSIZE=50000
 
 #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
 shopt -s histappend
