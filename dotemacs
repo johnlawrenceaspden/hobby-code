@@ -209,7 +209,7 @@
 (global-set-key [(f7)] 'previous-error)
 (global-set-key [(f8)] 'next-error)
 (setq compilation-ask-about-save nil)
-(setq compilation-window-height 8)
+;(setq compilation-window-height 8)
 
 
 
