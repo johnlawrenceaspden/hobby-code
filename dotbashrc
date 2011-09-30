@@ -4,7 +4,9 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+# commented this out because it sods everything up, but is probably important on debian, so don't copy it back to 
+# home machines!
+#[ -z "$PS1" ] && return
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -153,3 +155,37 @@ alias ch='cd ~/pyenv/src/HelloWorld && source ~/pyenv/bin/activate'
 
 
 alias digbysocks='curl -v http://172.16.1.1:8000 -d agree=1 -d redirurl=http://www.google.com -d accept=Continue && ssh -D 9999 ssh.aspden.com'
+
+#stuff added for solarflare build
+
+PATH=$PATH:/home/jla/myco/chip_test/scripts
+PATH=$PATH:/projects/huntington_A0/Release/ef10-tools/v1_14/bin/
+export PATH
+
+export KPATH=/projects/huntington_A0/Release/cosim/kernels/latest/build
+export PROJ_DIR=/projects/huntington_A0/Work/$USER/hunt/lom
+
+# solarflare productivity aliases
+
+alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
+--tab --title=Desktop --profile default \
+--tab --title=anvil \
+--tab --title=uart1 \
+--tab --title=hwlog1 -e 'ssh anvil -t ls ; bash -l' \
+--tab --title=cosim1 -e 'ssh anvil -t cosim1; bash -l' \
+--tab --title=uart2 \
+--tab --title=hwlog2 -e 'ssh anvil -t ls ; bash -l' \
+--tab --title=cosim2 \
+--tab --title=killer -e '/home/jla/hobby-code/screensaveridle.pl'"
+
+alias cosim1="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
+alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
+alias hwlog1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
+alias hwlog2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias uart1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
+alias uart2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
+alias anvcheck="ssh anvil ps -ef | grep jla"
+
+alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo ~/hobby-code && cd ~/hobby-code/ && git status && echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status"
+# end of stuff added for solarflare

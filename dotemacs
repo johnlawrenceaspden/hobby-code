@@ -13,8 +13,8 @@
 (require 'color-theme)
 (color-theme-initialize)
 ;;here are the ones I find usable
-(color-theme-billw)
-;(color-theme-gtk-ide)
+;(color-theme-billw)
+(color-theme-gtk-ide)
 ;(color-theme-katester)
 ;(color-theme-midnight)
 ;(color-theme-retro-green)
@@ -274,13 +274,33 @@
       "\M-\C-x\M-\C-e")
 (global-set-key [f5] 'running-eval)
 
-(defun desktop-okfn ()
-  (interactive)
-  (desktop-read "~/data/okfn"))
 
-(defun desktop-okfn-save ()
-  (interactive)
-  (desktop-save "~/data/okfn"))
+
+;; save a list of open files in ~/.emacs.desktop
+(desktop-save-mode t)
+
+;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
+(setq desktop-restore-eager 5)
+
+;; save a bunch of variables to the desktop file
+;; for lists specify the len of the maximal saved data also
+(setq desktop-globals-to-save
+      (append '((extended-command-history . 30)
+                (file-name-history        . 100)
+                (grep-history             . 30)
+                (compile-history          . 30)
+                (minibuffer-history       . 50)
+                (query-replace-history    . 60)
+                (read-expression-history  . 60)
+                (regexp-history           . 60)
+                (regexp-search-ring       . 20)
+                (search-ring              . 20)
+                (shell-command-history    . 50)
+                tags-file-name
+                register-alist)))
+
+
+
 
 ;; save a list of open files in ~/.emacs.desktop
 (desktop-save-mode t)
@@ -324,3 +344,16 @@
   (message "Refreshed open files."))
 
 (put 'upcase-region 'disabled nil)
+
+
+;; splits the screen into three windows which I like at the moment
+(fset 'split
+   [?\C-x ?b ?j ?l ?a ?. ?c return ?\C-x ?3 ?\C-x ?o ?\C-x ?b ?s ?a ?m ?p ?l ?e ?. ?c return ?\C-x ?2 ?\C-x ?o ?\C-x ?b ?* ?c ?o ?m ?p ?i ?l ?a ?t ?i ?o ?n ?* ])
+
+;; (defun sdesk ()
+;;   (interactive)
+;;   (desktop-read "~/solarflare-desktop"))
+
+;; (defun sdesk-save ()
+;;   (interactive)
+;;   (desktop-save "~/solarflare-desktop"))
