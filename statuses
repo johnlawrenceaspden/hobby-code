@@ -3,8 +3,8 @@
 cur=`pwd` 
 echo saving directory $cur
 
-GITREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -name ".git" -printf '%h\n'`
-HGREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -name ".hg" -printf '%h\n'`
+GITREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -path "*/.snapshot" -prune -or -name ".git" -printf '%h\n'`
+HGREPOS=`find ~ -path "*/.local/share/Trash/*" -prune -or -path "*/.snapshot" -prune -or -name ".hg" -printf '%h\n'`
 
 
 echo "Checking" 
