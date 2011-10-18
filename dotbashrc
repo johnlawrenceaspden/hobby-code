@@ -156,6 +156,8 @@ alias ch='cd ~/pyenv/src/HelloWorld && source ~/pyenv/bin/activate'
 
 alias digbysocks='curl -v http://172.16.1.1:8000 -d agree=1 -d redirurl=http://www.google.com -d accept=Continue && ssh -D 9999 ssh.aspden.com'
 
+alias mktags='find .  \( -name "*.[ch]" -or -name "*.inc" -or -name "*.s" -or -name "*.mk" \) -print | xargs etags -a'
+
 #stuff added for solarflare build
 
 PATH=$PATH:/home/jla/myco/chip_test/scripts
