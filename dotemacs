@@ -323,13 +323,14 @@
 (fset 'split
    [?\C-x ?b ?j ?l ?a ?. ?c return ?\C-x ?3 ?\C-x ?o ?\C-x ?b ?s ?a ?m ?p ?l ?e ?. ?c return ?\C-x ?2 ?\C-x ?o ?\C-x ?b ?* ?c ?o ?m ?p ?i ?l ?a ?t ?i ?o ?n ?* ])
 
-;; (defun sdesk ()
-;;   (interactive)
-;;   (desktop-read "~/solarflare-desktop"))
+(defun sdesk ()
+   (interactive)
+   (desktop-read "~/solarflare-desktop"))
 
-;; (defun sdesk-save ()
-;;   (interactive)
-;;   (desktop-save "~/solarflare-desktop"))
+(defun sdesk-save ()
+   (interactive)
+   (desktop-save "~/solarflare-desktop"))
+
 ;; Winner mode, only set up to use the window keys
 ;; http://emacs-fu.blogspot.com/search?q=windows
 (require 'winner)
