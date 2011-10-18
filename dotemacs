@@ -330,3 +330,11 @@
 ;; (defun sdesk-save ()
 ;;   (interactive)
 ;;   (desktop-save "~/solarflare-desktop"))
+;; Winner mode, only set up to use the window keys
+;; http://emacs-fu.blogspot.com/search?q=windows
+(require 'winner)
+(setq winner-dont-bind-my-keys t) ;; default bindings conflict with org-mode
+
+(global-set-key (kbd "<C-s-left>") 'winner-undo)
+(global-set-key (kbd "<C-s-right>") 'winner-redo)
+(winner-mode t) ;; turn on the global minor mode
