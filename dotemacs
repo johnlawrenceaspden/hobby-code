@@ -95,18 +95,18 @@
 ;; disable menu bar
 ;(menu-bar-mode -1)
 
-;; disable splash screen and show unknown files in speedbar
-(custom-set-variables
- '(inhibit-startup-screen t)
- '(speedbar-show-unknown-files t))
+;; ;; disable splash screen and show unknown files in speedbar
+;; (custom-set-variables
+;;  '(inhibit-startup-screen t)
+;;  '(speedbar-show-unknown-files t))
 
-;; stop the speedbar jumping around
-(require 'speedbar)
-(speedbar-disable-update)
-;; and make it show all files
-;; (setq speedbar-directory-unshown-regexp "^$")
-;; (actually, this can be irritating) original behaviour comes back with:
-;; (setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+;; ;; stop the speedbar jumping around
+;; (require 'speedbar)
+;; (speedbar-disable-update)
+;; ;; and make it show all files
+;; ;; (setq speedbar-directory-unshown-regexp "^$")
+;; ;; (actually, this can be irritating) original behaviour comes back with:
+;; ;; (setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
 
 
 ;; start emacs server
