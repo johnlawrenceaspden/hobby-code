@@ -173,10 +173,10 @@ alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=Desktop --profile default \
 --tab --title=anvil \
 --tab --title=uart1 \
---tab --title=hwlog1 -e 'ssh anvil -t ls ; bash -l' \
---tab --title=cosim1 -e 'ssh anvil -t cosim1; bash -l' \
+--tab --title=hwlog1  \
+--tab --title=cosim1 \
 --tab --title=uart2 \
---tab --title=hwlog2 -e 'ssh anvil -t ls ; bash -l' \
+--tab --title=hwlog2 \
 --tab --title=cosim2 \
 --tab --title=killer -e '/home/jla/hobby-code/screensaveridle.pl'"
 
