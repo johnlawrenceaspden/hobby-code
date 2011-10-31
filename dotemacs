@@ -338,4 +338,9 @@
 
 (global-set-key (kbd "<C-s-left>") 'winner-undo)
 (global-set-key (kbd "<C-s-right>") 'winner-redo)
+
+(setq org-support-shift-select 'always)
+
+
 (winner-mode t) ;; turn on the global minor mode
+(put 'downcase-region 'disabled nil)
