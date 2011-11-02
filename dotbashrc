@@ -164,7 +164,8 @@ PATH=$PATH:/home/jla/myco/chip_test/scripts
 PATH=$PATH:/projects/huntington_A0/Release/ef10-tools/v1_14/bin/
 export PATH
 
-export KPATH=/projects/huntington_A0/Release/cosim/kernels/latest/build
+# Neil says not to do this anymore
+# export KPATH=/projects/huntington_A0/Release/cosim/kernels/latest/build
 export PROJ_DIR=/projects/huntington_A0/Work/$USER/hunt/lom
 
 # solarflare productivity aliases
