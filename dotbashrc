@@ -183,6 +183,10 @@ alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 
 alias cosim1="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
 alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
+
+alias cosim1i="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
+alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
+
 alias hwlog1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
 alias hwlog2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
 alias uart1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
