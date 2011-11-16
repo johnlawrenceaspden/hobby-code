@@ -181,6 +181,20 @@ alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=cosim2 \
 --tab --title=killer -e '/home/jla/hobby-code/screensaveridle.pl'"
 
+
+alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
+--tab --title=Desktop --profile default \
+--tab --title=anvil \
+--tab --title=tlm1 \
+--tab --title=uart1  \
+--tab --title=hwlog1 \
+--tab --title=rtl2 \
+--tab --title=uart2 \
+--tab --title=hwlog2 "
+
+
+
+
 alias cosim1="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
 alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
 
@@ -195,4 +209,17 @@ alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvi
 alias anvcheck="ssh anvil ps -ef | grep jla"
 
 alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo ~/hobby-code && cd ~/hobby-code/ && git status && echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status"
+
+alias mcw="make -C ~/myco/firmwaresrc/ clean && make --keep-going --jobs MMAKE_LIBERAL=1 -C ~/myco/firmwaresrc/ world"
+
+#alias rtl1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args "FSDB=1" --farmi true --dutcfg min mc_pdma.loopback'
+#alias tlm1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args "FSDB=1" '
+#alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args "FSDB=1" --farmi true '
+#alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --dutcfg min mc_pdma.loopback'
+
+alias rtl1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --farmi true'
+alias tlm1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
+alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --farmi true '
+alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
+
 # end of stuff added for solarflare
