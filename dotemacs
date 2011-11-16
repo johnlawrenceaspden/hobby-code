@@ -70,9 +70,9 @@
 ; means that hard links survive editing.
  (setq backup-by-copying t)
 ;; Save all backup file in this directory. Arument one is a regexp so .* matches everything.
-;;(setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+(setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
 ;; Save all backup files in invisible .~ directory in their own directories
- (setq backup-directory-alist (quote (("." . ".~"))))
+;; (setq backup-directory-alist (quote (("." . ".~"))))
 ;; Keep several previous versions too
 (setq version-control t)
 ;; Just delete the excess old versions without asking
