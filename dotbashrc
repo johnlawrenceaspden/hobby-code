@@ -190,7 +190,8 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=hwlog1 \
 --tab --title=rtl2 \
 --tab --title=uart2 \
---tab --title=hwlog2 "
+--tab --title=hwlog2 \
+"
 
 
 
@@ -221,5 +222,17 @@ alias rtl1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_t
 alias tlm1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
 alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --farmi true '
 alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
+
+
+alias rtl1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true"
+alias tlm1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
+alias rtl2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true "
+alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
+
+
+
+
+
+
 
 # end of stuff added for solarflare
