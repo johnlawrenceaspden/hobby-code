@@ -230,7 +230,7 @@ alias rtl2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/c
 alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
 
 
-
+alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 
 
 
