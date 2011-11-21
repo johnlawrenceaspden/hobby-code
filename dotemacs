@@ -352,3 +352,11 @@
 
 (winner-mode t) ;; turn on the global minor mode
 (put 'downcase-region 'disabled nil)
+
+
+;; googling code
+(add-to-list 'load-path "~/hobby-code")
+(require 'google-search)
+
+
+
