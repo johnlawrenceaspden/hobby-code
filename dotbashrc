@@ -231,8 +231,10 @@ alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/c
 
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
-
-
+alias hct='hgtk --repository ~/myco/chip_test'
+alias hfw='hgtk --repository ~/myco/firmwaresrc'
+alias hgct='hg --repository ~/myco/chip_test'
+alias hgfw='hg --repository ~/myco/firmwaresrc'
 
 
 # end of stuff added for solarflare
