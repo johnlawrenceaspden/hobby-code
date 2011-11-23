@@ -191,6 +191,7 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=rtl2 \
 --tab --title=uart2 \
 --tab --title=hwlog2 \
+--tab --title=verdi2 \
 "
 
 
@@ -229,12 +230,16 @@ alias tlm1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/ch
 alias rtl2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true "
 alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
 
+alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib deblib -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/bug26942signalsv6.rc'"
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 alias hct='hgtk --repository ~/myco/chip_test'
 alias hfw='hgtk --repository ~/myco/firmwaresrc'
+alias hsf='hgtk --repository ~/Desktop/solarflare'
+
 alias hgct='hg --repository ~/myco/chip_test'
 alias hgfw='hg --repository ~/myco/firmwaresrc'
+alias hgsf='hg --repository ~/Desktop/solarflare'
 
 
 # end of stuff added for solarflare
