@@ -232,6 +232,9 @@ alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/c
 
 alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib deblib -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/bug26942signalsv6.rc'"
 
+alias verdi2a="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
+
+
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 alias hct='hgtk --repository ~/myco/chip_test'
 alias hfw='hgtk --repository ~/myco/firmwaresrc'
