@@ -1,5 +1,9 @@
-run: hello
-	./hello
+run: hello arbiter
+	./arbiter
+
+
+arbiter: arbiter.v
+	iverilog -o arbiter arbiter.v
 
 
 hello: hello.v

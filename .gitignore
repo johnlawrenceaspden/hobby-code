@@ -6,3 +6,5 @@ bloody-maven/maven-test-project/target/
 .emacs.desktop.lock
 data
 verilog/hello
+verilog/arbiter
+
