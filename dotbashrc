@@ -238,10 +238,7 @@ alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/c
 
 alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
 
-
-alias verdimacsec="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'core' -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/myco/firmwaresrc/macsec-signals.rc'"
-
-alias verdibug27091="tcsh -c 'verdi -top 'core' -nologo -ssf /projects/huntington_A0/Work/bug_dumps/bug27091/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
+alias verdibug27091="tcsh -c 'verdi -top 'platm_tb_top' -nologo -ssf /projects/huntington_A0/Work/bug_dumps/bug27091/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
 
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
