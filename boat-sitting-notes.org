@@ -2,8 +2,8 @@
 
 John Aspden 07943 155029  / 0114 2341378
 
-James Howard 07988 843475
-Emma  Howard 07989 444046
+James Howard 07988 843475 (very competent rower/ex-boat pikey, lives in Histon)
+Emma  Howard 07989 444046 
 
 James Tidy 07724 056240
 Amy        07828 763885
@@ -13,36 +13,40 @@ or just ask anyone on a boat nearby!
 * Checklist
 Keep Fire In / Internal temperature above 0
 Keep Batteries Charged above 12.2volts/50%. 
-Top up water/empty sewage if necessary. (Should last two weeks if you're careful)
+Top up water/empty sewage if necessary. (Should last around two weeks if you're careful)
 
 * Major Threats
 ** Fire
-*** setting light to boat
+*** aboard
 Careful not to leave anything flammable on or near the fire, or allow it to run out of control.  Don't leave boat without checking.
-There are three fire extinguishers, notice where they are. 
-*** chimney Fire
-Can be caused if there's flammable layer inside stove pipe. Becomes blast furnace. Quite spectacular. 
+There are three fire extinguishers, notice where they are. Call fire brigade.
+*** chimney fire
+Can be caused if there's flammable layer inside stove pipe. Becomes blast furnace. Quite spectacular apparently.
 Close all vents tight to reduce amount of air going in, and summon fire brigade. 
-
-** Crashing
-Hull is solid. You'd have to work quite hard to damage it. But...
-Boat weighs 26tons. Even moving very slowly it will crush arms and legs between it and the bank. Hitting a plastic cruiser will shatter it.
-Don't move it in strong stream or wind. Go slow and careful. Turn very gently and don't let it hit either bank as can break things inside.
+** Carbon Monoxide
+Various detectors throughout boat. Fire shouldn't make CO unless banked very low. 
+Levels below 30 ppm are not dangerous. But in high concentrations it's deadly, invisible and doesn't smell of anything.
 ** Gas Explosion
-Boat Gas very dangerous, builds up in bilges. Careful not to leave gas on unlit, learn smell.
+Boat Gas (propane) is very dangerous, heavier than air, so it builds up in bilges. 
+Careful not to leave gas on unlit, learn smell, which is not the same as house gas.
 ** Burst Pipes
-Temperatures below zero will burst water pipes and calorifier, £1000 of damage, keep fire in if it's cold
+Temperatures below zero will burst water pipes and calorifier, £1000s of damage, keep fire in if it's cold
 ** Flooding
 When the water goes back down the boat must be in the river. If it sits on the bank it will overturn and sink. 
 Once it's caught it's impossible to move it off because it weighs 26 tons.
 Cure is scaffold poles. Currently lying in the grass. *Get help* if it starts to flood or rains heavily for a long time. 
 Drive poles deep into river bed to keep boat where it is.
-** Carbon Monoxide
-Various detectors throughout boat. Fire shouldn't make CO unless banked very low. Levels below 30 ppm are not dangerous.
+** Crashing
+Hull is solid. You'd have to work quite hard to damage it. But...
+Boat weighs 26tons. Even moving very slowly it will crush arms and legs between it and the bank. Hitting a plastic cruiser will shatter it.
+Don't move it in strong stream or wind. Go slow and careful. Turn very gently and don't let it hit either bank as can break things inside.
 ** Stern Gland
 Remember to retighten grease injector every time prop has turned. Leaking stern gland and clogged pump/dead battery can sink boat.
 
 * Minor Threats
+** Toilet
+*Never* put anything down a boat toilet that you haven't eaten. Carefully selected soft toilet paper is also ok.
+Anything else will instantly jam the mechanism. Repair needs a plumber and possibly new parts.
 ** Discharged Batteries
 Batteries in low charge state are damaged by it. If you notice voltage less than 12.2 unloaded / less than 50%, run engine until back to 80%/when charging stops
 ** Water Pump Burnout
@@ -56,21 +60,24 @@ Not much of a problem apparently, but I leave the bank side and front door curta
 Don't leave hatch open when going out, since it's just about possible that someone will notice and climb round/over.
 
 * Stove
+If you open the vents and go out or leave the front open for long you'll probably burn down the boat!
+
 Regulate heat by controlling amount of air allowed in. 
 Unless trying to revive dead fire/lighting new one, have all vents closed and use the screw to control how much air can sneak in.
 Keep top vents (for wood burning) and slider closed. Careful of slider, can open without you noticing.
 Don't worry about how much coal you use. It's very cheap and I've got lots. Keep warm.
-Screw settings
+
+Screw settings (roughly, depends how much ash is clogging it up)
 fully closed: fire may go out. don't use.
 tau/8 / 45 degrees: fire will stay in for 12hours+, doesn't put out much heat. 
 tau/4 / 90 degrees:  usual setting unless it's very cold
 tau/2 / 180 degrees: fire will be very hot, but coal will all be used up in a few hours.
 
-If you open the vents and go out or leave the front open for long you'll probably burn down the boat!
-
 Careful not to spill hot ash, I've already made two holes in the carpet.
 
-Ash goes into ash box, then empty into the bin on the common. Only once it's cold though, or it will set fire to the bin bags.
+Ash goes into ash box, then when cooled empty the box into the bin on the common. 
+Only once it's cold though, or it will set fire to the bin bags.
+
 Suck up spilt dust with hoover. Don't use brush, it just makes it worse.
 
 Should the fire go out, the easiest way to relight it is to riddle out all the dead ash, make a hole in the remaining coal, and then 
@@ -80,15 +87,15 @@ Very difficult to light wet coal directly. Get wood fire going and then top up w
 
 * Electricity
 Powers everything. Enough from solar panels even in mid-winter to power systems, cabin lights, radio.
-All others incandescents for warmer light. Don't leave them on too long as it drains batteries. 
-If you'd like them on then there are LED replacements in the front left cupboard, but the light isn't as warm.
 
 Fridge is huge consumer of electricity and mid winter it draws more power than the solar panels can provide.
-You can make electricity by running the engine when the batteries are low.
+You can make more electricity by running the engine when the batteries are low.
 Starter battery is separate circuit so even if the batteries are very low the engine should start.
 
 * Lights
 Front cabin lights are all LEDs. Draw very small amounts of power so can have them on for hours.
+All others incandescents for warmer light. Don't leave them on too long as it drains batteries. 
+If you'd like them on then there are LED replacements in the front left cupboard, but the light isn't as warm.
 
 * Hot Water
 Produced as side effect of running engine. But I find it easier to make small amounts in the kettle, and take showers elsewhere.
