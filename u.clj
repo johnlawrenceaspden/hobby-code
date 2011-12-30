@@ -23,17 +23,15 @@
                      [pprint :as pp]
                      [string :as cs]
                      ))
-  (require '(clojure.java
-             [javadoc :as cjj]))
-  (require '(clojure.contrib
-             [trace :as cct]
-             [repl-utils :as ccr])))
+  (require '[clojure.java.javadoc :as cjj])
+  (require '[clojure.tools.trace :as ctt])
+  (require '[clojure.repl :as cr]))
 
 ;; In order to be able to use find-doc and tab-completion properly,
 ;; we want to require all the namespaces that we can find.
 
 ;; Stuart Sierra wrote a namespace finder:
-(require 'clojure.contrib.find-namespaces)
+(require '[clojure.tools.namespace :as ctn])
 
 ;; But namespaces often have errors, and fail to load, so we need to catch any exceptions thrown,
 ;; as well as reporting progress to the console
@@ -48,7 +46,7 @@
 (defn require-all-namespaces-starting-with [strng]
   (doall (map require-may-fail 
               (filter #(. (str %) startsWith strng) 
-                      (clojure.contrib.find-namespaces/find-namespaces-on-classpath)))))
+                      (ctn/find-namespaces-on-classpath)))))
 
 ;; Requiring everything from clojure and clojure.contrib, so that find-doc can find it.
 ;; This takes a while, so rather than blocking the REPL/swank startup while it happens, we can start an agent to do it in the background.
@@ -106,7 +104,7 @@
 
 
 ;;find symbol or string in docs 
-(defmacro fd [symbol-or-string] `(find-doc (stringify '~symbol-or-string)))
+(defmacro fd [symbol-or-string] `(clojure.repl/find-doc (stringify '~symbol-or-string)))
 
 (defmacro fdn [symbol-or-string] `(find-doc-names (stringify '~symbol-or-string)))
 
