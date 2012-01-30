@@ -250,18 +250,19 @@ alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 
-alias hgct='hg --repository ~/myco/chip_test'
-alias hgfw='hg --repository ~/myco/firmwaresrc'
-alias hgsf='hg --repository ~/Desktop/solarflare'
+#alias hgct='hg --repository ~/myco/chip_test'
+#alias hgfw='hg --repository ~/myco/firmwaresrc'
+#alias hgsf='hg --repository ~/Desktop/solarflare'
 
-alias hgtkct='hgtk --repository ~/myco/chip_test'
-alias hgtkfw='hgtk --repository ~/myco/firmwaresrc'
-alias hgtksf='hgtk --repository ~/Desktop/solarflare'
+#alias hgtkct='hgtk --repository ~/myco/chip_test'
+#alias hgtkfw='hgtk --repository ~/myco/firmwaresrc'
+#alias hgtksf='hgtk --repository ~/Desktop/solarflare'
 
-alias cdhw='cd /projects/huntington_A0/Work/jla/hunt/lom/'
-alias cdfw='cd ~/myco/firmwaresrc/'
-alias cdct='cd ~/myco/chip_test'
-alias cdsf='cd ~/Desktop/solarflare'
+alias cdhc='pushd ~/hobby-code'
+alias cdhw='pushd /projects/huntington_A0/Work/jla'
+alias cdfw='pushd ~/myco/firmwaresrc/'
+alias cdct='pushd ~/myco/chip_test'
+alias cdsf='pushd ~/Desktop/solarflare'
 
 
 # end of stuff added for solarflare
