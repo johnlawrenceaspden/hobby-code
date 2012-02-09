@@ -170,7 +170,7 @@ export PROJ_DIR=/projects/huntington_A0/Work/$USER/hunt/lom
 
 # solarflare productivity aliases
 
-alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
+alias anvilicious="gnome-terminal --geometry=110x40+1200+10 --profile anvil \
 --tab --title=Desktop --profile default \
 --tab --title=anvil \
 --tab --title=uart1 \
@@ -185,10 +185,11 @@ alias anvilicious="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=Desktop --profile default \
 --tab --title=anvil \
+--tab --title=tcsh --profile anviltcsh \
 --tab --title=sim1 \
 --tab --title=uart1  \
 --tab --title=hwlog1 \
---tab --title=verdi2 \
+--tab --title=verdi1 \
 --tab --title=oo \
 --tab --title=sim2 \
 --tab --title=uart2 \
@@ -196,18 +197,15 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=verdi2 \
 "
 
-alias forksims="gnome-terminal --geometry=88x40+1200+10 --profile fork \
---tab --title=Desktop --profile default \
---tab --title=fork \
---tab --title=sim1 \
---tab --title=uart1  \
---tab --title=hwlog1 \
---tab --title=verdi2 \
---tab --title=oo \
---tab --title=sim2 \
---tab --title=uart2 \
---tab --title=hwlog2 \
---tab --title=verdi2 \
+alias anvilcompilers="gnome-terminal --geometry=88x40+1200+10 --profile anviltcsh \
+--tab --title=magicmipson  \
+--tab --title=magicmipsoff \
+--tab --title=mbistslow  \
+--tab --title=mbistfast \
+--tab --title=membehvslow  \
+--tab --title=membehvfast \
+--tab --title=noiregbypass \
+--tab --title=spare \
 "
 
 
@@ -239,7 +237,7 @@ alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_
 alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
 
 
-alias rtl1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true"
+#alias rtl1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi --mccmdline \"yo!\" true"
 alias tlm1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
 alias rtl2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true "
 alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
@@ -249,6 +247,20 @@ alias verdi1="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
+
+
+function rtl1fsdb
+{
+    export COSIM_IDENTITY=jla 
+    reset
+    clear
+    date 
+    ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi --mccmdline "$1" true
+    esnap_return_value=$?
+    echo "return value " $esnap_return_value
+    return $esnap_return_value
+}
+
 
 #alias hgct='hg --repository ~/myco/chip_test'
 #alias hgfw='hg --repository ~/myco/firmwaresrc'
