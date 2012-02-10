@@ -364,40 +364,28 @@
 
 (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
 
-(defun autodocs-it (search-string)
-  "Search for SEARCH-STRING on autodocs."
-  (interactive "Search autodocs for: ")
-  (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
-                      (url-hexify-string
-                       (encode-coding-string search-string 'utf-8)))))
-
 (defun autodocs-search-selection ()
   "Search autodocs for current selection"
   (interactive)
-  (let (start end term url)
-    (if (region-active-p)
-        (progn
-          (setq start (region-beginning)
-                end   (region-end))
-          (if (> (- end start) autodocs-search-maxlen)
-              (setq term (buffer-substring start (+ start autodocs-search-maxlen)))
-            (setq term (buffer-substring start end)))
-          (autodocs-it term))
-      (beep)
-      (message "Region not active"))))
+  (let ((term (if (use-region-p)
+                  (let ((start (region-beginning))
+                        (end   (region-end)))
+                    (if (> (- end start) autodocs-search-maxlen)
+                        (buffer-substring start (+ start autodocs-search-maxlen))
+                      (buffer-substring start end)))
+                (read-string "autodocs search: "))))
+    (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
+                        (url-hexify-string (encode-coding-string term 'utf-8))))))
 
 (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
 
-
 (defun region-find-grep (directory)
   (interactive)
-  (if (region-active-p)
-      (let (start end term command)
-        (setq start (region-beginning)
-              end   (region-end)
-              term (buffer-substring start end)
-              command (concat "ack --no-heading --no-color \"" term  "\" " directory))
-    (grep-find command))))
+  (let ((term (if (use-region-p)
+                  (buffer-substring (region-beginning) (region-end))
+                (read-string (concat  "region-find-grep: (" directory ") ")))))
+    (grep-find (concat "ack --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
+
 
 (defun fgf()
   (interactive)
@@ -408,12 +396,5 @@
   (interactive)
   (region-find-grep "/projects/huntington_A0/Work/jla/hunt"))
 
-(defun fgf ()
-  (interactive)
-  (if (region-active-p)
-      (let (start end term command)
-        (setq start (region-beginning)
-              end   (region-end)
-              term (buffer-substring start end)
-              command (concat "ack --no-heading --no-color \"" term  "\" ~/myco/firmwaresrc"))
-    (grep-find command))))
+
+
