@@ -386,3 +386,34 @@
       (beep)
       (message "Region not active"))))
 
+(defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
+
+
+(defun region-find-grep (directory)
+  (interactive)
+  (if (region-active-p)
+      (let (start end term command)
+        (setq start (region-beginning)
+              end   (region-end)
+              term (buffer-substring start end)
+              command (concat "ack --no-heading --no-color \"" term  "\" " directory))
+    (grep-find command))))
+
+(defun fgf()
+  (interactive)
+  (region-find-grep "~/myco/firmwaresrc"))
+
+
+(defun fgh()
+  (interactive)
+  (region-find-grep "/projects/huntington_A0/Work/jla/hunt"))
+
+(defun fgf ()
+  (interactive)
+  (if (region-active-p)
+      (let (start end term command)
+        (setq start (region-beginning)
+              end   (region-end)
+              term (buffer-substring start end)
+              command (concat "ack --no-heading --no-color \"" term  "\" ~/myco/firmwaresrc"))
+    (grep-find command))))
