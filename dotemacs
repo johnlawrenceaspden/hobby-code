@@ -375,11 +375,11 @@
   "Search autodocs for current selection"
   (interactive)
   (let (start end term url)
-    (if (or (not (fboundp 'region-exists-p)) (region-exists-p))
+    (if (region-active-p)
         (progn
           (setq start (region-beginning)
                 end   (region-end))
-          (if (> (- start end) autodocs-search-maxlen)
+          (if (> (- end start) autodocs-search-maxlen)
               (setq term (buffer-substring start (+ start autodocs-search-maxlen)))
             (setq term (buffer-substring start end)))
           (autodocs-it term))
