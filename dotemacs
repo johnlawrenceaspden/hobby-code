@@ -397,4 +397,7 @@
   (region-find-grep "/projects/huntington_A0/Work/jla/hunt"))
 
 
+;; only do horizontal splitting
+;;(setq split-height-threshold nil)
+;;(setq split-width-threshold 0)
 
