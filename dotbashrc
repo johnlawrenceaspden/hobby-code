@@ -185,7 +185,6 @@ alias anvilicious="gnome-terminal --geometry=110x40+1200+10 --profile anvil \
 alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=Desktop --profile default \
 --tab --title=anvil \
---tab --title=tcsh --profile anviltcsh \
 --tab --title=sim1 \
 --tab --title=uart1  \
 --tab --title=hwlog1 \
@@ -195,9 +194,10 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=uart2 \
 --tab --title=hwlog2 \
 --tab --title=verdi2 \
+--tab --title=tcsh --profile anviltcsh \
 "
 
-alias anvilcompilers="gnome-terminal --geometry=88x40+1200+10 --profile anviltcsh \
+alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
 --tab --title=magicmipson  \
 --tab --title=magicmipsoff \
 --tab --title=mbistslow  \
@@ -217,8 +217,10 @@ alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cos
 
 alias hwlog1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
 alias hwlog2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+
 alias uart1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
 alias uart2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
 
@@ -226,21 +228,6 @@ alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status 
 
 alias mcw="make -C ~/myco/firmwaresrc/ clean && make --keep-going --jobs MMAKE_LIBERAL=1 -C ~/myco/firmwaresrc/ world"
 
-#alias rtl1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args "FSDB=1" --farmi true --dutcfg min mc_pdma.loopback'
-#alias tlm1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args "FSDB=1" '
-#alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args "FSDB=1" --farmi true '
-#alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --dutcfg min mc_pdma.loopback'
-
-alias rtl1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --farmi true'
-alias tlm1='export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
-alias rtl2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --farmi true '
-alias tlm2='export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap'
-
-
-#alias rtl1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi --mccmdline \"yo!\" true"
-alias tlm1fsdb="export COSIM_IDENTITY=jla && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
-alias rtl2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi true "
-alias tlm2fsdb="export COSIM_IDENTITY=jla2 && reset && clear && date && ~/myco/chip_test/src/tools/cosim/esnap --simv-args 'FSDB=1' "
 
 alias verdi1="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla/tb_top.fsdb -sswr ~/myco/firmwaresrc/ipsec-signals.rc'"
 
@@ -249,17 +236,44 @@ alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 
 
-function rtl1fsdb
+
+function runsim
 {
-    export COSIM_IDENTITY=jla 
+    export COSIM_IDENTITY=$1 
     reset
     clear
+
+    echo 1 cosim identity: $1
+    echo 2 esnap argument 1: $2
+    echo 3 esnap argument 2: $3
+    echo 4 test to run: $4
+    echo 5 mc command line: $5
+
     date 
-    ~/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args 'FSDB=1' --farmi --mccmdline "$1" true
+    if [ -z $5 ] ; then
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap $2 $3 $4"
+    else
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap $2 $3 --mccmdline \"$5\" $4"
+    fi
+    echo $COMMAND
+    $COMMAND
     esnap_return_value=$?
     echo "return value " $esnap_return_value
     return $esnap_return_value
 }
+
+alias rtl1fsdbtrivial='runsim jla FSDB=1 --farmi trivial'
+alias rtl2fsdbtrivial='runsim jla2 FSDB=1 --farmi trivial'
+alias tlm1fsdbtrivial='runsim jla1 FSDB=1 "" trivial'
+alias tlm2fsdbtrivial='runsim jla2 FSDB=1 "" trivial'
+
+alias rtl1fsdbtrue='runsim jla FSDB=1 --farmi true'
+alias rtl2fsdbtrue='runsim jla2 FSDB=1 --farmi true'
+alias tlm1fsdbtrue='runsim jla1 FSDB=1 "" true'
+alias tlm2fsdbtrue='runsim jla2 FSDB=1 "" true'
+
+alias rtl1='rtl1fsdbtrue'
+alias rtl2='rtl2fsdbtrue'
 
 
 #alias hgct='hg --repository ~/myco/chip_test'
