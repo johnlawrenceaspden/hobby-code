@@ -215,11 +215,11 @@ alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosi
 alias cosim1i="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 
-alias hwlog1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
-alias hwlog2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
+alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
 
-alias uart1="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
-alias uart2="reset && clear && date && tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
+alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log && tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
 
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
@@ -235,26 +235,32 @@ alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 
-
-
 function runsim
 {
-    export COSIM_IDENTITY=$1 
     reset
     clear
+    date 
+    ls -al /projects/huntington_A0/Work/jla
 
     echo 1 cosim identity: $1
-    echo 2 esnap argument 1: $2
-    echo 3 esnap argument 2: $3
-    echo 4 test to run: $4
-    echo 5 mc command line: $5
+    echo 2 rtl or tlm: $2
+    echo 3 test to run: $3
+    echo 4 mc command line: $4
 
-    date 
-    if [ -z $5 ] ; then
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap $2 $3 $4"
+    export COSIM_IDENTITY=$1 
+
+    if [ $2 = 'tlm' ] ; then
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
     else
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap $2 $3 --mccmdline \"$5\" $4"
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi"
     fi
+
+    if [ -z $4 ] ; then
+        COMMAND="$COMMAND $3"
+    else
+        COMMAND="$COMMAND --mccmdline $4 $3 "
+    fi
+
     echo $COMMAND
     $COMMAND
     esnap_return_value=$?
@@ -262,19 +268,18 @@ function runsim
     return $esnap_return_value
 }
 
-alias rtl1fsdbtrivial='runsim jla FSDB=1 --farmi trivial'
-alias rtl2fsdbtrivial='runsim jla2 FSDB=1 --farmi trivial'
-alias tlm1fsdbtrivial='runsim jla1 FSDB=1 "" trivial'
-alias tlm2fsdbtrivial='runsim jla2 FSDB=1 "" trivial'
+alias rtl1trivial='runsim jla rtl  trivial'
+alias rtl2trivial='runsim jla2 rtl trivial'
+alias tlm1trivial='runsim jla tlm  trivial'
+alias tlm2trivial='runsim jla2 tlm trivial'
 
-alias rtl1fsdbtrue='runsim jla FSDB=1 --farmi true'
-alias rtl2fsdbtrue='runsim jla2 FSDB=1 --farmi true'
-alias tlm1fsdbtrue='runsim jla1 FSDB=1 "" true'
-alias tlm2fsdbtrue='runsim jla2 FSDB=1 "" true'
+alias rtl1true='runsim jla rtl  true'
+alias rtl2true='runsim jla2 rtl true'
+alias tlm1true='runsim jla tlm  true'
+alias tlm2true='runsim jla2 tlm true'
 
-alias rtl1='rtl1fsdbtrue'
-alias rtl2='rtl2fsdbtrue'
-
+alias rtl1='rtl1true'
+alias rtl2='rtl2true'
 
 #alias hgct='hg --repository ~/myco/chip_test'
 #alias hgfw='hg --repository ~/myco/firmwaresrc'
