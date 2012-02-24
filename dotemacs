@@ -384,7 +384,7 @@
   (let ((term (if (use-region-p)
                   (buffer-substring (region-beginning) (region-end))
                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-    (grep-find (concat "ack --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
+    (grep-find (concat "ack --smart-case --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
 
 
 (defun fgf()
