@@ -202,6 +202,7 @@ alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltc
 --tab --title=magicmipsoff \
 --tab --title=mbistfastfuncfast \
 --tab --title=mbistfastfuncslow  \
+--tab --title=serdes  \
 --tab --title=spare \
 "
 
