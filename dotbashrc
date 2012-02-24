@@ -200,11 +200,8 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
 --tab --title=magicmipson  \
 --tab --title=magicmipsoff \
---tab --title=mbistslow  \
---tab --title=mbistfast \
---tab --title=membehvslow  \
---tab --title=membehvfast \
---tab --title=noiregbypass \
+--tab --title=mbistfastfuncfast \
+--tab --title=mbistfastfuncslow  \
 --tab --title=spare \
 "
 
@@ -215,11 +212,11 @@ alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosi
 alias cosim1i="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 
-alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog && tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
-alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog && tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
+alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
 
-alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log && tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
-alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log && tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
+alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
 
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
@@ -252,7 +249,7 @@ function runsim
     if [ $2 = 'tlm' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
     else
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi"
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi-lite"
     fi
 
     if [ -z $4 ] ; then
