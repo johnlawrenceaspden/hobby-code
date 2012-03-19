@@ -129,12 +129,13 @@ alias clj='rlwrap clojure'
 #alias fnd='find . -iname'
 function fnd
 {
+    echo find . -iname "$1"
     command find . -iname "$1"
 }
 
 function fndg 
 {  
-    command find . -name "$1" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
+    command find . -name \"$1\" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
 }
 
 PATH=$PATH:~/bin
@@ -200,8 +201,10 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
 --tab --title=magicmipson  \
 --tab --title=magicmipsoff \
+--tab --title=magicuartoff \
 --tab --title=mbistfastfuncfast \
 --tab --title=mbistfastfuncslow  \
+--tab --title=mbistfastfuncveryslow  \
 --tab --title=serdes  \
 --tab --title=spare \
 "
@@ -232,6 +235,10 @@ alias verdi1="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla2/tb_top.fsdb -sswr ~/myco/firmwaresrc/favourite-signals.rc'"
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
+
+alias hgcleanforce='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" | xargs rm -rv'
+alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" '
+
 
 function runsim
 {
@@ -266,9 +273,9 @@ function runsim
     return $esnap_return_value
 }
 
-alias rtl1trivial='runsim jla rtl  trivial'
+alias rtl1trivial='runsim jla  rtl  trivial'
 alias rtl2trivial='runsim jla2 rtl trivial'
-alias tlm1trivial='runsim jla tlm  trivial'
+alias tlm1trivial='runsim jla  tlm  trivial'
 alias tlm2trivial='runsim jla2 tlm trivial'
 
 alias rtl1true='runsim jla rtl  true'
