@@ -248,7 +248,7 @@ function runsim
     ls -al /projects/huntington_A0/Work/jla
 
     echo 1 cosim identity: $1
-    echo 2 rtl or tlm: $2
+    echo 2 rtl or tlm or lean: $2
     echo 3 test to run: $3
     echo 4 mc command line: $4
 
@@ -256,8 +256,10 @@ function runsim
 
     if [ $2 = 'tlm' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
-    else
+    else if [ $2 == 'rtl' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi-lite"
+    else if [ $2 == 'lean' ] ; then
+        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --lean"
     fi
 
     if [ -z $4 ] ; then
@@ -277,6 +279,8 @@ alias rtl1trivial='runsim jla  rtl  trivial'
 alias rtl2trivial='runsim jla2 rtl trivial'
 alias tlm1trivial='runsim jla  tlm  trivial'
 alias tlm2trivial='runsim jla2 tlm trivial'
+alias lean1trivial='runsim jla  lean  trivial'
+alias lean2trivial='runsim jla2 lean trivial'
 
 alias rtl1true='runsim jla rtl  true'
 alias rtl2true='runsim jla2 rtl true'
