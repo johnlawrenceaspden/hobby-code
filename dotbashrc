@@ -221,6 +221,8 @@ alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; 
 
 alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
 alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+alias uart3="reset && clear && date && ls -al /local/scratch/esnap_jla3/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla3/uart0.log"
+alias uart4="reset && clear && date && ls -al /local/scratch/esnap_jla4/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla4/uart0.log"
 
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
@@ -254,12 +256,16 @@ function runsim
 
     export COSIM_IDENTITY=$1 
 
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --dutcfg min"
+
     if [ $2 = 'tlm' ] ; then
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
+        COMMAND="$COMMAND"
     elif [ $2 == 'rtl' ] ; then
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi-lite"
-    elif [ $2 == 'lean' ] ; then
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --lean"
+        COMMAND="$COMMAND --farmi-lite"
+    elif [ $2 == 'tlmlean' ] ; then
+        COMMAND="$COMMAND --lean"
+    elif [ $2 == 'rtllean' ] ; then
+        COMMAND="$COMMAND --lean --farmi-lite"
     else
         echo "oops"
         exit
@@ -278,17 +284,27 @@ function runsim
     return $esnap_return_value
 }
 
-alias rtl1trivial='runsim jla  rtl  trivial'
+alias rtl1trivial='runsim jla  rtl trivial'
 alias rtl2trivial='runsim jla2 rtl trivial'
-alias tlm1trivial='runsim jla  tlm  trivial'
-alias tlm2trivial='runsim jla2 tlm trivial'
-alias lean1trivial='runsim jla  lean  trivial'
-alias lean2trivial='runsim jla2 lean trivial'
 
-alias rtl1true='runsim jla rtl  true'
-alias rtl2true='runsim jla2 rtl true'
-alias tlm1true='runsim jla tlm  true'
-alias tlm2true='runsim jla2 tlm true'
+alias tlm1trivial='runsim jla  tlm trivial'
+alias tlm2trivial='runsim jla2 tlm trivial'
+alias tlm3trivial='runsim jla3 tlm trivial'
+alias tlm4trivial='runsim jla4 tlm trivial'
+
+alias tlmlean1trivial='runsim jla  tlmlean  trivial'
+alias tlmlean2trivial='runsim jla2 tlmlean  trivial'
+alias tlmlean3trivial='runsim jla3 tlmlean  trivial'
+alias tlmlean4trivial='runsim jla4 tlmlean  trivial'
+
+alias rtllean1trivial='runsim jla  tlmlean trivial'
+alias rtllean2trivial='runsim jla2 tlmlean trivial'
+
+alias rtl1true='runsim jla  rtl  true'
+alias rtl2true='runsim jla2 rtl  true'
+
+alias tlm1true='runsim jla  tlm  true'
+alias tlm2true='runsim jla2 tlm  true'
 
 alias rtl1='rtl1true'
 alias rtl2='rtl2true'
