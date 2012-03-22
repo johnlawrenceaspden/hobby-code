@@ -225,7 +225,7 @@ alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.lo
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
 
-alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvntest && git status && git log remotes/trunk..HEAD "
+alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvnhunt && git status && git log remotes/trunk..HEAD "
 
 alias mcw="make -C ~/myco/firmwaresrc/ clean && make --keep-going --jobs MMAKE_LIBERAL=1 -C ~/myco/firmwaresrc/ world"
 
