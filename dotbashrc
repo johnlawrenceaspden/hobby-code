@@ -225,7 +225,7 @@ alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.lo
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
 
-alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing && echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing && echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare && echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing && cd /projects/huntington_A0/Work/jla/gitsvntest/huntington_A0 && git status && git log remotes/trunk..HEAD "
+alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvntest/huntington_A0 && git status && git log remotes/trunk..HEAD "
 
 alias mcw="make -C ~/myco/firmwaresrc/ clean && make --keep-going --jobs MMAKE_LIBERAL=1 -C ~/myco/firmwaresrc/ world"
 
@@ -256,10 +256,13 @@ function runsim
 
     if [ $2 = 'tlm' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
-    else if [ $2 == 'rtl' ] ; then
+    elif [ $2 == 'rtl' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi-lite"
-    else if [ $2 == 'lean' ] ; then
+    elif [ $2 == 'lean' ] ; then
         COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --lean"
+    else
+        echo "oops"
+        exit
     fi
 
     if [ -z $4 ] ; then
