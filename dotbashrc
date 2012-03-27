@@ -297,8 +297,8 @@ alias tlmlean2trivial='runsim jla2 tlmlean  trivial'
 alias tlmlean3trivial='runsim jla3 tlmlean  trivial'
 alias tlmlean4trivial='runsim jla4 tlmlean  trivial'
 
-alias rtllean1trivial='runsim jla  tlmlean trivial'
-alias rtllean2trivial='runsim jla2 tlmlean trivial'
+alias rtllean1trivial='runsim jla  rtllean trivial'
+alias rtllean2trivial='runsim jla2 rtllean trivial'
 
 alias rtl1true='runsim jla  rtl  true'
 alias rtl2true='runsim jla2 rtl  true'
