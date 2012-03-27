@@ -106,7 +106,7 @@ export HISTSIZE=50000
 
 #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
 shopt -s histappend
-PROMPT_COMMAND='history -a' #fix new window problem
+PROMPT_COMMAND='history -a; history -n' #fix new window problem: every time you get a new prompt, update and reload history file
 
 #Remember M-. gets the arguments of previous commands
 
