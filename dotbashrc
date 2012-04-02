@@ -217,7 +217,9 @@ alias cosim1i="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosi
 alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 
 alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
-alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla2/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog3="reset && clear && date && ls -al /local/scratch/esnap_jla3/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla3/hwlog"
+alias hwlog4="reset && clear && date && ls -al /local/scratch/esnap_jla4/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla4/hwlog"
 
 alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
 alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
@@ -248,7 +250,8 @@ function runsim
     clear
     date 
     ls -al /projects/huntington_A0/Work/jla
-
+    hg --repository ~/myco/firmwaresrc parents
+    hg --repository ~/myco/firmwaresrc diff
     echo 1 cosim identity: $1
     echo 2 rtl or tlm or lean: $2
     echo 3 test to run: $3
@@ -286,6 +289,9 @@ function runsim
 
 alias rtl1trivial='runsim jla  rtl trivial'
 alias rtl2trivial='runsim jla2 rtl trivial'
+alias rtl3trivial='runsim jla3 rtl trivial'
+alias rtl4trivial='runsim jla4 rtl trivial'
+
 
 alias tlm1trivial='runsim jla  tlm trivial'
 alias tlm2trivial='runsim jla2 tlm trivial'
@@ -299,6 +305,8 @@ alias tlmlean4trivial='runsim jla4 tlmlean  trivial'
 
 alias rtllean1trivial='runsim jla  rtllean trivial'
 alias rtllean2trivial='runsim jla2 rtllean trivial'
+alias rtllean3trivial='runsim jla3 rtllean trivial'
+alias rtllean4trivial='runsim jla4 rtllean trivial'
 
 alias rtl1true='runsim jla  rtl  true'
 alias rtl2true='runsim jla2 rtl  true'
