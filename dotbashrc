@@ -276,9 +276,9 @@ function runsim
     fi
 
     if [ -z $4 ] ; then
-        COMMAND="$COMMAND $3"
+        COMMAND="$COMMAND -- --no-mc-line $3"
     else
-        COMMAND="$COMMAND --mccmdline $4 $3 "
+        COMMAND="$COMMAND --mccmdline $4 -- --no-mc-line $3 "
     fi
 
     echo $COMMAND
