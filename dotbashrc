@@ -199,6 +199,22 @@ alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 --tab --title=tcsh --profile anviltcsh \
 "
 
+alias anvil4sims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
+--tab --title=sim1 \
+--tab --title=hwlog1 \
+--tab --title=sim2 \
+--tab --title=hwlog2 \
+--tab --title=sim3 \
+--tab --title=hwlog3 \
+--tab --title=sim4 \
+--tab --title=hwlog4 \
+"
+
+
+
+
+
+
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
 --tab --title=magicmipson  \
 --tab --title=magicmipsoff \
@@ -245,6 +261,49 @@ alias hgcleanforce='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( 
 alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" '
 
 
+function filthyhackrunsim
+{
+    reset
+    clear
+    date 
+    ls -al /projects/huntington_A0/Work/jla
+    hg --repository ~/myco/firmwaresrc parents
+    hg --repository ~/myco/firmwaresrc diff
+
+    echo 1 cosim identity: $1
+
+    export COSIM_IDENTITY=$1
+
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite"
+
+    if [ $1 == 'jla' ] ; then 
+        COMMAND="$COMMAND "
+    elif [ $1 == 'jla2' ] ; then
+        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1' "
+    elif [ $1 == 'jla3' ] ; then
+        COMMAND="$COMMAND --simv-args 'FSDB=1'  "
+    elif [ $1 == 'jla4' ] ; then
+        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
+    else
+        echo "oops"
+        return
+    fi
+
+    COMMAND="$COMMAND trivial"
+
+    echo $COMMAND
+    eval "$COMMAND"
+    esnap_return_value=$?
+    echo "return value " $esnap_return_value
+    return $esnap_return_value
+}
+
+alias fhrs1='source ~/.bashrc && filthyhackrunsim jla'
+alias fhrs2='source ~/.bashrc && filthyhackrunsim jla2'
+alias fhrs3='source ~/.bashrc && filthyhackrunsim jla3'
+alias fhrs4='source ~/.bashrc && filthyhackrunsim jla4'
+
+
 function runsim
 {
     reset
@@ -272,7 +331,7 @@ function runsim
         COMMAND="$COMMAND --lean --farmi-lite"
     else
         echo "oops"
-        exit
+        return
     fi
 
     if [ -z $4 ] ; then
