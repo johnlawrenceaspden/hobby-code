@@ -101,8 +101,8 @@ fi
 export HISTCONTROL=ignoredups
 shopt -s cmdhist                     #multiline commands are one history item
 export HISTIGNORE="ls:[bf]g:exit"  #ignore ls, bg, fg & exit in history
-export HISTFILESIZE=50000
-export HISTSIZE=50000
+export HISTFILESIZE=500000
+export HISTSIZE=500000
 
 #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
 shopt -s histappend
@@ -138,6 +138,8 @@ function fndg
 {  
     command find . -name \"$1\" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
 }
+
+alias h='history 10'
 
 PATH=$PATH:~/bin
 
@@ -261,6 +263,91 @@ alias hgcleanforce='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( 
 alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" '
 
 
+function backupresults
+{
+    V="$(date +'%F%R')"
+    I=$1
+    EXT=$2
+    BACKUPDIR="$HOME/esnapshots/${V}esnap_${I}_${EXT}"
+    if [ -d ${BACKUPDIR} ] ; then 
+      echo "collision!"
+    else
+      mkdir -p ${BACKUPDIR}
+      cp -a /local/scratch/esnap_${I}/*  ${BACKUPDIR}
+    fi
+}
+
+#alias bur1='source ~/.bashrc && backupresults jla  vanilla'
+#alias bur2='source ~/.bashrc && backupresults jla2 fullyhacked'
+#alias bur3='source ~/.bashrc && backupresults jla3 vanillawithfsdb'
+#alias bur4='source ~/.bashrc && backupresults jla4 fullyhackedwithfsdb'
+
+
+
+
+function onerunsimtorulethemall
+{
+    reset
+    clear
+    date 
+
+    TMPFILE="$(mktemp)"
+    ls -al /projects/huntington_A0/Work/jla | tee --append "${TMPFILE}"
+    hg --repository ~/myco/firmwaresrc parents | tee --append "${TMPFILE}"
+    hg --repository ~/myco/firmwaresrc diff | tee --append "${TMPFILE}"
+
+
+    COSIM_IDENTITY="$1"
+    RUN_VARIANT="$2"
+
+    echo 'cosim identity:' "$COSIM_IDENTITY"
+    echo 'run variant   :' "$RUN_VARIANT"
+
+    export COSIM_IDENTITY
+
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite --dutcfg min"
+
+    if   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
+        COMMAND="$COMMAND"
+    elif [ "$RUN_VARIANT" == 'fullyhacked' ] ; then
+        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1' "
+    elif [ "$RUN_VARIANT" == 'vanillawithfsdb' ] ; then
+        COMMAND="$COMMAND --simv-args 'FSDB=1'  "
+    elif [ "$RUN_VARIANT" == 'fullyhackedwithfsdb' ] ; then
+        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
+    else
+        echo "oops"
+        return
+    fi
+
+    COMMAND="$COMMAND trivial"
+
+    echo $COMMAND
+    eval "$COMMAND"
+    esnap_return_value=$?
+    echo "return value " $esnap_return_value
+
+    INFOFILE="/local/scratch/esnap_${COSIM_IDENTITY}/jlainfo" 
+    echo "writing status info from start of run (${TMPFILE}) into scratch directory as ${INFOFILE}"
+    cp "${TMPFILE}" "${INFOFILE}"
+
+    echo "to back up these results use: backupresults ${COSIM_IDENTITY}  ${RUN_VARIANT}"
+    return $esnap_return_value
+}
+
+alias sim1='source ~/.bashrc && onerunsimtorulethemall jla  vanilla'
+alias sim2='source ~/.bashrc && onerunsimtorulethemall jla2 fullyhacked'
+alias sim3='source ~/.bashrc && onerunsimtorulethemall jla3 vanillawithfsdb'
+alias sim4='source ~/.bashrc && onerunsimtorulethemall jla4 fullyhackedwithfsdb'
+
+alias sbsx='source ~/.bashrc && set -x'
+alias ll='ls -alrt'
+alias e='emacsclient -n'
+
+
+
+
+
 function filthyhackrunsim
 {
     reset
@@ -274,16 +361,16 @@ function filthyhackrunsim
 
     export COSIM_IDENTITY=$1
 
-    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite"
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite --dutcfg min"
 
     if [ $1 == 'jla' ] ; then 
-        COMMAND="$COMMAND "
+        COMMAND="$COMMAND"
     elif [ $1 == 'jla2' ] ; then
-        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1' "
+        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1' "
     elif [ $1 == 'jla3' ] ; then
         COMMAND="$COMMAND --simv-args 'FSDB=1'  "
     elif [ $1 == 'jla4' ] ; then
-        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
+        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
     else
         echo "oops"
         return
@@ -391,5 +478,8 @@ alias cdfw='pushd ~/myco/firmwaresrc/'
 alias cdct='pushd ~/myco/chip_test'
 alias cdsf='pushd ~/Desktop/solarflare'
 
+alias tagsfw='cd ~/myco/firmwaresrc/ && find .  \( -name "*.[ch]" -or -name "*.inc" -or -name "*.s" \) -print | xargs etags -a'
+alias remake='ssh -X anvil "make -j -C ~/myco/firmwaresrc cosim_lean world"'
+alias build_from_clean='ssh -X anvil "make -C ~/myco/firmwaresrc clean cosim_lean world"'
 
 # end of stuff added for solarflare
