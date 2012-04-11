@@ -343,6 +343,7 @@ alias sim4='source ~/.bashrc && onerunsimtorulethemall jla4 fullyhackedwithfsdb'
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
 alias e='emacsclient -n'
+alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 
 
