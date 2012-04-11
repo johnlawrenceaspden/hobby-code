@@ -1,10 +1,10 @@
-DOOM ?= 1
+#DOOM ?= 1
 
-ifeq($DOOM,1)
-CFLAGS=-DDOOM
-else
-CFLAGS=
-endif
+# ifeq($DOOM,1)
+# CFLAGS=-DDOOM
+# else
+# CFLAGS=
+# endif
 
 run: hello
 	./hello

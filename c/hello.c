@@ -1,55 +1,33 @@
 #include<stdio.h>
 
-//#define ADEFINE 23
-#define ADEFINE "23"
-//#undef ADEFINE
+typedef unsigned int uint32_t;
 
-#define M1(f) #f
-
-#define M(f)  M1(f)
-
-#ifdef ADEFINE
-#pragma message( "The value of ADEFINE is: " M(ADEFINE) )
-#else
-#pragma message( "ADEFINE is undefined" )
-#endif
-
-
-
-
-typedef struct object_s
+static unsigned long long get_verilog_time()
 {
-  int *a;
-  size_t sizeof_a;
-  int *b;
-  size_t sizeof_b;
-  int c;
-  const char *name;
-} object_t ;
+  int lo, hi;
+  lo = 0x123456789;
+  hi = 0xabcdef0123;
 
-#define DECLARE_OBJECT(a,b,c,d)   { (a), (sizeof(a)/(sizeof(int))),(b), sizeof(b)/(sizeof(int)), (c),(d)}
+  unsigned long long rv=((unsigned long long)(uint32_t) hi) << 32 | (uint32_t) lo;
 
-object_t thing[] = {
-  DECLARE_OBJECT(((int[]){4,3,2}), ((int[]){ 2, 0, 1 }), 1234, "arfle"),
-  DECLARE_OBJECT(((int[]){1,2})  , ((int[]){ 2, 0 })   ,  234, "foo")
-};
+  printf("%i,%i,%i\n", sizeof(uint32_t), sizeof(unsigned long long), sizeof(int));
+  printf("hi: 0x%x\n", hi);
+  printf("lo: 0x%x\n", lo);
+  printf("rv: 0x%llx\n", rv);
+  printf("rv: 0x%llu\n", rv);
+
+  return rv;
+}
 
 int main(void) {
 
-#ifdef DOOM
-  printf("doom");
-#else
-  printf("no doom");
-#endif
+/* #ifdef DOOM */
+/*   printf("doom"); */
+/* #else */
+/*   printf("no doom"); */
+/* #endif */
 
-  int i,j;
-  for(j=0; j<((sizeof(thing)/(sizeof(object_t)))); j++){
-    printf("%s\n", thing[j].name);
-    for(i=0; i<thing[j].sizeof_a; i++) printf("%d, ", thing[0].a[i] );
-    printf("\n");
-    for(i=0; i<thing[j].sizeof_b; i++) printf("%d, ", thing[0].b[i] );
-    printf("\n");
-    printf("%d\n",thing[j].c);
-  }
-    return 0;
+  get_verilog_time();
+
+  return 0;
 }
