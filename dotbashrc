@@ -152,7 +152,7 @@ alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/wdexter
 alias sw='cd ~/hobby-code && mvn -f pom.xml clojure:swank'
 alias ssw='cd ~/hobby-code && mvn -f simple.pom.xml clojure:swank'
 alias cgg='cd ~/hobby-code/ && git pull origin master && git gui'
-alias lsrt='command ls -al --reverse --sort=time'
+alias lsrt='ls -al --color=auto --reverse --sort=time'
 alias go='gnome-open'
 alias ck='cd ~/pyenv/src/ckan && source ~/pyenv/bin/activate'
 alias ch='cd ~/pyenv/src/HelloWorld && source ~/pyenv/bin/activate'
