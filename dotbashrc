@@ -218,14 +218,13 @@ alias anvil4sims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 
 
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
---tab --title=magicmipson  \
---tab --title=magicmipsoff \
---tab --title=magicuartoff \
---tab --title=mbistfastfuncfast \
---tab --title=mbistfastfuncslow  \
---tab --title=mbistfastfuncveryslow  \
---tab --title=serdes  \
---tab --title=spare \
+--tab --title=magicmipson\ svn \
+--tab --title=mbistfastfuncfast\ svn \
+--tab --title=magicmipson\ svngit \
+--tab --title=mbistfastfuncfast\ svngit\
+--tab --title=magicmipson\ buildintree \
+--tab --title=Desktop --profile default \
+--tab --title=gitsvnhunt --profile default \
 "
 
 
@@ -311,8 +310,12 @@ function onerunsimtorulethemall
         COMMAND="$COMMAND"
     elif [ "$RUN_VARIANT" == 'fullyhacked' ] ; then
         COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1' "
+    elif [ "$RUN_VARIANT" == 'lean' ] ; then
+        COMMAND="$COMMAND --lean "
     elif [ "$RUN_VARIANT" == 'vanillawithfsdb' ] ; then
         COMMAND="$COMMAND --simv-args 'FSDB=1'  "
+    elif [ "$RUN_VARIANT" == 'leanwithfsdb' ] ; then
+        COMMAND="$COMMAND --lean --simv-args 'FSDB=1'  "
     elif [ "$RUN_VARIANT" == 'fullyhackedwithfsdb' ] ; then
         COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
     else
@@ -335,10 +338,10 @@ function onerunsimtorulethemall
     return $esnap_return_value
 }
 
-alias sim1='source ~/.bashrc && onerunsimtorulethemall jla  vanilla'
-alias sim2='source ~/.bashrc && onerunsimtorulethemall jla2 fullyhacked'
-alias sim3='source ~/.bashrc && onerunsimtorulethemall jla3 vanillawithfsdb'
-alias sim4='source ~/.bashrc && onerunsimtorulethemall jla4 fullyhackedwithfsdb'
+alias sim1='onerunsimtorulethemall jla  vanilla'
+alias sim2='onerunsimtorulethemall jla2 lean'
+alias sim3='onerunsimtorulethemall jla3 vanillawithfsdb'
+alias sim4='onerunsimtorulethemall jla4 leanwithfsdb'
 
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
