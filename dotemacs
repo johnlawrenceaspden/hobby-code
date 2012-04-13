@@ -413,3 +413,63 @@
 ;;(setq split-height-threshold nil)
 ;;(setq split-width-threshold 0)
 
+(require 'ido)
+(ido-mode 'both)
+
+
+
+;; ido makes competing buffers and finding files easier
+;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+(require 'ido) 
+
+(setq 
+  ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
+
+  ido-ignore-buffers ;; ignore these guys
+  '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
+
+     "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+  ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
+  ido-case-fold  t                 ; be case-insensitive
+
+  ido-enable-last-directory-history t ; remember last used dirs
+  ido-max-work-directory-list 30   ; should be enough
+  ido-max-work-file-list      50   ; remember many
+  ido-use-filename-at-point nil    ; don't use filename at point (annoying)
+  ido-use-url-at-point nil         ; don't use url at point (annoying)
+
+  ido-enable-flex-matching nil     ; don't try to be too smart
+  ido-max-prospects 8              ; don't spam my minibuffer
+  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
+
+;; when using ido, the confirmation is rather annoying...
+ (setq confirm-nonexistent-file-or-buffer nil)
+
+
+(ido-mode 'both) ;; for buffers and files
+
+(require 'windmove)
+(windmove-default-keybindings 'super)
+
+
+(add-hook 'c-mode-common-hook
+  (lambda()
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+    (hs-minor-mode t)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
