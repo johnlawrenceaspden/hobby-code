@@ -304,20 +304,22 @@ function onerunsimtorulethemall
 
     export COSIM_IDENTITY
 
-    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite --dutcfg min"
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap --farmi-lite "
 
-    if   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
-        COMMAND="$COMMAND"
+    if   [ "$RUN_VARIANT" == 'hacks' ] ; then 
+        COMMAND="$COMMAND --simv-args 'FSDB=1' --mccmdline hacks"
+    elif   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
+        COMMAND="$COMMAND --dutcfg min"
     elif [ "$RUN_VARIANT" == 'fullyhacked' ] ; then
-        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1' "
+        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1' "
     elif [ "$RUN_VARIANT" == 'lean' ] ; then
-        COMMAND="$COMMAND --lean "
+        COMMAND="$COMMAND --dutcfg min --lean "
     elif [ "$RUN_VARIANT" == 'vanillawithfsdb' ] ; then
-        COMMAND="$COMMAND --simv-args 'FSDB=1'  "
+        COMMAND="$COMMAND --dutcfg min --simv-args 'FSDB=1'  "
     elif [ "$RUN_VARIANT" == 'leanwithfsdb' ] ; then
-        COMMAND="$COMMAND --lean --simv-args 'FSDB=1'  "
+        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'FSDB=1'  "
     elif [ "$RUN_VARIANT" == 'fullyhackedwithfsdb' ] ; then
-        COMMAND="$COMMAND --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
+        COMMAND="$COMMAND --dutcfg min --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
     else
         echo "oops"
         return
@@ -338,10 +340,10 @@ function onerunsimtorulethemall
     return $esnap_return_value
 }
 
-alias sim1='onerunsimtorulethemall jla  vanilla'
-alias sim2='onerunsimtorulethemall jla2 lean'
-alias sim3='onerunsimtorulethemall jla3 vanillawithfsdb'
-alias sim4='onerunsimtorulethemall jla4 leanwithfsdb'
+alias sim1='onerunsimtorulethemall jla  hacks'
+alias sim2='onerunsimtorulethemall jla2 hacks'
+alias sim3='onerunsimtorulethemall jla3 hacks'
+alias sim4='onerunsimtorulethemall jla4 hacks'
 
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
@@ -485,5 +487,7 @@ alias cdsf='pushd ~/Desktop/solarflare'
 alias tagsfw='cd ~/myco/firmwaresrc/ && find .  \( -name "*.[ch]" -or -name "*.inc" -or -name "*.s" \) -print | xargs etags -a'
 alias remake='ssh -X anvil "make -j -C ~/myco/firmwaresrc cosim_lean world"'
 alias build_from_clean='ssh -X anvil "make -C ~/myco/firmwaresrc clean cosim_lean world"'
+
+function hgfw { hgtk --repository ~/myco/firmwaresrc log & disown ; } 
 
 # end of stuff added for solarflare
