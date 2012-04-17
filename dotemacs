@@ -460,8 +460,13 @@
     (local-set-key (kbd "C-c <down>")  'hs-show-all)
     (hs-minor-mode t)))
 
-
-
+;; undo tree mode is unbelievably awesome, and it comes from:
+;; http://www.dr-qubit.org/undo-tree/undo-tree.el
+;; I stuck the code in ~/hobby-code. It might be an idea to go and get the latest version someday.
+;; I've not version-controlled the byte compiled .elc file
+;; use M-x byte-compile on the .el file to make an .elc file
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 
 
