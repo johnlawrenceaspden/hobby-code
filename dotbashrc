@@ -293,7 +293,9 @@ function onerunsimtorulethemall
 
     # standard configuration for jlahacks
     if   [ "$RUN_VARIANT" == 'hacks' ] ; then 
-        COMMAND="$COMMAND --farmi-lite --simv-args 'FSDB=1' --mccmdline hacks"
+        COMMAND="$COMMAND --farmi-lite --mccmdline hacks"
+    elif   [ "$RUN_VARIANT" == 'hackswithfsdb' ] ; then 
+        COMMAND="$COMMAND --farmi-lite --simv-args 'FSDB=1' --mccmdline hackswithfsdb"
     # various combinations of speedups for snapper trivial
     elif   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
         COMMAND="$COMMAND --farmi-lite --dutcfg min"
@@ -333,6 +335,9 @@ alias sim1='onerunsimtorulethemall jla  hacks'
 alias sim2='onerunsimtorulethemall jla2 hacks'
 alias sim3='onerunsimtorulethemall jla3 hacks'
 alias sim4='onerunsimtorulethemall jla4 hacks'
+
+alias fsim1='onerunsimtorulethemall jla   hackswithfsdb'
+alias fsim2='onerunsimtorulethemall jla2  hackswithfsdb'
 
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
