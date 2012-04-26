@@ -78,6 +78,32 @@
 ;; (setq word-wrap nil)
 ;; (setq fill-column 80)
 
+;; Someone on Stack Overflow suggested:
+;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
+(add-hook 'text-mode-hook (lambda ()
+    (setq truncate-lines nil
+          word-wrap t)))
+
+(add-hook 'prog-mode-hook (lambda ()
+    (setq truncate-lines t
+          word-wrap nil)))
+
+;; But that doesn't seem to work (is it emacs 24 only?)
+(defun wrap-as-text()
+  "text mode wrapping"
+  (interactive)
+  (setq truncate-lines nil
+        word-wrap t))
+
+(defun wrap-as-code()
+  "prog mode wrapping"
+  (interactive)
+  (setq truncate-lines t
+        word-wrap nil))
+
+
+
+
 ;sane scrolling
 (setq scroll-conservatively 10000)
 
