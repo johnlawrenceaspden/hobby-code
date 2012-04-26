@@ -213,13 +213,15 @@ alias anvil4sims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 # various windows for building different versions of the hardware
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
 --tab --title=magicmipson\ svn \
---tab --title=mbistfastfuncfast\ svn \
---tab --title=magicmipson\ svngit \
---tab --title=mbistfastfuncfast\ svngit\
---tab --title=magicmipson\ buildintree \
+--tab --title=krserdesonly\ svn \
+--tab --title=serdes\ svn \
 --tab --title=Desktop --profile default \
 --tab --title=gitsvnhunt --profile default \
 "
+#--tab --title=mbistfastfuncfast\ svn \
+#--tab --title=magicmipson\ svngit \
+#--tab --title=mbistfastfuncfast\ svngit\
+#--tab --title=magicmipson\ buildintree \
 
 # for running continuous sims, with their /9p directories pointed at chip_test so that you can recompile tests without having to restart the sims
 alias cosim1="export COSIM_IDENTITY=jla  && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
@@ -349,6 +351,7 @@ alias cdhw='pushd /projects/huntington_A0/Work/jla'
 alias cdfw='pushd ~/myco/firmwaresrc/'
 alias cdct='pushd ~/myco/chip_test'
 alias cdsf='pushd ~/Desktop/solarflare'
+alias cdgs='pushd /projects/huntington_A0/Work/jla/gitsvnhunt'
 
 alias fwtags='pushd ~/myco/firmwaresrc/ && mktags ; popd'
 alias remake='ssh -X anvil "make -j -C ~/myco/firmwaresrc world"'
