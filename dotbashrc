@@ -340,6 +340,8 @@ alias sim4='onerunsimtorulethemall jla4 hacks'
 
 alias fsim1='onerunsimtorulethemall jla   hackswithfsdb'
 alias fsim2='onerunsimtorulethemall jla2  hackswithfsdb'
+alias fsim3='onerunsimtorulethemall jla3  hackswithfsdb'
+alias fsim4='onerunsimtorulethemall jla4  hackswithfsdb'
 
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
