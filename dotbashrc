@@ -101,12 +101,13 @@ fi
 export HISTCONTROL=ignoredups
 shopt -s cmdhist                     #multiline commands are one history item
 export HISTIGNORE="ls:[bf]g:exit"  #ignore ls, bg, fg & exit in history
-export HISTFILESIZE=50000
-export HISTSIZE=50000
+export HISTFILESIZE=500000
+export HISTSIZE=500000
 
 #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
 shopt -s histappend
-PROMPT_COMMAND='history -a' #fix new window problem
+#PROMPT_COMMAND='history -a ; history -n' #fix new window problem: every time you get a new prompt, update and reload history file
+PROMPT_COMMAND='history -a ;' #fix new window problem: just update. history -n to reload the combined history
 
 #Remember M-. gets the arguments of previous commands
 
@@ -125,38 +126,42 @@ export -f doc
 
 alias clj='rlwrap clojure'
 
-#life is too short
-#alias fnd='find . -iname'
 function fnd
 {
+    echo find . -iname "$1"
     command find . -iname "$1"
 }
 
 function fndg 
 {  
+    echo example: 'fndg \*.c void'
     command find . -name "$1" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
 }
 
-PATH=$PATH:~/bin
+alias h='history 10'
 
-alias cda='cd ~/hobby-code/agora'
+PATH=$PATH:~/bin
 
 alias unisondesktop2dellmini='unison /home/john/Desktop/unison ssh://john@dell-mini//home/john/Desktop/unison'
 alias unisondesktop2mini2='unison /home/john/Desktop/unison ssh://john@mini-2//home/john/Desktop/unison'
 alias unisonmini2desktop='unison /home/john/Desktop/unison ssh://john@ssh.aspden.com//home/john/Desktop/unison'
 alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/wdexternal/unison'
+
 alias sw='cd ~/hobby-code && mvn -f pom.xml clojure:swank'
 alias ssw='cd ~/hobby-code && mvn -f simple.pom.xml clojure:swank'
 alias cgg='cd ~/hobby-code/ && git pull origin master && git gui'
-alias lsrt='command ls -al --reverse --sort=time'
+alias lsrt='ls -al --color=auto --reverse --sort=time'
 alias go='gnome-open'
-alias ck='cd ~/pyenv/src/ckan && source ~/pyenv/bin/activate'
-alias ch='cd ~/pyenv/src/HelloWorld && source ~/pyenv/bin/activate'
-
 
 alias digbysocks='curl -v http://172.16.1.1:8000 -d agree=1 -d redirurl=http://www.google.com -d accept=Continue && ssh -D 9999 ssh.aspden.com'
 
-alias mktags='find .  \( -name "*.[ch]" -or -name "*.inc" -or -name "*.s" -or -name "*.mk" \) -print | xargs etags -a'
+function mktags
+{
+    find .  \( -name "*.[ch]" -or -name "*.inc" -or -name "*.s" -or -name "*.mk" \) -print0 \
+        | xargs -0 etags -a
+}
+
+
 
 #stuff added for solarflare build
 
@@ -164,12 +169,12 @@ PATH=$PATH:/home/jla/myco/chip_test/scripts
 PATH=$PATH:/projects/huntington_A0/Release/ef10-tools/v1_14/bin/
 export PATH
 
-# Neil says not to do this anymore
-# export KPATH=/projects/huntington_A0/Release/cosim/kernels/latest/build
 export PROJ_DIR=/projects/huntington_A0/Work/$USER/hunt/lom
 
 # solarflare productivity aliases
 
+# this one is for running continuous sims. The killer window will destroy all processes on anvil
+# shortly after the screensaver activates, so that you don't leave expensive sims running over lunch 
 alias anvilicious="gnome-terminal --geometry=110x40+1200+10 --profile anvil \
 --tab --title=Desktop --profile default \
 --tab --title=anvil \
@@ -181,51 +186,64 @@ alias anvilicious="gnome-terminal --geometry=110x40+1200+10 --profile anvil \
 --tab --title=cosim2 \
 --tab --title=killer -e '/home/jla/hobby-code/screensaveridle.pl'"
 
-
+# usual configuration for running jlahacks, with simulator, uart, hwlog, and verdi windows, plus a back up sim 
 alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
---tab --title=Desktop --profile default \
---tab --title=anvil \
 --tab --title=sim1 \
 --tab --title=uart1  \
 --tab --title=hwlog1 \
 --tab --title=verdi1 \
---tab --title=oo \
 --tab --title=sim2 \
 --tab --title=uart2 \
 --tab --title=hwlog2 \
 --tab --title=verdi2 \
---tab --title=tcsh --profile anviltcsh \
 "
 
+# occasional need to run four in parallel
+alias anvil4sims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
+--tab --title=sim1 \
+--tab --title=hwlog1 \
+--tab --title=sim2 \
+--tab --title=hwlog2 \
+--tab --title=sim3 \
+--tab --title=hwlog3 \
+--tab --title=sim4 \
+--tab --title=hwlog4 \
+"
+
+# various windows for building different versions of the hardware
 alias anvilcompilers="gnome-terminal --geometry=122x40+1200+10 --profile anviltcsh \
---tab --title=magicmipson  \
---tab --title=magicmipsoff \
---tab --title=mbistfastfuncfast \
---tab --title=mbistfastfuncslow  \
---tab --title=serdes  \
---tab --title=spare \
+--tab --title=magicmipson\ svn \
+--tab --title=krserdesonly\ svn \
+--tab --title=serdes\ svn \
+--tab --title=Desktop --profile default \
+--tab --title=gitsvnhunt --profile default \
 "
+#--tab --title=mbistfastfuncfast\ svn \
+#--tab --title=magicmipson\ svngit \
+#--tab --title=mbistfastfuncfast\ svngit\
+#--tab --title=magicmipson\ buildintree \
 
-
-alias cosim1="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
+# for running continuous sims, with their /9p directories pointed at chip_test so that you can recompile tests without having to restart the sims
+alias cosim1="export COSIM_IDENTITY=jla  && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
 alias cosim2="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --load --passthrough ~/myco/chip_test"
 
-alias cosim1i="export COSIM_IDENTITY=jla && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
-alias cosim2i="export COSIM_IDENTITY=jla2 && time ~/myco/chip_test/src/tools/cosim/esnap --simv-args \"LOOPBACK_DEBUG=1 IPSEC_DEBUG=1\" --load --passthrough ~/myco/chip_test"
 
-alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
-alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog1="reset && clear && date && ls -al /local/scratch/esnap_jla/hwlog  ; tail -n 100000 -F /local/scratch/esnap_jla/hwlog"
+alias hwlog2="reset && clear && date && ls -al /local/scratch/esnap_jla2/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla2/hwlog"
+alias hwlog3="reset && clear && date && ls -al /local/scratch/esnap_jla3/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla3/hwlog"
+alias hwlog4="reset && clear && date && ls -al /local/scratch/esnap_jla4/hwlog ; tail -n 100000 -F /local/scratch/esnap_jla4/hwlog"
 
-alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
+alias uart1="reset && clear && date && ls -al /local/scratch/esnap_jla/uart0.log  ; tail -n 100000 -F /local/scratch/esnap_jla/uart0.log"
 alias uart2="reset && clear && date && ls -al /local/scratch/esnap_jla2/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla2/uart0.log"
+alias uart3="reset && clear && date && ls -al /local/scratch/esnap_jla3/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla3/uart0.log"
+alias uart4="reset && clear && date && ls -al /local/scratch/esnap_jla4/uart0.log ; tail -n 100000 -F /local/scratch/esnap_jla4/uart0.log"
 
+# anvil process control
 alias anvkill="ssh anvil ps -ef | grep jla; ssh anvil pkill -9 -u jla ; ssh anvil ps -ef | grep jla"
 alias anvcheck="ssh anvil ps -ef | grep jla"
 
-alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing && echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing && echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare && echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing && cd /projects/huntington_A0/Work/jla/gitsvntest/huntington_A0 && git status && git log remotes/trunk..HEAD "
 
-alias mcw="make -C ~/myco/firmwaresrc/ clean && make --keep-going --jobs MMAKE_LIBERAL=1 -C ~/myco/firmwaresrc/ world"
-
+alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvnhunt && git status && git log remotes/trunk..HEAD "
 
 alias verdi1="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla/tb_top.fsdb -sswr ~/myco/firmwaresrc/favourite-signals.rc'"
 
@@ -233,65 +251,114 @@ alias verdi2="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib
 
 alias githbc='git --git-dir=/home/jla/hobby-code/.git --work-tree=/home/jla/hobby-code'
 
-function runsim
+alias hgcleanforce='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" | xargs rm -rv'
+alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || ( \$1 == \"I\") { print \$2 }" '
+
+
+function backupresults
+{
+    V="$(date +'%F%R')"
+    I=$1
+    EXT=$2
+    BACKUPDIR="$HOME/esnapshots/${V}esnap_${I}_${EXT}"
+    if [ -d ${BACKUPDIR} ] ; then 
+      echo "collision!"
+    else
+      mkdir -p ${BACKUPDIR}
+      cp -a /local/scratch/esnap_${I}/*  ${BACKUPDIR}
+    fi
+}
+
+function onerunsimtorulethemall
 {
     reset
     clear
     date 
-    ls -al /projects/huntington_A0/Work/jla
 
-    echo 1 cosim identity: $1
-    echo 2 rtl or tlm: $2
-    echo 3 test to run: $3
-    echo 4 mc command line: $4
+    TMPFILE="$(mktemp)"
+    ls -al /projects/huntington_A0/Work/jla | tee --append "${TMPFILE}"
+    hg --repository ~/myco/firmwaresrc parents | tee --append "${TMPFILE}"
+    hg --repository ~/myco/firmwaresrc diff | tee --append "${TMPFILE}"
 
-    export COSIM_IDENTITY=$1 
 
-    if [ $2 = 'tlm' ] ; then
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv-args FSDB=1"
+    COSIM_IDENTITY="$1"
+    RUN_VARIANT="$2"
+
+    echo 'cosim identity:' "$COSIM_IDENTITY"
+    echo 'run variant   :' "$RUN_VARIANT"
+
+    export COSIM_IDENTITY
+
+
+
+    COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap "
+
+    # standard configuration for jlahacks
+    if   [ "$RUN_VARIANT" == 'hacks' ] ; then 
+        COMMAND="$COMMAND --farmi-lite --mccmdline hacks"
+    elif   [ "$RUN_VARIANT" == 'hackswithfsdb' ] ; then 
+        COMMAND="$COMMAND --farmi-lite --simv-args 'FSDB=1' --mccmdline hackswithfsdb"
+    # various combinations of speedups for snapper trivial
+    elif   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
+        COMMAND="$COMMAND --farmi-lite --dutcfg min"
+    elif [ "$RUN_VARIANT" == 'lean' ] ; then
+        COMMAND="$COMMAND --farmi-lite --dutcfg min --lean "
+    elif [ "$RUN_VARIANT" == 'fullyhacked' ] ; then
+        COMMAND="$COMMAND --farmi-lite --dutcfg min --lean --simv-args 'MC_TLP_HACK=1' "
+    # and then those speedups with fsdb files being generated (takes twice the time to run)
+    elif [ "$RUN_VARIANT" == 'vanillawithfsdb' ] ; then
+        COMMAND="$COMMAND --farmi-lite --dutcfg min --simv-args 'FSDB=1'  "
+    elif [ "$RUN_VARIANT" == 'leanwithfsdb' ] ; then
+        COMMAND="$COMMAND --farmi-lite --dutcfg min --lean --simv-args 'FSDB=1'  "
+    elif [ "$RUN_VARIANT" == 'fullyhackedwithfsdb' ] ; then
+        COMMAND="$COMMAND --farmi-lite --dutcfg min --lean --simv-args 'MC_TLP_HACK=1 FSDB=1'"
     else
-        COMMAND="$HOME/myco/chip_test/src/tools/cosim/esnap --simv dv/blk/farmi_lite/sim --simv-args FSDB=1 --farmi-lite"
+        echo "oops"
+        return
     fi
 
-    if [ -z $4 ] ; then
-        COMMAND="$COMMAND $3"
-    else
-        COMMAND="$COMMAND --mccmdline $4 $3 "
-    fi
+    #
+    COMMAND="$COMMAND trivial"
 
     echo $COMMAND
-    $COMMAND
+    eval "$COMMAND"
     esnap_return_value=$?
     echo "return value " $esnap_return_value
+
+    INFOFILE="/local/scratch/esnap_${COSIM_IDENTITY}/jlainfo" 
+    echo "writing status info from start of run (${TMPFILE}) into scratch directory as ${INFOFILE}"
+    cp "${TMPFILE}" "${INFOFILE}"
+
+    echo "to back up these results use: backupresults ${COSIM_IDENTITY}  ${RUN_VARIANT}"
     return $esnap_return_value
 }
 
-alias rtl1trivial='runsim jla rtl  trivial'
-alias rtl2trivial='runsim jla2 rtl trivial'
-alias tlm1trivial='runsim jla tlm  trivial'
-alias tlm2trivial='runsim jla2 tlm trivial'
+alias sim1='onerunsimtorulethemall jla  hacks'
+alias sim2='onerunsimtorulethemall jla2 hacks'
+alias sim3='onerunsimtorulethemall jla3 hacks'
+alias sim4='onerunsimtorulethemall jla4 hacks'
 
-alias rtl1true='runsim jla rtl  true'
-alias rtl2true='runsim jla2 rtl true'
-alias tlm1true='runsim jla tlm  true'
-alias tlm2true='runsim jla2 tlm true'
+alias fsim1='onerunsimtorulethemall jla   hackswithfsdb'
+alias fsim2='onerunsimtorulethemall jla2  hackswithfsdb'
+alias fsim3='onerunsimtorulethemall jla3  hackswithfsdb'
+alias fsim4='onerunsimtorulethemall jla4  hackswithfsdb'
 
-alias rtl1='rtl1true'
-alias rtl2='rtl2true'
-
-#alias hgct='hg --repository ~/myco/chip_test'
-#alias hgfw='hg --repository ~/myco/firmwaresrc'
-#alias hgsf='hg --repository ~/Desktop/solarflare'
-
-#alias hgtkct='hgtk --repository ~/myco/chip_test'
-#alias hgtkfw='hgtk --repository ~/myco/firmwaresrc'
-#alias hgtksf='hgtk --repository ~/Desktop/solarflare'
+alias sbsx='source ~/.bashrc && set -x'
+alias ll='ls -alrt'
+alias e='emacsclient -n'
+alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 alias cdhc='pushd ~/hobby-code'
 alias cdhw='pushd /projects/huntington_A0/Work/jla'
 alias cdfw='pushd ~/myco/firmwaresrc/'
 alias cdct='pushd ~/myco/chip_test'
 alias cdsf='pushd ~/Desktop/solarflare'
+alias cdgs='pushd /projects/huntington_A0/Work/jla/gitsvnhunt'
 
+alias fwtags='pushd ~/myco/firmwaresrc/ && mktags ; popd'
+alias remake='ssh -X anvil "make -j -C ~/myco/firmwaresrc world"'
+alias build_from_clean='ssh -X anvil "make -C ~/myco/firmwaresrc clean world"'
+
+function hgfw { hgtk --repository ~/myco/firmwaresrc log & disown ; } 
 
 # end of stuff added for solarflare

@@ -2,9 +2,11 @@ bloody-maven/maven-test-project/target/
 *.class
 *.clj.html
 *~
+*.elc
 .emacs.desktop
 .emacs.desktop.lock
 data
 verilog/hello
 verilog/arbiter
 
+c/hello
