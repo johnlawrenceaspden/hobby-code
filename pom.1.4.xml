@@ -23,6 +23,7 @@ mvn -f pom.1.4.xml versions:display-plugin-updates
       <id>clojure</id>
       <url>http://build.clojure.org/releases</url>
     </repository>
+
     <repository>
       <id>central</id>
       <url>http://repo1.maven.org/maven2</url>
