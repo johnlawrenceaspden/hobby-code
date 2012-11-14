@@ -1,0 +1,386 @@
+; SLIME 20100404
+user> (use 'overtone.live)
+user> (use 'overtone.live)
+user> (use 'overtone.live)
+
+          _____                 __
+         / __  /_  _____  _____/ /_____  ____  ___
+        / / / / | / / _ \/ ___/ __/ __ \/ __ \/ _ \
+       / /_/ /| |/ /  __/ /  / /_/ /_/ / / / /  __/
+       \____/ |___/\___/_/   \__/\____/_/ /_/\___/
+
+                          Programmable Music.
+
+
+Hello john, may this be the start of a beautiful music hacking session...
+nil
+user> (demo (sin-osc))
+28
+user> (demo (sin-osc))
+28
+user> (demo (sin-osc))
+28
+user> (scope)
+; Evaluation aborted.
+user> (scope)
+; Evaluation aborted.
+user> (server-status)
+; Evaluation aborted.
+user> (server-status)
+{:n-ugens 140, :n-synths 17, :n-groups 11, :n-loaded-synths 19, :avg-cpu 7.0805798, :peak-cpu 7.7562118, :nominal-sample-rate 44100.0, :actual-sample-rate 44105.85883266584}
+user> (scope)
+nil
+user> (demo (sin-osc))
+29
+user> (demo 4 (sin-osc))
+29
+user> (demo 20 (sin-osc))
+29
+user> (demo 20 (sin-osc))
+29
+user> (examples)
+sound-in
+  :stereo-patch (:ar) - World's most expensive stereo patchcord 
+  :mono-patch   (:ar) - World's most expensive patchcord 
+
+compander
+  :data         (:ar) - View data coming out of a compander 
+  :noise-gate   (:ar) - Use compander to create a noise gate 
+
+amplitude
+  :sin-freq     (:ar) - Use input amplitude to control saw frequency 
+  :saw-vol      (:ar) - Use input amplitude to control saw amplitude 
+
+send-reply
+  :count        (:kr) - Send back an OSC message containing a rolling count 
+
+impulse
+  :poll         (:kr) - Poll an impulse to view its output 
+
+dwhite
+  :rand-seq     (:ar) - Play a random sequence of floats mapped to freqs with rate 
+                        determined by mouse-x 
+
+diwhite
+  :rand-seq     (:ar) - Play a random sequence of integers mapped to freqs with rate 
+                        determined by mouse-x 
+
+dbrown
+  :rand-walk    (:ar) - Random floating point number walk through freqs with rate 
+                        determined by mouse-x 
+
+dibrown
+  :rand-walk    (:ar) - Random whole number walk through freqs with rate 
+                        determined by mouse-x 
+
+nil
+user> (examples dwhite)
+:rand-seq (:ar) - Play a random sequence of floats mapped to freqs with rate 
+                  determined by mouse-x 
+nil
+user> (examples dwhite :rand-seq)
+-------------------------
+Example => dwhite :rand-seq
+
+  Play a random sequence of floats mapped to freqs with rate determined by 
+  mouse-x 
+
+  [max 15]
+
+  max - Max walk range. Increase to allow for higher freqs. 
+
+  Here we use dwhite to create an infinite sequence of random floating 
+  point values between 0 and max. We then pull out the values from diwhite 
+  using the demand ugen, pulling at the rate defined by the impulse - which 
+  is between 1 and 40 depending on the mouse-x coord. Therefore, you can 
+  use the mouse to speed up and slow down the walk.
+
+  We poll the current value so you can see the output as well as hear it 
+
+  Source:
+
+   (let [vals (dwhite 0 15 INF)
+         trig (impulse:kr (mouse-x 1 40 1))
+         val (demand:kr trig 0 vals)
+         poll (poll trig val "dwhite val:")
+         freq (+ 340 (* 30 val))]
+     (* 0.1 (sin-osc freq)))
+  Categories: Example cgen
+  Rates: [ :ar ]
+  Default rate: :ar
+  Contributed by: Sam Aaron
+nil
+user> (examples dwhite :rand-seq)
+-------------------------
+Example => dwhite :rand-seq
+
+  Play a random sequence of floats mapped to freqs with rate determined by 
+  mouse-x 
+
+  [max 15]
+
+  max - Max walk range. Increase to allow for higher freqs. 
+
+  Here we use dwhite to create an infinite sequence of random floating 
+  point values between 0 and max. We then pull out the values from diwhite 
+  using the demand ugen, pulling at the rate defined by the impulse - which 
+  is between 1 and 40 depending on the mouse-x coord. Therefore, you can 
+  use the mouse to speed up and slow down the walk.
+
+  We poll the current value so you can see the output as well as hear it 
+
+  Source:
+
+   (let [vals (dwhite 0 15 INF)
+         trig (impulse:kr (mouse-x 1 40 1))
+         val (demand:kr trig 0 vals)
+         poll (poll trig val "dwhite val:")
+         freq (+ 340 (* 30 val))]
+     (* 0.1 (sin-osc freq)))
+
+  Categories: Example cgen
+  Rates: [ :ar ]
+  Default rate: :ar
+  Contributed by: Sam Aaron
+nil
+user> (example dwhite :rand-seq)
+#<sc-ugen: binary-op-u-gen:ar [7]>
+user> (demo (example dwhite :rand-seq))
+29
+user> (demo 20 (example dwhite :rand-seq))
+29
+user> (demo 20 (example dwhite :rand-seq))
+29
+user> (demo 20 (example dwhite :rand-seq))
+29
+user> (demo 20 (example dwhite :rand-seq))
+29
+user> 
+nil
+
+user> nil
+user> "sam says: really interesting namespace overtone.music.pitch"
+"sam says: really interesting namespace overtone.music.pitch"
+user> "use doc (use odoc in preference)"
+"use doc (use odoc in preference)"
+user> (odoc *)
+-------------------------
+clojure.core/*
+([] [x] [x y] [x y & more])
+  Returns the product of nums. (*) returns 1. Does not auto-promote
+  longs, will throw on overflow. See also: *'
+
+-------------------------
+overtone.sc.ugen-collide/*
+
+  Signal multiplication 
+
+  [a :none, b :none]
+
+  a - First input 
+  b - Second input 
+
+  Merges two signals by multiplying them together.
+
+  This binary op ugen is foldable. i.e. may take multiple args and fold 
+  them into a tree of ugens.
+
+  This ugen's name collides with the existing fn #'clojure.core/*. When 
+  calling this fn within a synth definition, #'clojure.core/* will be 
+  called unless the argument list suggests that this is a ugen call. 
+  overtone.sc.ugen-collide/* will therefore only be called if the arg 
+  list is a single map or at least one of the args is a ugen and the rest 
+  consist only of numbers, sequentials, keywords and other ugens. Also, 
+  as this fn has been labelled as numerical, it will also be treated as a 
+  ugen if any of the args are not numbers. 
+
+  Categories: Binary Operations
+  Rates: [ :ir, :dr, :ar, :kr ]
+  Default rate: :auto
+
+
+nil
+user> (definst foo [] (saw 220))
+#<instrument: foo>
+user> (foo)
+30
+user> (stop)
+nil
+user> (definst baz [freq 440] (* 0.3 (saw freq)))
+
+#<instrument: baz>
+user> (baz 200)
+31
+user> (baz 201)
+32
+user> (baz 202)
+33
+user> (kill baz)
+nil
+user> (use 'clojure.pprint)
+nil
+user> (pprint (node-tree))
+{:type :group,
+ :id 0,
+ :children
+ ({:type :group,
+   :id 1,
+   :children
+   ({:type :synth, :name "in-bus-mixer", :id 25}
+    {:type :synth, :name "in-bus-mixer", :id 24}
+    {:type :synth, :name "in-bus-mixer", :id 23}
+    {:type :synth, :name "in-bus-mixer", :id 22}
+    {:type :synth, :name "in-bus-mixer", :id 21}
+    {:type :synth, :name "in-bus-mixer", :id 20}
+    {:type :synth, :name "in-bus-mixer", :id 19}
+    {:type :synth, :name "in-bus-mixer", :id 18})}
+  {:type :group,
+   :id 2,
+   :children
+   ({:type :group,
+     :id 6,
+     :children
+     ({:type :group, :id 29, :children nil}
+      {:type :group, :id 30, :children nil})}
+    {:type :group, :id 7, :children nil}
+    {:type :group, :id 5, :children nil}
+    {:type :group,
+     :id 8,
+     :children ({:type :synth, :name "mixer", :id 26})}
+    {:type :group, :id 9, :children nil})}
+  {:type :group,
+   :id 3,
+   :children
+   ({:type :synth, :name "out-bus-mixer", :id 17}
+    {:type :synth, :name "out-bus-mixer", :id 16}
+    {:type :synth, :name "out-bus-mixer", :id 15}
+    {:type :synth, :name "out-bus-mixer", :id 14}
+    {:type :synth, :name "out-bus-mixer", :id 13}
+    {:type :synth, :name "out-bus-mixer", :id 12}
+    {:type :synth, :name "out-bus-mixer", :id 11}
+    {:type :synth, :name "out-bus-mixer", :id 10})}
+  {:type :group,
+   :id 4,
+   :children
+   ({:type :group,
+     :id 27,
+     :children ({:type :synth, :name "bus->buf", :id 28})})})}
+nil
+user> (baz 202)
+31
+user> (pprint (node-tree))
+{:type :group,
+ :id 0,
+ :children
+ ({:type :group,
+   :id 1,
+   :children
+   ({:type :synth, :name "in-bus-mixer", :id 25}
+    {:type :synth, :name "in-bus-mixer", :id 24}
+    {:type :synth, :name "in-bus-mixer", :id 23}
+    {:type :synth, :name "in-bus-mixer", :id 22}
+    {:type :synth, :name "in-bus-mixer", :id 21}
+    {:type :synth, :name "in-bus-mixer", :id 20}
+    {:type :synth, :name "in-bus-mixer", :id 19}
+    {:type :synth, :name "in-bus-mixer", :id 18})}
+  {:type :group,
+   :id 2,
+   :children
+   ({:type :group,
+     :id 6,
+     :children
+     ({:type :group, :id 29, :children nil}
+      {:type :group,
+       :id 30,
+       :children ({:type :synth, :name "baz", :id 31})})}
+    {:type :group, :id 7, :children nil}
+    {:type :group, :id 5, :children nil}
+    {:type :group,
+     :id 8,
+     :children ({:type :synth, :name "mixer", :id 26})}
+    {:type :group, :id 9, :children nil})}
+  {:type :group,
+   :id 3,
+   :children
+   ({:type :synth, :name "out-bus-mixer", :id 17}
+    {:type :synth, :name "out-bus-mixer", :id 16}
+    {:type :synth, :name "out-bus-mixer", :id 15}
+    {:type :synth, :name "out-bus-mixer", :id 14}
+    {:type :synth, :name "out-bus-mixer", :id 13}
+    {:type :synth, :name "out-bus-mixer", :id 12}
+    {:type :synth, :name "out-bus-mixer", :id 11}
+    {:type :synth, :name "out-bus-mixer", :id 10})}
+  {:type :group,
+   :id 4,
+   :children
+   ({:type :group,
+     :id 27,
+     :children ({:type :synth, :name "bus->buf", :id 28})})})}
+nil
+user> (baz 200)
+32
+user> (kill baz)
+nil
+user> (baz 256)
+31
+user> (baz 256*3/2)
+; Evaluation aborted.
+user> (baz (* 256 3/2))
+32
+user> (baz (* 256 4/3))
+33
+user> (definst trem [freq 440 depth 10 rate 6 length 3] 
+    (* 0.3 
+       (line:kr 0 1 length FREE) 
+       (saw (+ freq (* depth (sin-osc:kr rate))))))
+
+#<instrument: trem>
+user> (stop)
+nil
+user> (trem)
+31
+user> (trem :length 200)
+31
+user> (stop)
+nil
+user> (trem :length 20)
+31
+user> (* 20 (trem :length 20))
+620
+user> (definst trem [freq 440 depth 10 rate 6 length 3] 
+    (* 3 
+       (line:kr 0 1 length FREE) 
+       (saw (+ freq (* depth (sin-osc:kr rate))))))
+
+#<instrument: trem>
+user> (trem :length 20)
+31
+user> (definst trem [freq 440 depth 10 rate 6 length 3] 
+    (* 3 
+       (line:kr 0 1 length FREE) 
+       (saw (+ freq (* depth (sin-osc:kr rate))))))
+
+#<instrument: trem>
+user> (definst trem [freq 440 depth 10 rate 6 length 3] 
+    (* 3 
+       (line:kr 0 1 length FREE) (line:kr 1 0 length FREE)
+       (saw (+ freq (* depth (sin-osc:kr rate))))))
+
+#<instrument: trem>
+user> (trem :length 20)
+31
+user> (trem :length 20)
+31
+user> "That's it for docs. Rtfe"
+"That's it for docs. Rtfe"
+user> 
+nil
+user> "There's a piano example extemp, also see freesound.org."
+"There's a piano example extemp, also see freesound.org."
+user> "keynome is bad version of monome for keyboard. combine with satie.clj"
+"keynome is bad version of monome for keyboard. combine with satie.clj"
+user> "to get satie.clj to work, take sample piano part of extempore file, to trigger it use something from keynome"
+"to get satie.clj to work, take sample piano part of extempore file, to trigger it use something from keynome"
+user> "pull in piano samples, by downloading them from the url that is specified in the extemp file, once you've got the files somewhere in a directory, then use load-samples command to load all the loud ones."
+"pull in piano samples, by downloading them from the url that is specified in the extemp file, once you've got the files somewhere in a directory, then use load-samples command to load all the loud ones."
+user> 
