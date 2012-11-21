@@ -362,3 +362,6 @@ alias build_from_clean='ssh -X anvil "make -C ~/myco/firmwaresrc clean world"'
 function hgfw { hgtk --repository ~/myco/firmwaresrc log & disown ; } 
 
 # end of stuff added for solarflare
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
