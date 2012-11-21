@@ -551,11 +551,8 @@
 (global-undo-tree-mode)
 
 
-
-
-
-
-
+;; nrepl seems to be the new way to connect to clojure programs instead of slime
+(require 'nrepl)
 
 
 
