@@ -1,12 +1,11 @@
 ;; -*- mode: Lisp; -*-
-;;; this was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
+
+
+;; If we find the package manager code in hobby-code then load it and initialize the package manager
+;; Tom Tromey's original seems to have been superseded by "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el"
 (when
     (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
+     (expand-file-name "~/hobby-code/package.el"))
   (package-initialize))
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
