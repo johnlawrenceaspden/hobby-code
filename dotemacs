@@ -308,34 +308,36 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Clojure-related stuff
 
-;;bind the slime selector to f12 and add a method for finding clojure buffers
-(require 'slime)
-(define-key global-map (kbd "<f12>") 'slime-selector)
-(def-slime-selector-method ?j
-  "most recently visited clojure-mode buffer."
-  (slime-recently-visited-buffer 'clojure-mode))
+;; all of this was germane to slime, but it seems that now we use nrepl instead.
+;; commenting it out pending investigations
+;; ;;bind the slime selector to f12 and add a method for finding clojure buffers
+;; (require 'slime)
+;; (define-key global-map (kbd "<f12>") 'slime-selector)
+;; (def-slime-selector-method ?j
+;;   "most recently visited clojure-mode buffer."
+;;   (slime-recently-visited-buffer 'clojure-mode))
 
-;;copy last expression to repl
-(defun copy-last-expression-to-clojure-slime-repl()
-  "copy-last-expression-to-clojure-slime-repl. Not very clever about it. Finds buffer by name."
-  (interactive)
-  (let((end (point))
-       (beg (save-excursion
-              (backward-list 1)
-              (point)))
-       (edit-buffer (current-buffer))
-       (lisp-buffer (get-buffer "*slime-repl clojure*"))
-       (eval-command 'slime-repl-return))
-  (progn
-     (pop-to-buffer lisp-buffer)
-     (end-of-buffer)
-     (pop-to-buffer edit-buffer)
-     (append-to-buffer lisp-buffer beg end)
-     (pop-to-buffer lisp-buffer)
-     (funcall eval-command)
-     (pop-to-buffer edit-buffer))))
+;; ;;copy last expression to repl
+;; (defun copy-last-expression-to-clojure-slime-repl()
+;;   "copy-last-expression-to-clojure-slime-repl. Not very clever about it. Finds buffer by name."
+;;   (interactive)
+;;   (let((end (point))
+;;        (beg (save-excursion
+;;               (backward-list 1)
+;;               (point)))
+;;        (edit-buffer (current-buffer))
+;;        (lisp-buffer (get-buffer "*slime-repl clojure*"))
+;;        (eval-command 'slime-repl-return))
+;;   (progn
+;;      (pop-to-buffer lisp-buffer)
+;;      (end-of-buffer)
+;;      (pop-to-buffer edit-buffer)
+;;      (append-to-buffer lisp-buffer beg end)
+;;      (pop-to-buffer lisp-buffer)
+;;      (funcall eval-command)
+;;      (pop-to-buffer edit-buffer))))
 
-(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-clojure-slime-repl)
+;; (define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-clojure-slime-repl)
 
 ;; rainbow brackets in clojure mode, relies on highlight-parentheses.el in 
 ;; ~/hobby-code
