@@ -6,6 +6,7 @@
 (when
     (load
      (expand-file-name "~/hobby-code/package.el"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize))
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
