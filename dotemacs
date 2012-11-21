@@ -1,12 +1,16 @@
 ;; -*- mode: Lisp; -*-
 
 
-;; If we find the package manager code in hobby-code then load it and initialize the package manager
+
 ;; Tom Tromey's original seems to have been superseded by "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el"
+
+;; If we find the package manager code in hobby-code then load it and initialize the package manager
 (when
-    (load
-     (expand-file-name "~/hobby-code/package.el"))
+    (load (expand-file-name "~/hobby-code/package.el"))
+  ;; add the melpa package repository, which seems to be all the latest stuff on github
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  ;; This would add marmalade, but that seems to be older versions of the same things. Maybe they're more stable?
+  ;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
   (package-initialize))
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
