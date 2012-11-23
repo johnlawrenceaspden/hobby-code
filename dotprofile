@@ -1,0 +1,3 @@
+export PATH=$PATH:~/bin
+### Added by the Heroku Toolbelt (and then moved here by jla)
+export PATH="/usr/local/heroku/bin:$PATH"
