@@ -25,6 +25,10 @@
 ;(color-theme-retro-orange)
 ;(color-theme-scintilla)
 
+;; nice big letters
+(set-face-attribute 'default nil :height 120)
+
+
 ;;lisp editing is better with flashing brackets
 (show-paren-mode)
 
@@ -553,6 +557,8 @@
 
 ;; nrepl seems to be the new way to connect to clojure programs instead of slime
 (require 'nrepl)
+;; irritating popup stacktraces off
+(setq nrepl-popup-stacktraces nil)
 
 
 
