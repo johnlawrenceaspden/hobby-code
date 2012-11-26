@@ -562,4 +562,7 @@
 
 
 
-
+;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
+(defun yank-escaped-string ()
+  (interactive)
+  (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
