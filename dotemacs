@@ -563,7 +563,9 @@
 ;; nrepl seems to be the new way to connect to clojure programs instead of slime
 (require 'nrepl)
 ;; irritating popup stacktraces off
-(setq nrepl-popup-stacktraces nil)
+;; this seems to work if you do it in the scratch buffer but not if it's here.
+;; Maybe it gets reset when you start a new session?
+(setq-default nrepl-popup-stacktraces nil)
 
 
 
