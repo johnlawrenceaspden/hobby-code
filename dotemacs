@@ -207,10 +207,15 @@
 ;; ;; stop the speedbar jumping around
 ;; (require 'speedbar)
 ;; (speedbar-disable-update)
-;; ;; and make it show all files
-;; ;; (setq speedbar-directory-unshown-regexp "^$")
-;; ;; (actually, this can be irritating) original behaviour comes back with:
-;; ;; (setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+
+;; make the speedbar show all files
+;;(custom-set-variables '(speedbar-show-unknown-files t))
+;; even the ones that begin with a dot!
+;;(setq speedbar-directory-unshown-regexp "^$")
+;;(actually, this can be irritating) original behaviour comes back with:
+;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+
+
 
 
 ;; start emacs server
