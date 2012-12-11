@@ -1,3 +1,5 @@
 export PATH=$PATH:/home/john/bin
 ### Added by the Heroku Toolbelt (and then moved here by jla)
 export PATH="/usr/local/heroku/bin:$PATH"
+### http://serverfault.com/questions/10437/how-do-you-swap-the-caps-lock-to-control-in-xfce
+/usr/bin/setxkbmap -option "ctrl:nocaps"
