@@ -245,7 +245,7 @@ function mktags
 # alias anvcheck="ssh anvil ps -ef | grep jla"
 
 
-# alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvnhunt && git status && git log remotes/trunk..HEAD "
+#alias vcstatuses="echo ~/myco/firmwaresrc && cd ~/myco/firmwaresrc && hg status && echo not checking outgoing ; echo ~/myco/chip_test && cd ~/myco/chip_test/ && hg status && echo not checking outgoing ; echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/solarflare..solarflare ; echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ; cd /projects/huntington_A0/Work/jla/gitsvnhunt && git status && git log remotes/trunk..HEAD "
 
 # alias verdi1="tcsh -c 'cd /projects/huntington_A0/Work/jla/hunt/lom ; verdi -lib  /projects/huntington_A0/Work/jla/hunt/lom/dv/blk/farmi_lite/sim/deblib -top 'platm_tb_top' -nologo -ssf /local/scratch/esnap_jla/tb_top.fsdb -sswr ~/myco/firmwaresrc/favourite-signals.rc'"
 
@@ -371,3 +371,14 @@ alias ack='ack-grep --text'
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+
+function vcstatuses 
+{
+    for i in ~/hobby-code ~/iqtest ~/data ; do
+        echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master ; 
+    done ;
+    # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ; 
+    # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
+}
+
