@@ -19,10 +19,10 @@ Top up water/empty sewage if necessary. (Should last around two weeks if you're 
 ** Fire
 *** aboard
 Careful not to leave anything flammable on or near the fire, or allow it to run out of control.  Don't leave boat without checking.
-There are three fire extinguishers, notice where they are. Call fire brigade.
+There are three fire extinguishers, notice where they are. CALL FIRE BRIGADE FIRST.
 *** chimney fire
 Can be caused if there's flammable layer inside stove pipe. Becomes blast furnace. Quite spectacular apparently.
-Close all vents tight to reduce amount of air going in, and summon fire brigade. 
+Close all vents tight to reduce amount of air going in, and SUMMON FIRE BRIGADE. 
 ** Carbon Monoxide
 Various detectors throughout boat. Fire shouldn't make CO unless banked very low. 
 Levels below 30 ppm are not dangerous. But in high concentrations it's deadly, invisible and doesn't smell of anything.
@@ -34,7 +34,7 @@ Temperatures below zero will burst water pipes and calorifier, £1000s of damage
 ** Flooding
 When the water goes back down the boat must be in the river. If it sits on the bank it will overturn and sink. 
 Once it's caught it's impossible to move it off because it weighs 26 tons.
-Cure is scaffold poles. Currently lying in the grass. *Get help* if it starts to flood or rains heavily for a long time. 
+Cure is scaffold poles. Currently in position. *Get help* if it starts to flood or rains heavily for a long time. 
 Drive poles deep into river bed to keep boat where it is.
 ** Crashing
 Hull is solid. You'd have to work quite hard to damage it. But...
@@ -46,9 +46,9 @@ Remember to retighten grease injector every time prop has turned. Leaking stern 
 * Minor Threats
 ** Toilet
 *Never* put anything down a boat toilet that you haven't eaten. Carefully selected soft toilet paper is also ok.
-Anything else will instantly jam the mechanism. Repair needs a plumber and possibly new parts.
+Anything else will instantly jam the mechanism. Repair needs a plumber, extensive destruction and probably new parts.
 ** Discharged Batteries
-Batteries in low charge state are damaged by it. If you notice voltage less than 12.2 unloaded / less than 50%, run engine until back to 80%/when charging stops
+   Batteries in low charge state are damaged by it. If you notice voltage less than 12.2 unloaded / less than 50%, run engine until back to 80%/when charging stops
 ** Water Pump Burnout
 If you run out of water, the pump will run continuously, which will burn it out. Switch off in fuse cupboard.
 ** Water Leak
@@ -60,18 +60,16 @@ Not much of a problem apparently, but I leave the bank side and front door curta
 Don't leave hatch open when going out, since it's just about possible that someone will notice and climb round/over.
 
 * Stove
-If you open the vents and go out or leave the front open for long you'll probably burn down the boat!
 
-Regulate heat by controlling amount of air allowed in. 
-Unless trying to revive dead fire/lighting new one, have all vents closed and use the screw to control how much air can sneak in.
-Keep top vents (for wood burning) and slider closed. Careful of slider, can open without you noticing.
-Don't worry about how much coal you use. It's very cheap and I've got lots. Keep warm.
+** Fire is a bit screwed at the moment
+At the moment, the fire is drawing too much air, and so you need to keep lots of ash in the fire to calm it down.
+There are parts on order but they're not here yet (at some point they will turn up at Outspoken addressed to me). I've stuffed cardboard into the ash pit vents to control the air inflow. Don't let them fall out or move so they're not covering the vents.
 
-Screw settings (roughly, depends how much ash is clogging it up)
-fully closed: fire may go out. don't use.
-tau/8 / 45 degrees: fire will stay in for 12hours+, doesn't put out much heat. 
-tau/4 / 90 degrees:  usual setting unless it's very cold
-tau/2 / 180 degrees: fire will be very hot, but coal will all be used up in a few hours.
+If you take all the ash out it will burn extremely hot, and might cause a fire.
+
+If it gets away from you, take everything flammable away from the fire, and put ash on top of the coal to form a blanket and calm it down. If it's looking dangerous or out of control CALL THE FIRE BRIGADE before anything dreadful happens.
+
+---
 
 Careful not to spill hot ash, I've already made two holes in the carpet.
 
@@ -80,44 +78,70 @@ Only once it's cold though, or it will set fire to the bin bags.
 
 Suck up spilt dust with hoover. Don't use brush, it just makes it worse.
 
-Should the fire go out, the easiest way to relight it is to riddle out all the dead ash, make a hole in the remaining coal, and then 
-light a wood fire in the hole. That should relight the coal.
+---
 
-Very difficult to light wet coal directly. Get wood fire going and then top up with coal once everything's burning.
+Should the fire go out, don't remove the ash or unburnt coal. Make a little hole in the coal, put a firelighter in the hole and then put a couple of pieces of kindling wood on top to make a 'combustion chamber'. Light the firelighter, then put coal on top of the wood.
+
+It's difficult to light wet coal directly. Make sure there's always some coal in the bucket drying out so you don't end up with a dead fire and only wet coal to light it with.
+
+** Normal usage (when fire is properly sealed)
+If you open the vents and go out or leave the front open for long you'll burn down the boat!
+
+Regulate heat by controlling amount of air allowed in. 
+Unless trying to revive dead fire/lighting new one, have all vents closed and use the screw to control how much air can sneak in.
+Keep top vents (for wood burning) and slider closed. Careful of slider, can open without you noticing.
+Don't worry about how much coal you use. It's very cheap and I've got lots. Keep warm.
+
+usual screw settings (roughly, depends how much ash is clogging it up)
+fully closed: fire may go out. don't use.
+tau/8 / 45 degrees: fire will stay in for 12hours+, doesn't put out much heat. 
+tau/4 / 90 degrees:  usual setting unless it's very cold
+tau/2 / 180 degrees: fire will be very hot, but coal will all be used up in a few hours.
 
 * Electricity
 Powers everything. Enough from solar panels even in mid-winter to power systems, cabin lights, radio.
 
+Battery monitor on cupboard door at sleeping cabin end. 12.6 volt is fully charged, 12.0 is half-charged. Don't let it get that low.
+
 Fridge is huge consumer of electricity and mid winter it draws more power than the solar panels can provide.
-You can make more electricity by running the engine when the batteries are low.
-Starter battery is separate circuit so even if the batteries are very low the engine should start.
+You can make more electricity by running the engine when the batteries are low. Wait until the engine is warmed up before revving it up with the neutral button pressed in to make the alternator work. RPM indicator will read zero unless alternator is generating electricity.
+
+Starter battery is a separate circuit so even if the main batteries are very low the engine should start. A running alternator charges both.
 
 * Lights
 Front cabin lights are all LEDs. Draw very small amounts of power so can have them on for hours.
-All others incandescents for warmer light. Don't leave them on too long as it drains batteries. 
-If you'd like them on then there are LED replacements in the front left cupboard, but the light isn't as warm.
+All others (including galley) are incandescents for warmer light. Don't leave them on too long as it drains batteries. 
+If you'd like other lights on for a while, then there are LED replacements in the front left cupboard, but the light isn't as warm.
 
 * Hot Water
 Produced as side effect of running engine. But I find it easier to make small amounts in the kettle, and take showers elsewhere.
+
+There's also a little eberspacher water heater which burns diesel to heat water. Run that for half an hour and you should have enough hot water for a shower.
 
 * Shower
 I avoid using it in cold weather. It makes lots of condensation, runs down the water tank, and you need to heat the water first.
 Boathouse showers more convenient in all ways. But feel free if you'd like to.
 
-Run the engine for a half hour or so to make enough hot water (maybe go cruising or to the water point).
+Run the engine or the eberspacher for a half hour or so to make enough hot water (maybe go cruising or to the water point).
+
 Turn on extractor fan and drain pump while showering (two different switches on wall near shower)
 
 * Refilling with water
 hex key handle opens water inlet in foredeck.
-Clean the end of the hose before you put it anywhere near the fresh water tank. 
-Careful not to get leaves/dirt etc in water tank as there's no way to get them out.
+
+I have a nice new hose on a reel and a separate endpiece to go in the water tank which makes it much easier than it used to be. 
+
+CLEAN THE END OF THE HOSE BEFORE YOU PUT IT ANYWHERE NEAR THE FRESH WATER TANK. 
+CAREFUL NOT TO GET LEAVES/DIRT ETC IN WATER TANK AS THERE'S NO WAY TO GET THEM OUT.
 
 * Sewage pump-out
 Do after water to avoid danger of contaminating fresh water tank.
 Wear rubber gloves, hex key opens sewage tank on port side.
 EA key opens sewage pump house at top of bank, where you put the money in.
 Connect hose, close valve, insert £3, wait for pressure gauge to build up, open valve.
-Sometimes no pressure. That means it's buggered. Phone council. They usually fix it quickly.
+
+Sometimes there's no pressure. That means it's buggered. Phone council. They usually fix it quickly. 
+Usually you can fix it yourself by sucking water out of the river which will clean the pipe and pump. It will suck sluggishly and then suddenly start working properly.
 
 * Fuse cupboard
 Usually have all switches on, except for bilge pump and nav lights (which must be off except when in use)
@@ -126,7 +150,7 @@ Main use is to disable water pump in event of running out of water, but you also
 
 * Fridge
 Uses loads of power, you'll need to run the engine occasionally if you want the fridge on. 
-Its switch also controls the cabin wall lights so they won't work if the fridge is off.
+Its switch also controls the incandescent cabin wall lights so they won't work if the fridge is off. But you shouldn't put them on in winter as they use far too much electricity.
 
 * Inverter
 Turns 12v into 240v, can be used for mobile chargers, laptops, although I have 12v versions. Main use is for DAB radio, although boat FM radio is better and uses less power.
