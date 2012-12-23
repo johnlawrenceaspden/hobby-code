@@ -348,15 +348,15 @@
 
 ;; (define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-clojure-slime-repl)
 
-;; rainbow brackets in clojure mode, relies on highlight-parentheses.el in 
-;; ~/hobby-code
-(add-to-list 'load-path "~/hobby-code")
-(require 'highlight-parentheses)
-(setq hl-paren-colors
-      '("orange1" "yellow1" "greenyellow" "green1"
-        "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
-(add-hook 'clojure-mode-hook 
-          (lambda () (highlight-parentheses-mode t)))
+;; ;; rainbow brackets in clojure mode, relies on highlight-parentheses.el in 
+;; ;; ~/hobby-code
+;; (add-to-list 'load-path "~/hobby-code")
+;; (require 'highlight-parentheses)
+;; (setq hl-paren-colors
+;;       '("orange1" "yellow1" "greenyellow" "green1"
+;;         "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
+;; (add-hook 'clojure-mode-hook 
+;;           (lambda () (highlight-parentheses-mode t)))
 
 ;; this one takes .clj.html to blogger in clipboard
 (fset 'clj-html-to-blogger-copy
