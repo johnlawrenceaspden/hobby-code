@@ -1,17 +1,11 @@
 ;; -*- mode: Lisp; -*-
 
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t))
 
-
-;; Tom Tromey's original seems to have been superseded by "http://repo.or.cz/w/emacs.git/blob_plain/1a0a666f941c99882093d7bd08ced15033bc3f0c:/lisp/emacs-lisp/package.el"
-
-;; If we find the package manager code in hobby-code then load it and initialize the package manager
-(when
-    (load (expand-file-name "~/hobby-code/package.el"))
-  ;; add the melpa package repository, which seems to be all the latest stuff on github
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  ;; This would add marmalade, but that seems to be older versions of the same things. Maybe they're more stable?
-  ;; (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-  (package-initialize))
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
@@ -551,12 +545,9 @@
     (local-set-key (kbd "C-c <down>")  'hs-show-all)
     (hs-minor-mode t)))
 
-;; undo tree mode is unbelievably awesome, and it comes from:
-;; http://www.dr-qubit.org/undo-tree/undo-tree.el
-;; I stuck the code in ~/hobby-code. It might be an idea to go and get the latest version someday.
-;; I've not version-controlled the byte compiled .elc file
-;; use M-x byte-compile on the .el file to make an .elc file
-(require 'undo-tree)
+;; undo-tree-mode can be got through the package manager
+(require 'undo-tree) 
+
 (global-undo-tree-mode)
 
 
