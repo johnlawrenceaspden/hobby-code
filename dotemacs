@@ -90,15 +90,15 @@
     (setq truncate-lines t
           word-wrap nil)))
 
-;; But that doesn't seem to work (is it emacs 24 only?)
+;; Here are some explicit functions to do that
 (defun wrap-as-text()
-  "text mode wrapping"
+  "text mode wrapping, wrap without splitting words in the manner of notepad"
   (interactive)
   (setq truncate-lines nil
         word-wrap t))
 
 (defun wrap-as-code()
-  "prog mode wrapping"
+  "programming mode wrapping, just let lines run off the end"
   (interactive)
   (setq truncate-lines t
         word-wrap nil))
@@ -106,7 +106,7 @@
 
 
 
-;sane scrolling
+;sane scrolling (don't jump about when point moves off-screen, just keep it visible)
 (setq scroll-conservatively 10000)
 
 ;stop messing about
@@ -129,6 +129,7 @@
 ;whitespace highlighting is useful for python, but annoying usually
 ;(global-whitespace-mode)
 
+;; Set to nil so that indentation doesn't use real tab characters
 (setq-default indent-tabs-mode nil)
 
 ;; disable overwrite mode, so that accidentally hitting the insert key asks for
