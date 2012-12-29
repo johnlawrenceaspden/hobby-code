@@ -1,4 +1,4 @@
-;; -*- mode: Lisp; -*-
+;; -*- mode: lisp-interaction; -*-
 
 (when (>= emacs-major-version 24)
   (require 'package)
