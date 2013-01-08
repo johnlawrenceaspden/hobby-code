@@ -171,4 +171,53 @@
       (wrap-spy)))
 
 <span class="comment-delimiter">;; </span><span class="comment">which means exactly the same thing!
-</span></pre>
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">Unfortunately, we've now lost the ability to redefine handler and see the change 
+</span><span class="comment-delimiter">;; </span><span class="comment">reflected in the running app.
+</span>(<span class="keyword">defn</span> <span class="function-name">handler</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
+   <span class="constant">:body</span> <span class="string">"&lt;h1&gt;Hello World!&lt;/h1&gt;"</span> })
+
+<span class="comment-delimiter">;; </span><span class="comment">But the same trick with passing the var in works again.
+</span>(<span class="keyword">def</span> <span class="function-name">app</span>
+  (<span class="builtin">-&gt;</span> #'handler
+      (wrap-spy)))
+
+<span class="comment-delimiter">;; </span><span class="comment">And now we do see changes reflected immediately:
+</span>(<span class="keyword">defn</span> <span class="function-name">handler</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
+   <span class="constant">:body</span> <span class="string">"&lt;h1&gt;Hello World!!!!!!!!!!!!!!!1&lt;/h1&gt;"</span> })
+
+<span class="comment-delimiter">;; </span><span class="comment">Error handling in our app is conservative.
+</span>
+(<span class="keyword">defn</span> <span class="function-name">handler</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
+   <span class="constant">:body</span> (<span class="variable-name">str</span> <span class="string">"&lt;h1&gt;Hello World!!!!!!!!!!!!!!!1&lt;/h1&gt;"</span> (<span class="variable-name">/</span> 1 0))})
+
+<span class="comment-delimiter">;; </span><span class="comment">The browser gets an HTTP 500 Server Error, and the divide by zero
+</span><span class="comment-delimiter">;; </span><span class="comment">message goes to the console where the server is running.
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">But for development purposes, we can use one of the middlewares provided with ring:
+</span>
+(<span class="variable-name">require</span> 'ring.middleware.stacktrace)
+
+(<span class="keyword">def</span> <span class="function-name">app</span>
+  (<span class="builtin">-&gt;</span> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy)))
+
+<span class="comment-delimiter">;; </span><span class="comment">Now the stacktrace appears nicely formatted in the web browser instead.
+</span>
+
+
+
+
+
+
+
+
+
+</pre>
