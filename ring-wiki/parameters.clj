@@ -57,7 +57,7 @@
                                                   (assoc response :body "#<?>")))
                          (println "-------------------------------"))]
           (println outgoing)
-          (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing)))))))))))
+          (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing)))))))))
 
 
 (def app
