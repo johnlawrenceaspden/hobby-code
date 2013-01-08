@@ -114,3 +114,52 @@
       (wrap-spy)))
 
 ;; which means exactly the same thing!
+
+;; Unfortunately, we've now lost the ability to redefine handler and see the change 
+;; reflected in the running app.
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "<h1>Hello World!</h1>" })
+
+;; But the same trick with passing the var in works again.
+(def app
+  (-> #'handler
+      (wrap-spy)))
+
+;; And now we do see changes reflected immediately:
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "<h1>Hello World!!!!!!!!!!!!!!!1</h1>" })
+
+;; Error handling in our app is conservative.
+
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (str "<h1>Hello World!!!!!!!!!!!!!!!1</h1>" (/ 1 0))})
+
+;; The browser gets an HTTP 500 Server Error, and the divide by zero
+;; message goes to the console where the server is running.
+
+;; But for development purposes, we can use one of the middlewares provided with ring:
+
+(require 'ring.middleware.stacktrace)
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy)))
+
+;; Now the stacktrace appears nicely formatted in the web browser instead.
+
+
+
+
+
+
+
+
+
+
