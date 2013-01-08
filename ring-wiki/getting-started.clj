@@ -7,7 +7,7 @@
 ;; returns a response map
 
 ;; Our first response map will have the HTTP status code 200, OK, a
-;; content-type header that tells the browser that it's getting html
+;; content-type header that tells the browser that it's getting plain text
 ;; and a traditional body text.
 
 (defn app [request]
@@ -55,6 +55,11 @@
 ;; $ watch -d -n 1 curl -sv http://localhost:8080/ 
 ;; running in a terminal somewhere.
 
+;; Let's demonstrate that we can stop and restart our server
+
+(.stop server)
+
+(.start server)
 
 ;; Now, let's look at the information that is going in and out of our application
 (require 'clojure.pprint)
@@ -66,7 +71,7 @@
    :headers {"Content-Type" "text/html"}
    :body "<h1>Hello World</h1>"})
 
-;; And then we'll define what's called a middleware
+;; And then we'll wrap that in a wrapper that prints the incoming and outgoing data:
 
 (defn app [request]
   (println "-------------------------------")
@@ -78,8 +83,34 @@
     (println "-------------------------------")
     response))
 
-;; And finally let's demonstrate that we can stop and restart our server
+;; Another way to do the same thing is to define what's called a
+;; middleware. This is a concept from python, and a good demonstration
+;; of why dynamically typed functional languages are such pleasant
+;; things to use
 
-(.stop server)
+;; We define wrap-spy as a function which does to any handler what app does to our handler
 
-(.start server)
+(defn wrap-spy [handler]
+  (fn [request]
+    (println "-------------------------------")
+    (println "Incoming Request:")
+    (clojure.pprint/pprint request)
+    (let [response (handler request)]
+      (println "Outgoing Response Map:")
+      (clojure.pprint/pprint response)
+      (println "-------------------------------")
+      response)))
+
+
+;; And now we can write
+
+(def app 
+  (wrap-spy handler))
+
+;; Or more idiomatically
+
+(def app
+  (-> handler
+      (wrap-spy)))
+
+;; which means exactly the same thing!

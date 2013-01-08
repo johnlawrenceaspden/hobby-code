@@ -64,7 +64,7 @@
 </span><span class="comment-delimiter">;; </span><span class="comment">returns a response map
 </span>
 <span class="comment-delimiter">;; </span><span class="comment">Our first response map will have the HTTP status code 200, OK, a
-</span><span class="comment-delimiter">;; </span><span class="comment">content-type header that tells the browser that it's getting html
+</span><span class="comment-delimiter">;; </span><span class="comment">content-type header that tells the browser that it's getting plain text
 </span><span class="comment-delimiter">;; </span><span class="comment">and a traditional body text.
 </span>
 (<span class="keyword">defn</span> <span class="function-name">app</span> [request]
@@ -112,6 +112,11 @@
 </span><span class="comment-delimiter">;; </span><span class="comment">$ watch -d -n 1 curl -sv http://localhost:8080/ 
 </span><span class="comment-delimiter">;; </span><span class="comment">running in a terminal somewhere.
 </span>
+<span class="comment-delimiter">;; </span><span class="comment">Let's demonstrate that we can stop and restart our server
+</span>
+(<span class="preprocessor">.stop</span> server)
+
+(<span class="preprocessor">.start</span> server)
 
 <span class="comment-delimiter">;; </span><span class="comment">Now, let's look at the information that is going in and out of our application
 </span>(<span class="variable-name">require</span> 'clojure.pprint)
@@ -123,7 +128,7 @@
    <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
    <span class="constant">:body</span> <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>})
 
-<span class="comment-delimiter">;; </span><span class="comment">And then we'll define what's called a middleware
+<span class="comment-delimiter">;; </span><span class="comment">And then we'll wrap that in a wrapper that prints the incoming and outgoing data:
 </span>
 (<span class="keyword">defn</span> <span class="function-name">app</span> [request]
   (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
@@ -135,8 +140,35 @@
     (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
     response))
 
-<span class="comment-delimiter">;; </span><span class="comment">And finally let's demonstrate that we can stop and restart our server
+<span class="comment-delimiter">;; </span><span class="comment">Another way to do the same thing is to define what's called a
+</span><span class="comment-delimiter">;; </span><span class="comment">middleware. This is a concept from python, and a good demonstration
+</span><span class="comment-delimiter">;; </span><span class="comment">of why dynamically typed functional languages are such pleasant
+</span><span class="comment-delimiter">;; </span><span class="comment">things to use
 </span>
-(<span class="preprocessor">.stop</span> server)
+<span class="comment-delimiter">;; </span><span class="comment">We define wrap-spy as a function which does to any handler what app does to our handler
+</span>
+(<span class="keyword">defn</span> <span class="function-name">wrap-spy</span> [handler]
+  (<span class="keyword">fn</span> [request]
+    (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
+    (<span class="variable-name">println</span> <span class="string">"Incoming Request:"</span>)
+    (clojure.pprint/pprint request)
+    (<span class="builtin">let</span> [response (handler request)]
+      (<span class="variable-name">println</span> <span class="string">"Outgoing Response Map:"</span>)
+      (clojure.pprint/pprint response)
+      (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
+      response)))
 
-(<span class="preprocessor">.start</span> server)</pre>
+
+<span class="comment-delimiter">;; </span><span class="comment">And now we can write
+</span>
+(<span class="keyword">def</span> <span class="function-name">app</span> 
+  (wrap-spy handler))
+
+<span class="comment-delimiter">;; </span><span class="comment">Or more idiomatically
+</span>
+(<span class="keyword">def</span> <span class="function-name">app</span>
+  (<span class="builtin">-&gt;</span> handler
+      (wrap-spy)))
+
+<span class="comment-delimiter">;; </span><span class="comment">which means exactly the same thing!
+</span></pre>
