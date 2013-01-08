@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- Created by htmlize-1.36 in css mode. -->
+<html>
+  <head>
+    <title>getting-started.clj</title>
+    <style type="text/css">
+    <!--
+      body {
+        color: #000000;
+        background-color: #ffffff;
+      }
+      .builtin {
+        /* font-lock-builtin-face */
+        color: #228b22;
+      }
+      .comment {
+        /* font-lock-comment-face */
+        color: #8c8c8c;
+        font-style: italic;
+      }
+      .comment-delimiter {
+        /* font-lock-comment-delimiter-face */
+        color: #8c8c8c;
+        font-style: italic;
+      }
+      .constant {
+        /* font-lock-constant-face */
+        color: #6b8e23;
+      }
+      .function-name {
+        /* font-lock-function-name-face */
+        color: #6a5acd;
+      }
+      .keyword {
+        /* font-lock-keyword-face */
+        color: #00008b;
+      }
+      .preprocessor {
+        /* font-lock-preprocessor-face */
+        color: #228b22;
+      }
+      .string {
+        /* font-lock-string-face */
+        color: #8b0000;
+      }
+      .variable-name {
+        /* font-lock-variable-name-face */
+        color: #b8860b;
+      }
+
+      a {
+        color: inherit;
+        background-color: inherit;
+        font: inherit;
+        text-decoration: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    -->
+    </style>
+  </head>
+  <body>
+    <pre>
+<span class="comment-delimiter">;;  </span><span class="comment">necessary dependencies 
+</span><span class="comment-delimiter">;; </span><span class="comment">[[org.clojure/clojure "1.4.0"]
+</span><span class="comment-delimiter">;;  </span><span class="comment">[ring/ring "1.1.6"]]
+</span><span class="comment-delimiter">;; </span><span class="comment">-------------
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">A ring application is a function which takes a request map, and
+</span><span class="comment-delimiter">;; </span><span class="comment">returns a response map
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">Our first response map will have the HTTP status code 200, OK, a
+</span><span class="comment-delimiter">;; </span><span class="comment">content-type header that tells the browser that it's getting html
+</span><span class="comment-delimiter">;; </span><span class="comment">and a traditional body text.
+</span>
+(<span class="keyword">defn</span> <span class="function-name">app</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/plain"</span>}
+   <span class="constant">:body</span> <span class="string">"Hello World"</span>})
+
+
+<span class="comment-delimiter">;; </span><span class="comment">Having got a ring application, we need to start a webserver to hand the pages out
+</span><span class="comment-delimiter">;; </span><span class="comment">We'll use jetty (via ring)
+</span>(<span class="variable-name">require</span> 'ring.adapter.jetty)
+
+<span class="comment-delimiter">;; </span><span class="comment">And we'd like those pages served on port 8080 
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">Three things to note here:
+</span><span class="comment-delimiter">;;</span><span class="comment">
+</span><span class="comment-delimiter">;; </span><span class="comment">:join? false means that the evaluating thread won't wait for the
+</span><span class="comment-delimiter">;; </span><span class="comment">server to finish (so that the repl doesn't seem to hang).
+</span><span class="comment-delimiter">;;</span><span class="comment">
+</span><span class="comment-delimiter">;; </span><span class="comment">referring to the application function via #' means that ring sees
+</span><span class="comment-delimiter">;; </span><span class="comment">the variable user/app rather than the function (fn[x]{:status 200})
+</span><span class="comment-delimiter">;; </span><span class="comment">which that variable evaluates to. And that means that if we
+</span><span class="comment-delimiter">;; </span><span class="comment">reevaluate the definition, the behaviour the browser sees will
+</span><span class="comment-delimiter">;; </span><span class="comment">change.
+</span><span class="comment-delimiter">;;</span><span class="comment">
+</span><span class="comment-delimiter">;; </span><span class="comment">finally defonce means that if we reload this file, or re-evaluate
+</span><span class="comment-delimiter">;; </span><span class="comment">this line, nothing will happen. That prevents us from accidentally
+</span><span class="comment-delimiter">;; </span><span class="comment">creating multiple copies of the jetty server.
+</span>
+(<span class="keyword">defonce</span> <span class="function-name">server</span> (ring.adapter.jetty/run-jetty #'app {<span class="constant">:port</span> 8080 <span class="constant">:join?</span> false}))
+
+<span class="comment-delimiter">;; </span><span class="comment">So, go and look at http://localhost:8080 in your favourite browser.
+</span>
+
+
+<span class="comment-delimiter">;; </span><span class="comment">Now let's check that redefining the handler causes a change in the running webapp
+</span>(<span class="keyword">defn</span> <span class="function-name">app</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
+   <span class="constant">:body</span> <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>})
+
+<span class="comment-delimiter">;; </span><span class="comment">Refresh your browser to see the change.
+</span>
+<span class="comment-delimiter">;; </span><span class="comment">I like to leave the web browser of the gods:
+</span><span class="comment-delimiter">;; </span><span class="comment">$ watch -d -n 1 curl -sv http://localhost:8080/ 
+</span><span class="comment-delimiter">;; </span><span class="comment">running in a terminal somewhere.
+</span>
+
+<span class="comment-delimiter">;; </span><span class="comment">Now, let's look at the information that is going in and out of our application
+</span>(<span class="variable-name">require</span> 'clojure.pprint)
+
+<span class="comment-delimiter">;; </span><span class="comment">First we'll delegate the actual functionality of our app to a handler
+</span>
+(<span class="keyword">defn</span> <span class="function-name">handler</span> [request]
+  {<span class="constant">:status</span> 200
+   <span class="constant">:headers</span> {<span class="string">"Content-Type"</span> <span class="string">"text/html"</span>}
+   <span class="constant">:body</span> <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>})
+
+<span class="comment-delimiter">;; </span><span class="comment">And then we'll define what's called a middleware
+</span>
+(<span class="keyword">defn</span> <span class="function-name">app</span> [request]
+  (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
+  (<span class="variable-name">println</span> <span class="string">"Incoming Request:"</span>)
+  (clojure.pprint/pprint request)
+  (<span class="builtin">let</span> [response (handler request)]
+    (<span class="variable-name">println</span> <span class="string">"Outgoing Response Map:"</span>)
+    (clojure.pprint/pprint response)
+    (<span class="variable-name">println</span> <span class="string">"-------------------------------"</span>)
+    response))
+
+<span class="comment-delimiter">;; </span><span class="comment">And finally let's demonstrate that we can stop and restart our server
+</span>
+(<span class="preprocessor">.stop</span> server)
+
+(<span class="preprocessor">.start</span> server)</pre>
+  </body>
+</html>
