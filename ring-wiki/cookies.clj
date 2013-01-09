@@ -72,12 +72,13 @@
 ;; Now go and look at http://localhost:8080 again.
 
 ;; In the map the handler sees, there is a key :cookies, whose value is {}
+;; ( If it's not, you might want to clear cookies for localhost from your browser )
 
-;; Let's make our app  set a cookie:
+;; Let's make our app set a cookie:
 (defn handler [request]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :body (str "<h1>Hello World!</h1>" )
+   :body (str "<h1>Setting Cookie!</h1>" )
    :cookies {"yo" {:value "hi"}} })
 
 
@@ -97,13 +98,13 @@
 
 ;; Now if we look at http://localhost:8080, the response will contain the Set-Cookie header.
 
-;; Most browsers will react to this by including the cookie next time they contact the site.
+;; Most browsers will react to this by including the cookie whenever they contact the site.
 ;; You can examine cookies from the browser's point of view by 
 ;; (In Chrome) looking at chrome://chrome/settings/cookies
-;; (In Firefox) following some interminable GUI procedure, but life is too short to describe it.
+;; (In Firefox) following some interminable GUI procedure that life is too short to describe. 
 
 
-;; Now we see 
+;; If you refresh the page yet again, you should now see:
 {:headers {"cookie" "yo=hi"}}
 ;; in the incoming request from the webserver
 ;; and a new key:
@@ -132,8 +133,6 @@
                           :headers {"Content-Type" "text/html"}
                           :body (str "<h1>Hi, this is visit "s"</h1>" )
                           :cookies {"yo" {:value (str (inc s))}}})))
-
-
 
 
 
