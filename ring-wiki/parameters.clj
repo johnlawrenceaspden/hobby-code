@@ -108,13 +108,13 @@
 ;; So we don't need to parse the query string ourselves any more:
 
 (defn handler [request]
-    {:status 200
-     :headers {"Content-Type" "text/html"}
-     :body (if-let [m (request :query-params)]
-             (if (empty? m)
-               (str "<h1>Hello World!</h1>" )
-               (apply str (for [[k v] m] (str "<h1>You Have Invoked " k " Upon the City of " v "</h1>"))))
-               (str "<h1>Missing :query-params. Have you included ring.middleware.stacktrace/wrap-stacktrace, oh dark master?</h1>" ))})
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (if-let [m (request :query-params)]
+           (if (empty? m)
+             (str "<h1>Hello World!</h1>" )
+             (apply str (for [[k v] m] (str "<h1>You Have Invoked " k " Upon the City of " v "</h1>"))))
+           (str "<h1>Missing :query-params. Have you included ring.middleware.stacktrace/wrap-stacktrace, oh dark master?</h1>" ))})
 
 
              
