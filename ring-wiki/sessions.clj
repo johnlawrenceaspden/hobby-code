@@ -1,16 +1,16 @@
-;;  necessary dependencies 
+;;  necessary dependencies
 ;; [[org.clojure/clojure "1.4.0"]
 ;;  [ring/ring "1.1.6"]]
 ;; -------------
 
-;; Here's an app, built in a way which should surprise no-one who's read the previous posts
+;; Here's an app, built in a way which should surprise no-one who's read the previous posts:
 
-(require 'ring.adapter.jetty 
-         'ring.middleware.stacktrace 
+(require 'ring.adapter.jetty
+         'ring.middleware.stacktrace
          'clojure.pprint)
 
 ;; Middleware for spying on the doings of other middleware:
-(defn html-escape [string] 
+(defn html-escape [string]
   (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
 
 (defn format-request [name request kill-keys kill-headers]
@@ -23,10 +23,12 @@
     (clojure.pprint/pprint r)
     (println "-------------------------------"))))
 
+
+;; I have taken the liberty of removing some of the less interesting entries from the request and response maps, for clarity
 (def kill-keys [:body :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
 (def kill-headers ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset"])
 
-(defn wrap-spy [handler spyname ]
+(defn wrap-spy [handler spyname]
   (fn [request]
     (let [incoming (format-request (str spyname ":\n Incoming Request:") request kill-keys kill-headers)]
       (println incoming)
@@ -45,7 +47,7 @@
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
       (wrap-spy "what the handler sees" )
-      (wrap-spy "what the web server sees" )))  
+      (wrap-spy "what the web server sees" )))
 
 ;; The actual application
 (defn handler [request]
@@ -53,7 +55,7 @@
    :headers {"Content-Type" "text/html"}
    :body (str "<h1>Hello World!</h1>" )})
 
- 
+
 ;; Start the server if it hasn't already been started
 (defonce server (ring.adapter.jetty/run-jetty #'app {:port 8080 :join? false}))
 
@@ -69,7 +71,7 @@
       (ring.middleware.session/wrap-session)
       (wrap-spy "what the web server sees" )
       (ring.middleware.stacktrace/wrap-stacktrace)
-      ))  
+      ))
 
 
 ;; If you examine the request as passed to the handler, then you'll
@@ -90,7 +92,7 @@
 
 
 
-;; This looks to be working in much the same way as 
+;; This looks to be working in much the same way as
 
 
 
