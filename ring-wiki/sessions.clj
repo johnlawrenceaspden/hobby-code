@@ -13,9 +13,9 @@
 (defn html-escape [string] 
   (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
 
-(defn format-request [name request]
-  (let [r1 (reduce dissoc request [:ssl-client-cert :remote-addr :scheme :request-method :content-type :server-name :content-length])
-        r (reduce (fn [h n] (update-in h [:headers] dissoc n)) r1 ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset"])]
+(defn format-request [name request kill-keys kill-headers]
+  (let [r1 (reduce dissoc request kill-keys)
+        r (reduce (fn [h n] (update-in h [:headers] dissoc n)) r1 kill-headers)]
   (with-out-str
     (println "-------------------------------")
     (println name)
@@ -23,12 +23,15 @@
     (clojure.pprint/pprint r)
     (println "-------------------------------"))))
 
-(defn wrap-spy [handler spyname include-body]
+(def kill-keys [:body :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
+(def kill-headers ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset"])
+
+(defn wrap-spy [handler spyname ]
   (fn [request]
-    (let [incoming (format-request (str spyname ":\n Incoming Request:") request)]
+    (let [incoming (format-request (str spyname ":\n Incoming Request:") request kill-keys kill-headers)]
       (println incoming)
       (let [response (handler request)]
-        (let [outgoing (format-request (str spyname ":\n Outgoing Response Map:") response)]
+        (let [outgoing (format-request (str spyname ":\n Outgoing Response Map:") response kill-keys kill-headers)]
           (println outgoing)
           (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing)))))))))
 
@@ -41,8 +44,8 @@
 (def app
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
-      (wrap-spy "what the handler sees" true)
-      (wrap-spy "what the web server sees" false)))  
+      (wrap-spy "what the handler sees" )
+      (wrap-spy "what the web server sees" )))  
 
 ;; The actual application
 (defn handler [request]
@@ -62,9 +65,9 @@
 (def app
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
-      (wrap-spy "what the handler sees" true)
+      (wrap-spy "what the handler sees" )
       (ring.middleware.session/wrap-session)
-      (wrap-spy "what the web server sees" false)
+      (wrap-spy "what the web server sees" )
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))  
 
