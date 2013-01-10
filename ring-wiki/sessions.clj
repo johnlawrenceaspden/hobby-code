@@ -14,11 +14,12 @@
   (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
 
 (defn format-request [name request]
-  (let [r1 (reduce dissoc request '(:ssl-client-cert :remote-addr :scheme :request-method :content-type :server-name))
-        r (reduce (fn [h n] (update-in h [:headers] dissoc n)) h ["user-agent" "accept" "accept-encoding" "accept-language"])]
+  (let [r1 (reduce dissoc request [:ssl-client-cert :remote-addr :scheme :request-method :content-type :server-name :content-length])
+        r (reduce (fn [h n] (update-in h [:headers] dissoc n)) r1 ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset"])]
   (with-out-str
     (println "-------------------------------")
     (println name)
+    (println "-------------------------------")
     (clojure.pprint/pprint r)
     (println "-------------------------------"))))
 
