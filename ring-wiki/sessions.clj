@@ -145,3 +145,5 @@
        :session {:count (inc count)}})))
 
 ;; How many times can you ping the virtual goldfish?
+;; I got it up to 25 with:
+;; watch -d -n 0 curl -sv http://localhost:8080 -b cookies.txt -c cookies.txt
