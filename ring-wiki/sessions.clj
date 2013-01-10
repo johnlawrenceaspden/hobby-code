@@ -195,3 +195,24 @@
       (wrap-spy "what the web server sees" )
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))
+
+
+;; One last flourish: flash messages
+
+(require 'ring.middleware.flash)
+
+(defn handler [request]
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (str "<h1>Hello " (if (nil? (:flash request)) "Stranger" (:flash request)) "</h1>")
+       :flash "Friend"})
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "what the handler sees" )
+      (ring.middleware.flash/wrap-flash)
+      (ring.middleware.session/wrap-session )
+      (wrap-spy "what the web server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      ))
