@@ -147,3 +147,51 @@
 ;; How many times can you ping the virtual goldfish?
 ;; I got it up to 25 with:
 ;; watch -d -n 0 curl -sv http://localhost:8080 -b cookies.txt -c cookies.txt
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Footnote for Smug Lisp Weenies only
+
+;; Ring provides an alternative to storing session variables in
+;; memory, where it can encrypt them into a cookie
+
+;; This seems a more 'functional' way to do things, without carrying
+;; state in the server, and it probably is a good way to do things if
+;; you're careful.
+
+;; But they're not equivalent: Some things that you can do with the
+;; memory backed store won't work if you have to serialize your
+;; session data.
+
+;; Try this:
+(require 'ring.middleware.session.cookie)
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "what the handler sees" )
+      (ring.middleware.session/wrap-session {:store (ring.middleware.session.cookie/cookie-store {:key "a 16-byte secret"})})
+      (wrap-spy "what the web server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      ))
+
+;; Everything should still work fine (although you may have to kill the old cookie)
+
+
+(defn handler [request]
+      {:status 200
+       :headers {"Content-Type" "text/html"}
+       :body (str "<h1>Hello " (((request :session {}) :fn (fn[] "Stranger") )) "</h1>" )
+       :session {:fn (fn[] "Again")}})
+
+;; Now restore the memory-backed version and try again
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "what the handler sees" )
+      (ring.middleware.session/wrap-session )
+      (wrap-spy "what the web server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      ))
