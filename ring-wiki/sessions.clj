@@ -14,19 +14,20 @@
   (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
 
 (defn format-request [name request]
+  (let [r1 (reduce dissoc request '(:ssl-client-cert :remote-addr :scheme :request-method :content-type :server-name))
+        r (reduce (fn [h n] (update-in h [:headers] dissoc n)) h ["user-agent" "accept" "accept-encoding" "accept-language"])]
   (with-out-str
     (println "-------------------------------")
     (println name)
-    (clojure.pprint/pprint request)
-    (println "-------------------------------")))
+    (clojure.pprint/pprint r)
+    (println "-------------------------------"))))
 
 (defn wrap-spy [handler spyname include-body]
   (fn [request]
     (let [incoming (format-request (str spyname ":\n Incoming Request:") request)]
       (println incoming)
       (let [response (handler request)]
-        (let [r (if include-body response (assoc response :body "#<?>"))
-              outgoing (format-request (str spyname ":\n Outgoing Response Map:") r)]
+        (let [outgoing (format-request (str spyname ":\n Outgoing Response Map:") response)]
           (println outgoing)
           (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing)))))))))
 
