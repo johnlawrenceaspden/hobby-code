@@ -389,3 +389,8 @@ function gitguiall
 {
     for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git gui ; done
 }
+
+function gitpushall
+{
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git push ; done
+}
