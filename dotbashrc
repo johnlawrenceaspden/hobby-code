@@ -385,3 +385,7 @@ function vcstatuses
     # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
 }
 
+function gitguiall
+{
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git gui ; done
+}
