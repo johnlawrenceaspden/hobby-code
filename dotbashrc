@@ -394,3 +394,7 @@ function gitpushall
 {
     for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git push ; done
 }
+
+alias dgg="cd ~/data && git gui"
+alias hgg="cd ~/hobby-code && git gui"
+alias igg="cd ~/iqtest && git gui"
