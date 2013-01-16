@@ -10,7 +10,6 @@
          'ring.middleware.session
          'clojure.pprint)
 
-;; Middleware for spying on the doings of other middleware:
 (defn html-escape [string]
   (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
 
@@ -25,9 +24,8 @@
     (println "-------------------------------"))))
 
 
-;; I have taken the liberty of removing some of the less fascinating entries from the request and response maps, for clarity
-(def kill-keys [:body :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
-(def kill-headers ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset"])
+(def kill-keys [:body :request-method :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
+(def kill-headers ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset" "connection" "host"])
 
 (defn wrap-spy [handler spyname]
   (fn [request]
@@ -40,10 +38,8 @@
 
 
 
-;; Absolute binding promise to someday get around to writing the app
 (declare handler)
 
-;; plumbing
 (def app
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
@@ -53,7 +49,6 @@
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))
 
-;; The actual application
 (defn handler [request]
   {:status 200
    :headers {"Content-Type" "text/html"}
@@ -63,8 +58,6 @@
              (str "<h1>Your Session</h1><p>" s "</p>" )))
    :session "I am a session. Fear me."})
 
-
-;; Start the server if it hasn't already been started
 (defonce server (ring.adapter.jetty/run-jetty #'app {:port 8080 :join? false}))
 
 
@@ -82,25 +75,16 @@
 
 (def response (partial status-response 200))
 
-
 (defn handler [request]
   (case (request :uri)
     "/" (response "<h1>The Moral Maze</h1>What do you choose: <a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?")
-    "/good" (response "good")
-    "/evil" (response "evil")
+    "/good" (response "<h1>good</h1> <a href=\"/\">choose again</a>" )
+    "/evil" (response "<h1>evil</h1> <a href=\"/\">choose again</a>")
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
 
 
-;; So far so good. But it would be better if the good and evil pages redirected back to the home page.
-(require 'ring.util.response)
-
-(defn handler [request]
-  (case (request :uri)
-    "/" (response "<h1>The Moral Maze</h1>What do you choose: <a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?")
-    "/good" (ring.util.response/redirect "/")
-    "/evil" (ring.util.response/redirect "/")
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+;; So far so good. 
 
 ;; Ring has an implementation of 'flash messages', which allows one page to send a message to another.
 
@@ -126,8 +110,8 @@
                          (str "You last chose " (if (= f :evil) "evil" "good") ".<p> What do you choose now:")
                          "What do you choose:")
                        "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))
-    "/good" (assoc (ring.util.response/redirect "/") :flash :good)
-    "/evil" (assoc (ring.util.response/redirect "/") :flash :evil)
+    "/good" (assoc (response "<h1>good</h1> <a href=\"/\">choose again</a>" ) :flash :good)
+    "/evil" (assoc (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ) :flash :evil)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
 
@@ -147,13 +131,13 @@
 
 (defn good [request]
   (let [ good   (get-in request [:session :good] 0) ]   
-    (assoc (ring.util.response/redirect "/") 
+    (assoc (response "<h1>good</h1> <a href=\"/\">choose again</a>" ) 
       :flash :good 
       :session (assoc (request :session) :good (inc good)))))
 
 (defn evil [request]
   (let [ evil   (get-in request [:session :evil] 0) ]   
-    (assoc (ring.util.response/redirect "/") 
+    (assoc (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ) 
       :flash :evil 
       :session (assoc (request :session) :evil (inc evil)))))
 
@@ -163,6 +147,68 @@
     "/good" (good request)
     "/evil" (evil request)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+
+;; Let's hide our workings and save the user from potential overclicking injuries
+
+(require 'ring.util.response)
+
+(defn good [request]
+  (let [ good   (get-in request [:session :good] 0) ]   
+    (assoc (ring.util.response/redirect "/")
+      :flash :good 
+      :session (assoc (request :session) :good (inc good)))))
+
+(defn evil [request]
+  (let [ evil   (get-in request [:session :evil] 0) ]   
+    (assoc (ring.util.response/redirect "/")
+      :flash :evil 
+      :session (assoc (request :session) :evil (inc evil)))))
+
+;; And then as a final flourish we'll keep total statistics as well
+
+(def goodness (atom 0))
+(def evilness (atom 0))
+
+(defn good [request]
+  (let [ good   (get-in request [:session :good] 0) ] 
+    (swap! goodness inc)
+    (assoc (ring.util.response/redirect "/")
+      :flash :good 
+      :session (assoc (request :session) :good (inc good)))))
+
+(defn evil [request]
+  (let [ evil   (get-in request [:session :evil] 0) ]  
+    (swap! evilness inc)
+    (assoc (ring.util.response/redirect "/")
+      :flash :evil 
+      :session (assoc (request :session) :evil (inc evil)))))
+
+(defn home [request]
+  (let
+      [f         (request :flash)
+       good   (get-in request [:session :good] 0)
+       evil   (get-in request [:session :evil] 0)]
+    (response (str "<h1>The Moral Maze</h1>"
+                   "Good " good " : Evil " evil "<p>"
+                   (if f
+                     (str "You last chose " (if (= f :evil) "evil" "good") ".<p> What do you choose now:")
+                     "What do you choose: ")
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
+                   "<p> Global Good: " (deref goodness) " Evil: " (deref evilness)))))
+
+
+;; This all seems to work. But for some reason it makes me deeply uncomfortable.
+
+;; I suppose I shouldn't really be using get requests to modify state,
+;; and none of my data is going to survive a server restart, but I
+;; don't think that's it.
+
+;; There just seems to be something overcomplicated and fragile about
+;; this, even though I don't seem to be able to break it.
+
+;; Can anyone find a way of exposing the problem more clearly, or suggest a better way?
+
 
 
 
