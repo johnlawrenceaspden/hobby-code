@@ -14,35 +14,47 @@
 ;; important to understand what I'm doing. And if you can't write it,
 ;; you don't understand it.
 
-;; If anyone's got any good links to 'what a web-app should like like
-;; structurally' articles, then please leave them in the comments. I
-;; can't find anything like that, which is weird for such a widespread
-;; problem, and that's one of the reasons why I'm trying to write one.
+;; If anyone's got any good links to 'what a web-app should look like
+;; structurally' articles, then please let me know, or leave them in
+;; the comments. I can't find anything like that, which is weird for
+;; such a widespread problem, and that's one of the reasons why I'm
+;; trying to write one. I don't mean particularly in Clojure, I just
+;; mean at all.
 
 ;; In the previous articles, I made an app which kept all its state in
 ;; sessions. Those sessions could be put in a cookie backed store, so
 ;; that all a user's data is stored encrypted on a user's computer,
 ;; and that might be a nice solution for certain problems.
 
-;; But I also want to try a different approach, where I keep all the
-;; data on the server.  Eventually I want to move that data into a
-;; database on the server, but for now I'm going to keep it in server
-;; memory. 
+;; A problem with that is that the only time that the app can see
+;; the user's data is when they communicate with the server.
+
+;; So for instance, if the app wanted to know whether people who
+;; started off good were likely to turn to evil in later life,
+;; information which might well be very useful, it would have a devil
+;; of a job to find out.
+
+;; So now I'd like to make a similar app which stores data on the
+;; server, and uses the sessions/cookies only to remember the identity
+;; of the user of the browser.
+
+;; Eventually I want to move that data into a database on the server,
+;; but for now I'm going to keep it in server memory. Of course that
+;; means that it will get lost when the server restarts, but one thing
+;; at a time.
 
 ;; Clojure's memory model is already quite database-like, so
 ;; presumably it won't be that hard to move the data into a database
 ;; eventually.
 
-;; Of course that means that it will get lost when the server
-;; restarts, but one thing at a time.
-
-;; I'm also going to simplify the problem somewhat. The flash messages
-;; are just a distracting detail, and the global counters are
-;; redundant if we have all the data in memory. The redirects to the
-;; home page make it harder to understand what's going on, so I'm
-;; going to remove them an replace them with links back. I'm going to
-;; put the session data in a cookie-backed session so that there's no
-;; session-related state in the server to worry about.
+;; To make it easier to think about, I'm going to simplify the problem
+;; somewhat. The flash messages are just a distracting detail, and the
+;; global counters are redundant if we have all the data in
+;; memory. The redirects to the home page make it harder to understand
+;; what's going on, so I'm going to remove them an replace them with
+;; links back. I'm going to put the session data in a cookie-backed
+;; session so that there's no session-related state in the server to
+;; worry about.
 
 ;; So here's a simplified version of the already very simple character
 ;; test, which I'll then try to convert to a more centralised design.
