@@ -63,7 +63,6 @@
          'ring.middleware.stacktrace
          'ring.middleware.session.cookie
          'ring.middleware.session
-         'ring.middleware.flash
          'clojure.pprint)
 
 ;; middleware for spying on request maps
@@ -95,6 +94,15 @@
                      (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing))))
                      response))))))
 
+;; response map makers
+
+(defn status-response [code body]
+  {:status code
+   :headers {"Content-Type" "text/html"}
+   :body body})
+
+(def response (partial status-response 200))
+
 ;; plumbing
 
 (declare handler)
@@ -109,15 +117,7 @@
 
 (defonce server (ring.adapter.jetty/run-jetty #'app {:port 8080 :join? false}))
 
-
-;; response map makers
-
-(defn status-response [code body]
-  {:status code
-   :headers {"Content-Type" "text/html"}
-   :body body})
-
-(def response (partial status-response 200))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Finally here is the app itself, reduced, I hope, to the absolute essentials
 
@@ -148,10 +148,75 @@
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Now, if we get a request from someone we've never seen before, we
+;; want to assign her an identity, something like anonymoususer1
+;; If we generate random UUIDs then we should be safe from collisions
+
+(defn getanon []
+  (str "anonymoususer" (. java.util.UUID randomUUID )))
+
+(defn subhandler [request]
+  (case (request :uri)
+    "/" (home request)
+    "/good" (good request)
+    "/evil" (evil request)
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+(defn handler [request]
+  (if-let [userid ((request :session) :_userid)]
+    (do 
+      (println "request from:" userid)
+      (subhandler (assoc request :userid userid)))
+    (let [userid (getanon)]
+      (println "assigning new:" userid)
+      (let [oldsession (request :session)]
+        (let [response (subhandler (assoc request :userid userid))]
+          (if-let [newsession (response :session)]
+            (assoc response :session (assoc newsession :_userid userid))
+            (assoc response :session (assoc oldsession :_userid userid))))))))
 
 
+;; Let's greet our user
+
+(defn home [request]
+  (let
+      [good   (get-in request [:session :good] 0)
+       evil   (get-in request [:session :evil] 0)]
+    (response (str "<h1>The Moral Maze</h1>"
+                   "hello "(request :userid)"<p>"
+                   "Good " good " : Evil " evil "<p>"
+                   "What do you choose: "
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
 
 
+;; Everything should work the same as it did, but a new user is allocated a
+;; unique identifier that lasts as long as she doesn't delete her
+;; cookies.
 
 
+;; That means that we can store the results of all her actions on the
+;; server's "in-memory database", and stop messing around with the
+;; browser's cookie.
 
+(defonce results (atom []))
+
+(defn good [request]
+  (swap! results conj [(request :userid), :good])
+  (response "<h1>good</h1> <a href=\"/\">choose again</a>" ))
+
+(defn evil [request]
+  (swap! results conj [(request :userid), :evil])
+  (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ))
+
+(defn home [request]
+  (let
+      [ r (map second (filter #( = (first %) (request :userid))  @results))
+        f (frequencies r)]
+    (response (str "<h1>The Moral Maze</h1>"
+                   "hello " (request :userid) "<p>"
+                   "your choices:" (with-out-str (clojure.pprint/pprint r))
+                   "<p>Good " (f :good 0) " : Evil " (f :evil 0) "<p>"
+                   "What do you choose: "
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
