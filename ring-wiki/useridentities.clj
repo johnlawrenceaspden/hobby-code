@@ -133,17 +133,38 @@
 ;; dissociate the user's name from the user's identity, and the user's
 ;; identity from the user's session
 
-;; So firstly let's have a table connecting user identities to names
+;; So firstly let's have a table connecting user identities to names.
+;; We'd like names to be unique, so a two-way dictionary feels like the right structure here.
+;; Clojure doesn't have one, so we'll use two dictionaries
 
-(defonce users (atom {"administrator" "mighty one"}))
+(def empty-bidirectional-map [{}{}])
+
+;; I want assoc to change the values associated with keys as it would
+;; ordinarily, but never to allow two keys to point to the same value
+;; or to change the key associated with an existing value
+
+(defn assoc-unique [[forwardmap backmap] userid name]
+  (if (nil? (backmap name))
+    (let [oldname (forwardmap userid)]
+      [(assoc forwardmap userid name) (assoc (dissoc backmap oldname) name userid)])
+    (throw (Exception. "Non-unique username"))))
+
+;; Here's a test map
+(def users (atom
+                ( -> empty-bidirectional-map
+                     (assoc-unique  "identity"  "name")
+                     (assoc-unique  "identity"  "newname" )
+                     (assoc-unique  "identity2" "name2")
+                     (assoc-unique  "identity2" "name"))))
+
 
 (defn namechange [userid newname]
-  (swap! users (fn[map](assoc map userid newname))))
+  (swap! users (fn[map](assoc-unique map userid newname))))
 
 (defn add-user  [userid name]
-  (swap! users (fn [map] (assoc map userid name) )))
+  (swap! users (fn [map] (assoc-unique map userid name))))
 
-(defn get-name [userid] (@users userid "?"))
+(defn get-name [userid] ((first @users) userid "?"))
 
 ;; And then let us modify our handler so that a new user gets a new name as well as an id
 
@@ -176,10 +197,11 @@ username <input name=username type=\"text\" value=\" " (get-name (request :useri
 
 (defn changename [request]
   (if-let [newname ((request :form-params) "username")]
-    (do 
+    (try
       (namechange (request :userid) newname)
-      (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" )))
-    (response (str "<h1>Illegal Name</h1> <a href=\"/\">home</a>" ))))
+      (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" ))
+      (catch Exception e
+          (response (str "<h1>Illegal Name</h1> <a href=\"/\">home</a>" ))))))
 
 
 (defn subhandler [request]
@@ -223,11 +245,12 @@ username <input name=username type=\"text\" value=\" " (get-name (request :useri
 
 (defn changename [request]
   (if-let [submitted-name ((request :form-params) "username")]
-    (let [newname (html-escape submitted-name)] 
-      (namechange (request :userid) newname)
-      (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" )))
-    (response (str "<h1>Fail</h1> <a href=\"/\">home</a>" ))))
-
+    (let [newname (html-escape submitted-name)]
+      (try
+        (namechange (request :userid) newname)
+        (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" ))
+        (catch Exception e
+          (response (str "<h1>Illegal Name</h1> <a href=\"/\">home</a>" )))))))
 
 ;; At this point, I am beginning to long for a static type
 ;; system. Strings getting passed around like this is a recipe for
