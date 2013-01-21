@@ -11,8 +11,10 @@
 
 ;; middleware for spying on request maps
 
-(defn html-escape [string]
-  (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
+(defn html-escape [string] (clojure.string/escape string {\< "&lt;", \" "&quot;", \& "&amp;" \> "&gt;"}))
+
+(defn preformatted-escape [string]
+  (str "<pre>" (html-escape string) "</pre>"))
 
 (defn format-request [name request kill-keys kill-headers]
   (let [r1 (reduce dissoc request kill-keys)
@@ -24,7 +26,7 @@
     (clojure.pprint/pprint r)
     (println "-------------------------------"))))
 
-(def kill-keys [:body :request-method :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
+(def kill-keys [:body :character-encoding :remote-addr :server-name :server-port :ssl-client-cert :scheme  :content-type  :content-length])
 (def kill-headers ["user-agent" "accept" "accept-encoding" "accept-language" "accept-charset" "connection" "host"])
 
 (defn wrap-spy [handler spyname]
@@ -35,7 +37,7 @@
         (let [outgoing (format-request (str spyname ":\n Outgoing Response Map:") response kill-keys kill-headers)]
           (println outgoing)
           (if (= (type (response :body)) java.lang.String)
-                     (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing))))
+                     (update-in response  [:body] (fn[x] (str (preformatted-escape incoming) x  (preformatted-escape outgoing))))
                      response))))))
 
 ;; response map makers
@@ -135,7 +137,15 @@
 
 (defonce users (atom {"administrator" "mighty one"}))
 
-;; And then let us modify our handler so that a new user gets a new name
+(defn namechange [userid newname]
+  (swap! users (fn[map](assoc map userid newname))))
+
+(defn add-user  [userid name]
+  (swap! users (fn [map] (assoc map userid name) )))
+
+(defn get-name [userid] (@users userid "?"))
+
+;; And then let us modify our handler so that a new user gets a new name as well as an id
 
 (defn handler [request]
   (if-let [userid ((request :session) :_userid)]
@@ -145,6 +155,7 @@
     (let [userid (getanon)
           name "anonymous user"]
       (println "assigning new:" userid)
+      (add-user userid name)
       (let [oldsession (request :session)]
         (let [response (subhandler (assoc request :userid userid))]
           (if-let [newsession (response :session)]
@@ -152,12 +163,23 @@
             (assoc response :session (assoc oldsession :_userid userid))))))))
 
 
-(defn namechange [userid newname]
-  (swap! users (fn [map] (assoc map userid newname))))
+;; We'll need a place for people to enter their new name
+
+(defn changename-form [request]
+  (response 
+   (str "<form action=\"/changename\" method=\"POST\">
+username <input name=username type=\"text\" value=\" " (get-name (request :userid)) "\">
+<input type=\"submit\" value=\" change username \">
+</form>")))
+
+;; And a url to receive the request
 
 (defn changename [request]
-  (namechange (request :userid) "princess peach")
-  (response "<h1>Peachy got it!</h1> <a href=\"/\">home</a>" ))
+  (if-let [newname ((request :form-params) "username")]
+    (do 
+      (namechange (request :userid) newname)
+      (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" )))
+    (response (str "<h1>Illegal Name</h1> <a href=\"/\">home</a>" ))))
 
 
 (defn subhandler [request]
@@ -166,15 +188,58 @@
     "/good" (good request)
     "/evil" (evil request)
     "/changename" (changename request)
+    "/changename-form" (changename-form request)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+;; We need to use ring's parameter middleware to get our form parameters 
+(require 'ring.middleware.params)
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "what the handler sees" )
+      (ring.middleware.params/wrap-params)
+      (ring.middleware.session/wrap-session {:store (ring.middleware.session.cookie/cookie-store {:key "a 16-byte secret"})})
+      (wrap-spy "what the server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)))
 
 (defn home [request]
   (let
       [ r (map second (filter #( = (first %) (request :userid))  @results))
         f (frequencies r)]
     (response (str "<h1>The Moral Maze</h1>"
-                   "hello " (@users (request :userid) "?") "<p>"
+                   "hello " (get-name (request :userid)) " <a href=\"/changename-form\">change name</a> <p>"
                    "your choices:" (with-out-str (clojure.pprint/pprint r))
                    "<p>Good " (f :good 0) " : Evil " (f :evil 0) "<p>"
                    "What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
+
+
+;; This seems functional, but we got a problem:
+
+;; Enter the username "<b>hacker"
+
+;; We want to make sure that our usernames can't do that sort of thing.
+
+(defn changename [request]
+  (if-let [submitted-name ((request :form-params) "username")]
+    (let [newname (html-escape submitted-name)] 
+      (namechange (request :userid) newname)
+      (response (str "<h1>" newname "</h1> <a href=\"/\">home</a>" )))
+    (response (str "<h1>Fail</h1> <a href=\"/\">home</a>" ))))
+
+
+;; At this point, I am beginning to long for a static type
+;; system. Strings getting passed around like this is a recipe for
+;; disaster.
+
+;; It would be better to have arbitrary-untrusted-strings and
+;; html-safe-strings and sql-safe-strings and the like and libraries
+;; for converting one to the other and automatic mechanisms for making
+;; sure that you don't use the wrong ones in the wrong place.
+
+;; Usually I think that the freedom of dynamic type checking is worth
+;; the sacrifice of certainty. But where security issues are
+;; concerned, and you have to allow for active subversion attempts of
+;; arbitrary sophistication, the problems are just too complex to
+;; trust mortals with.
