@@ -75,7 +75,7 @@
 ;; In Firefox I can't find anything as nice. 
 
 ;; With curl of course, you have total control.
-;; Real men, those who do not cower behind their mother's apron strings like whining infants
+;; Real men, those who do not cower behind their mother's apron strings, like whining infants
 ;; may wish to experiment with commands such as:
 ;; $ curl -sv http://localhost:8080 -b cookies.txt -c cookies.txt && cat cookies.txt
 
@@ -124,6 +124,19 @@
 ;; and the middleware decodes it and puts a :session key in the request.
 ;; Notice that no new cookie is set the second time.
 
+;; The cookie stays the same.
+
+;; Notice that we can change the data in the session without changing
+;; the cookie on the browser.  In the default implementation at least,
+;; the data is stored on the server, and the browser's cookie just
+;; tells the server which session to use.
+
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (str "<h1>Hello World!</h1>" )
+   :session (let [rs (request :session)] (if (empty? rs) "I am a session. Fear me!"  (str rs "!")))})
+
 
 ;; One thing we have control of is the length of time before the session expires
 ;; Ten seconds is a bit short, but it does allow for some interesting effects:
@@ -163,7 +176,7 @@
 ;; state in the server, and it probably is a good way to do things if
 ;; you're careful.
 
-;; But they're not equivalent: Some things that you can do with the
+;; But they're not quite equivalent: Some things that you can do with the
 ;; memory backed store won't work if you have to serialize your
 ;; session data.
 
@@ -179,15 +192,18 @@
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))
 
-;; Everything should still work fine (although you may have to kill the old cookie)
+;; Everything should still work fine, but now notice that the cookie
+;; is changing every time you refresh the page.
 
-;; But if you redefine the handler and refresh again, then it should cause some sort of nasty exception
+;; But if you redefine the handler
 
 (defn handler [request]
       {:status 200
        :headers {"Content-Type" "text/html"}
        :body (str "<h1>Hello " (((request :session {}) :fn (fn[] "Stranger") )) "</h1>" )
        :session {:fn (fn[] "Again")}})
+
+;; and refresh twice, then it should cause some sort of nasty exception
 
 ;; Now restore the memory-backed version and try again
 
@@ -200,6 +216,7 @@
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; One last flourish: flash messages
 
@@ -225,19 +242,26 @@
 (defn handler [request]
   (case (request :uri)
     "/favicon.ico" {:status 404}
-    "/" {:body (str "<h1>home</h1>" (request :flash) "<p>" (link "/bother") "<p>" (link "/"))}
-    "/bother" {:status 302, :headers {"Location" "/"}, :body "" :flash "bothered\n"}))
+    "/" {:body (str "<h1>home " (request :flash) "</h1>"  "<p>" (link "/bother") "<p>" (link "/"))}
+    "/bother" {:status 302, :headers {"Location" "/"}, :body "" :flash "(bothered)"}))
 
+;; The mechanism here is quite subtle and bears thinking about.
+
+
+;; The interested reader might also wish to get a load of this mother:
 
 (defn handler [request]
   (case (request :uri)
-    "/favicon.ico" {:status 404 :session (update (request :session) :favicon (fn[x] (if x (inc x) 1)))}
-    "/" {:body (str "<h1>home</h1>" (request :flash) 
-                    "<p> favicon requests" (get-in request [:session :favicon] 0) 
-                    "<p> bother requests"  (get-in request [:session :bother ] 0) 
+    "/favicon.ico" {:status 404 
+                    :session (update-in (request :session) [:favicon] (fnil inc 0))}
+    "/" {:body (str "<h1>home " (request :flash) " </h1>"  
+                    "<p> favicon requests: " (get-in request [:session :favicon] 0) 
+                    "<p> bother requests: "  (get-in request [:session :bother ] 0) 
                     "<p>" (link "/bother") 
                     "<p>" (link "/"))}
-    "/bother" {:status 302, :headers {"Location" "/"}, :body "" :flash "bothered\n" :session (update (request :session) :bother (fn[x] (if x (inc x) 1)))}))
+    "/bother" {:status 302, :headers {"Location" "/"}, :body "" 
+               :flash "(bothered)" 
+               :session (update-in (request :session) [:bother] (fnil inc 0))}))
 
 
 
