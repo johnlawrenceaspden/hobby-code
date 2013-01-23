@@ -114,6 +114,22 @@
     "/evil" (assoc (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ) :flash :evil)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
+;; This works fine in firefox, but the flash messages get lost in chrome because of its constant pestering
+;; about favicon.ico. So we'd better make the flash messages persist in that case:
+
+(defn handler [request]
+  (case (request :uri)
+    "/" (response (str "<h1>The Moral Maze</h1>"
+                       (if-let [f (request :flash)]
+                         (str "You last chose " (if (= f :evil) "evil" "good") ".<p> What do you choose now:")
+                         "What do you choose:")
+                       "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))
+    "/good" (assoc (response "<h1>good</h1> <a href=\"/\">choose again</a>" ) :flash :good)
+    "/evil" (assoc (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ) :flash :evil)
+    "/favicon.ico" {:flash (request :flash)}
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+
 
 ;; So far so good, but what if we want to keep scores for each user?
 
@@ -146,6 +162,7 @@
     "/" (home request)
     "/good" (good request)
     "/evil" (evil request)
+    "/favicon.ico" {:flash (request :flash)}
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
 
