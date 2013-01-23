@@ -203,20 +203,43 @@
 
 ;; One last flourish: flash messages
 
-(require 'ring.middleware.flash)
+;; Flash messages use the session mechanism to allow a redirect to
+;; leave a message on the page it is redirecting to:
 
-(defn handler [request]
-      {:status 200
-       :headers {"Content-Type" "text/html"}
-       :body (str "<h1>Hello " (if (nil? (:flash request)) "Stranger" (:flash request)) "</h1>")
-       :flash "Friend"})
+(require 'ring.middleware.flash)
 
 (def app
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
       (wrap-spy "what the handler sees" )
       (ring.middleware.flash/wrap-flash)
+      (wrap-spy "what the flash middleware sees" )
       (ring.middleware.session/wrap-session )
       (wrap-spy "what the web server sees" )
       (ring.middleware.stacktrace/wrap-stacktrace)
       ))
+
+(defn link [s]
+  (str "<a href=\"" s "\">" s "</a>"))
+
+(defn handler [request]
+  (case (request :uri)
+    "/favicon.ico" {:status 404}
+    "/" {:body (str "<h1>home</h1>" (request :flash) "<p>" (link "/bother") "<p>" (link "/"))}
+    "/bother" {:status 302, :headers {"Location" "/"}, :body "" :flash "bothered\n"}))
+
+
+(defn handler [request]
+  (case (request :uri)
+    "/favicon.ico" {:status 404 :session (update (request :session) :favicon (fn[x] (if x (inc x) 1)))}
+    "/" {:body (str "<h1>home</h1>" (request :flash) 
+                    "<p> favicon requests" (get-in request [:session :favicon] 0) 
+                    "<p> bother requests"  (get-in request [:session :bother ] 0) 
+                    "<p>" (link "/bother") 
+                    "<p>" (link "/"))}
+    "/bother" {:status 302, :headers {"Location" "/"}, :body "" :flash "bothered\n" :session (update (request :session) :bother (fn[x] (if x (inc x) 1)))}))
+
+
+
+
+
