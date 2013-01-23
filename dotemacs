@@ -358,6 +358,35 @@
 ;; (add-hook 'clojure-mode-hook 
 ;;           (lambda () (highlight-parentheses-mode t)))
 
+
+;;copy last expression to repl (nrepl version)
+(defun copy-last-expression-to-nrepl()
+  "copy-last-expression-to-nrepl. Not very clever about it. Finds buffer by name."
+  (interactive)
+  (let((end (point))
+       (beg (save-excursion
+              (backward-list 1)
+              (point)))
+       (edit-buffer (current-buffer))
+       (lisp-buffer (get-buffer "*nrepl*"))
+       (eval-command 'nrepl-return))
+  (progn
+     (pop-to-buffer lisp-buffer)
+     (end-of-buffer)
+     (pop-to-buffer edit-buffer)
+     (append-to-buffer lisp-buffer beg end)
+     (pop-to-buffer lisp-buffer)
+     (funcall eval-command)
+     (pop-to-buffer edit-buffer))))
+
+(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-nrepl)
+
+
+
+
+
+
+
 ;; this one takes .clj.html to blogger in clipboard
 (fset 'clj-html-to-blogger-copy
    [?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-n ?\C-n ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?. ?c ?l ?o ?j ?u ?r ?e ?- ?\C-s ?/ ?h ?e ?a ?d ?\C-a ?\C-k ?\C-k ?\C-k ?\C-k ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?  ?c ?l ?a ?s ?s ?= ?\" ?c ?l ?o ?j ?u ?r ?e ?- ?b ?o ?o ?\C-? ?d ?y ?\" ?\C-n ?\M-> ?\C-p ?\C-p ?\C-k ?\C-k ?\C-k ?\C-k ?\C-x ?h ?\M-w])
