@@ -1,7 +1,8 @@
 (defproject ring-wiki "0.0.1"
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [ring "1.1.6"]
-                 [compojure "1.1.4"]]
+                 [compojure "1.1.4"]
+                 [enlive "1.0.1"]]
   :repl-options { 
                  :port 4001 
                  :init (println "hello from ring-wiki/project.clj")
