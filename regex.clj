@@ -1,12 +1,19 @@
 ;; Regular Expressions in Clojure
 
-;; Every time I want to use a regex in clojure I find myself having to learn how to do it again.
+;; Every time I want to use a regex in clojure I find myself having to
+;; learn how to do it again.
 
 ;; for some reason the functions just won't stick in my mind.
 
 ;; There are six functions starting with re- in clojure.core:
 
-(def d (with-out-str (doc re-seq)(doc re-pattern)(doc re-find)(doc re-groups)(doc re-matcher)(doc re-matches)))
+(def d (with-out-str 
+         (doc re-seq)
+         (doc re-pattern)
+         (doc re-find)
+         (doc re-groups)
+         (doc re-matcher)
+         (doc re-matches)))
 
 ;; This is probably the function that you want:
 (re-seq   #"f.nd" d) ;-> ("find" "find" "find" "find" "find")
@@ -35,7 +42,7 @@
         "Here's an ip address:111.123.0.127, and here is another 136.54.23.108 
 but this is not one 1.1.1.257 and neither is this: 243.1.231 or this 1.1.1.1.1 but is this?255.000.1.255")
 
-;; Here we ably demonstrate the both the 'repeated capturing group' problem for MAC addresses
+;; Here we demonstrate the both the 'repeated capturing group' problem for MAC addresses
 (re-seq #"^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$"
         "AA:0a:be:23:01:02") ;-> (["AA:0a:be:23:01:02" "01:" "02"])
 
@@ -44,7 +51,8 @@ but this is not one 1.1.1.257 and neither is this: 243.1.231 or this 1.1.1.1.1 b
                          (clojure.string/join ":" (repeat 6 "([0-9a-fA-F][0-9a-fA-F])"))
                          "$"))
         "AA:0a:be:23:01:02\nAA:0a:be:123:01:02\nAG:0a:be:23:01:02\n00:01:02:03:04:55\nAA:0a:be:23:0:02:AA\n:0a:be:23:01:02\n")
-;-> (["AA:0a:be:23:01:02" "AA" "0a" "be" "23" "01" "02"] ["00:01:02:03:04:55" "00" "01" "02" "03" "04" "55"])
+;-> (["AA:0a:be:23:01:02" "AA" "0a" "be" "23" "01" "02"] 
+;->  ["00:01:02:03:04:55" "00" "01" "02" "03" "04" "55"])
 
 
 (re-seq #"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b"
@@ -53,7 +61,8 @@ but this is not one 1.1.1.257 and neither is this: 243.1.231 or this 1.1.1.1.1 b
 
 
 (re-seq #"\b([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}\b"
-"Amongst the worlds domain names are such as www.google.com, ssh.aspden.com, aspden.com, aspden.co.uk, 123.com, ssh.123.com and .com")
+"Amongst the worlds domain names are such as www.google.com, ssh.aspden.com,
+ aspden.com, aspden.co.uk, 123.com, ssh.123.com and .com")
 
 
 
