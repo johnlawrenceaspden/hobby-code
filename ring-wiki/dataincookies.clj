@@ -81,8 +81,8 @@
       [good   (get-in request [:session :good] 0)
        evil   (get-in request [:session :evil] 0)]
     (response (str "<h1>The Moral Maze</h1>"
-                   "Good " good " : Evil " evil "<p>"
-                   "What do you choose: "
+                   "Good " good " : Evil " evil 
+                   "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
 
 (defn handler [request]
@@ -93,9 +93,17 @@
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; After a bit of worrying, I am very keen on this structure.
 
 ;; Consider how easy it is to test:
+
+
+(= ((handler {:uri "/"}) :status) 200)
+
+
+((handler {:uri "/evil" :session {}}) :session) ;-> {:evil 1}
 
 (defn sprocess [session uri]
   (let [ns (:session (handler{:uri uri :session session}))]
@@ -103,9 +111,22 @@
 
 (sprocess {} "/home") ;-> {}
 (sprocess {} "/evil") ;-> {:evil 1}
+(sprocess (sprocess {} "/evil") "/evil") ;-> {:evil 2}
+
+(-> {}
+    (sprocess "/home")
+    (sprocess "/good")
+    (sprocess "/evil")
+    (sprocess "/good")) ;-> {:evil 1, :good 2}
+
+(reduce sprocess {} ["/evil" "/evil" "/good" "/evil" ]) ;-> {:good 1, :evil 3}
 
 (use 'clojure.test)
+
 (deftest sitetest
+  (testing "page status"
+    (is (= (map (fn[x] ((handler {:uri x}) :status)) ["/" "/good" "/evil" ]) '(200 200 200)))
+    (is (= (map (fn[x] ((handler {:uri x}) :status)) ["/home" "/favicon.ico" ]) '(404 404))))
   (testing "html"
     (is (re-find #"Good\W*0\W:\WEvil\W0" ((handler {:uri "/"}) :body)))
     (is (re-find #"Good\W*10\W:\WEvil\W0" ((handler {:uri "/" :session {:good 10}}) :body)))
@@ -118,7 +139,7 @@
            {:good 3, :evil 4, :userid "fred"}))
     ))
 
-(run-tests)
+;(run-tests)
 
 
 
@@ -128,27 +149,6 @@
 
 
 
-(-> {}
-    (sprocess "/home")
-    (sprocess "/good")
-    (sprocess "/evil")
-    (sprocess "/good"))
-
-(let [s {}
-      s1 (:session (handler {:uri "/evil" :session s}))
-      s2 (:session (handler {:uri "/good" :session s1}))
-      s3 (:session (handler {:uri "/good" :session s2}))
-      s4 (:session (handler {:uri "/good" :session s3}))]
-  (and (= 1 (s4 :evil))
-       (= 3 (s4 :good))))
-
-
-
-((handler {:uri "/"}) :body) "<h1>The Moral Maze</h1>Good 0 : Evil 0<p>What do you choose: <a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
-((handler {:uri "/" :session {:good 100}}) :body)
-(let [scrape (fn[x] (first ( re-seq #"Good\W*(\d*)\W:\WEvil\W(\d*)" x )))]
-  (let [[_ g e] (scrape ((handler {:uri "/"}) :body))]
-    [g e]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
