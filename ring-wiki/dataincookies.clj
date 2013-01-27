@@ -309,4 +309,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
+;; Here's an example database for testing purposes
+(swap! db (fn[x] 
+            {"7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2},
+             "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
+             "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:name "hello"},
+             "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
+             "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}))
