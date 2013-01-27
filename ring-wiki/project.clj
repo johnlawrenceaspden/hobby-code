@@ -3,7 +3,7 @@
                  [ring "1.1.6"]
                  [compojure "1.1.4"]
                  [enlive "1.0.1"]]
-  :dev-dependencies [[lein-marginalia "0.7.1"]]
+  :plugins [[lein-marginalia "0.7.1"]]
   :repl-options { 
                  :port 4001 
                  :init (println "hello from ring-wiki/project.clj")
