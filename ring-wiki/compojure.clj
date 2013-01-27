@@ -1,6 +1,6 @@
 ;;  necessary dependencies
 ;;  [[org.clojure/clojure "1.4.0"]
-;;   [ring "1.1.6"]
+;;   [ring "1.1.7"]
 ;;   [compojure "1.1.4"]]
  
 ;;------------------------------------------------------

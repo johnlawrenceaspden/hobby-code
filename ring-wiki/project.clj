@@ -1,6 +1,6 @@
 (defproject ring-wiki "0.0.1"
   :dependencies [[org.clojure/clojure "1.4.0"]
-                 [ring "1.1.6"]
+                 [ring "1.1.7"]
                  [compojure "1.1.4"]
                  [enlive "1.0.1"]]
   :plugins [[lein-marginalia "0.7.1"]]

@@ -1,6 +1,6 @@
 ;;  necessary dependencies 
 ;; [[org.clojure/clojure "1.4.0"]
-;;  [ring/ring "1.1.6"]]
+;;  [ring/ring "1.1.7"]]
 ;; -------------
 
 ;; Behold the mighty app which we have constructed so far:
