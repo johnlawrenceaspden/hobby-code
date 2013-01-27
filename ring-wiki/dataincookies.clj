@@ -154,6 +154,8 @@
 
 (defonce db (atom {}))
 
+
+
 (def app
   (-> #'handler
       (ring.middleware.stacktrace/wrap-stacktrace)
@@ -170,7 +172,9 @@
   (response 
    (str "<h1>Database</h1>" "<ul>"
           (apply str (for [i @db] (str "<li>" (with-out-str (clojure.pprint/pprint i)) "</li>")))
-          "</ul>")))))
+          "</ul>"
+          "<h1>Clojure Form</h1>"
+          "<pre>" "(swap! db (fn[x] " (with-out-str (clojure.pprint/pprint @db)) "))" "</pre>")))
 
 (defn handler [request]
   (case (request :uri)
@@ -222,7 +226,7 @@
        name   (get-in request [:session :name] "one who wishes anonymity")]
     (response (str "<h1>The Moral Maze</h1>"
                    "<p>Welcomes: <b>" name "</b>"
-                   "(<a href=\"/namechange\">change</a>)"
+                   " (<a href=\"/namechange\">change</a>)"
                    "<p>Good " good " : Evil " evil 
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
@@ -230,11 +234,11 @@
 
 
 (defn namechange [request]
-  (response "<form name=\"form\" method=\"post\" action=\"/change-my-name\"><input
-name=\"newname\" value=\"type name here\"><br>"))
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\"><input
+name=\"newname\" value=\"" ((request :session) :name "type name here") "\"><br>")))
 
 (defn change-my-name [request]
-  (let [newname ((request :form-params) "newname")]
+  (let [newname ((request :params) "newname")]
     (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>")) :session (assoc (request :session) :name newname))
   ))
 
@@ -264,11 +268,12 @@ name=\"newname\" value=\"type name here\"><br>"))
 
 
 (defn highscoretable [request]
-  (let [ hst (sort (map (fn[[k v]] 
-                          [(/ (v :evil) (+ (v :evil) (v :good)))
+  (let [ hst (sort (map (fn[[k v]]
+                          (let [ e (v :evil 0) g (v :good 0) ]
+                          [(/ e (+ e g))
                            (v :name "anon") 
-                           (v :good) 
-                           (v :evil)])
+                           g 
+                           e]))
                         @db))]
     (response (str
                "<h1>High Score Table</h1>"
