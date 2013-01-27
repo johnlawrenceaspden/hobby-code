@@ -141,84 +141,146 @@
 
 ;(run-tests)
 
-
-
-
-
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Now, if we get a request from someone we've never seen before, we
-;; want to assign her an identity, something like anonymoususer1
-;; If we generate random UUIDs then we should be safe from collisions
 
-(defn getanon []
-  (str "anonymoususer" (. java.util.UUID randomUUID )))
+;; A major advantage of this design is also a major problem with
+;; it. All the data is stored in the user's browser in a cookie.
 
-(defn subhandler [request]
+;; This means we can't do statistics on the data, because we don't
+;; have it all available.
+
+;; But it turns out to be quite easy to bring the data back home onto the server:
+
+(defonce db (atom {}))
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "handler" )
+      (ring.middleware.session/wrap-session {:store (ring.middleware.session.memory/memory-store db)})
+      ;(wrap-spy "what the server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)))
+
+
+;; Let's make a page where we can see our data:
+
+
+(defn database [request]
+  (response 
+   (str "<h1>Database</h1>" "<ul>"
+          (apply str (for [i @db] (str "<li>" (with-out-str (clojure.pprint/pprint i)) "</li>")))
+          "</ul>")))))
+
+(defn handler [request]
   (case (request :uri)
     "/" (home request)
     "/good" (good request)
     "/evil" (evil request)
+    "/database" (database request)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
+
+;; Of course, now we've lost some of the advantages of the cookie backed sessions. 
+;; A server restart will kill all our data, and we can't any longer run many servers in parallel.
+
+;; I'm hoping that it might be possible to move this data into a
+;; database at some point to cure these problems.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Now that our data is on the server, we can do our statistics:
+
+(defn highscoretable [request]
+  (let [ hst (sort (map (fn[[k v]] [(/ (v :evil) (+ (v :evil) (v :good))) k (v :good) (v :evil)]) @db))]
+    (response (str
+               "<h1>High Score Table</h1>"
+             "<table border=1 frame=box rules=rows>"
+             (str "<tr>""<th>" "User ID"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
+             (apply str (for [i hst] (str "<tr>""<td>" (i 1)  "<td/>""<td>"  (i 2) "<td/>""<td>" (i 3) "<td/>" "</tr>")))
+             "</table>"
+             ))))
+
+
+
 (defn handler [request]
-  (if-let [userid ((request :session) :_userid)]
-    (do 
-      (println "request from:" userid)
-      (subhandler (assoc request :userid userid)))
-    (let [userid (getanon)]
-      (println "assigning new:" userid)
-      (let [oldsession (request :session)]
-        (let [response (subhandler (assoc request :userid userid))]
-          (if-let [newsession (response :session)]
-            (assoc response :session (assoc newsession :_userid userid))
-            (assoc response :session (assoc oldsession :_userid userid))))))))
+  (case (request :uri)
+    "/" (home request)
+    "/good" (good request)
+    "/evil" (evil request)
+    "/database" (database request)
+    "/highscores" (highscoretable request)
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
-
-;; Let's greet our user
+;; Let's give our users the chance to choose names of their own:
 
 (defn home [request]
   (let
       [good   (get-in request [:session :good] 0)
-       evil   (get-in request [:session :evil] 0)]
+       evil   (get-in request [:session :evil] 0)
+       name   (get-in request [:session :name] "one who wishes anonymity")]
     (response (str "<h1>The Moral Maze</h1>"
-                   "hello "(request :userid)"<p>"
-                   "Good " good " : Evil " evil "<p>"
-                   "What do you choose: "
-                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
+                   "<p>Welcomes: <b>" name "</b>"
+                   "(<a href=\"/namechange\">change</a>)"
+                   "<p>Good " good " : Evil " evil 
+                   "<p> What do you choose: "
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
+                   "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
 
 
-;; Everything should work the same as it did, but a new user is allocated a
-;; unique identifier that lasts as long as she doesn't delete her
-;; cookies.
+(defn namechange [request]
+  (response "<form name=\"form\" method=\"post\" action=\"/change-my-name\"><input
+name=\"newname\" value=\"type name here\"><br>"))
+
+(defn change-my-name [request]
+  (let [newname ((request :form-params) "newname")]
+    (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>")) :session (assoc (request :session) :name newname))
+  ))
+
+(defn handler [request]
+  (case (request :uri)
+    "/" (home request)
+    "/good" (good request)
+    "/evil" (evil request)
+    "/database" (database request)
+    "/highscores" (highscoretable request)
+    "/namechange" (namechange request)
+    "/change-my-name" (change-my-name request)
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+(use 'ring.middleware.params)
+
+(def app
+  (-> #'handler
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      (wrap-spy "handler" )
+      (ring.middleware.params/wrap-params)
+      (ring.middleware.session/wrap-session {:store (ring.middleware.session.memory/memory-store db)})
+      ;(wrap-spy "what the server sees" )
+      (ring.middleware.stacktrace/wrap-stacktrace)))
 
 
-;; That means that we can store the results of all her actions on the
-;; server's "in-memory database", and stop messing around with the
-;; browser's cookie.
 
-(defonce results (atom []))
 
-(defn good [request]
-  (swap! results conj [(request :userid), :good])
-  (response "<h1>good</h1> <a href=\"/\">choose again</a>" ))
+(defn highscoretable [request]
+  (let [ hst (sort (map (fn[[k v]] 
+                          [(/ (v :evil) (+ (v :evil) (v :good)))
+                           (v :name "anon") 
+                           (v :good) 
+                           (v :evil)])
+                        @db))]
+    (response (str
+               "<h1>High Score Table</h1>"
+             "<table border=1 frame=box rules=rows>"
+             (str "<tr>""<th>" "User ID"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
+             (apply str (for [i hst] (str "<tr>""<td>" (i 1)  "<td/>""<td>"  (i 2) "<td/>""<td>" (i 3) "<td/>" "</tr>")))
+             "</table>"
+             ))))
 
-(defn evil [request]
-  (swap! results conj [(request :userid), :evil])
-  (response "<h1>evil</h1> <a href=\"/\">choose again</a>" ))
 
-(defn home [request]
-  (let
-      [ r (map second (filter #( = (first %) (request :userid))  @results))
-        f (frequencies r)]
-    (response (str "<h1>The Moral Maze</h1>"
-                   "hello " (request :userid) "<p>"
-                   "your choices:" (with-out-str (clojure.pprint/pprint r))
-                   "<p>Good " (f :good 0) " : Evil " (f :evil 0) "<p>"
-                   "What do you choose: "
-                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
