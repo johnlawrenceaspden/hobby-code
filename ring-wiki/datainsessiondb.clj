@@ -1,3 +1,5 @@
+;; Bringing the session data back onto the server where we can play with it
+
 ;;  necessary dependencies
 ;; [[org.clojure/clojure "1.4.0"]
 ;;  [ring/ring "1.1.7"]]
@@ -53,8 +55,10 @@
 
 (def response (partial status-response 200))
 
-(defn hpp[x]  (html-escape (with-out-str (clojure.pprint/pprint x))))
-(defn hp[x] (html-escape (with-out-str (print x))))
+;; functions for outputting strings as html without causing bad things to happen
+(defn hppp[x]  (html-pre-escape (with-out-str (clojure.pprint/pprint x))))
+(defn hpp[x]  (html-pre-escape (str x)))
+(defn hp[x]   (html-escape (str x)))
 
 ;; plumbing
 
@@ -103,32 +107,47 @@
 
 ;; After a bit of worrying, I am very keen on this structure.
 
-;; Consider how easy it is to test:
+;; Consider how easy it is to test: We don't need to involve a real
+;; webserver or real state at all, we can just test the handlers do
+;; what they're supposed to do when sent appropriate data:
 
-
+;; Does a root page exist?
 ((handler {:uri "/"}) :status) ;-> 200
 
-
+;; Does looking at the evil page add an evil counter to your session?
 ((handler {:uri "/evil" :session {}}) :session) ;-> {:evil 1}
 
+;; We can define a function which passes a session through a url as if
+;; it had been passed in from a browser, processed, and then sent back
+;; to be stored in the browser:
 (defn sprocess [session uri]
   (let [ns (:session (handler{:uri uri :session session}))]
     (if (nil? ns) session ns)))
 
+
+;; So here is what happens when a completely unknown browser asks for the home page
 (sprocess {} "/home") ;-> {}
+;; And if it looks at the evil page:
 (sprocess {} "/evil") ;-> {:evil 1}
+;; And if one that has already looked at the evil page looks at it again:
 (sprocess {:evil 1} "/evil") ;{:evil 2} 
 
+;; More concisely, we can change those two looks together
 (sprocess (sprocess {} "/evil") "/evil") ;-> {:evil 2}
 
+;; And use the -> macro to make it more readable
 (-> {}
     (sprocess "/home")
     (sprocess "/good")
     (sprocess "/evil")
     (sprocess "/good")) ;-> {:evil 1, :good 2}
 
+;; In fact, the pattern of modifying an accumulator according to a sequence is what reduce does:
+;; Here we say "what does a session look like, if starting from scratch it chooses evil,evil,good,evil?"
 (reduce sprocess {} ["/evil" "/evil" "/good" "/evil" ]) ;-> {:good 1, :evil 3}
 
+
+;; So our tests for the moral maze website might look something like this:
 (use 'clojure.test)
 
 (deftest sitetest
@@ -147,7 +166,8 @@
            {:good 3, :evil 4, :userid "fred"}))
     ))
 
-;(run-tests)
+;; They can be hand-run with:
+;; (run-tests)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -156,11 +176,12 @@
 ;; it. All the data is stored in the user's browser in a cookie.
 
 ;; This means we can't do statistics on the data, because we don't
-;; have it all available.
+;; have it all available at once.
 
-;; But it turns out to be quite easy to bring the data back home onto
-;; the server, because we can use in-memory sessions instead of cookie
-;; sessions, and tell ring where to keep them:
+;; But it turns out to be quite easy to bring the data back onto the
+;; server where we can see it, because we can use in-memory sessions
+;; instead of cookie sessions, and we can also tell ring where to keep
+;; them:
 
 (defonce db (atom {}))
 
@@ -173,9 +194,9 @@
       (ring.middleware.stacktrace/wrap-stacktrace)))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Let's make a page where we can see our data:
-
-
 
 (defn database [request]
   (response 
@@ -183,7 +204,7 @@
           (apply str (for [i @db] (str "<li>" (hpp i)  "</li>")))
           "</ul>"
           "<h1>Clojure Form</h1>"
-          "<pre>" "(swap! db (fn[x] " (hpp @db) "))" "</pre>")))
+          "<pre>" "(swap! db (fn[x] " (hppp @db) "))" "</pre>")))
 
 (defn handler [request]
   (case (request :uri)
@@ -284,7 +305,7 @@
     "/change-my-name" (change-my-name request)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
-
+;; Now we can put the user's chosen names in the table instead
 
 (defn highscoretable [request]
   (let [score (fn[[k v]] 
@@ -292,7 +313,7 @@
                       g (v :good 0)
                       n (v :name "anon")
                       r (if (zero? (+ e g)) 1/2 (/ e (+ e g)))]
-                  [ r n g e])) 
+                  [ r n g e k])) 
         hst (sort (map score @db))]
     (response (str
                "<h1>High Score Table</h1>"
@@ -302,17 +323,70 @@
              "</table>"
              ))))
 
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; One remaining problem that we have is that a user's identity is completely tied to his browser cookie.
+
+;; What if someone deleted their cookies, or wanted to use a different browser, but then realized that they needed data stored in their account?
+
+;; Well, this feels like a really nasty hack, but it's easy enough to reassociate their browser with a different session:
+
+(defn change-my-identity [request]
+  (let [dudes (filter (fn[[k v]] (= ((request :params) "newidentity") (v :name))) @db)]
+    (assoc (response "if you say so...<a href=\"/\">home</a>") :cookies {"ring-session" {:value (ffirst dudes)}})))
+
+
+(defn changeidentity [request]
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
+                 "If you ain't " ((request :session) :name "dat geezer") " then who are you? :"
+                 "<input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">")))
+
+(defn handler [request]
+  (case (request :uri)
+    "/" (home request)
+    "/good" (good request)
+    "/evil" (evil request)
+    "/database" (database request)
+    "/highscores" (highscoretable request)
+    "/namechange" (namechange request)
+    "/change-my-name" (change-my-name request)
+    "/changeidentity" (changeidentity request)
+    "/change-my-identity" (change-my-identity request)
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+
+
+(defn home [request]
+  (let
+      [good   (get-in request [:session :good] 0)
+       evil   (get-in request [:session :evil] 0)
+       name   (get-in request [:session :name] "one who wishes anonymity")]
+    (response (str "<h1>The Moral Maze</h1>"
+                   "<p>Welcomes: <b>" name "</b>"
+                   " (<a href=\"/namechange\">change</a>)"
+                   "<p> (<a href=\"/changeidentity\">not " name  "? log in as someone else.</a>)"
+                   "<p>Good " good " : Evil " evil 
+                   "<p> What do you choose: "
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
+                   "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Now we need to deal with making the usernames unique and adding
+;; password protection so that you can only log into an account which
+;; has a password set that you know.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 ;; Here's an example database for testing purposes
 (swap! db (fn[x] 
-            {"7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2},
-             "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
-             "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:name "hello"},
-             "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
-             "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}))
+{"4c1c2b12-3095-4136-abc1-e9778115cbd0" {:name "atomic man"},
+ "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2},
+ "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
+ "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:name "hello"},
+ "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
+ "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}
+))
