@@ -56,7 +56,7 @@
 (def response (partial status-response 200))
 
 ;; functions for outputting strings as html without causing bad things to happen
-(defn hppp[x]  (html-pre-escape (with-out-str (clojure.pprint/pprint x))))
+(defn hppp[x]  (html-pre-escape (with-out-str (binding [clojure.pprint/*print-right-margin* 120] (clojure.pprint/pprint x)))))
 (defn hpp[x]  (html-pre-escape (str x)))
 (defn hp[x]   (html-escape (str x)))
 
@@ -108,14 +108,14 @@
 ;; After a bit of worrying, I am very keen on this structure.
 
 ;; Consider how easy it is to test: We don't need to involve a real
-;; webserver or real state at all, we can just test the handlers do
-;; what they're supposed to do when sent appropriate data:
+;; webserver or real state at all, we can just test that the handlers
+;; do what they're supposed to do when sent appropriate data:
 
 ;; Does a root page exist?
 ((handler {:uri "/"}) :status) ;-> 200
 
 ;; Does looking at the evil page add an evil counter to your session?
-((handler {:uri "/evil" :session {}}) :session) ;-> {:evil 1}
+((handler {:uri "/evil" :session {:mysesh 'yo}}) :session) ;-> {:evil 1, :mysesh yo}
 
 ;; We can define a function which passes a session through a url as if
 ;; it had been passed in from a browser, processed, and then sent back
@@ -129,7 +129,7 @@
 (sprocess {} "/home") ;-> {}
 ;; And if it looks at the evil page:
 (sprocess {} "/evil") ;-> {:evil 1}
-;; And if one that has already looked at the evil page looks at it again:
+;; And if it looks at it again:
 (sprocess {:evil 1} "/evil") ;{:evil 2} 
 
 ;; More concisely, we can change those two looks together
@@ -142,8 +142,7 @@
     (sprocess "/evil")
     (sprocess "/good")) ;-> {:evil 1, :good 2}
 
-;; In fact, the pattern of modifying an accumulator according to a sequence is what reduce does:
-;; Here we say "what does a session look like, if starting from scratch it chooses evil,evil,good,evil?"
+;; Modifying an accumulator using a sequence of things is a common pattern:
 (reduce sprocess {} ["/evil" "/evil" "/good" "/evil" ]) ;-> {:good 1, :evil 3}
 
 
@@ -165,6 +164,9 @@
                    ["/evil" "/good" "/" "/home" "/evil" "/favicon.ico" "/evil" "/evil"])
            {:good 3, :evil 4, :userid "fred"}))
     ))
+
+
+
 
 ;; They can be hand-run with:
 ;; (run-tests)
@@ -198,13 +200,15 @@
 
 ;; Let's make a page where we can see our data:
 
-(defn database [request]
-  (response 
-   (str "<h1>Database</h1>" "<ul>"
+ "<ul>"
           (apply str (for [i @db] (str "<li>" (hpp i)  "</li>")))
           "</ul>"
           "<h1>Clojure Form</h1>"
-          "<pre>" "(swap! db (fn[x] " (hppp @db) "))" "</pre>")))
+
+(defn database [request]
+  (response 
+   (str "<h1>Database</h1>"
+          "<pre>" "(swap! db (fn[x] (merge x " (hppp @db) ")))" "</pre>")))
 
 (defn handler [request]
   (case (request :uri)
@@ -318,7 +322,7 @@
     (response (str
                "<h1>High Score Table</h1>"
              "<table border=1 frame=box rules=rows>"
-             (str "<tr>""<th>" "User ID"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
+             (str "<tr>""<th>" "Name"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
              (apply str (for [i hst] (str "<tr>""<td>" (hp (i 1))  "<td/>""<td>"  (hp (i 2)) "<td/>""<td>" (hp (i 3)) "<td/>" "</tr>")))
              "</table>"
              ))))
@@ -327,18 +331,23 @@
 
 ;; One remaining problem that we have is that a user's identity is completely tied to his browser cookie.
 
-;; What if someone deleted their cookies, or wanted to use a different browser, but then realized that they needed data stored in their account?
+;; If someone deletes their cookies, their account can never again be accessed.
+
+;; If they use a different browser, then they will create a second independent account.
 
 ;; Well, this feels like a really nasty hack, but it's easy enough to reassociate their browser with a different session:
 
 (defn change-my-identity [request]
-  (let [dudes (filter (fn[[k v]] (= ((request :params) "newidentity") (v :name))) @db)]
-    (assoc (response "if you say so...<a href=\"/\">home</a>") :cookies {"ring-session" {:value (ffirst dudes)}})))
+  (let [newid ((request :params) "newidentity")]
+    (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (=  (v :name) newid)) @db))]
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>")) 
+          :cookies {"ring-session" {:value newsessioncookie}})
+        (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
 
 
 (defn changeidentity [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
-                 "If you ain't " ((request :session) :name "dat geezer") " then who are you? :"
+                 "If you ain't " ((request :session) :name "dat geezer") " den who <i>are</i> you? :"
                  "<input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">")))
 
 (defn handler [request]
@@ -373,9 +382,77 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Now we need to deal with making the usernames unique and adding
-;; password protection so that you can only log into an account which
-;; has a password set that you know.
+;; Finally we need to protect the valuable data in our accounts with passwords
+
+(defn change-my-name [request]
+  (let [newname ((request :params) "newname")
+        newpassword ((request :params) "password")]
+    (if (and newname newpassword)
+      (assoc  
+          (response (str "ok " newname "<p><a href=\"/\">back</a>")) 
+        :session (assoc (request :session) :name newname :password newpassword))
+      (response "fail"))))
+
+
+;; Which can be alternatively phrased:
+
+(defn change-my-name [{{newname "newname" newpassword "password"} :params :as request}]
+  (if (and newname newpassword)
+    (assoc  
+        (response (str "ok " newname "<p><a href=\"/\">back</a>")) 
+      :session (assoc (request :session) :name newname :password newpassword))
+    (response "fail")))
+
+
+;; Here's an example of destructuring
+((fn [{{n "newname" p "password" :or {n 1 p 2}} :params :as r}  ] (list n p r)) {"password" "doom"}) ;-> (1 2 {"password" "doom"})
+
+
+
+
+
+(defn namechange [request]
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\">"
+                 "Name: <input name=\"newname\" value=\"" ((request :session) :name "type name here") "\">"
+                 "<p>Password: <input name=\"password\" value=\"" ((request :session) :password "f@ilz0r!") "\">"
+                 "<input type=\"submit\" value=\"Click!\" />"
+                 "</form>")))
+
+(defn changeidentity [request]
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
+                 "If you ain't " ((request :session) :name "dat geezer") " den who <i>are</i> you? :<p>"
+                 "Name    : <input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">"
+                 "Password: <input name=\"password\" value=\"\">"
+                 "<input type=\"submit\" value=\"Click!\" />"
+                 "</form>")))
+
+
+(defn change-my-identity [request]
+  (let [newid ((request :params) "newidentity")
+        password ((request :params) "password")]
+    (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (and (=  (v :name) newid) (= (v :password) password))) @db))]
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>")) 
+          :cookies {"ring-session" {:value newsessioncookie}})
+        (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
+
+(defn passwords [req]
+  (response (hppp (for [[ k {n :name p :password}] @db] [n p]))))
+
+(defn handler [request]
+  (case (request :uri)
+    "/" (home request)
+    "/good" (good request)
+    "/evil" (evil request)
+    "/database" (database request)
+    "/passwords" (passwords request)
+    "/highscores" (highscoretable request)
+    "/namechange" (namechange request)
+    "/change-my-name" (change-my-name request)
+    "/changeidentity" (changeidentity request)
+    "/change-my-identity" (change-my-identity request)
+    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -383,10 +460,23 @@
 
 ;; Here's an example database for testing purposes
 (swap! db (fn[x] 
-{"4c1c2b12-3095-4136-abc1-e9778115cbd0" {:name "atomic man"},
+{"4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :good 2, :name "atomic man"},
  "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2},
  "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
- "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:name "hello"},
+ "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:evil 2, :good 3, :name "hello world"},
  "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
  "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}
 ))
+
+(swap!  db  (fn[x]  (merge  x 
+  { "89be190a-4fb5-4562-aee4-1a65b0d6b415" {:password "type name here", :good 1, :evil 2, :name "freds"}})))
+
+(swap! db (fn[x] (merge x 
+{"89be190a-4fb5-4562-aee4-1a65b0d6b415" {:evil 2, :name "fluffy", :good 1, :password "doom"},
+ "4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :name "atomic man", :good 2},
+ "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:password "df", :name "darkfluffy", :good 2},
+ "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
+ "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:password "f@ilz0r!", :evil 2, :name "hello world", :good 3},
+ "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
+ "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}
+)))
