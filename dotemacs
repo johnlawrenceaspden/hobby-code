@@ -393,9 +393,9 @@
 
 ;; keyboard macro of the gods:
 ;; evaluates the expression on the line BELOW, and pastes the result afterwards
+(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
 ;; set it to be the last keyboard macro, which means that it's executable with f4
-(setq last-kbd-macro
-  [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
+(setq last-kbd-macro 'clj-eval-paste)
 
 ;; Compile and goto repl
 (fset 'compile-and-goto-repl
