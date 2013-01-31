@@ -112,10 +112,10 @@
 ;; do what they're supposed to do when sent appropriate data:
 
 ;; Does a root page exist?
-((handler {:uri "/"}) :status) ;-> 200
+((handler {:uri "/"}) :status) ; -> 200
 
 ;; Does looking at the evil page add an evil counter to your session?
-((handler {:uri "/evil" :session {:mysesh 'yo}}) :session) ;-> {:evil 1, :mysesh yo}
+((handler {:uri "/evil" :session {:mysesh 'yo}}) :session) ; -> {:evil 1, :mysesh yo}
 
 ;; We can define a function which passes a session through a url as if
 ;; it had been passed in from a browser, processed, and then sent back
@@ -162,8 +162,7 @@
     (is (= 10 (((handler {:uri "/evil" :session {:good 10 :evil 20}}) :session) :good)))
     (is (= (reduce sprocess {:userid "fred" :good 2} 
                    ["/evil" "/good" "/" "/home" "/evil" "/favicon.ico" "/evil" "/evil"])
-           {:good 3, :evil 4, :userid "fred"}))
-    ))
+           {:good 3, :evil 4, :userid "fred"}))))
 
 
 
@@ -200,11 +199,6 @@
 
 ;; Let's make a page where we can see our data:
 
- "<ul>"
-          (apply str (for [i @db] (str "<li>" (hpp i)  "</li>")))
-          "</ul>"
-          "<h1>Clojure Form</h1>"
-
 (defn database [request]
   (response 
    (str "<h1>Database</h1>"
@@ -229,7 +223,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; But now that our data is on the server, we can do our statistics:
+;; But now that our data *is* on the server, we can do our statistics:
 
 (defn highscoretable [request]
   (let [score (fn[[k v]] 
@@ -329,13 +323,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; One remaining problem that we have is that a user's identity is completely tied to his browser cookie.
+;; One remaining problem that we have is that a user's identity is tied to his browser cookie.
 
 ;; If someone deletes their cookies, their account can never again be accessed.
 
 ;; If they use a different browser, then they will create a second independent account.
 
-;; Well, this feels like a really nasty hack, but it's easy enough to reassociate their browser with a different session:
+;; Well, this feels like a really nasty hack, but it's easy enough to
+;; reassociate their browser with a different session:
 
 (defn change-my-identity [request]
   (let [newid ((request :params) "newidentity")]
