@@ -397,31 +397,20 @@
         (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
 
 
-;; When playing with this, I found it useful to add a separate password page
+;; When playing with this, I found it useful to add a separate password page which only an administrator can see
 
-(defn passwords [req]
-  (response (hppp (for [[ k {n :name p :password}] @db] [n p]))))
-
+(defn passwords [request]
+  (if ((request :session) :admin)
+    (response (hppp (for [[ k {n :name p :password}] @db] [n p])))
+    (response "no way!")))
+  
 (def handler
   (routefn good evil highscores
            database passwords
            namechange change-my-name
            changeidentity change-my-identity))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; And an admin user who can see it
 
+(swap! db (fn[x] (merge { "no session" {:name "admin" :password "pa55word" :admin true }})))
 
-
-;; Here's an example database for testing purposes
-(swap! db
-       (fn[x]
-         (merge x
-                {"83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1},
-                 "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
-                 "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:evil 2, :name "hello world", :good 3, :password "f@ilz0r!"},
-                 "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
-                 "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2, :password "df"},
-                 "89be190a-4fb5-4562-aee4-1a65b0d6b415" {:evil 2, :name "fluffy", :good 1, :password "doom"},
-                 "4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :name "atomic man", :good 2},
-                 "ff7a209e-72fb-43f8-90ea-30652f16b4e7" {:good 6, :name "goodguy"},
-                 "9f75b42d-17f7-451e-a70e-b36848aeda23" {:name "goodguy", :evil 6}}  )))
