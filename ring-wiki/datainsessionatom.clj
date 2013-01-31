@@ -91,7 +91,7 @@
       [good   (get-in request [:session :good] 0)
        evil   (get-in request [:session :evil] 0)]
     (response (str "<h1>The Moral Maze</h1>"
-                   "Good " good " : Evil " evil 
+                   "Good " good " : Evil " evil
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
 
@@ -144,7 +144,7 @@
 ;; And if it looks at the evil page:
 (sprocess {} "/evil") ;-> {:evil 1}
 ;; And if it looks at it again:
-(sprocess {:evil 1} "/evil") ;{:evil 2} 
+(sprocess {:evil 1} "/evil") ;{:evil 2}
 
 ;; More concisely, we can change those two looks together
 (sprocess (sprocess {} "/evil") "/evil") ;-> {:evil 2}
@@ -174,7 +174,7 @@
   (testing "session"
     (is (= 21 (((handler {:uri "/evil" :session {:good 10 :evil 20}}) :session) :evil)))
     (is (= 10 (((handler {:uri "/evil" :session {:good 10 :evil 20}}) :session) :good)))
-    (is (= (reduce sprocess {:userid "fred" :good 2} 
+    (is (= (reduce sprocess {:userid "fred" :good 2}
                    ["/evil" "/good" "/" "/home" "/evil" "/favicon.ico" "/evil" "/evil"])
            {:good 3, :evil 4, :userid "fred"}))))
 
@@ -214,10 +214,9 @@
 ;; Let's make a page where we can see our data:
 
 (defn database [request]
-  (response 
+  (response
    (str "<h1>Database</h1>"
           "<pre>" "(swap! db (fn[x] (merge x " (hppp @db) ")))" "</pre>")))
-
 
 (def handler (routefn good evil database))
 
@@ -235,11 +234,11 @@
 ;; But now that our data *is* on the server, we can do our statistics:
 
 (defn highscores [request]
-  (let [score (fn[[k v]] 
+  (let [score (fn[[k v]]
                 (let [e (v :evil 0)
                       g (v :good 0)
                       r (if (zero? (+ e g)) 1/2 (/ e (+ e g)))]
-                  [ r k g e])) 
+                  [ r k g e]))
         hst (sort (map score @db))]
     (response (str
                "<h1>High Score Table</h1>"
@@ -278,11 +277,10 @@
     (response (str "<h1>The Moral Maze</h1>"
                    "<p>Welcomes: <b>" name "</b>"
                    " (<a href=\"/namechange\">change</a>)"
-                   "<p>Good " good " : Evil " evil 
+                   "<p>Good " good " : Evil " evil
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
                    "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
-
 
 (defn namechange [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\">"
@@ -290,20 +288,20 @@
 
 (defn change-my-name [request]
   (let [newname ((request :params) "newname")]
-    (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>")) :session (assoc (request :session) :name newname))
-  ))
+    (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>"))
+      :session (assoc (request :session) :name newname))))
 
 (def handler (routefn good evil database highscores namechange change-my-name))
 
 ;; Now we can put the user's chosen names in the table instead
 
 (defn highscores [request]
-  (let [score (fn[[k v]] 
+  (let [score (fn[[k v]]
                 (let [e (v :evil 0)
                       g (v :good 0)
                       n (v :name "anon")
                       r (if (zero? (+ e g)) 1/2 (/ e (+ e g)))]
-                  [ r n g e k])) 
+                  [ r n g e k]))
         hst (sort (map score @db))]
     (response (str
                "<h1>High Score Table</h1>"
@@ -327,7 +325,7 @@
 (defn change-my-identity [request]
   (let [newid ((request :params) "newidentity")]
     (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (=  (v :name) newid)) @db))]
-        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>")) 
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>"))
           :cookies {"ring-session" {:value newsessioncookie}})
         (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
 
@@ -349,7 +347,7 @@
                    "<p>Welcomes: <b>" name "</b>"
                    " (<a href=\"/namechange\">change</a>)"
                    "<p> (<a href=\"/changeidentity\">not " name  "? log in as someone else.</a>)"
-                   "<p>Good " good " : Evil " evil 
+                   "<p>Good " good " : Evil " evil
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
                    "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
@@ -357,34 +355,20 @@
 
 (def handler (routefn good evil database highscores namechange change-my-identity change-my-name changeidentity))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Finally we need to protect the valuable data in our accounts with passwords
+
+;; We change the name-change pages to ask for passwords too
 
 (defn change-my-name [request]
   (let [newname ((request :params) "newname")
         newpassword ((request :params) "password")]
     (if (and newname newpassword)
-      (assoc  
-          (response (str "ok " newname "<p><a href=\"/\">back</a>")) 
+      (assoc
+          (response (str "ok " newname "<p><a href=\"/\">back</a>"))
         :session (assoc (request :session) :name newname :password newpassword))
       (response "fail"))))
-
-
-;; Which can be alternatively phrased:
-
-(defn change-my-name [{{newname "newname" newpassword "password"} :params :as request}]
-  (if (and newname newpassword)
-    (assoc  
-        (response (str "ok " newname "<p><a href=\"/\">back</a>")) 
-      :session (assoc (request :session) :name newname :password newpassword))
-    (response "fail")))
-
-
-;; Here's an example of destructuring
-((fn [{{n "newname" p "password" :or {n 1 p 2}} :params :as r}  ] (list n p r)) {"password" "doom"}) ;-> (1 2 {"password" "doom"})
-
-
-
-
 
 (defn namechange [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\">"
@@ -392,6 +376,8 @@
                  "<p>Password: <input name=\"password\" value=\"" ((request :session) :password "f@ilz0r!") "\">"
                  "<input type=\"submit\" value=\"Click!\" />"
                  "</form>")))
+
+;; And the identity-changing pages to check
 
 (defn changeidentity [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
@@ -406,52 +392,36 @@
   (let [newid ((request :params) "newidentity")
         password ((request :params) "password")]
     (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (and (=  (v :name) newid) (= (v :password) password))) @db))]
-        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>")) 
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>"))
           :cookies {"ring-session" {:value newsessioncookie}})
         (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
+
+
+;; When playing with this, I found it useful to add a separate password page
 
 (defn passwords [req]
   (response (hppp (for [[ k {n :name p :password}] @db] [n p]))))
 
-(defn handler [request]
-  (case (request :uri)
-    "/" (home request)
-    "/good" (good request)
-    "/evil" (evil request)
-    "/database" (database request)
-    "/passwords" (passwords request)
-    "/highscores" (highscoretable request)
-    "/namechange" (namechange request)
-    "/change-my-name" (change-my-name request)
-    "/changeidentity" (changeidentity request)
-    "/change-my-identity" (change-my-identity request)
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
-
-
+(def handler
+  (routefn good evil highscores
+           database passwords
+           namechange change-my-name
+           changeidentity change-my-identity))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
 ;; Here's an example database for testing purposes
-(swap! db (fn[x] 
-{"4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :good 2, :name "atomic man"},
- "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2},
- "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
- "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:evil 2, :good 3, :name "hello world"},
- "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
- "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}
-))
-
-(swap!  db  (fn[x]  (merge  x 
-  { "89be190a-4fb5-4562-aee4-1a65b0d6b415" {:password "type name here", :good 1, :evil 2, :name "freds"}})))
-
-(swap! db (fn[x] (merge x 
-{"89be190a-4fb5-4562-aee4-1a65b0d6b415" {:evil 2, :name "fluffy", :good 1, :password "doom"},
- "4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :name "atomic man", :good 2},
- "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:password "df", :name "darkfluffy", :good 2},
- "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
- "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:password "f@ilz0r!", :evil 2, :name "hello world", :good 3},
- "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
- "83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1}}
-)))
+(swap! db
+       (fn[x]
+         (merge x
+                {"83939a50-0073-41b1-8fb0-a85274a67aad" {:good 1},
+                 "0989d4d5-531d-4e25-bdf7-425a8c62663f" {:evil 1, :name "righteousman", :good 2},
+                 "099dc04e-8b19-462e-8aff-519b6c5fa50f" {:evil 2, :name "hello world", :good 3, :password "f@ilz0r!"},
+                 "61252413-28be-4c47-a2f5-37893f19d4b1" {:name "type name here"},
+                 "7e0a7e86-b00c-4a78-8dd0-2a1ccf627c52" {:name "darkfluffy", :good 2, :password "df"},
+                 "89be190a-4fb5-4562-aee4-1a65b0d6b415" {:evil 2, :name "fluffy", :good 1, :password "doom"},
+                 "4c1c2b12-3095-4136-abc1-e9778115cbd0" {:evil 3, :name "atomic man", :good 2},
+                 "ff7a209e-72fb-43f8-90ea-30652f16b4e7" {:good 6, :name "goodguy"},
+                 "9f75b42d-17f7-451e-a70e-b36848aeda23" {:name "goodguy", :evil 6}}  )))
