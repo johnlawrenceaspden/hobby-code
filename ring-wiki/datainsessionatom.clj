@@ -56,7 +56,7 @@
 (def response (partial status-response 200))
 
 ;; functions for outputting strings as html without causing bad things to happen
-(defn hppp[x]  (html-pre-escape (with-out-str (clojure.pprint/pprint x))))
+(defn hppp[x]  (html-pre-escape (with-out-str (binding [clojure.pprint/*print-right-margin* 120] (clojure.pprint/pprint x)))))
 (defn hpp[x]  (html-pre-escape (str x)))
 (defn hp[x]   (html-escape (str x)))
 
@@ -91,7 +91,7 @@
       [good   (get-in request [:session :good] 0)
        evil   (get-in request [:session :evil] 0)]
     (response (str "<h1>The Moral Maze</h1>"
-                   "Good " good " : Evil " evil 
+                   "Good " good " : Evil " evil
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"))))
 
@@ -102,20 +102,34 @@
     "/evil" (evil request)
     (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; I keep adding pages, and I get annoyed with having to copy and
+;; paste the handler all the time, so thank you to Nikita Beloglazov
+;; who told me how to write this replacement:
+
+(defmacro routefn [& addresses]
+  `(fn[~'request]
+     (case (~'request :uri)
+       ~@(mapcat (fn[x] [(str "/" x) (list x 'request)]) addresses)
+       "/" (home ~'request)
+       (status-response 404 (str "<h1>404 Not Found: " (:uri ~'request) "</h1>" )))))
+
+(def handler (routefn good evil))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; After a bit of worrying, I am very keen on this structure.
 
 ;; Consider how easy it is to test: We don't need to involve a real
-;; webserver or real state at all, we can just test the handlers do
-;; what they're supposed to do when sent appropriate data:
+;; webserver or real state at all, we can just test that the handlers
+;; do what they're supposed to do when sent appropriate data:
 
 ;; Does a root page exist?
-((handler {:uri "/"}) :status) ;-> 200
+((handler {:uri "/"}) :status) ; -> 200
 
 ;; Does looking at the evil page add an evil counter to your session?
-((handler {:uri "/evil" :session {}}) :session) ;-> {:evil 1}
+((handler {:uri "/evil" :session {:mysesh 'yo}}) :session) ; -> {:evil 1, :mysesh yo}
 
 ;; We can define a function which passes a session through a url as if
 ;; it had been passed in from a browser, processed, and then sent back
@@ -129,8 +143,8 @@
 (sprocess {} "/home") ;-> {}
 ;; And if it looks at the evil page:
 (sprocess {} "/evil") ;-> {:evil 1}
-;; And if one that has already looked at the evil page looks at it again:
-(sprocess {:evil 1} "/evil") ;{:evil 2} 
+;; And if it looks at it again:
+(sprocess {:evil 1} "/evil") ;{:evil 2}
 
 ;; More concisely, we can change those two looks together
 (sprocess (sprocess {} "/evil") "/evil") ;-> {:evil 2}
@@ -142,8 +156,7 @@
     (sprocess "/evil")
     (sprocess "/good")) ;-> {:evil 1, :good 2}
 
-;; In fact, the pattern of modifying an accumulator according to a sequence is what reduce does:
-;; Here we say "what does a session look like, if starting from scratch it chooses evil,evil,good,evil?"
+;; Modifying an accumulator using a sequence of things is a common pattern:
 (reduce sprocess {} ["/evil" "/evil" "/good" "/evil" ]) ;-> {:good 1, :evil 3}
 
 
@@ -161,10 +174,12 @@
   (testing "session"
     (is (= 21 (((handler {:uri "/evil" :session {:good 10 :evil 20}}) :session) :evil)))
     (is (= 10 (((handler {:uri "/evil" :session {:good 10 :evil 20}}) :session) :good)))
-    (is (= (reduce sprocess {:userid "fred" :good 2} 
+    (is (= (reduce sprocess {:userid "fred" :good 2}
                    ["/evil" "/good" "/" "/home" "/evil" "/favicon.ico" "/evil" "/evil"])
-           {:good 3, :evil 4, :userid "fred"}))
-    ))
+           {:good 3, :evil 4, :userid "fred"}))))
+
+
+
 
 ;; They can be hand-run with:
 ;; (run-tests)
@@ -199,20 +214,11 @@
 ;; Let's make a page where we can see our data:
 
 (defn database [request]
-  (response 
-   (str "<h1>Database</h1>" "<ul>"
-          (apply str (for [i @db] (str "<li>" (hpp i)  "</li>")))
-          "</ul>"
-          "<h1>Clojure Form</h1>"
-          "<pre>" "(swap! db (fn[x] " (hppp @db) "))" "</pre>")))
+  (response
+   (str "<h1>Database</h1>"
+          "<pre>" "(swap! db (fn[x] (merge x " (hppp @db) ")))" "</pre>")))
 
-(defn handler [request]
-  (case (request :uri)
-    "/" (home request)
-    "/good" (good request)
-    "/evil" (evil request)
-    "/database" (database request)
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+(def handler (routefn good evil database))
 
 
 ;; Of course, now we've lost some of the advantages of the cookie
@@ -225,14 +231,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; But now that our data is on the server, we can do our statistics:
+;; But now that our data *is* on the server, we can do our statistics:
 
-(defn highscoretable [request]
-  (let [score (fn[[k v]] 
+(defn highscores [request]
+  (let [score (fn[[k v]]
                 (let [e (v :evil 0)
                       g (v :good 0)
                       r (if (zero? (+ e g)) 1/2 (/ e (+ e g)))]
-                  [ r k g e])) 
+                  [ r k g e]))
         hst (sort (map score @db))]
     (response (str
                "<h1>High Score Table</h1>"
@@ -243,15 +249,7 @@
              ))))
 
 
-
-(defn handler [request]
-  (case (request :uri)
-    "/" (home request)
-    "/good" (good request)
-    "/evil" (evil request)
-    "/database" (database request)
-    "/highscores" (highscoretable request)
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+(def handler (routefn good evil database highscores))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -279,11 +277,10 @@
     (response (str "<h1>The Moral Maze</h1>"
                    "<p>Welcomes: <b>" name "</b>"
                    " (<a href=\"/namechange\">change</a>)"
-                   "<p>Good " good " : Evil " evil 
+                   "<p>Good " good " : Evil " evil
                    "<p> What do you choose: "
                    "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
                    "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
-
 
 (defn namechange [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\">"
@@ -291,58 +288,53 @@
 
 (defn change-my-name [request]
   (let [newname ((request :params) "newname")]
-    (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>")) :session (assoc (request :session) :name newname))
-  ))
+    (assoc (response (str "ok " newname "<p><a href=\"/\">back</a>"))
+      :session (assoc (request :session) :name newname))))
 
-(defn handler [request]
-  (case (request :uri)
-    "/" (home request)
-    "/good" (good request)
-    "/evil" (evil request)
-    "/database" (database request)
-    "/highscores" (highscoretable request)
-    "/namechange" (namechange request)
-    "/change-my-name" (change-my-name request)
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+(def handler (routefn good evil database highscores namechange change-my-name))
 
 ;; Now we can put the user's chosen names in the table instead
 
-(defn highscoretable [request]
-  (let [score (fn[[k v]] 
+(defn highscores [request]
+  (let [score (fn[[k v]]
                 (let [e (v :evil 0)
                       g (v :good 0)
                       n (v :name "anon")
                       r (if (zero? (+ e g)) 1/2 (/ e (+ e g)))]
-                  [ r n g e k])) 
+                  [ r n g e k]))
         hst (sort (map score @db))]
     (response (str
                "<h1>High Score Table</h1>"
              "<table border=1 frame=box rules=rows>"
-             (str "<tr>""<th>" "User ID"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
+             (str "<tr>""<th>" "Name"  "<th/>""<th>" "Chose Good" "<th/>""<th>" "Chose Evil" "<th/>" "</tr>")
              (apply str (for [i hst] (str "<tr>""<td>" (hp (i 1))  "<td/>""<td>"  (hp (i 2)) "<td/>""<td>" (hp (i 3)) "<td/>" "</tr>")))
              "</table>"
              ))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; One remaining problem that we have is that a user's identity is completely tied to his browser cookie.
+;; One remaining problem that we have is that a user's identity is tied to his browser cookie.
 
-;; What if someone deleted their cookies, or wanted to use a different browser, but then realized that they needed data stored in their account?
+;; If someone deletes their cookies, their account can never again be accessed.
 
-;; Well, this feels like a really nasty hack, but it's easy enough to reassociate their browser with a different session:
+;; If they use a different browser, then they will create a second independent account.
+
+;; Well, this feels like a really nasty hack, but it's easy enough to
+;; reassociate their browser with a different session:
 
 (defn change-my-identity [request]
-  (let [dudes (filter (fn[[k v]] (= ((request :params) "newidentity") (v :name))) @db)]
-    (assoc 
-        (response "if you say so...<a href=\"/\">home</a>") 
-      :cookies {"ring-session" {:value (ffirst dudes)}})))
+  (let [newid ((request :params) "newidentity")]
+    (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (=  (v :name) newid)) @db))]
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>"))
+          :cookies {"ring-session" {:value newsessioncookie}})
+        (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
+
 
 
 (defn changeidentity [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
-                 "If you ain't " ((request :session) :name "dat geezer") " then who are you? :"
+                 "If you ain't " ((request :session) :name "dat geezer") " den who <i>are</i> you? :"
                  "<input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">")))
-
 
 (defn home [request]
   (let
@@ -360,34 +352,66 @@
 
 ;;remember to use laser, an update of enlive, says edmund
 
+(def handler (routefn good evil database highscores namechange change-my-identity change-my-name changeidentity))
 
-(defn handler [request]
-  (case (request :uri)
-    "/" (home request)
-    "/good" (good request)
-    "/evil" (evil request)
-    "/database" (database request)
-    "/highscores" (highscoretable request)
-    "/namechange" (namechange request)
-    "/change-my-name" (change-my-name request)
-    "/changeidentity" (changeidentity request)
-    "/change-my-identity" (change-my-identity request)
-    (status-response 404 (str "<h1>404 Not Found: " (:uri request) "</h1>" ))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Finally we need to protect the valuable data in our accounts with passwords
+
+;; We change the name-change pages to ask for passwords too
+
+(defn change-my-name [request]
+  (let [newname ((request :params) "newname")
+        newpassword ((request :params) "password")]
+    (if (and newname newpassword)
+      (assoc
+          (response (str "ok " newname "<p><a href=\"/\">back</a>"))
+        :session (assoc (request :session) :name newname :password newpassword))
+      (response "fail"))))
+
+(defn namechange [request]
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-name\">"
+                 "Name: <input name=\"newname\" value=\"" ((request :session) :name "type name here") "\">"
+                 "<p>Password: <input name=\"password\" value=\"" ((request :session) :password "f@ilz0r!") "\">"
+                 "<input type=\"submit\" value=\"Click!\" />"
+                 "</form>")))
+
+;; And the identity-changing pages to check
+
+(defn changeidentity [request]
+  (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
+                 "If you ain't " ((request :session) :name "dat geezer") " den who <i>are</i> you? :<p>"
+                 "Name    : <input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">"
+                 "Password: <input name=\"password\" value=\"\">"
+                 "<input type=\"submit\" value=\"Click!\" />"
+                 "</form>")))
 
 
+(defn change-my-identity [request]
+  (let [newid ((request :params) "newidentity")
+        password ((request :params) "password")]
+    (if-let [newsessioncookie (ffirst (filter (fn[[k v]] (and (=  (v :name) newid) (= (v :password) password))) @db))]
+        (assoc (response (str "if you say so...<i>" newid "</i><p><a href=\"/\">home</a>"))
+          :cookies {"ring-session" {:value newsessioncookie}})
+        (response "<span style=\"color:red\"><b><i>I think not!</i></b></span>"))))
 
 
+;; When playing with this, I found it useful to add a separate password page which only an administrator can see
 
+(defn passwords [request]
+  (if ((request :session) :admin)
+    (response (hppp (for [[ k {n :name p :password}] @db] [n p])))
+    (response "no way!")))
+  
+(def handler
+  (routefn good evil highscores
+           database passwords
+           namechange change-my-name
+           changeidentity change-my-identity))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; And an admin user who can see it
 
-;; Now we need to deal with making the usernames unique and adding
-;; password protection so that you can only log into an account which
-;; has a password set that you know.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+(swap! db (fn[x] (merge { "no session" {:name "admin" :password "pa55word" :admin true }})))
 
 ;; Here's an example database for testing purposes
 (swap! db (fn[x] 
