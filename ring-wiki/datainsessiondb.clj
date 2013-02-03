@@ -333,13 +333,33 @@
 
 (defn change-my-identity [request]
   (let [dudes (filter (fn[[k v]] (= ((request :params) "newidentity") (v :name))) @db)]
-    (assoc (response "if you say so...<a href=\"/\">home</a>") :cookies {"ring-session" {:value (ffirst dudes)}})))
+    (assoc 
+        (response "if you say so...<a href=\"/\">home</a>") 
+      :cookies {"ring-session" {:value (ffirst dudes)}})))
 
 
 (defn changeidentity [request]
   (response (str "<form name=\"form\" method=\"post\" action=\"/change-my-identity\">"
                  "If you ain't " ((request :session) :name "dat geezer") " then who are you? :"
                  "<input name=\"newidentity\" value=\"" ((request :session) :name "type name here") "\">")))
+
+
+(defn home [request]
+  (let
+      [good   (get-in request [:session :good] 0)
+       evil   (get-in request [:session :evil] 0)
+       name   (get-in request [:session :name] "one who wishes anonymity")]
+    (response (str "<h1>The Moral Maze</h1>"
+                   "<p>Welcomes: <b>" name "</b>"
+                   " (<a href=\"/namechange\">change</a>)"
+                   "<p> (<a href=\"/changeidentity\">not " name  "? log in as someone else.</a>)"
+                   "<p>Good " good " : Evil " evil 
+                   "<p> What do you choose: "
+                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
+                   "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
+
+;;remember to use laser, an update of enlive, says edmund
+
 
 (defn handler [request]
   (case (request :uri)
@@ -356,19 +376,7 @@
 
 
 
-(defn home [request]
-  (let
-      [good   (get-in request [:session :good] 0)
-       evil   (get-in request [:session :evil] 0)
-       name   (get-in request [:session :name] "one who wishes anonymity")]
-    (response (str "<h1>The Moral Maze</h1>"
-                   "<p>Welcomes: <b>" name "</b>"
-                   " (<a href=\"/namechange\">change</a>)"
-                   "<p> (<a href=\"/changeidentity\">not " name  "? log in as someone else.</a>)"
-                   "<p>Good " good " : Evil " evil 
-                   "<p> What do you choose: "
-                   "<a href=\"/good\">good</a> or <a href=\"/evil\">evil</a>?"
-                   "<p><hr/><a href=\"/database\">database</a> or <a href=\"/highscores\">high scores</a>"))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
