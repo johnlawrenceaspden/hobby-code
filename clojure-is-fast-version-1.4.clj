@@ -286,6 +286,8 @@
 
 ;; I do wonder what is going on here. I'm not sure what checking is here to be turned off.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Incidentally, the following two java programs also produce the numbers that are seen above:
 
 ;; public class Euler{
