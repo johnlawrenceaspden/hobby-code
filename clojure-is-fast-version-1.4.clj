@@ -1,12 +1,16 @@
 ;; Is Clojure Still Fast ?
 
-;; Once upon a time I wrote a blog post saying that clojure was fast.
+;; Once upon a time I wrote a blog post saying that clojure was fast.  It still is, and optimizing
+;; it is now much easier than it used to be, but it doesn't seem to be *quite* as fast as it once
+;; was.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; I optimized a program to solve a differential equation in a
 ;; simple-minded way:
 
-;; The equation was: dy/dt = f(t,y) where f(t, y) = t-y and y=0 when
-;; t=0, the exact solution is: y=e^(-t)+t-1
+;; The equation was: dy/dt = f(t,y) where f(t, y) = t-y and y=0 when t=0
+;; ( the exact solution is: y=e^(-t)+t-1 )
 
 ;; Here's a program to solve it using Euler's method
 
@@ -51,7 +55,7 @@
 
 ;; To two significant figures, the results of the timing expression
 (cyclesperit (solveit 0.0 1.0) 1000000) 
-;; are
+;; are:
 
 ;; On my old desktop with clojure 1.2 : 2300 cycles
 
@@ -110,8 +114,10 @@
 ;; on the imaginary cpu in my head. And all I've done is to declare the types and inline the functions.
 
 ;; This is actually so impressive that I want to examine the three things in detail, to see how the
-;; three things combine to cause the speedup. All timings with clojure 1.4.0. As I remember from
-;; clojure 1.2, you needed all three to see any great difference.
+;; three things combine to cause the speedup. As I remember from clojure 1.2, you needed all three
+;; changes to see any great difference. In 1.4 you can type hint separately from making an internal loop target.
+;; All timings with clojure 1.4.0.
+
 (defn f [t y] (- t y))
 
 (defn solveit [t0 y0 h its]
@@ -170,11 +176,10 @@
 (cyclesperit (solveit-2 0.0 1.0) 10000000) ; 44
 
 
-;; This is pretty awesome. Type hints alone are giving us a factor of eight speedup, and
-;; inlining the function then gives us another factor of 6. The internal loop target, which was
-;; originally a bit of a hack to allow clojure to deduce types doesn't make any difference to the
-;; hinted version, but in fact, on its own, the compiler is still able to deduce all the information
-;; it needs to get the same speed.
+;; This is pretty awesome. Type hints alone are giving us a factor of eight speedup, and inlining
+;; the function then gives us another factor of 6. The internal loop target, which was originally a
+;; bit of a hack to allow clojure to deduce types doesn't make any difference to the hinted version,
+;; but in fact that still works, and gives the compiler enough information to get the same speed.
 
 ;; So far I really could not be more impressed.
 
@@ -262,7 +267,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; For those in real need of cycles, there's:
+;; For those in real need of cycles and willing to take risks to save them, there's:
 
 (set! *unchecked-math* true)
 
