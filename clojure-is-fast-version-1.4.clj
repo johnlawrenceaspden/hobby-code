@@ -286,4 +286,52 @@
 
 ;; I do wonder what is going on here. I'm not sure what checking is here to be turned off.
 
+;; Incidentally, the following two java programs also produce the numbers that are seen above:
 
+;; public class Euler{
+;;     public static void main (String[] args){
+;;         double cpuspeed = 1.662;
+;;         int its = 10000000;
+;;         double t=0;
+;;         double y=0;
+;;         double h=1.0/its;
+
+;;         Long start = System.nanoTime();
+;;         for(int i = 0; i < its; i++){
+;;             y = y+h*(t-y);
+;;             t = t+h;
+;;         }
+;;         Long finish = System.nanoTime();
+
+;;         System.out.println("y=" + y + " t=" +t); 
+;;         System.out.println("cycles/iteration: " +  ((int) ((cpuspeed * (finish - start)) / its)));
+;;     }
+;; }
+
+
+;; y=0.3678794227282174 t=0.99999999975017
+;; cycles/iteration: 32
+
+
+;; public class Euler{
+;;     public static void main (String[] args){
+;;         double cpuspeed = 1.662;
+;;         long its = 10000000;
+;;         double t=0;
+;;         double y=0;
+;;         double h=1.0/its;
+
+;;         long start = System.nanoTime();
+;;         for(long i = 0; i < its; i++){
+;;             y = y+h*(t-y);
+;;             t = t+h;
+;;         }
+;;         long finish = System.nanoTime();
+
+;;         System.out.println("y=" + y + " t=" +t); 
+;;         System.out.println("cycles/iteration: " +  ((int) ((cpuspeed * (finish - start)) / its)));
+;;     }
+;; }
+
+;; y=0.3678794227282174 t=0.99999999975017
+;; cycles/iteration: 37
