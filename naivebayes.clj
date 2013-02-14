@@ -1,14 +1,33 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Anyway this very evening Hermann Hauser of this parish is telling
+;; me that Machine Learning is the coming next big thing and those
+;; skills are highly in demand.
+
+;; So if anybody feels like giving me a fuckload of money for this old
+;; rope, feel free.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; A Naive Bayesian Classifier
 
-;; We got Martians, who tend to be thin, tall and green
+;; Ed Jackson ( http://boss-level.com ) and I are currently working
+;; our way through Kevin Murphy's book:
+;; Machine Learning: A Probabilistic Perspective.
 
+;; Ed tells me that there is big money in this Machine Learning game.
+
+;; We have just read chapter 3, which involves a hair-raising amount
+;; of Greek, but when all is said and done boils down to this:
+
+;; We got Martians, who tend to be thin, tall and green
 (defn make-martian []
   #{:martian
     (if (< (rand) 0.2) :fat :thin)
     (if (< (rand) 0.7) :tall :short)
     (if (< (rand) 0.8) :green :blue)})
 
-; And we got venusians, who tend to be fat and blue
+; And we got Venusians, who tend to be fat and blue
 (defn make-venusian []
   #{:venusian
     (if (< (rand) 0.8) :fat :thin)
@@ -51,7 +70,7 @@
 (def new-guy (make-space-bar-patron))
 
 ; But he is not wearing his uniform
-(reduce disj new-guy [:martian :venusian]) ; #{:tall :green :fat}
+(reduce disj new-guy [:martian :venusian])  ; #{:blue :short :fat}
 
 ; And so a sweepstake comes into being:
 (defn probability [characteristic given-class prior-for prior-against]
@@ -64,94 +83,25 @@
 
 
 
-(def m (* (probability :martian nil 1 1)
-          (probability :blue  :martian 1 1) 
-          (probability :short :martian 1 1) 
-          (probability :fat   :martian 1 1))) 
+(def m (* (probability :martian nil 1 1)      ; most people come in here are venusians
+          (probability :blue  :martian 1 1)   ; and martians tend to be green
+          (probability :short :martian 1 1)   ; also he's short. Martians are tall, often
+          (probability :fat   :martian 1 1))) ; and fat. All the fat guys is from Venusburg
 
 (def v (* 
-        (probability :venusian nil 1 1)
-        (probability :blue  :venusian 1 1)
-        (probability :short :venusian 1 1)
-        (probability :fat   :venusian 1 1))) 
+        (probability :venusian nil 1 1)       ; most likely he's from venus
+        (probability :blue  :venusian 1 1)    ; the blueness bears this out
+        (probability :short :venusian 1 1)    ; sometimes they are short, sometimes they are tall
+        (probability :fat   :venusian 1 1)))  ; but they are mostly fat
 
 (float (/ m (+ m v))) ; 0.017495114
 (float (/ v (+ m v))) ; 0.9825049
 
-;; We give 45:1 he's from venus!!
+;; 45:1 he's from Venus !
 
-new-guy ; #{:tall :green :venusian :fat}
+new-guy ; #{:blue :short :venusian :fat}
 
 ;; As indeed he is.
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(def new-guy (make-space-bar-patron))
-(reduce disj new-guy [:martian :venusian])
-
-#{:tall :green :fat}
-
-(let [m
-      (* 
-       (probability :martian nil 1 1)    ; 3055/10002
-       (probability :tall  :martian 1 1) ; 1089/1528
-       (probability :green :martian 1 1) ; 2439/3056
-       (probability :fat   :martian 1 1) ;  601/3056
-       ) ; 1625564146635/47576846159872
-      v
-      (* 
-       (probability :venusian nil 1 1) ; 6947/10002
-       (probability :tall  :venusian 1 1) ; 884/1737
-       (probability :green :venusian 1 1) ; 169/579
-       (probability :fat   :venusian 1 1) ; 5629/6948
-       ) ; 1460520058387/17472902391702
-      ]
-  [ (float (/ m (+ m v))) (float (/ v (+ m v))) ] ) ; [0.29015476 0.70984524]
-
-;; 70% chance he's a venusian too
-
-new-guy ; #{:tall :green :venusian :fat}
-
-(defn classify [characteristics]
-  (let [m (apply * (probability :martian nil 1 1)  (for [i characteristics] (probability i :martian 1 1)))
-        v (apply * (probability :venusian nil 1 1) (for [i characteristics] (probability i :venusian 1 1)))]
-    [ (float (/ m (+ m v))) (float (/ v (+ m v))) ]))
-
-
-(def classified (for [i (range 100)]
-                  (let [p (make-space-bar-patron)]
-                    [(classify (reduce disj p [:martian :venusian])) p])))
-
-(def sorted-classified (sort (fn [a b] (< (ffirst a) (ffirst b))) classified))
-
-(def confidence-classes (partition-by first sorted-classified)) 
-
-
-(partition-by identity  (map (fn [x] (if ((second x) :martian) ['m (first (first x))] ['v (second (first x))])) sorted-classified)) 
-
-
-
-(let [c (second confidence-classes) mvlist (map (fn [x] (if ((second x) :martian) 'm 'v)) c)] [(ffirst c) (sort mvlist) (frequencies mvlist)] ) 
- [[0.040880386 0.9591196] (m v v v v v v v v v v v v v v v v v v v) {v 19, m 1}]
-
-
-
-(map (fn [c] (let [mvlist (map (fn [x] (if ((second x) :martian) 'm 'v)) c)] [(ffirst c) (sort mvlist) (frequencies mvlist)] ))
-     confidence-classes) 
- ([[0.017495114 0.9825049] (v v v v v v v v v v v v v v) {v 14}]
- [[0.040880386 0.9591196] (m v v v v v v v v v v v v v v v v v v v) {v 19, m 1}]
- [[0.14585963 0.85414034] (m m v v v v v v v v) {v 8, m 2}]
- [[0.23688416 0.7631158] (m m v v v v v v v v v v) {v 10, m 2}]
- [[0.29015476 0.70984524] (m m m v v v v v v v v v v) {v 10, m 3}]
- [[0.42628604 0.57371396] (m m m m v v v v) {m 4, v 4}]
- [[0.74855006 0.25144994] (m m m m m v) {v 1, m 5}]
- [[0.8769342 0.123065844] (m m m m m m m m m m m m m m m v v) {m 15, v 2}])
- 
-  
- 
-
 
 
 
