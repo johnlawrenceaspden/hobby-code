@@ -5,7 +5,7 @@
 ;; skills are highly in demand.
 
 ;; So if anybody wants to give me a fuckload of money for this old
-;; rope, feel free:
+;; rope, they must feel free
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
