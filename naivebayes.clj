@@ -4,8 +4,8 @@
 ;; me that Machine Learning is the coming next big thing and those
 ;; skills are highly in demand.
 
-;; So if anybody feels like giving me a fuckload of money for this old
-;; rope, feel free.
+;; So if anybody wants to give me a fuckload of money for this old
+;; rope, feel free:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
