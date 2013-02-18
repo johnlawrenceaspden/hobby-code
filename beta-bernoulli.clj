@@ -79,7 +79,6 @@
 (ns-unmap *ns* 'a)
 
 ;; Let us instead make a large number of coins:
-
 (def coins (for [i (range)] (make-coin)))
 
 ;; And throw away all the ones that do not satisfy our criterion
