@@ -400,6 +400,7 @@
 (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
 
 
+
 ;(setq last-kbd-macro 'clj-eval-paste-below)
 
 ;; set it to be the last keyboard macro, which means that it's executable with f4
@@ -425,6 +426,21 @@
 (fset 'running-eval
       "\M-\C-x\M-\C-e")
 (global-set-key [f5] 'running-eval)
+
+;; although actually I think I prefer this one bound to f5:
+(defun clojure-eval-paste-test ()
+  (interactive)
+  (next-line)
+  (move-beginning-of-line nil)
+  (insert "(is= ")
+  (forward-sexp)
+  (insert " ")
+  (nrepl-eval-last-expression 't)
+  (sleep-for 0.1)
+  (insert ")"))
+
+(global-set-key [f5] #'clojure-eval-paste-test)
+
 
 
 ;; save a list of open files in ~/.emacs.desktop
