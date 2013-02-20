@@ -399,6 +399,21 @@
 
 (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
 
+(defun clj-eval-paste ()
+  (interactive)
+  (next-line)
+  (move-beginning-of-line nil)
+  (forward-sexp)
+  (insert ";") ; make sure there's something to kill
+  (left-char 1)
+  (kill-line)
+  (nrepl-eval-last-expression 't)
+  (sleep-for 0.1)
+  (backward-sexp)
+  (insert " ;-> ")
+)
+
+(global-set-key [f5] 'clj-eval-paste)
 
 
 ;(setq last-kbd-macro 'clj-eval-paste-below)
