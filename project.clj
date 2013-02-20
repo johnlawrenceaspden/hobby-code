@@ -13,7 +13,17 @@
 
   :repl-options { 
                  :port 4001 
-                 :init (println "hello from hobby-code/project.clj")
+                 :init (do (println "hello from hobby-code/project.clj")
+                           (defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
+
+                           (defmacro def-let
+                             "like let, but binds the expressions globally."
+                             [bindings & more]
+                             (let [let-expr (macroexpand `(let ~bindings))
+                                   names-values (partition 2 (second let-expr))
+                                   defs   (map #(cons 'def %) names-values)]
+                               (concat (list 'do) defs more)))
+                           (println "defined user/def-let and user/dbg"))
                  }
   :source-paths ["."]
   :min-lein-version "2.0.0"
