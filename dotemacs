@@ -399,7 +399,7 @@
 
 (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
 
-(defun clj-eval-paste ()
+(defun clj-eval-paste-function ()
   (interactive)
   (next-line)
   (move-beginning-of-line nil)
@@ -413,7 +413,7 @@
   (insert " ;-> ")
 )
 
-(global-set-key [f5] 'clj-eval-paste)
+(global-set-key [f5] 'clj-eval-paste-function)
 
 
 ;(setq last-kbd-macro 'clj-eval-paste-below)
