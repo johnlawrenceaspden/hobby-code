@@ -8,10 +8,10 @@
   <description>maven, clojure, emacs, repl: simplest useful maven project</description>
 
   <repositories>
-    <!-- <repository> -->
-    <!--   <id>clojars</id> -->
-    <!--   <url>http://clojars.org/repo/</url> -->
-    <!-- </repository> -->
+    <repository>
+      <id>clojars</id>
+      <url>http://clojars.org/repo/</url>
+    </repository>
     <repository>
       <id>clojure</id>
       <url>http://build.clojure.org/releases</url>
