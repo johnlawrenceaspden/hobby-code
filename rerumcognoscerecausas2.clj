@@ -155,9 +155,17 @@ village ;-> ({:str 13, :int 18} {:str 11, :int 18} {:str 14, :int 15} {:str 6, :
                     1 second-edition
                     2 third-edition)))))
 
-(def ltrad   (Math/exp (+ 49891 (reduce + (map #(Math/log %) (map float (map ptrad country))))))))
-(def lcommon (Math/exp (+ 49891 (reduce + (map #(Math/log %) (map float (map pcommon country)))))))
-(def lindep  (Math/exp (+ 49891 (reduce + (map #(Math/log %) (map float (map pindep country)))))))
+(def lltrad   (reduce + (map #(Math/log %) (map float (map ptrad country)))))
+(def llcommon (reduce + (map #(Math/log %) (map float (map pcommon country)))))
+(def llindep  (reduce + (map #(Math/log %) (map float (map pindep country)))))
+
+lltrad ; -49891.65823367781
+llcommon ; -49941.17751169551
+llindep ; -49935.172258139675
+
+(def ltrad   (Math/exp (+ 49800 lltrad)))
+(def lcommon (Math/exp (+ 49800 llcommon)))
+(def lindep  (Math/exp (+ 49800 llindep)))
 
 (def posteriortrad   (/ ltrad   (+ ltrad lcommon lindep)))
 (def posteriorcommon (/ lcommon (+ ltrad lcommon lindep)))
