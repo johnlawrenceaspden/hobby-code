@@ -1,4 +1,4 @@
-;; Rerum Cognoscere Causas II
+;; Rerum Cognoscere Causas II : In Which Divers Probabilities are Deduced Simply by Counting
 
 ;; The problem: Which e'dition's rules were used to generate a village?
 
@@ -43,7 +43,10 @@ village ;-> ({:str 13, :int 18} {:str 11, :int 18} {:str 14, :int 15} {:str 6, :
 
 ;; The first thing that our philosophers should look at is the distribution of scores according to their models.
 
-;; What do the results of rolling 3D6 look like?
+;; What do the results of rolling 3D6 and adding look like? We'll just
+;; enumerate the 216 possible ways the dice can fall and count how
+;; many ways there are to score the various possible numbers:
+
 (def threed6f (frequencies 
            (for [i (range 1 7) j (range 1 7) k (range 1 7)] 
              (reduce + [i j k]))))
@@ -69,129 +72,129 @@ village ;-> ({:str 13, :int 18} {:str 11, :int 18} {:str 14, :int 15} {:str 6, :
 
 ;; As every schoolboy once knew:
 
+;; You get 3 sixes only one time in ~200, so 18s are very rare
 (p3d6 18) ;-> 1/216
+(p3d6 17) ;-> 1/72
+;; In fact only one roll in ten is in the 15-18 range:
+(reduce + (map p3d6 '(18 17 16 15)))
+
+;; But you see 10 or 11 very often, in fact about a quarter of the time.
 (p3d6 10) ;-> 1/8
+(p3d6 11) ;-> 1/8
+
+;; However if you get to roll four dice and ignore one of them, 
+;; then the high scores are more likely.
 
 (p4d6drop1 18) ;-> 7/432
+(p4d6drop1 17) ;-> 1/24
+(reduce + (map p4d6drop1 '(18 17 16 15))) ;-> 25/108
+;; And in fact you have a quarter chance of an exceptional score 15-18.
+
+;; 10 and 11 are slightly less likely than they were, and 11 is more likely than 10
+(p4d6drop1 11) ;-> 37/324
 (p4d6drop1 10) ;-> 61/648
 
+;; Truly bad scores are very hard to get
+(p4d6drop1 3) ;-> 1/1296
+;; In fact only one in six scores are 'below average'.
+(reduce + (map p4d6drop1 '(3 4 5 6 7 8 9))) ;-> 227/1296
+
+
+;; However in the mixed distribution where you might be doing it one
+;; way and you might be doing it the other, these differences are not
+;; nearly as large:
 (pmixed 18) ;-> 5/864
 (pmixed 3) ;-> 11/2592
 
-; A subtle bias indeed
+; A subtle bias indeed. 
 (/ (pmixed 18) (pmixed 3)) ;-> 15/11
 
+;; Just as a sanity check, check that our three distributions add up to 1.
 (reduce + (map p4d6drop1 (range 3 19))) ;-> 1N
 (reduce + (map p3d6 (range 3 19))) ;-> 1N
 (reduce + (map pmixed (range 3 19))) ;-> 1N
 
-;; So the three schools models are:
+
+;; Our three schools, with their different beliefs about how characteristics are generated, can now write down the chances
+;; of combinations of characteristics:
+
+;; The traditionalists of the first e'dition say that your chance of
+;; getting strength 18, intelligence 18 is simply the chance of
+;; getting both scores independently.
 
 (defn ptrad [{:keys [str int]}]
   (* (p3d6 int) (p3d6 str)))
 
-(ptrad {:str 18 :int 18}) ;-> 1/46656
+;; Being truly gifted is terribly unlikely:
+(ptrad {:str 18 :int 18}) ;-> 1/46656 
+;; As is being truly disadvantaged:
+(ptrad {:str 3  :int  3}) ;-> 1/46656
 
+;; But then, only 1 person in 16 is truly average:
+(reduce + (map ptrad (for [s '(10 11) i '(10 11)] {:str s :int i}))) ;-> 1/16
+
+;; Being a weedy genius is just as likely as being a genius who can bend swords.
+(ptrad {:str 3 :int 18}) ;-> 1/46656
+
+;; The second e'dition guys still model the two scores as independent things, 
 (defn pindep [{:keys [str int]}]
   (* (pmixed int) (pmixed str)))
 
+;; But they predict more beefy einsteins
 (pindep {:str 18 :int 18}) ;-> 25/746496
+
+;; And fewer weedy vegetables
+(pindep {:str 3 :int 3}) ;-> 121/6718464
+
+;; One good, one bad 
+(pindep {:str 3 :int 18}) ;-> 55/2239488
+;; Has about the same frequency as in the traditionalists' model
+(apply / ((juxt pindep ptrad) {:str 3 :int 18})) ;-> 55/48
+
+;; The third e'dition guys think that you use either the traditional system for both characteristics,
+;; or you use the enhanced system for both. They say that there is a common cause, being a 'player character'.
+;; And they say that one in ten people are like that.
 
 (defn pcommon [{:keys [str int]}]
   (+ 
    (* 9/10 (p3d6 int) (p3d6 str))
    (* 1/10 (p4d6drop1 int) (p4d6drop1 str))))
 
-(pcommon {:str 18 :int 18}) ;-> 17/373248
+;; If we just look at the frequencies of a characteristic in
+;; isolation, then we can't tell the difference between the second and
+;; third schools. 
+;; They make the same guesses about the number of very strong people:
 
-;; My intuition is that very strong, very clever villagers are more likely under the common cause model than under the independent mixed model and even less likely under the traditional model
+;; The chance of having STR 18 is the chance of having
+;; STR 18 and any intelligence
+(reduce + (map pcommon (for [i (range 3 19)] {:str 18 :int i}))) ;-> 5/864
+(reduce + (map pindep  (for [i (range 3 19)] {:str 18 :int i})))  ;-> 5/864
+(reduce + (map ptrad   (for [i (range 3 19)] {:str 18 :int i})))   ;-> 1/216
 
-(< (ptrad {:str 18 :int 18}) (pindep {:str 18 :int 18}) (pcommon {:str 18 :int 18})) ;-> true
+;; It's only by looking at both scores together that we can see
+;; differences between what the world will look like if there's a
+;; common cause and what it will look like if there isn't:
 
+;; Both later e'ditions predict more supermen, but the common causers predict even more than the independents:
+(map #(int (* 1000000 (float %))) ((juxt pcommon ptrad pindep) {:str 18 :int 18})) ;-> (45 21 33)
+
+;; And they both predict slightly fewer basket cases, but the common causers expect less of a drop.
+(map #(int (* 1000000 (float %))) ((juxt pcommon ptrad pindep) {:str 3 :int 3}))   ;-> (19 21 18)
+
+;; The traditionalists predict slightly more cases of people who are good at only one thing
+(map #(int (* 1000000 (float %))) ((juxt pcommon ptrad pindep) {:str 18 :int 3}))  ;-> (20 21 24)
+(map #(int (* 1000000 (float %))) ((juxt pcommon ptrad pindep) {:str 3 :int 18}))  ;-> (20 21 24)
+
+;; Again, we ought to sanity check our distributions:
 (reduce + (map pcommon (for [i (range 3 19) j (range 3 19)] {:int i :str j}))) ;-> 1N
 (reduce + (map ptrad   (for [i (range 3 19) j (range 3 19)] {:int i :str j}))) ;-> 1N
 (reduce + (map pindep  (for [i (range 3 19) j (range 3 19)] {:int i :str j}))) ;-> 1N
 
+;; Premature optimization is the root of all evil, and there is no
+;; place to optimize more premature than an introductory tutorial
+;; essay, but I am worried about my transistors wearing out if I have
+;; to use these functions a lot.
 
-(def ltrad   (reduce * (map ptrad   village)))
-(def lcommon (reduce * (map pcommon village)))
-(def lindep  (reduce * (map pindep  village)))
-
-(def posteriortrad   (/ ltrad   (+ ltrad lcommon lindep)))
-(def posteriorcommon (/ lcommon (+ ltrad lcommon lindep)))
-(def posteriorindep  (/ lindep  (+ ltrad lcommon lindep)))
-
-(float posteriortrad) ;-> 0.15591037
-(float posteriorcommon) ;-> 0.52879226
-(float posteriorindep) ;-> 0.31529734
-
-
-;; Clearly more research is needed!
-
-(def city
-  (binding [*randomizer* (java.util.Random. 0)]
-    (doall (repeatedly 1000 (case (rand-int 3)
-                    0 first-edition 
-                    1 second-edition
-                    2 third-edition)))))
-
-
-(def ltrad   (Math/exp (+ 4970 (reduce + (map #(Math/log %) (map float (map ptrad city))))))))
-(def lcommon (Math/exp (+ 4970 (reduce + (map #(Math/log %) (map float (map pcommon city)))))))
-(def lindep  (Math/exp (+ 4970 (reduce + (map #(Math/log %) (map float (map pindep city)))))))
-
-(def posteriortrad   (/ ltrad   (+ ltrad lcommon lindep)))
-(def posteriorcommon (/ lcommon (+ ltrad lcommon lindep)))
-(def posteriorindep  (/ lindep  (+ ltrad lcommon lindep)))
-
-(float posteriortrad) ;-> 0.77889913
-(float posteriorcommon) ;-> 0.046136353
-(float posteriorindep) ;-> 0.17496453
-
-(def country
-  (binding [*randomizer* (java.util.Random. 0)]
-    (doall (repeatedly 10000 (case (rand-int 3)
-                    0 first-edition 
-                    1 second-edition
-                    2 third-edition)))))
-
-(def lltrad   (reduce + (map #(Math/log %) (map float (map ptrad country)))))
-(def llcommon (reduce + (map #(Math/log %) (map float (map pcommon country)))))
-(def llindep  (reduce + (map #(Math/log %) (map float (map pindep country)))))
-
-lltrad ; -49891.65823367781
-llcommon ; -49941.17751169551
-llindep ; -49935.172258139675
-
-(def ltrad   (Math/exp (+ 49800 lltrad)))
-(def lcommon (Math/exp (+ 49800 llcommon)))
-(def lindep  (Math/exp (+ 49800 llindep)))
-
-(def posteriortrad   (/ ltrad   (+ ltrad lcommon lindep)))
-(def posteriorcommon (/ lcommon (+ ltrad lcommon lindep)))
-(def posteriorindep  (/ lindep  (+ ltrad lcommon lindep)))
-
-(float posteriortrad) ;-> 1.0
-(float posteriorcommon) ;-> 3.1192545E-22
-(float posteriorindep) ;-> 1.2650255E-19
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; (let [[t c i] (map (fn[pfn] (reduce * (map pfn city))) [ptrad pcommon pindep])
-;;       sum (+ t c i)
-;;       normalized [(/ t sum) (/ c sum) (/ i sum)]]
-;;  (map float normalized))
-
-
-
-
+(def pcommon (memoize pcommon))
+(def pmixed  (memoize pmixed))
+(def ptrad   (memoize ptrad))
