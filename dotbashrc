@@ -379,7 +379,11 @@ function vcstatuses
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master ; 
     done ;
     i=~/iqtest
-    echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master && git log heroku/master..master; 
+    echo "--" && echo "$i" && echo "--" && cd "$i" && git status &&
+    echo "-------log vs origin/master-----------" &&
+    git log origin/master..master && 
+    echo "-------log vs heroku/master-----------" &&
+    git log heroku/master..master; 
 
     # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ; 
     # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
@@ -394,6 +398,12 @@ function gitpushall
 {
     for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git push ; done
 }
+
+function gitpullall
+{
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git pull ; done
+}
+
 
 alias dgg="cd ~/data && git gui"
 alias hgg="cd ~/hobby-code && git gui"

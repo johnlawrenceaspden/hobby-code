@@ -399,22 +399,6 @@
 
 (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
 
-(defun clj-eval-paste ()
-  (interactive)
-  (next-line)
-  (move-beginning-of-line nil)
-  (forward-sexp)
-  (insert ";") ; make sure there's something to kill
-  (left-char 1)
-  (kill-line)
-  (nrepl-eval-last-expression 't)
-  (sleep-for 0.1)
-  (backward-sexp)
-  (insert " ;-> ")
-)
-
-(global-set-key [f5] 'clj-eval-paste)
-
 
 ;(setq last-kbd-macro 'clj-eval-paste-below)
 
@@ -437,12 +421,13 @@
 (global-set-key [f6] 'compile-and-goto-repl)
 
 
+;; I've had various favourite things to bind to f5
+
 ;;eval and move forwards
 (fset 'running-eval
       "\M-\C-x\M-\C-e")
-(global-set-key [f5] 'running-eval)
 
-;; although actually I think I prefer this one bound to f5:
+;; A version for making tests
 (defun clojure-eval-paste-test ()
   (interactive)
   (next-line)
@@ -454,7 +439,25 @@
   (sleep-for 0.1)
   (insert ")"))
 
-(global-set-key [f5] #'clojure-eval-paste-test)
+;; And this one that turns (* 3 4) into (* 3 4) ;-> 12
+(defun clj-eval-paste-function ()
+  (interactive)
+  (next-line)
+  (move-beginning-of-line nil)
+  (forward-sexp)
+  (insert ";") ; make sure there's something to kill
+  (left-char 1)
+  (kill-line)
+  (nrepl-eval-last-expression 't)
+  (sleep-for 0.1)
+  (backward-sexp)
+  (insert " ;-> ")
+)
+
+;(global-set-key [f5] #'clojure-eval-paste-test)
+;(global-set-key [f5] 'running-eval)
+(global-set-key [f5] 'clj-eval-paste-function)
+
 
 
 

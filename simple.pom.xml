@@ -8,10 +8,10 @@
   <description>maven, clojure, emacs, repl: simplest useful maven project</description>
 
   <repositories>
-    <!-- <repository> -->
-    <!--   <id>clojars</id> -->
-    <!--   <url>http://clojars.org/repo/</url> -->
-    <!-- </repository> -->
+    <repository>
+      <id>clojars</id>
+      <url>http://clojars.org/repo/</url>
+    </repository>
     <repository>
       <id>clojure</id>
       <url>http://build.clojure.org/releases</url>
@@ -50,7 +50,7 @@
       <plugin>
 	<groupId>com.theoryinpractise</groupId>
 	<artifactId>clojure-maven-plugin</artifactId>
-	<version>1.3.5-SNAPSHOT</version>
+	<version>1.3.13</version>
         <!-- <configuration> -->
         <!--   <replScript>../require-all-snippet.clj</replScript> -->
         <!-- </configuration> -->
