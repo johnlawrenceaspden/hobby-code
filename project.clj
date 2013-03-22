@@ -4,6 +4,7 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/tools.trace "0.7.5"]
                  [org.clojure/tools.reader "0.7.0"]
+                 [org.clojure/core.logic "0.8.1"]
                  [com.cemerick/pomegranate "0.0.13"]]
 
 ;; The magic words are:
