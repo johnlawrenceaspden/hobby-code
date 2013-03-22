@@ -625,4 +625,63 @@ network-manager start/running, process 4796
 john@dell-mini$ echo "working"
 working
 ~/iqtest/src/iqtest
+john@dell-mini$ ~/iqtest/src/iqtest
+bash: /home/john/iqtest/src/iqtest: Is a directory
+~/iqtest/src/iqtest
 john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$  sudo service network-manager stop
+network-manager stop/waiting
+~/hobby-code
+john@dell-mini$ sudo modprobe -r wl
+~/hobby-code
+john@dell-mini$ sudo modprobe wl
+~/hobby-code
+john@dell-mini$ sudo service network-manager start
+network-manager start/running, process 5428
+~/hobby-code
+john@dell-mini$ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+~/hobby-code
+john@dell-mini$ sudo modprobe wl
+~/hobby-code
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 5493
+
+[sudo] password for john: 
+Sorry, try again.
+[sudo] password for john:  sudo service network-manager stop
+network-manager stop/waiting
+~/hobby-code
+john@dell-mini$ sudo modprobe -r wl
+~/hobby-code
+john@dell-mini$ sudo modprobe wl
+~/hobby-code
+john@dell-mini$ sudo service network-manager start
+network-manager start/running, process 5428
+~/hobby-code
+john@dell-mini$ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+~/hobby-code
+john@dell-mini$ sudo modprobe wl
+~/hobby-code
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 5493
+
+
+
+
+Sorry, try again.
+[sudo] password for john: 
+Sorry, try again.
+sudo: 3 incorrect password attempts
+~/iqtest/src/iqtest
+john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$ echo "a bit later the thing borked again and then this worked"
