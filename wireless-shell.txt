@@ -685,3 +685,6 @@ john@dell-mini$
 john@dell-mini$ 
 ~/iqtest/src/iqtest
 john@dell-mini$ echo "a bit later the thing borked again and then this worked"
+a bit later the thing borked again and then this worked
+~/iqtest/src/iqtest
+john@dell-mini$ 
