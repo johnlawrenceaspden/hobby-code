@@ -1,0 +1,628 @@
+~/iqtest/src/iqtest
+john@dell-mini$ ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN qlen 1000
+    link/ether 00:24:e8:c3:fd:12 brd ff:ff:ff:ff:ff:ff
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 00:26:5e:02:ad:95 brd ff:ff:ff:ff:ff:ff
+~/iqtest/src/iqtest
+john@dell-mini$ echo "if it doesn't show eth2 here then check dmesg for network-related horrors
+> "
+if it doesn't show eth2 here then check dmesg for network-related horrors
+
+~/iqtest/src/iqtest
+john@dell-mini$ iwconfig
+lo        no wireless extensions.
+
+eth2      IEEE 802.11abg  ESSID:"_The Cloud"  
+          Mode:Managed  Frequency:2.422 GHz  Access Point: 50:A7:33:10:3A:08   
+          Retry  long limit:7   RTS thr:off   Fragment thr:off
+          Power Management:off
+          
+eth0      no wireless extensions.
+
+~/iqtest/src/iqtest
+john@dell-mini$ sudo nm-tool
+[sudo] password for john: 
+
+NetworkManager Tool
+
+State: connected (global)
+
+- Device: eth0 -----------------------------------------------------------------
+  Type:              Wired
+  Driver:            r8169
+  State:             unavailable
+  Default:           no
+  HW Address:        00:24:E8:C3:FD:12
+
+  Capabilities:
+    Carrier Detect:  yes
+
+  Wired Properties
+    Carrier:         off
+
+
+- Device: eth2  [_The Cloud] ---------------------------------------------------
+  Type:              802.11 WiFi
+  Driver:            wl
+  State:             connected
+  Default:           yes
+  HW Address:        00:26:5E:02:AD:95
+
+  Capabilities:
+    Speed:           104 Mb/s
+
+  Wireless Properties
+    WEP Encryption:  yes
+    WPA Encryption:  yes
+    WPA2 Encryption: yes
+
+  Wireless Access Points (* = current AP)
+    GKAZTEC:         Infra, 00:15:70:96:89:20, Freq 2462 MHz, Rate 54 Mb/s, Strength 82 WPA WPA2
+    SECSSID:         Infra, 00:14:A4:27:59:10, Freq 2427 MHz, Rate 54 Mb/s, Strength 52 WPA Enterprise
+    Dlink_Victoria:  Infra, 1C:BD:B9:90:27:4E, Freq 2412 MHz, Rate 54 Mb/s, Strength 19 WPA WPA2
+    *_The Cloud:     Infra, 50:A7:33:10:3A:08, Freq 2422 MHz, Rate 54 Mb/s, Strength 73
+    GKAZTEC:         Infra, 00:15:70:B6:EA:D0, Freq 2437 MHz, Rate 54 Mb/s, Strength 49 WPA WPA2
+    virginmedia1628570: Infra, 2C:B0:5D:F8:16:E8, Freq 2462 MHz, Rate 54 Mb/s, Strength 24 WPA WPA2
+    BTHomeHub2-MK9S: Infra, 00:26:44:90:B3:15, Freq 2457 MHz, Rate 54 Mb/s, Strength 17 WPA WPA2
+    BTOpenzone-H:    Infra, 02:26:44:90:B3:16, Freq 2457 MHz, Rate 54 Mb/s, Strength 19
+    BTFON:           Infra, 02:26:44:90:B3:17, Freq 2457 MHz, Rate 54 Mb/s, Strength 20
+    O2wireless5B012B:Infra, 58:98:35:5B:01:2B, Freq 2462 MHz, Rate 54 Mb/s, Strength 19 WPA WPA2
+    O2wireless22FC4D:Infra, 58:98:35:22:FC:4D, Freq 2412 MHz, Rate 54 Mb/s, Strength 19 WPA WPA2
+    MicradigitalWLAN:Infra, 00:1A:2A:AC:B4:D3, Freq 2462 MHz, Rate 54 Mb/s, Strength 15 WPA2
+
+  IPv4 Settings:
+    Address:         10.143.79.246
+    Prefix:          26 (255.255.255.192)
+    Gateway:         10.143.79.193
+
+    DNS:             10.1.5.153
+    DNS:             10.1.5.154
+
+
+~/iqtest/src/iqtest
+john@dell-mini$ cat /var/log/* | grep network-manager
+cat: /var/log/apt: Is a directory
+Binary file (standard input) matches
+~/iqtest/src/iqtest
+john@dell-mini$ lsusb
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 002: ID 174f:1403 Syntek Integrated Webcam
+~/iqtest/src/iqtest
+john@dell-mini$ lspci -v
+00:00.0 Host bridge: Intel Corporation Mobile 945GSE Express Memory Controller Hub (rev 03)
+	Subsystem: Dell Device 02f4
+	Flags: bus master, fast devsel, latency 0
+	Capabilities: <access denied>
+	Kernel driver in use: agpgart-intel
+
+00:02.0 VGA compatible controller: Intel Corporation Mobile 945GSE Express Integrated Graphics Controller (rev 03) (prog-if 00 [VGA controller])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, fast devsel, latency 0, IRQ 16
+	Memory at f0000000 (32-bit, non-prefetchable) [size=512K]
+	I/O ports at 1800 [size=8]
+	Memory at d0000000 (32-bit, prefetchable) [size=256M]
+	Memory at f0200000 (32-bit, non-prefetchable) [size=256K]
+	Expansion ROM at <unassigned> [disabled]
+	Capabilities: <access denied>
+	Kernel driver in use: i915
+	Kernel modules: intelfb, i915
+
+00:02.1 Display controller: Intel Corporation Mobile 945GM/GMS/GME, 943/940GML Express Integrated Graphics Controller (rev 03)
+	Subsystem: Dell Device 02f4
+	Flags: bus master, fast devsel, latency 0
+	Memory at f0080000 (32-bit, non-prefetchable) [size=512K]
+	Capabilities: <access denied>
+
+00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 02)
+	Subsystem: Dell Device 02f4
+	Flags: bus master, fast devsel, latency 0, IRQ 44
+	Memory at f0440000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: <access denied>
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd-hda-intel
+
+00:1c.0 PCI bridge: Intel Corporation N10/ICH 7 Family PCI Express Port 1 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+	I/O behind bridge: 00004000-00004fff
+	Memory behind bridge: 40900000-40afffff
+	Prefetchable memory behind bridge: 0000000040b00000-0000000040cfffff
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1c.1 PCI bridge: Intel Corporation N10/ICH 7 Family PCI Express Port 2 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
+	I/O behind bridge: 00003000-00003fff
+	Memory behind bridge: f0100000-f01fffff
+	Prefetchable memory behind bridge: 0000000040700000-00000000408fffff
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1c.2 PCI bridge: Intel Corporation N10/ICH 7 Family PCI Express Port 3 (rev 02) (prog-if 00 [Normal decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
+	I/O behind bridge: 00002000-00002fff
+	Memory behind bridge: 40200000-406fffff
+	Prefetchable memory behind bridge: 00000000f0500000-00000000f05fffff
+	Capabilities: <access denied>
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+
+00:1d.0 USB controller: Intel Corporation N10/ICH 7 Family USB UHCI Controller #1 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0, IRQ 23
+	I/O ports at 1820 [size=32]
+	Kernel driver in use: uhci_hcd
+
+00:1d.1 USB controller: Intel Corporation N10/ICH 7 Family USB UHCI Controller #2 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0, IRQ 19
+	I/O ports at 1840 [size=32]
+	Kernel driver in use: uhci_hcd
+
+00:1d.2 USB controller: Intel Corporation N10/ICH 7 Family USB UHCI Controller #3 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0, IRQ 18
+	I/O ports at 1860 [size=32]
+	Kernel driver in use: uhci_hcd
+
+00:1d.3 USB controller: Intel Corporation N10/ICH 7 Family USB UHCI Controller #4 (rev 02) (prog-if 00 [UHCI])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0, IRQ 16
+	I/O ports at 1880 [size=32]
+	Kernel driver in use: uhci_hcd
+
+00:1d.7 USB controller: Intel Corporation N10/ICH 7 Family USB2 EHCI Controller (rev 02) (prog-if 20 [EHCI])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0, IRQ 23
+	Memory at f0444000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: <access denied>
+	Kernel driver in use: ehci_hcd
+
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2) (prog-if 01 [Subtractive decode])
+	Flags: bus master, fast devsel, latency 0
+	Bus: primary=00, secondary=05, subordinate=05, sec-latency=32
+	Capabilities: <access denied>
+
+00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface Bridge (rev 02)
+	Subsystem: Dell Device 02f4
+	Flags: bus master, medium devsel, latency 0
+	Capabilities: <access denied>
+	Kernel modules: leds-ss4200, iTCO_wdt, intel-rng
+
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7-M Family) SATA Controller [IDE mode] (rev 02) (prog-if 8a [Master SecP PriP])
+	Subsystem: Dell Device 02f4
+	Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 19
+	I/O ports at 01f0 [size=8]
+	I/O ports at 03f4 [size=1]
+	I/O ports at 0170 [size=8]
+	I/O ports at 0374 [size=1]
+	I/O ports at 1810 [size=16]
+	Memory at 40100000 (32-bit, non-prefetchable) [size=1K]
+	Capabilities: <access denied>
+	Kernel driver in use: ata_piix
+
+00:1f.3 SMBus: Intel Corporation N10/ICH 7 Family SMBus Controller (rev 02)
+	Subsystem: Dell Device 02f4
+	Flags: medium devsel, IRQ 10
+	I/O ports at 18c0 [size=32]
+	Kernel modules: i2c-i801
+
+03:00.0 Network controller: Broadcom Corporation BCM4322 802.11a/b/g/n Wireless LAN Controller (rev 01)
+	Subsystem: Dell Wireless 1510 Wireless-N WLAN Mini-Card
+	Flags: bus master, fast devsel, latency 0, IRQ 17
+	Memory at f0100000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: <access denied>
+	Kernel driver in use: wl
+	Kernel modules: wl, ssb
+
+04:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8101E/RTL8102E PCI Express Fast Ethernet controller (rev 02)
+	Subsystem: Dell Device 02f4
+	Flags: bus master, fast devsel, latency 0, IRQ 43
+	I/O ports at 2000 [size=256]
+	Memory at f0510000 (64-bit, prefetchable) [size=4K]
+	Memory at f0500000 (64-bit, prefetchable) [size=64K]
+	[virtual] Expansion ROM at f0520000 [disabled] [size=128K]
+	Capabilities: <access denied>
+	Kernel driver in use: r8169
+	Kernel modules: r8169
+
+~/iqtest/src/iqtest
+john@dell-mini$ 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod
+[sudo] password for john: 
+Module                  Size  Used by
+wl                   2906566  0 
+xt_multiport           12533  1 
+ip6t_LOG               16846  4 
+xt_hl                  12465  6 
+ip6t_rt                12473  3 
+nf_conntrack_ipv6      13581  7 
+nf_defrag_ipv6         13139  1 nf_conntrack_ipv6
+ipt_REJECT             12512  1 
+ipt_LOG                12783  5 
+xt_limit               12541  12 
+xt_tcpudp              12531  18 
+xt_addrtype            12596  4 
+xt_state               12514  14 
+ip6table_filter        12711  1 
+ip6_tables             18432  3 ip6t_LOG,ip6t_rt,ip6table_filter
+nf_conntrack_netbios_ns    12585  0 
+nf_conntrack_broadcast    12541  1 nf_conntrack_netbios_ns
+nf_nat_ftp             12595  0 
+nf_nat                 24959  1 nf_nat_ftp
+nf_conntrack_ipv4      19084  9 nf_nat
+nf_defrag_ipv4         12649  1 nf_conntrack_ipv4
+nf_conntrack_ftp       13183  1 nf_nat_ftp
+nf_conntrack           73847  8 nf_conntrack_ipv6,xt_state,nf_conntrack_netbios_ns,nf_conntrack_broadcast,nf_nat_ftp,nf_nat,nf_conntrack_ipv4,nf_conntrack_ftp
+iptable_filter         12706  1 
+ip_tables              18106  1 iptable_filter
+x_tables               21974  14 xt_multiport,ip6t_LOG,xt_hl,ip6t_rt,ipt_REJECT,ipt_LOG,xt_limit,xt_tcpudp,xt_addrtype,xt_state,ip6table_filter,ip6_tables,iptable_filter,ip_tables
+joydev                 17393  0 
+lib80211_crypt_tkip    17275  0 
+snd_hda_codec_realtek   174313  1 
+snd_hda_intel          32765  4 
+snd_hda_codec         109562  2 snd_hda_codec_realtek,snd_hda_intel
+snd_hwdep              13276  1 snd_hda_codec
+snd_pcm                80845  2 snd_hda_intel,snd_hda_codec
+snd_seq_midi           13132  0 
+snd_rawmidi            25424  1 snd_seq_midi
+snd_seq_midi_event     14475  1 snd_seq_midi
+snd_seq                51567  2 snd_seq_midi,snd_seq_midi_event
+uvcvideo               67203  0 
+videodev               86588  1 uvcvideo
+snd_timer              28931  2 snd_pcm,snd_seq
+psmouse                86486  0 
+snd_seq_device         14172  3 snd_seq_midi,snd_rawmidi,snd_seq
+snd                    62064  17 snd_hda_codec_realtek,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_pcm,snd_rawmidi,snd_seq,snd_timer,snd_seq_device
+soundcore              14635  1 snd
+dell_laptop            17767  0 
+snd_page_alloc         14108  2 snd_hda_intel,snd_pcm
+compal_laptop          19315  0 
+dcdbas                 14098  1 dell_laptop
+serio_raw              13027  0 
+i915                  419161  2 
+cfg80211              178679  1 wl
+drm_kms_helper         45466  1 i915
+lib80211               14040  2 wl,lib80211_crypt_tkip
+drm                   197599  3 i915,drm_kms_helper
+i2c_algo_bit           13199  1 i915
+mac_hid                13077  0 
+video                  19068  1 i915
+bnep                   17830  2 
+rfcomm                 38139  4 
+bluetooth             158438  10 bnep,rfcomm
+parport_pc             32114  0 
+ppdev                  12849  0 
+cryptoloop             12570  1 
+lp                     17455  0 
+parport                40930  3 parport_pc,ppdev,lp
+ums_realtek            17920  0 
+usb_storage            39646  1 ums_realtek
+uas                    17828  0 
+r8169                  56321  0 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep bcm
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep wl
+wl                   2906566  0 
+cfg80211              178679  1 wl
+lib80211               14040  2 wl,lib80211_crypt_tkip
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep ndis
+~/iqtest/src/iqtest
+john@dell-mini$sudo lsmod | grep ssb
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe --help
+modprobe: unrecognized option '--help'
+Usage: modprobe [-v] [-V] [-C config-file] [-d <dirname> ] [-n] [-i] [-q] [-b] [-o <modname>] [ --dump-modversions ] <modname> [parameters...]
+modprobe -r [-n] [-i] [-v] <modulename> ...
+modprobe -l -t <dirname> [ -a <modulename> ...]
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ echo "removes and replaces wireless drivers. must then restart network manager"
+removes and replaces wireless drivers. must then restart network manager
+~/iqtest/src/iqtest
+john@dell-mini$ sudo network-manager stop
+sudo: network-manager: command not found
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager stop
+network-manager stop/waiting
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager start
+network-manager start/running, process 3242
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager stop
+network-manager stop/waiting
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager start
+network-manager start/running, process 3276
+~/iqtest/src/iqtest
+john@dell-mini$ removes and replaces wireless drivers. must then restart network manager
+
+removes: command not found
+~/iqtest/src/iqtest
+john@dell-mini$ ~/iqtest/src/iqtest
+john@dell-mini$ sudo service networking restart
+stop: Unknown instance: 
+networking stop/waiting
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service networking stop
+stop: Unknown instance: 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service networking start
+networking stop/waiting
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 3307
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 3321
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep b43
+b43                   342643  0 
+mac80211              436455  1 b43
+cfg80211              178679  2 b43,mac80211
+bcma                   25651  1 b43
+ssb                    50691  1 b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep wl
+wl                   2906566  0 
+cfg80211              178679  1 wl
+lib80211               14040  2 wl,lib80211_crypt_tkip
+~/iqtest/src/iqtest
+john@dell-mini$ sudo nm-tool
+
+NetworkManager Tool
+
+State: connecting
+
+- Device: eth2  [_The Cloud] ---------------------------------------------------
+  Type:              802.11 WiFi
+  Driver:            wl
+  State:             connecting (configuring)
+  Default:           no
+  HW Address:        00:26:5E:02:AD:95
+
+  Capabilities:
+
+  Wireless Properties
+    WEP Encryption:  yes
+    WPA Encryption:  yes
+    WPA2 Encryption: yes
+
+  Wireless Access Points 
+    GKAZTEC:         Infra, 00:15:70:96:89:20, Freq 2462 MHz, Rate 54 Mb/s, Strength 80 WPA WPA2
+    SECSSID:         Infra, 00:14:A4:27:59:10, Freq 2427 MHz, Rate 54 Mb/s, Strength 65 WPA Enterprise
+    GKAZTEC:         Infra, 00:15:70:B6:EA:D0, Freq 2437 MHz, Rate 54 Mb/s, Strength 44 WPA WPA2
+    BTHomeHub2-MK9S: Infra, 00:26:44:90:B3:15, Freq 2457 MHz, Rate 54 Mb/s, Strength 24 WPA WPA2
+    Dlink_Victoria:  Infra, 1C:BD:B9:90:27:4E, Freq 2412 MHz, Rate 54 Mb/s, Strength 22 WPA WPA2
+    BTFON:           Infra, 02:26:44:90:B3:17, Freq 2457 MHz, Rate 54 Mb/s, Strength 25
+    BTOpenzone-H:    Infra, 02:26:44:90:B3:16, Freq 2457 MHz, Rate 54 Mb/s, Strength 24
+    virginmedia1628570: Infra, 2C:B0:5D:F8:16:E8, Freq 2462 MHz, Rate 54 Mb/s, Strength 22 WPA WPA2
+    O2wireless5B012B:Infra, 58:98:35:5B:01:2B, Freq 2462 MHz, Rate 54 Mb/s, Strength 17 WPA WPA2
+    BTHomeHub2-F7R8: Infra, 00:24:17:CB:56:65, Freq 2452 MHz, Rate 54 Mb/s, Strength 15 WEP
+    _The Cloud:      Infra, 50:A7:33:10:3A:08, Freq 2422 MHz, Rate 54 Mb/s, Strength 82
+
+
+- Device: eth0 -----------------------------------------------------------------
+  Type:              Wired
+  Driver:            r8169
+  State:             unavailable
+  Default:           no
+  HW Address:        00:24:E8:C3:FD:12
+
+  Capabilities:
+    Carrier Detect:  yes
+
+  Wired Properties
+    Carrier:         off
+
+
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep wl
+wl                   2906566  0 
+cfg80211              178679  1 wl
+lib80211               14040  2 wl,lib80211_crypt_tkip
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe b43 ssb wl mac80211 cfg80211 bcma 
+FATAL: Error inserting b43 (/lib/modules/3.2.0-34-generic-pae/kernel/drivers/net/wireless/b43/b43.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r b43
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 3805
+~/iqtest/src/iqtest
+john@dell-mini$ echo "this has suddenly worked. what did I do different?"
+this has suddenly worked. what did I do different?
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo lsmod | grep wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ echo "broken"
+broken
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4001
+~/iqtest/src/iqtest
+john@dell-mini$ echo "good"
+good
+~/iqtest/src/iqtest
+john@dell-mini$ tail /var/log/syslog
+Mar 22 14:58:57 dell-mini avahi-daemon[501]: New relevant interface eth2.IPv6 for mDNS.
+Mar 22 14:58:57 dell-mini avahi-daemon[501]: Registering new address record for fe80::226:5eff:fe02:ad95 on eth2.*.
+Mar 22 14:58:57 dell-mini dbus[455]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Mar 22 14:59:06 dell-mini ntpdate[4071]: adjust time server 91.189.94.4 offset -0.000894 sec
+Mar 22 14:59:06 dell-mini kernel: [ 4489.080103] eth2: no IPv6 routers present
+Mar 22 14:59:11 dell-mini kernel: [ 4494.490579] type=1701 audit(1363964351.869:138): auid=4294967295 uid=1000 gid=1000 ses=4294967295 pid=2653 comm="chromium-browse" reason="seccomp" sig=0 syscall=195 ip=0xb26a3424 code=0x50002
+Mar 22 14:59:16 dell-mini NetworkManager[4001]: <info> (eth2): IP6 addrconf timed out or failed.
+Mar 22 14:59:16 dell-mini NetworkManager[4001]: <info> Activation (eth2) Stage 4 of 5 (IPv6 Configure Timeout) scheduled...
+Mar 22 14:59:16 dell-mini NetworkManager[4001]: <info> Activation (eth2) Stage 4 of 5 (IPv6 Configure Timeout) started...
+Mar 22 14:59:16 dell-mini NetworkManager[4001]: <info> Activation (eth2) Stage 4 of 5 (IPv6 Configure Timeout) complete.
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4137
+~/iqtest/src/iqtest
+john@dell-mini$ echo "broken"
+broken
+~/iqtest/src/iqtest
+john@dell-mini$ tail /var/log/syslog
+Mar 22 15:00:10 dell-mini wpa_supplicant[1066]: Authentication with 50:a7:33:10:3a:08 timed out.
+Mar 22 15:00:10 dell-mini NetworkManager[4137]: <info> (eth2): supplicant interface state: associating -> scanning
+Mar 22 15:00:13 dell-mini wpa_supplicant[1066]: Trying to associate with 50:a7:33:10:3a:08 (SSID='_The Cloud' freq=2422 MHz)
+Mar 22 15:00:13 dell-mini wpa_supplicant[1066]: Association request to the driver failed
+Mar 22 15:00:13 dell-mini NetworkManager[4137]: <info> (eth2): supplicant interface state: scanning -> associating
+Mar 22 15:00:18 dell-mini wpa_supplicant[1066]: Authentication with 50:a7:33:10:3a:08 timed out.
+Mar 22 15:00:18 dell-mini NetworkManager[4137]: <info> (eth2): supplicant interface state: associating -> scanning
+Mar 22 15:00:20 dell-mini wpa_supplicant[1066]: Trying to associate with 50:a7:33:10:3a:08 (SSID='_The Cloud' freq=2422 MHz)
+Mar 22 15:00:20 dell-mini wpa_supplicant[1066]: Association request to the driver failed
+Mar 22 15:00:20 dell-mini NetworkManager[4137]: <info> (eth2): supplicant interface state: scanning -> associating
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4155
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4170
+~/iqtest/src/iqtest
+john@dell-mini$ echo "working"
+working
+~/iqtest/src/iqtest
+john@dell-mini$ tail /var/log/syslog
+Mar 22 15:01:03 dell-mini NetworkManager[4170]: <info> Policy set '_The Cloud' (eth2) as default for IPv4 routing and DNS.
+Mar 22 15:01:03 dell-mini NetworkManager[4170]: <info> Activation (eth2) successful, device activated.
+Mar 22 15:01:03 dell-mini NetworkManager[4170]: <info> Activation (eth2) Stage 5 of 5 (IPv4 Commit) complete.
+Mar 22 15:01:03 dell-mini dbus[455]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
+Mar 22 15:01:03 dell-mini dbus[455]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Mar 22 15:01:03 dell-mini avahi-daemon[501]: Joining mDNS multicast group on interface eth2.IPv6 with address fe80::226:5eff:fe02:ad95.
+Mar 22 15:01:03 dell-mini avahi-daemon[501]: New relevant interface eth2.IPv6 for mDNS.
+Mar 22 15:01:03 dell-mini avahi-daemon[501]: Registering new address record for fe80::226:5eff:fe02:ad95 on eth2.*.
+Mar 22 15:01:11 dell-mini ntpdate[4241]: adjust time server 91.189.94.4 offset -0.000963 sec
+Mar 22 15:01:12 dell-mini kernel: [ 4614.848096] eth2: no IPv6 routers present
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r wl
+~/iqtest/src/iqtest
+john@dell-mini$ tail /var/log/syslog
+Mar 22 15:01:23 dell-mini dnsmasq[4280]: warning: no upstream servers configured
+Mar 22 15:01:23 dell-mini NetworkManager[4170]: <info> (eth2): cleaning up...
+Mar 22 15:01:23 dell-mini NetworkManager[4170]: <warn> (12) failed to find interface name for index
+Mar 22 15:01:23 dell-mini NetworkManager[4170]: (nm-system.c:685):nm_system_iface_get_flags: runtime check failed: (iface != NULL)
+Mar 22 15:01:23 dell-mini NetworkManager[4170]: <error> [1363964483.994961] [nm-system.c:687] nm_system_iface_get_flags(): (unknown): failed to get interface link object
+Mar 22 15:01:24 dell-mini NetworkManager[4170]: <info> Unmanaged Device found; state CONNECTED forced. (see http://bugs.launchpad.net/bugs/191889)
+Mar 22 15:01:24 dell-mini dbus[455]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
+Mar 22 15:01:24 dell-mini NetworkManager[4170]: <info> radio killswitch /sys/devices/pci0000:00/0000:00:1c.1/0000:03:00.0/ieee80211/phy0/rfkill16 disappeared
+Mar 22 15:01:24 dell-mini dbus[455]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+Mar 22 15:01:24 dell-mini wpa_supplicant[1066]: Could not read interface eth2 flags: No such device
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ tail /var/log/syslog
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> (eth2): preparing device.
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> (eth2): deactivating device (reason 'managed') [2]
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> found WiFi radio killswitch rfkill19 (at /sys/devices/pci0000:00/0000:00:1c.1/0000:03:00.0/net/eth1/rfkill19) (driver wl)
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> (eth2): supplicant interface state: starting -> ready
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> (eth2): device state change: unavailable -> disconnected (reason 'supplicant-available') [20 30 42]
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <info> (eth2): supplicant interface state: ready -> inactive
+Mar 22 15:01:42 dell-mini NetworkManager[4170]: <warn> Trying to remove a non-existant call id.
+Mar 22 15:01:43 dell-mini avahi-daemon[501]: Joining mDNS multicast group on interface eth2.IPv6 with address fe80::226:5eff:fe02:ad95.
+Mar 22 15:01:43 dell-mini avahi-daemon[501]: New relevant interface eth2.IPv6 for mDNS.
+Mar 22 15:01:43 dell-mini avahi-daemon[501]: Registering new address record for fe80::226:5eff:fe02:ad95 on eth2.*.
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4418
+~/iqtest/src/iqtest
+john@dell-mini$ echo "working"
+working
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r wl
+~/iqtest/src/iqtest
+john@dell-mini$ echo "broken, obviously"
+broken, obviously
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4608
+~/iqtest/src/iqtest
+john@dell-mini$ echo "working"
+working
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe -r wl
+~/iqtest/src/iqtest
+john@dell-mini$ echo "broken, obviously"
+broken, obviously
+~/iqtest/src/iqtest
+john@dell-mini$ sudo modprobe wl
+~/iqtest/src/iqtest
+john@dell-mini$ echo "still broken, surprisingly"
+still broken, surprisingly
+~/iqtest/src/iqtest
+john@dell-mini$ sudo service network-manager restart
+network-manager stop/waiting
+network-manager start/running, process 4796
+~/iqtest/src/iqtest
+john@dell-mini$ echo "working"
+working
+~/iqtest/src/iqtest
+john@dell-mini$ 

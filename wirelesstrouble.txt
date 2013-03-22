@@ -1,0 +1,33 @@
+From:
+
+http://askubuntu.com/questions/57554/how-can-i-troubleshoot-my-installation-of-the-latest-broadcom-driver
+
+
+A few things to check, in order:
+
+Does the wireless network device appear?
+Check that your wireless adapter appears in the output of ip link. This will print a couple of lines about each of your network interfaces. Check for a wlan0 entry, or something similar.
+
+If your wireless device does not appear, it would indicate that the driver did not recognise your device. Check the dmesg output to see if there's any relevant kernel logs.
+
+Does it look like a proper wireless device?
+Run iwconfig; it will probably state that most of your network interfaces have "no wireless extensions", but it should print some wireless-related info (mode/essid/wireless standards supported) for at least one device.
+
+If your wireless device is present but does not list any wireless extentions, this would indicate a problem with the driver. Look for interesing info in dmesg.
+
+If iwconfig prints an error, this could indicate a compatibility problem with the new driver and the userspace tools.
+
+Is Network Manager recognising your wireless device?
+Run nm-tool, and make sure that your wireless device is present in the output, and that it has some 'Wireless Properties' listed.
+
+If not, this could indicate an interaction problem between the new driver and the Network Manager build. Check /var/log/syslog for NetworkManager-related entries.
+
+shareeditflag
+answered Aug 18 '11 at 10:06
+
+Jeremy Kerr
+4,180925
+ 	
+ 	
+The output of ip link contains information about lo and eth0 not wlan0. The output of dmesg | wl is the following: [ 27.593069] wl: module license 'unspecified' taints kernel., [ 27.600936] wl 0000:0c:00.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17, [ 27.600945] wl 0000:0c:00.0: setting latency timer to 64 I didn't find any useful infromation in the output of dmesg. Do you have any other suggestions on how to proceed? – reprogrammer Aug 20 '11 at 10:15
+add comment
