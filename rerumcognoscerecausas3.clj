@@ -282,15 +282,133 @@ Magnus ;-> {:str 11, :int 18}
      (map #(Math/log %) [2 4 8])) ;-> (1.0986122886681096 1.0986122886681098 1.09861228866811)
 
 
-;; So if what we'd like to be able to calculate is what this would be:
+;; So what we'd like to be able to calculate is what this would be:
 (approx-odds (map #(Math/exp %)
                   '(-4967.368738149676 -4968.862029975447 -4970.195021140233)))
-;; if only floating point arithmetic was good enough, we can calculate:
+;; if only floating point arithmetic was good enough.
 
+
+;; So we'll calculate instead:
 (approx-odds (map #(Math/exp %)
-                  '(-4967.368738149676 -4968.862029975447 -4970.195021140233)))
+                  '(-0.368738149676 -1.862029975447 -3.195021140233)))
+
+;-> [77 17 4]
 
 
+;; So after looking at a full thousand people, with perfect models and
+;; a perfect prior, looking for what you would have thought was a
+;; pretty obvious effect, the existence of gifted superbeings, we're
+;; still in a bit of a dubious position.
+
+;; If we decide 'that's good enough', and declare that we live in a
+;; first e'dition world, then we've still got a fair chance of being
+;; wrong.
+
+
+(defn log-update [beliefs villager] 
+  (doall (map + (map #(Math/log %) ((juxt ptrad pindep pcommon) villager)) beliefs)))
+
+(defn posterior [prior data]
+  (reduce log-update (map #(Math/log %) prior) data))
+
+(defn percentages-from-log-beliefs [beliefs]
+  (let [bmax (apply max beliefs)
+        odds (for [b beliefs] (Math/exp (- b bmax)))]
+    (approx-odds odds)))
+
+;; paranoid checking again:
+(percentages-from-log-beliefs (posterior [1 1 1] village)) ;-> [15 31 52]
+(percentages-from-log-beliefs (posterior [1 1 1] district)) ;-> [77 17 4]
+
+;; Another way to look at this is to examine the reactions of the three schools to the data
+
+;; Suppose the first e'dition philosophers start their analysis with a
+;; prior [10 1 1], confident enough in their own arguments to bet on
+;; them at 5:1, but grudgingly admitting the possibility that one of
+;; the other schools might be right.
+(percentages-from-log-beliefs (posterior [10 1 1] district)) ;-> [97 2 0]
+
+;; Not unreasonably, after looking at the data, they're now very confident they were right all along.    
+
+;; The second e'dition guys, however, are troubled, but only to the point where they feel unsure.
+(percentages-from-log-beliefs (posterior [1 10 1] district)) ; [30 67 1]
+
+;; But the third e'dition, starting off believing in common cause,
+;; should actually change their minds if they examine the data fairly, and go over to the first camp.
+(percentages-from-log-beliefs (posterior [1 1 10] district)) ; [55 12 32]
+
+
+;; Obviously, we could look at an even larger sample:
+(def country
+  (binding [*randomizer* (java.util.Random. 2000)]
+    (doall (repeatedly 10000 (case (rand-int 3)
+                               0 first-edition
+                               1 second-edition
+                               2 third-edition)))))
+
+(percentages-from-log-beliefs (posterior [1 1 1] (take 10000 country))) ;-> [27 47 25]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 1000 country)))) ;-> [0 90 9]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 2000 country)))) ;-> [0 54 45]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 3000 country)))) ;-> [1 60 38]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 4000 country)))) ;-> [0 77 22]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 5000 country)))) ;-> [10 64 24]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 6000 country)))) ;-> [18 49 31]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 7000 country)))) ;-> [0 64 35]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 8000 country)))) ;-> [31 47 20]
+(percentages-from-log-beliefs (posterior [1 1 1] (take 1000 (drop 9000 country)))) ;-> [20 68 10]
+
+
+
+
+
+(reduce log-update [0.0 0.0 0.0] (take 1000 country))
+(-4967.368738149676 -4968.862029975447 -4970.195021140233)
+(reduce log-update [0.0 0.0 0.0] (take 1030 country))
+(reduce log-update [0.0 0.0 0.0] (take 1035 country))
+(reduce log-update [0.0 0.0 0.0] (take 1036 country))
+(reduce log-update [0.0 0.0 0.0] (take 1037 country))
+(reduce log-update [0.0 0.0 0.0] (take 1040 country))
+(reduce log-update [0.0 0.0 0.0] (take 1050 country))
+
+(defn log-update [beliefs villager] 
+  (map + (map #(Math/log %) [1/10 1/100 1/1000]) beliefs))
+
+(reduce log-update [1 1 1] (range 10000))
+
+(def doom (map #(Math/log %) [1/10 1/100 1/1000]))
+
+(defn log-update [beliefs villager] 
+  (map + doom beliefs))
+
+(reduce log-update [1 1 1] (range 1038))
+(reduce log-update [1 1 1] (range 1039))
+
+(def doom '(1 2 3))
+
+(defn log-update [beliefs villager] 
+  (map + doom beliefs))
+
+(reduce log-update [1 1 1] (range 1037))
+(reduce log-update [1 1 1] (range 1038))
+
+
+;;;;;;;;;;;;; a bug, I believe:
+
+(defn log-update [beliefs villager] 
+  (doall (map + '(1 2 3) beliefs)))
+
+(reduce log-update [1 1 1] (range 1037))
+(reduce log-update [1 1 1] (range 1038))
+
+
+
+
+
+
+
+
+
+(reduce log-update '(-4967.368738149676 -4968.862029975447 -4970.195021140233) (take 1000 (drop 1000 country)))
 
 
 
@@ -322,12 +440,7 @@ Magnus ;-> {:str 11, :int 18}
 (approx-odds (map * [15 31 52] [53 29 17] [29 38 32] [63 21 14] [34 37 27] [36 27 36] [39 38 22] [49 30 19] [48 24 27] [20 37 42]))
 ;-> [78 17 4]
 
-(def country
-  (binding [*randomizer* (java.util.Random. 0)]
-    (doall (repeatedly 10000 (case (rand-int 3)
-                    0 first-edition
-                    1 second-edition
-                    2 third-edition)))))
+
 
 
 (map approx-odds
@@ -416,7 +529,3 @@ llindep ; -49935.172258139675
 
 
 
-;; (let [[t c i] (map (fn[pfn] (reduce * (map pfn city))) [ptrad pcommon pindep])
-;;       sum (+ t c i)
-;;       normalized [(/ t sum) (/ c sum) (/ i sum)]]
-;;  (map float normalized))
