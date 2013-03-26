@@ -58,9 +58,9 @@ village ;-> ({:str 13, :int 18} {:str 11, :int 18} {:str 14, :int 15} {:str 6, :
 
 (def ptrad (memoize (fn [{:keys [str int]}]  (* (p3d6 int) (p3d6 str)))))
 
-(defn pindep(memoize (fn [{:keys [str int]}] (* (pmixed int) (pmixed str)))))
+(def pindep(memoize (fn [{:keys [str int]}] (* (pmixed int) (pmixed str)))))
 
-(defn pcommon (memoize (fn [{:keys [str int]}]
+(def pcommon (memoize (fn [{:keys [str int]}]
   (+
    (* 9/10 (p3d6 int) (p3d6 str))
    (* 1/10 (p4d6drop1 int) (p4d6drop1 str))))))
@@ -103,11 +103,12 @@ Olaf ;-> {:str 13, :int 18}
 
 (map * ((juxt ptrad pindep pcommon) Olaf) prior) ;-> (7/15552 653/1119744 217/349920)
 
-;; Now a ratio of odd can always be rescaled. 10:5 is the same as 2:1.
+;; A ratio of odds can always be rescaled. 10:5 is the same as 2:1.
 
 (map #(float (* 15552/7 %)) (map * ((juxt ptrad pindep pcommon) Olaf) prior))
 ;-> (1.0 1.2956349 1.3777778)
 
+;; So here's a function to take any odds ratio and turn it into (approximate) percentages
 (defn approx-odds [[a b c]]
   (let [m (/ (+ a b c) 100)]
     (mapv int [(/ a m) (/ b m) (/ c m)])))
@@ -138,58 +139,185 @@ Magnus ;-> {:str 11, :int 18}
 
 ;; Implying that the combined effect of both men is to discredit the traditional school while slightly favouring the common-cause hypothesis.
 
-;; We could rewrite that as:
+;; We could generate the series representing how the assessors beliefs should change as he 
+;; considers each villager like this:
 
-(reductions (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) prior (list Magnus Olaf))
+(reductions 
+ (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs))
+ prior
+ (list Magnus Olaf))
 ;-> ([1 1 1] (1/1728 803/1119744 247/349920) (7/26873856 524359/1253826625536 53599/122444006400))
 
-;; to see how the beliefs change as the data comes in
+;; More readably, we can separate the function which updates our beliefs given a datum.
+(defn update [beliefs villager] 
+  (map * ((juxt ptrad pindep pcommon) villager) beliefs))
 
-;; More readably:
 (map approx-odds
- (reductions (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) prior (list Magnus Olaf)))
+ (reductions update prior (list Magnus Olaf)))
 ;-> ([33 33 33] [28 35 35] [23 37 39])
 
-
-
-
-;; What if we look at the first ten?
+;; What if we look at the first ten villagers?
 (map approx-odds
- (reductions (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) prior (take 10 village)))
+ (reductions update prior (take 10 village)))
 ;-> ([33 33 33] [27 35 37] [23 37 39] [19 37 42] [20 37 41] [18 38 43] [16 40 43] [14 41 44] [13 41 45] [14 40 45] [12 40 46])
 
-(map approx-odds
- (reductions (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) prior (take 20 village)))
+;; The first twenty:
+(approx-odds
+ (reduce update prior (take 20 village)))
+;-> [19 36 44]
 
 ;; And at the whole village?
 (approx-odds
- (reduce (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) prior  (take 100 village)))
-;-> 15 31 52
-
-;; That's kind of weird. The remaining ninety inhabitants have apparently swung the assessors beliefs back,
+ (reduce update prior (take 100 village)))
+;;-> [15 31 52]
 
 
+;; So if we look at our whole village, it looks as though we'd be
+;; slightly more confident that we lived in a third e'dition world.
 
-(map approx-odds
- (map (fn[vs] (reduce (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) [1.0 1.0 1.0] vs)) (partition 10 village))
-)
-;-> ([12 40 46] [45 26 28] [19 34 46] [39 29 31] [30 34 35] [45 27 27] [34 36 29] [36 32 31] [32 34 33] [27 33 39])
+;; But we're really not terribly confident about that.
+;; We know that the models and priors are spot on, since
+;; we've seen the source code for the world.
 
-(approx-odds (map * [12 40 46] [45 26 28] [19 34 46] [39 29 31] [30 34 35] [45 27 27] [34 36 29] [36 32 31] [32 34 33] [27 33 39]))
-;-> [15 32 52]
+;; But even then, if we declared on the basis of this one village that
+;; we lived in a third edition world, we'd literally expect to be
+;; wrong half the time.  
+
+;; That's only a slight improvement on being wrong two thirds of the
+;; time, which we'd expect if we hadn't bothered to look at any data at
+;; all. Most of our opinion is coming from our prior beliefs and there
+;; is really very little evidence in the data that we have.
 
 ;; Clearly more research is needed!
 
-(def city
+
+;; As it happens, our village is just one of ten in the district
+(def district
   (binding [*randomizer* (java.util.Random. 0)]
     (doall (repeatedly 1000 (case (rand-int 3)
                     0 first-edition
                     1 second-edition
                     2 third-edition)))))
 
-(map approx-odds
- (map (fn[vs] (reduce (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs)) [1.0 1.0 1.0] vs)) (partition 100 city))
-) ;-> ([15 31 52] [53 29 17] [29 38 32] [63 21 14] [34 37 27] [36 27 36] [39 38 22] [49 30 19] [48 24 27] [20 37 42])
+(def villages (partition 100 district))
+
+;; paranoid check
+(= village (first villages)) ;-> true
+
+;; So let's see what conclusions we can draw from each individual village
+
+(for [v villages] 
+  (approx-odds
+   (reduce 
+    (fn [beliefs villager] (map * ((juxt ptrad pindep pcommon) villager) beliefs))
+    prior v)))
+;-> ([15 31 52] [53 29 17] [29 38 32] [63 21 14] [34 37 27] [36 27 36] [39 38 22] [49 30 19] [48 24 27] [20 37 42])
+
+;; Some villages are pointing one way, and some the other. 
+
+;; We might want to consider the district as a whole:
+(approx-odds
+ (reduce update prior district))
+
+;; Unfortunately this expression takes a while to evaluate. Can you see why?
+
+;; Here's a clue:
+(reduce update [1.0 1.0 1.0] (take 100 district)) ;-> (1.0019121633199549E-224 2.0261656590064221E-224 3.398128024413593E-224)
+;; And rather more worryingly
+(reduce update [1.0 1.0 1.0] district) ;-> (0.0 0.0 0.0)
+
+;; It looks as though mathematics itself is failing us!
+
+;; We need to find a new way to multiply numbers.
+
+;; Fortunately we can add their logarithms instead:
+
+(+ (Math/log 6) (Math/log 6)) ;-> 3.58351893845611
+(Math/log (* 6 6)) ;-> 3.58351893845611
+
+;; So let's make a log version of our update function
+(defn log-update [beliefs villager] 
+  (map + (map #(Math/log %) ((juxt ptrad pindep pcommon) villager)) beliefs))
+
+;; And of our prior:
+(def log-prior (map #(Math/log %) prior))
+
+;; And try that on the village
+(reduce log-update log-prior village)
+;; (-515.7771504932035 -515.0729156616442 -514.5558361317242)
+
+;; If we know the logs, we can get the numbers we actually want back:
+(map #(Math/exp %) (reduce log-update log-prior village)) 
+;-> (1.0019121633198053E-224 2.0261656590065323E-224 3.398128024414225E-224)
+(approx-odds (map #(Math/exp %) (reduce log-update log-prior village))) 
+;-> [15 31 52]
+
+;; So we've found a sneaky way to do the multiplications without
+;; running off the bottom of the floating point range.
+
+(reduce log-update log-prior district)
+;;-> (-4967.368738149676 -4968.862029975447 -4970.195021140233)
+
+;; That's done our probability calculation for us, but unfortunately we can't actually recover
+;; the number that -4967.36... is the logarithm of
+(Math/exp -4967)
+
+;; So we need to pull another rabbit out of our hat. 
+
+;; All we're interested in is the ratios of the three likelihoods.
+
+;; And ratios aren't affected by multiplying through
+
+(approx-odds [2 4 8]) ;-> [14 28 57]
+(approx-odds [6 12 24]) ;-> [14 28 57]
+
+;; Equivalently, "ratios" of logs aren't affected by adding a constant.
+
+(map #(Math/log %) [2 4 8]) ;-> (0.6931471805599453 1.3862943611198906 2.0794415416798357)
+(map #(Math/log %) [6 12 24]) ;-> (1.791759469228055 2.4849066497880004 3.1780538303479458)
+
+;; Multiplying the numbers by a constant has exactly the same effect as adding a constant to each log:
+(map - 
+     (map #(Math/log %) [6 12 24]) 
+     (map #(Math/log %) [2 4 8])) ;-> (1.0986122886681096 1.0986122886681098 1.09861228866811)
+
+
+;; So if what we'd like to be able to calculate is what this would be:
+(approx-odds (map #(Math/exp %)
+                  '(-4967.368738149676 -4968.862029975447 -4970.195021140233)))
+;; if only floating point arithmetic was good enough, we can calculate:
+
+(approx-odds (map #(Math/exp %)
+                  '(-4967.368738149676 -4968.862029975447 -4970.195021140233)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (approx-odds (map * [15 31 52] [53 29 17] [29 38 32] [63 21 14] [34 37 27] [36 27 36] [39 38 22] [49 30 19] [48 24 27] [20 37 42]))
 ;-> [78 17 4]
