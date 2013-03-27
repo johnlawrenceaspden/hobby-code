@@ -188,5 +188,24 @@ Magnus ;-> {:str 11, :int 18}
 ;; all. Most of our opinion is coming from our prior beliefs and there
 ;; is really very little evidence in the data that we have.
 
-;; Clearly more research is needed!
+;; Another way to look at this is to ask what happens to the beliefs of the three competing philosophical schools.
 
+;; Suppose each of the three is initially so convinced of its own
+;; correctness that it will place or lay bets at 5:1 on its pet
+;; hypothesis. But that each school will adjust its beliefs as it sees evidence.
+
+;; So the first e'dition guys will suffer a serious loss of confidence
+(approx-odds
+ (reduce update [10 1 1] (take 100 village))) ; [64 13 22]
+;; But not actually change their minds, just the strength of their convictions.
+
+;; The second e'dition guys barely notice.
+(approx-odds
+ (reduce update [1 10 1] (take 100 village))) ; [4 82 13]
+
+;; While the third e'dition find their beliefs slightly strengthened
+;; after looking at the evidence.
+(approx-odds
+ (reduce update [1 1 10] (take 100 village))) ; [2 5 91]
+
+;; Clearly more research is needed!
