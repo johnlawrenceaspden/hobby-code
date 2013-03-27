@@ -1,6 +1,6 @@
 ;; I keep finding that I need a function which will partition a sequence into runs of things.
 
-;; For instance, you might want 
+;; For instance, you might want
 
 '(1 1 1 2 3 3 4 4 4 3 3 3 5 5)
 
@@ -18,7 +18,7 @@
 
 '( 1 2 3 4 1 2 3 2 3 4 6 9 10)
 
-;; Into 
+;; Into
 
 '((1 2 3 4) (1 2 3) (2 3 4) (6) (9 10))
 
@@ -38,17 +38,17 @@
 ;; () (1 2) (3 4 1 2 3 2 3 4 6 9 10)
 ;; ->
 ;; () (1 2 3) (4 1 2 3 2 3 4 6 9 10)
-;; -> 
+;; ->
 ;; () (1 2 3 4) (1 2 3 2 3 4 6 9 10)
 ;; -> test is false, start a new list
 ;; ((1 2 3 4)) (1) (2 3 2 3 4 6 9 10)
 ;; ->
 ;; ((1 2 3 4)) (1 2) (3 2 3 4 6 9 10)
-;; -> 
+;; ->
 ;; ((1 2 3 4)) (1 2 3) (2 3 4 6 9 10)
 ;; -> test is false, start a new list
 ;; ((1 2 3 4) (1 2 3))  (2 3 4 6 9 10)
-;; -> 
+;; ->
 ;; ((1 2 3 4) (1 2 3) (2))  (3 4 6 9 10)
 ;; -> etc
 
@@ -57,7 +57,7 @@
 (defn ^:dynamic recaccacc [ f acc1 acc2 coll]
   (if (empty? coll) (cons acc2 acc1)
       (if (empty? acc2) (recaccacc f acc1 (cons (first coll) acc2) (rest coll))
-          (if (f (first acc2) (first coll)) 
+          (if (f (first acc2) (first coll))
             (recaccacc f acc1 (cons (first coll) acc2) (rest coll))
             (recaccacc f (cons acc2 acc1) '() coll)))))
 
@@ -111,18 +111,18 @@
 
 ;; Which we can fix:
 
-(reverse (map reverse (recaccacc sameish '() '() '(1 2 3 4 1 2 3 2 3 4 6 9 10)))) 
+(reverse (map reverse (recaccacc sameish '() '() '(1 2 3 4 1 2 3 2 3 4 6 9 10))))
 ;-> ((1 2 3 4) (1 2 3) (2 3 4) (6) (9 10))
 
 ;; Hooray!
 
-;; So our first definition is 
+;; So our first definition is
 
 (defn partition-by-equivalence [f coll]
   (let [recaccacc (fn [f acc1 acc2 coll]
                     (if (empty? coll) (reverse (cons (reverse acc2) acc1))
                         (if (empty? acc2) (recur f acc1 (cons (first coll) acc2) (rest coll))
-                            (if (f (first acc2) (first coll)) 
+                            (if (f (first acc2) (first coll))
                               (recur f acc1 (cons (first coll) acc2) (rest coll))
                               (recur f (cons (reverse acc2) acc1) '() coll)))))]
     (recaccacc f '() '() coll)))
@@ -145,7 +145,7 @@
 (partition-by-equivalence (fn [a b] (= (int (Math/log10 a)) (int (Math/log10 b)))) (range 1 100)) ;-> ((1 2 3 4 5 6 7 8 9) (10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99))
 
 ;; ascending subsequences
-(partition-by-equivalence <= '(1 2 3 3 4 5 7 8 9 1 2 5 6 1 7 8)) 
+(partition-by-equivalence <= '(1 2 3 3 4 5 7 8 9 1 2 5 6 1 7 8))
 ;-> ((1 2 3 3 4 5 7 8 9) (1 2 5 6) (1 7 8))
 
 ;; strictly ascending subsequences
@@ -176,151 +176,3 @@
 ;; And I think it's a really nice function, which is helpful in all sort of situations.
 
 ;; It should be possible to make it completely lazy, so that it can take infinite inputs without wolfing the lot.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; OK, so I have this problem that I can't solve, and it's very trivial, and I'm a bit embarrassed about it, 
-;; so I'm going to write an essay about it in the hope that I will solve it on the way.
-
-;; I keep getting sequences (they are lists of scores), and all I want
-;; to know is 'what was the highest score of each run'.  Scores always
-;; start at 1, but sometimes the runs end with repeats of the highest
-;; score.
-
-;; I have 'solved' this problem many times, only to find later that
-;; I've got a list of scores where it's obvious what I want, but my
-;; function gets a different answer.
-
-;; So I want to define the problem precisely first, and it seems that
-;; the best way to do this is to write down lots of examples:
-
-;; So here's a list of lots of examples, with the answers I want
-
-;; I want a function, ends, that will behave like this:
-
-(ends '()) ;-> '()
-(ends '(1))  ;-> '(1)
-(ends '(1 2)) ;-> (2)
-(ends '(1 2 3)) ;-> (3)
-(ends '(1 2 3 3)) ;- (3)
-
-(ends '(1 2 3 4)) ;-> (4)
-(ends '(1 2 3 4 2)) ;-> (4 2)
-(ends '(1 3)) ;-> (1 3)
-(ends '(1 3 5) ;-> (1 3 5)
-(ends '(1 3 4 5) ;-> (1 5)
-(ends '(1 3 4 5 6) ;-> (1 5)
-
-;; And here are a couple of sequences that actually broke previous attempts
-
-(ends '(1 2 3 4 5  2 3 4 5 6 6 6  17 18 19 20 20 20 )) ;-> (5 6 20)
-(ends '(1 2 3 4 5  2 3 4 5 6 6 6  17 18 19 20 )) ;-> (5 6 20)
-
-;; The first thing that seems clear is that I should make this into a test
-(use 'clojure.test)
-
-;; I will use the mighty power of emacs keyboard macros:
-(deftest ends-test
-  (is (= (ends '())                '()))
-  (is (= (ends '(1))               '(1)))
-  (is (= (ends '(1 2))             '(2)))
-  (is (= (ends '(1 2 3))           '(3)))
-  (is (= (ends '(1 2 3 3))         '(3)))
-  (is (= (ends '(1 2 3 4))         '(4)))
-  (is (= (ends '(1 2 3 4 2))       '(4 2)))
-  (is (= (ends '(1 3))             '(1 3)))
-  (is (= (ends '(1 3 5)            '(1 3 5))))
-  (is (= (ends '(1 3 4 5)          '(1 5))))
-  (is (= (ends '(1 3 4 5 6)        '(1 6))))
-  (is (= (ends '(1 2 3 4 5  2 3 4 5 6 6 6  17 18 19 20 20 20 )) '(5 6 20)))
-  (is (= (ends '(1 2 3 4 5  2 3 4 5 6 6 6  17 18 19 20 ))       '(5 6 20))))
-
-(ends-test)
-
-;; It seems to me that what the function needs to do is:
-
-;; Split the sequence up whenever the next number is not either the same or one greater
-
-;; So I need a function of two things which does this
-
-(defn equivalent? [a b]
-  (or (= a b) (= a (dec b))))
-
-;; And a general function 
-
-(defn partition-by-equivalence [f sq]
-  '?)
-
-(ends-test)
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-(defn distinct [coll]
-    (let [step (fn step [xs seen]
-                   (lazy-seq
-                    ((fn [[f :as xs] seen]
-                      (when-let [s (seq xs)]
-                        (if (contains? seen f) 
-                          (recur (rest s) seen)
-                          (cons f (step (rest s) (conj seen f))))))
-                     xs seen)))]
-      (step coll #{})))
