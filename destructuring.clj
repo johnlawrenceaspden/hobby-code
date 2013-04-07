@@ -19,7 +19,7 @@
 ;; I love this and use it all the time. It's well worth learning the syntax.
 
 ;; Try playing with this expression:
-((fn [{:keys[a b] :or {b 55} :as m}] {:a a :b b :m m}) {})
+(take 5 (iterate (fn [{:keys[a b] :or {b 55} :as m}] {:a a :b b :m m}) {:a 0 :b 0}))
 
 
 
