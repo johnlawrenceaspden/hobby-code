@@ -5,7 +5,9 @@
                  [org.clojure/tools.trace "0.7.5"]
                  [org.clojure/tools.reader "0.7.0"]
                  [org.clojure/core.logic "0.8.1"]
-                 [com.cemerick/pomegranate "0.0.13"]]
+                 [com.cemerick/pomegranate "0.0.13"]
+		 [simple-plotter "0.1.1-SNAPSHOT"]
+                 ]
 
 ;; The magic words are:
 ;; (require 'cemerick.pomegranate)

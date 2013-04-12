@@ -1,7 +1,6 @@
 (ns simple-plotter
   (:import (javax.swing JFrame JPanel )
-           (java.awt Color Graphics Graphics2D Image))
-  (:use (clojure.contrib def)))
+           (java.awt Color Graphics Graphics2D Image)))
 
 ;; This is an attempt to make graphics in clojure as simple as it was on a ZX
 ;; Spectrum. Let us count the whole maven/leiningen/cake-clojure-emacs-(require
@@ -11,7 +10,7 @@
 ;; Define some colours to use:
 ;; java.awt.Color/GREEN -> simple-plotter/green
 
-(defmacro- defcolours [& colours]
+(defmacro defcolours [& colours]
   (list* 'do (map #(list 'def  (symbol (. (str %) toLowerCase)) (symbol (str "Color/" (str %)))) colours)))
 
 ;; (macroexpand '(defcolours black white)) -> (do (def black Color/black) (def white Color/white))
@@ -99,7 +98,7 @@
 (defn- remove-lines [plotter] (swap! (plotter :lines) (constantly [])))
 
 ;; We have an idea of the current plotter
-(defvar- current-plotter (atom nil))
+(def current-plotter (atom nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Public Interface
