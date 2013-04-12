@@ -3,6 +3,8 @@
 # this sequence restored comms in the Maypole when it was broken
 # when typed in, but when run as a script broke it irrevocably
 
+# it (typed in) also cures the problem in the boathouse if the wireless wakes up broken
+
 # reboot and it still didn't work, but then try this sequence again
 # and all was suddenly well.
 
@@ -28,4 +30,4 @@ sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma
 sleep 4
 sudo modprobe wl
 sleep 4
-sudo service network-manager restart
+sudo service network-manager start
