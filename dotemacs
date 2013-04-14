@@ -575,9 +575,14 @@
   (region-find-grep "~/hobby-code"))
 
 
-;; only do horizontal splitting
-;;(setq split-height-threshold nil)
-;;(setq split-width-threshold 0)
+;; these variables are something to do with splitting.
+;; After evaluating this bit, it seems to prefer horizontal splitting.
+(setq split-height-threshold 0) ;; any window can be split horizontally
+(setq split-width-threshold nil) ;; but don't split anything vertically
+; can test the behaviour like this
+;(split-window-sensibly (first (window-list)))
+
+
 
 (require 'ido)
 (ido-mode 'both)
