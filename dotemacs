@@ -562,17 +562,17 @@
   (let ((term (if (use-region-p)
                   (buffer-substring (region-beginning) (region-end))
                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-    (grep-find (concat "ack --smart-case --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
+    (grep-find (concat "ack-grep --text --smart-case --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
 
 
-(defun fgf()
+(defun fgi()
   (interactive)
-  (region-find-grep "~/myco/firmwaresrc"))
+  (region-find-grep "~/iqtest"))
 
 
 (defun fgh()
   (interactive)
-  (region-find-grep "/projects/huntington_A0/Work/jla/hunt"))
+  (region-find-grep "~/hobby-code"))
 
 
 ;; only do horizontal splitting
