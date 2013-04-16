@@ -650,3 +650,6 @@
 (defun yank-escaped-string ()
   (interactive)
   (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
+
+;; use octave mode for .m files rather than objective-c which is the default in emacs
+(setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
