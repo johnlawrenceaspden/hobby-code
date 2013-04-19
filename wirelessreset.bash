@@ -1,8 +1,9 @@
 #!/bin/bash
+set -x
 
-ip link
-iwconfig
-nm-tool
+sudo ip link
+sudo iwconfig
+sudo nm-tool
 
 # this sequence restored comms in the Maypole when it was broken
 # when typed in, but when run as a script broke it irrevocably
@@ -39,10 +40,12 @@ sleep 4
 sudo service networking start
 sleep 4
 sudo service network-manager start
+sleep 10
 
-
-ip link
-iwconfig
-nm-tool
-echo use dmesg | grep "eth\|wl\|net\|802"
+sudo ip link
+sudo iwconfig
+sudo nm-tool
+echo 'other things to try'
+echo 'sudo pkill -f wpa_supplicant'
+echo 'use dmesg | grep "eth\|wl\|net\|802"'
 
