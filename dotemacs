@@ -653,3 +653,10 @@
 
 ;; use octave mode for .m files rather than objective-c which is the default in emacs
 (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
+;; kind of the opposite way round to lisp, but it feels right somehow.
+(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
+(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
+
+
