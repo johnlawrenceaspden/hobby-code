@@ -1,5 +1,9 @@
 #!/bin/bash
 
+ip link
+iwconfig
+nm-tool
+
 # this sequence restored comms in the Maypole when it was broken
 # when typed in, but when run as a script broke it irrevocably
 
@@ -26,8 +30,19 @@
 
 sudo service network-manager stop
 sleep 4
+sudo service networking stop
+sleep 4
 sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
 sleep 4
 sudo modprobe wl
 sleep 4
+sudo service networking start
+sleep 4
 sudo service network-manager start
+
+
+ip link
+iwconfig
+nm-tool
+echo use dmesg | grep "eth\|wl\|net\|802"
+
