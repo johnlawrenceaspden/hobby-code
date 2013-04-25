@@ -660,4 +660,10 @@
 ;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
 ;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
 
+; Xah Lee shows us a better way:
+;http://ergoemacs.org/emacs/keyboard_shortcuts.html
+(add-hook 'octave-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-x C-r") 'octave-send-region)
+                      (local-set-key (kbd "M-C-x") 'octave-send-line)))
 
