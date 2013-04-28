@@ -654,11 +654,17 @@
 ;; use octave mode for .m files rather than objective-c which is the default in emacs
 (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
+
+(defun delete-buffer ()
+  (interactive)
+  (delete-region (point-min) (point-max)))
+
 ;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
 ;; kind of the opposite way round to lisp, but it feels right somehow.
 ; can't do this in startup. should be in octave mode hook
 ;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
 ;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
+;(define-key inferior-octave-mode-map "\C-c\M-o" 'delete-buffer)
 
 ; Xah Lee shows us a better way:
 ;http://ergoemacs.org/emacs/keyboard_shortcuts.html
