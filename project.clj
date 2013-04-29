@@ -6,7 +6,7 @@
                  [org.clojure/tools.reader "0.7.0"]
                  [org.clojure/core.logic "0.8.1"]
                  [com.cemerick/pomegranate "0.0.13"]
-		 [simple-plotter "0.1.1"]
+		 [simple-plotter "0.1.2"]
                  ]
 
 ;; The magic words are:
