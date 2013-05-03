@@ -673,3 +673,7 @@
                       (local-set-key (kbd "C-x C-r") 'octave-send-region)
                       (local-set-key (kbd "M-C-x") 'octave-send-line)))
 
+(add-hook 'inferior-octave-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-c M-o") 'delete-buffer)))
+
