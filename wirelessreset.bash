@@ -35,6 +35,7 @@ sudo service networking stop
 sleep 4
 sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
 sleep 4
+sudo pkill -f wpa_supplicant
 sudo modprobe wl
 sleep 4
 sudo service networking start
