@@ -659,6 +659,11 @@
   (interactive)
   (delete-region (point-min) (point-max)))
 
+(defun goto-end-of-other-window ()
+  (interactive)
+  (other-window 1)
+  (end-of-buffer))
+
 ;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
 ;; kind of the opposite way round to lisp, but it feels right somehow.
 ; can't do this in startup. should be in octave mode hook
@@ -671,9 +676,11 @@
 (add-hook 'octave-mode-hook
                     (lambda ()
                       (local-set-key (kbd "C-x C-r") 'octave-send-region)
-                      (local-set-key (kbd "M-C-x") 'octave-send-line)))
+                      (local-set-key (kbd "M-C-x") 'octave-send-line)
+                      (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
 
 (add-hook 'inferior-octave-mode-hook
                     (lambda ()
-                      (local-set-key (kbd "C-c M-o") 'delete-buffer)))
+                      (local-set-key (kbd "C-c M-o") 'delete-buffer)
+                      (local-set-key (kbd "<f12>") 'other-window)))
 
