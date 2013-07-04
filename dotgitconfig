@@ -3,3 +3,5 @@
 	email = github@aspden.com
 [merge]
 	tool = xxdiff
+[push]
+	default = simple
