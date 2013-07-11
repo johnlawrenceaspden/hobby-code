@@ -6,36 +6,40 @@
 
 ;; The fundamental notion in quicksort is partition-by-pivot
 
-;; the first element of our array is 7, we'll choose that element to be our 'pivot'
-;; the first thing we want to do is find a way of reordering an array so that everything less than the pivot
-;; comes before it, and everything greater than the pivot comes after it.
+;; The first thing we need to do is to choose the 'pivot'.
+;; The obvious choice is the first element of our array, 7
+
+;; So our fundamental operation will be to reorder the array so that everything less than 
+;; 7 comes before it, and everything greater than 7 comes after it.
 
 ;; It's a fair bet that the ability to swap elements will come in handy:
-
 (defn swap [v i1 i2] 
    (assoc v i2 (v i1) i1 (v i2)))
 
 (swap [1 2 3] 0 1)   ;-> [2 1 3]
 (swap original 1 19) ;-> [7 19 12 2 15 14 16 1 3 0 9 18 17 10 11 8 4 6 5 13]
 
+;; Here's a function to partition-by-pivot, taking the first element of the array as
+;; the pivot.
 
-;; I submit for consideration this function, which leaves the pivot
+;; To understand what it's doing, notice that it leaves the pivot
 ;; alone at the beginning of the array, and maintains this pattern:
 ;; [ pivot | less than pivot | more than pivot | unscanned ]
 ;; in the array as it scans through:
 
-(defn ^:dynamic partition-by-pivot [v i j]
-  (if (= j (count v))
-    (swap v 0 (dec i))
-    (if (< (v 0) (v j))
-      (partition-by-pivot v i (inc j))
-      (partition-by-pivot (swap v i j) (inc i) (inc j)))))
-
-;; i and j are the indices of the two moving boundaries in the vector. We don't need an index for the pivot since it stays at the front.
-
 ;; Once the scan is ended we can put the pivot in its rightful place with a single swap.
 
-;; Actions having a way of speaking louder than words, behold:  
+(defn ^:dynamic partition-by-pivot [v i j]
+  (if (= j (count v))  ;; if the scan is ended
+    (swap v 0 (dec i)) ;; put the pivot in the right place
+    (if (< (v 0) (v j)) ;; otherwise compare elements
+      (partition-by-pivot v i (inc j)) ;; and move the boundaries/swap elements as appropriate
+      (partition-by-pivot (swap v i j) (inc i) (inc j))))) ;; to preserve the pattern
+
+;; i and j are the indices of the two moving boundaries in the vector. 
+;; We don't need an index for the pivot since it stays at the front.
+
+;; Actions having a way of speaking louder than words, so:  
 (require 'clojure.tools.trace)
 (clojure.tools.trace/dotrace [partition-by-pivot] (partition-by-pivot original 1 1))
 
@@ -83,15 +87,18 @@
 
 
 ;; Notice that in the result:
-;; 5 2 1 3 0 4 6 7 13 15 9 18 17 10 11 8 14 16 12 19]
-;; which is much better ordered than the original, the pivot element 7 is in its correct place (element 7) already. It need never move again.
+;; [ 5 2 1 3 0 4 6 7 13 15 9 18 17 10 11 8 14 16 12 19]
+;; (which is much better ordered than the original)
+;; the pivot element 7 is in its correct place (element 7) already. 
+;; It need never move again.
 
 ;; We'd now like to repeat the partition on the two parts of the array on either side of 7 
+;; And to do this, we need to know the index where the pivot ended up.
 
 ;; Let's firstly modify our function so that it returns the final index of the pivot
 (defn ^:dynamic partition-by-pivot [v i j]
   (if (= j (count v))
-    [(dec i) (swap v 0 (dec i))]
+    [(dec i) (swap v 0 (dec i))] ;; just returning the index as well
     (if (< (v 0) (v j))
       (partition-by-pivot v i (inc j))
       (partition-by-pivot (swap v i j) (inc i) (inc j)))))
@@ -99,10 +106,12 @@
 
 (partition-by-pivot original 1 1) ;-> [7 [5 2 1 3 0 4 6 7 13 15 9 18 17 10 11 8 14 16 12 19]]
 
-;; Now we want to partition-by-pivot only the array from 0 to 6, so let's further modify our routine so that it can partition just a part of the array
+;; Now we want to partition-by-pivot only the array from 0 to 6, so
+;; let's further modify our routine so that it can partition just a
+;; part of the array
 
 (defn ^:dynamic partition-by-pivot [v start end]
-  (loop [v v i (inc start) j (inc start)]
+  (loop [v v i (inc start) j (inc start)] ;; this extra loop just sets up the indices i and j
     (if (> j end)
       [(dec i) (swap v start (dec i))]
       (if (< (v start) (v j))
@@ -110,21 +119,23 @@
         (recur (swap v i j) (inc i) (inc j))))))
 
 
+;; So now we can partition subarrays with respect to their first elements:
+(partition-by-pivot [7 13 12 2 15 14 16 1 3 0 19 18 17 10 11 8 4 6 5 9]  0 19)
+;-> [7 [5 2 1 3 0 4 6 7 13 15 19 18 17 10 11 8 14 16 12 9]]
+(partition-by-pivot ['_ 13 12 2 15 14 16 1 3 0 19 18 17 10 11 8 4 6 5 '_]  1 18)
+;-> [12 [_ 5 12 2 1 3 0 10 11 8 4 6 13 15 14 16 19 18 17 _]]
+(partition-by-pivot ['_ '_ '_ '_ '_ 14 16 1 3 0 19 '_ '_ '_ '_ '_ '_ '_ '_ '_]  5 10) 
+;-> [8 [_ _ _ _ _ 0 1 3 14 16 19 _ _ _ _ _ _ _ _ _]]
 
-(partition-by-pivot [7 13 12 2 15 14 16 1 3 0 19 18 17 10 11 8 4 6 5 9]  0 19) ;-> [7 [5 2 1 3 0 4 6 7 13 15 19 18 17 10 11 8 14 16 12 9]]
-(partition-by-pivot ['_ 13 12 2 15 14 16 1 3 0 19 18 17 10 11 8 4 6 5 '_]  1 18) ;-> [12 [7 5 12 2 1 3 0 10 11 8 4 6 13 15 14 16 19 18 17 9]]
-(partition-by-pivot ['_ '_ '_ '_ '_ 14 16 1 3 0 19 '_ '_ '_ '_ '_ '_ '_ '_ '_]  5 10) ;-> [12 [7 5 12 2 1 3 0 10 11 8 4 6 13 15 14 16 19 18 17 9]]
+;; Once we've got this function, it's obvious how to write quicksort:
 
-;; Once we've got this function, it's obvious how to write quicksort
-
-;; to quicksort, partition by a pivot and then quicksort both halves:
-
+;; To quicksort, partition by a pivot and then quicksort both halves
 (defn ^:dynamic qsort
   ([v start end]
-     (if (> (+ 2 start) end) v
-         (let [[index newv] (partition-by-pivot v start end)
-               leftsorted (qsort newv start (dec index))]
-           (qsort leftsorted (inc index) end)))))
+     (if (> (+ 2 start) end) v  ;; short array, nothing to do
+         (let [[index newv] (partition-by-pivot v start end) ;; otherwise partition
+               leftsorted (qsort newv start (dec index))] ;; and sort the left half
+           (qsort leftsorted (inc index) end))))) ;; and then the right half
 
 
 ;; This makes the interface a bit more user-friendly
@@ -135,8 +146,7 @@
 
 ;; ta-daaah...
 
-(clojure.tools.trace/dotrace [qsort] (quicksort original))
-
+(clojure.tools.trace/dotrace [qsort partition-by-pivot] (quicksort original))
 
 ;; So how fast is quicksort? 
 
@@ -162,6 +172,8 @@
 (time (first (quicksort (range 4096)))) ;; stack overflow!!
 (time (first (quicksort (range 8192))))
 
+;; And also:
+
 (time (first (quicksort (reverse (range 64))))) "Elapsed time: 15.704443 msecs"
 (time (first (quicksort (reverse (range 128))))) "Elapsed time: 57.875302 msecs"
 (time (first (quicksort (reverse (range 256))))) "Elapsed time: 170.641883 msecs"
@@ -171,8 +183,8 @@
 (time (first (quicksort (reverse (range 4096))))) ;; stack overflow!!
 (time (first (quicksort (reverse (range 8192)))))
 
-;; It looks as though it's linear-ish for random input, but quadratic for at least some cases.
-
+;; It looks as though it's linear-ish for random input, but quadratic (with a vast recursion depth) for at least some cases.
+;; And those cases are easy to find!
 
 
 
