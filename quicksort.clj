@@ -132,7 +132,7 @@
 ;; To quicksort, partition by a pivot and then quicksort both halves
 (defn ^:dynamic qsort
   ([v start end]
-     (if (> (+ 2 start) end) v  ;; short array, nothing to do
+     (if (> (+ 1 start) end) v  ;; short array, nothing to do
          (let [[index newv] (partition-by-pivot v start end) ;; otherwise partition
                leftsorted (qsort newv start (dec index))] ;; and sort the left half
            (qsort leftsorted (inc index) end))))) ;; and then the right half
