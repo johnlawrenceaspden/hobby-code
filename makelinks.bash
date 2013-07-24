@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in hgrc emacs bashrc inputrc gitconfig profile; 
+for i in hgrc emacs bashrc inputrc gitconfig profile xinitrc; 
     do 
 	echo replacing $i
 	mv ~/.$i ~/old.$i

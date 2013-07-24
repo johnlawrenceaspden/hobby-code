@@ -1,0 +1,2 @@
+synclient AreaBottomEdge=4000
+setxkbmap -option ctrl:nocaps
