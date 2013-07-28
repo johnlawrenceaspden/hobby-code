@@ -1,0 +1,167 @@
+let parse(fname) = 
+let lines = ref "" in
+let chan = open_in fname in
+try
+  while true do
+    lines := input_line chan;
+    print_string(!lines);
+  done;
+with End_of_file -> close_in chan;;
+
+parse("/home/john/hobby-code/SCC.txt");;
+
+let fib(n)= 
+  if (n<2) n;;
+
+module SS=Set.Make(String);;
+
+let s=SS.empty;;
+
+let s=SS.singleton("doom");;
+
+let s=SS.add "horror" s;;
+
+let s= List.fold_right SS.add ["terror";"treason"] s;;
+
+SS.iter print_endline s;;
+
+SS.count s;;
+
+let s2=SS.filter (fun str-> String.length str <= 5) s;;
+
+SS.iter print_endline s2;;
+
+let s3 = SS.diff s s2;;
+
+SS.iter print_endline s3;;
+
+let average a b =
+  (a +. b) /. 2.0;;
+
+average 4. 5.;;
+
+1. +. 2.5;;
+
+(float_of_int 1) +. 2.5;;
+
+(int_of_float 1.0)
+
+
+let rec range a b =
+  if (a > b) then []
+  else a :: range (a+1) b;;
+
+range 1 10;;
+
+(* let rec repeated n str =
+  if (<= n 0) then str
+  else *)
+
+let average a b =
+  let sum = a +. b in
+  sum /. 2.;;
+
+average 4. 5.;;
+
+let f a b =
+  let sum = a +. b in 
+  sum *. sum ;;
+
+f 3. 4.;;
+
+let var = ref 0;;
+
+var;;
+!var;;
+
+var := 3;;
+
+var;;
+!var;;
+
+(* sudo apt-get install ocaml ocaml-findlib tuareg-mode *)
+
+#use "topfind";;
+#require "graphics";;
+open Graphics;;
+
+open_graph " 640x480";;
+
+Random.self_init ();;
+
+
+let rec iterate r x i =
+  if i = 1 then x
+  else iterate r (r *. x *. (1.0 -. x)) (i-1);;
+
+for colour = 1 to 10 do
+  set_color (match colour with 1-> blue | 2-> red | 3-> green | 4-> yellow | _-> black);
+  for x = 0 to 639 do
+    let r = 4.0 *. (float_of_int x) /. 640.0 in
+    for i = 0 to 39 do
+      let x_init = Random.float 1.0 in
+      let x_final = iterate r x_init colour in
+      let y = int_of_float (x_final *. 480.) in
+      Graphics.plot x y
+    done
+  done
+done
+
+
+
+
+module Sm = Map.Make(String);;
+let m = Sm.empty;;
+let m = Sm.add "doom" "DOOM" m;;
+
+let pu a b=print_string (a^" "^b^" "^"\n");;
+
+Sm.iter pu m;;#
+
+Sm.find "doom" m;;
+
+let q = Sm.empty;;
+let q = Sm.add "doom" 10 q;;
+
+Sm.find "doom" q;;
+
+
+(* Graph Reading Program *)
+
+
+
+
+
+Hashtbl.add edges 1 2;;
+
+Hashtbl.find edges 1;;
+Hashtbl.find_all edges 1;;
+Hashtbl.find_all edges 0;;
+
+#require "str";;
+
+let edges = Hashtbl.create 10000000;;
+let revedges = Hashtbl.create 10000000;;
+
+let parse(fname) = 
+let lines = ref "" in
+let chan = open_in fname in
+try
+  while true do
+    lines := input_line chan;
+    print_string("-");print_string(!lines);print_string("-\n");
+    let l = (List.map int_of_string (Str.split (Str.regexp " +" ) !lines)) in
+    match l with
+      [a;b] -> 
+        Hashtbl.add edges    a b;
+        Hashtbl.add revedges b a;
+        print_int a; print_string(":"); print_int b; print_string("\n")
+    | _ -> print_string "fail\n";
+  done;
+with End_of_file -> close_in chan;;
+
+parse("/home/john/hobby-code/SCC.txt");;
+
+Hashtbl.find_all edges 1;;
+Hashtbl.find_all revedges 1;;
+Hashtbl.find_all edges 8;;
