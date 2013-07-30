@@ -1,0 +1,102 @@
+(* 
+Ocaml setup for ubuntu and emacs
+
+sudo apt-get install ocaml ocaml-findlib tuareg-mode 
+M-x tuareg-mode
+restart emacs
+C-c C-s starts you an interactive ocaml repl (toplevel, as it's known)
+
+*)
+
+(* Hello World, use C-M-x to evaluate the expression*)
+print_string "hello";;
+
+(* Factorial *)
+let rec factorial n = 
+  match n with 
+    0 -> 1
+  | n -> n * (factorial (n-1));;
+      
+
+factorial 5;;
+
+let rec fib n =
+  match n with 
+    0 -> 1
+  | 1 -> 1
+  | n -> (fib (n-1))+(fib(n-2));;
+
+fib 5;;
+
+fib 20;;
+fib 30;;
+fib 32;;
+fib 34;;
+fib 36;; (* Ocaml is quite fast, so this is feasible! *)
+
+
+(* Use findlib to load ocaml libraries dynamically and draw some graphs *)
+
+
+#use "topfind";;
+#require "graphics";;
+open Graphics;;
+
+open_graph " 640x480";;
+
+clear_graph();
+set_color black;
+for x = 0 to 639 do
+  let fx = 2. *. 3.141592 *. (float_of_int x) /. 640.  in
+  let y = (int_of_float (240.*.(1.+.sin fx))) in
+  Graphics.plot x y
+done;
+set_color red;
+for x = 0 to 639 do
+  let fx = 3. *. 3.141592 *. (float_of_int x) /. 640.  in
+  let y = (int_of_float (240.*.(1.+.sin fx))) in
+  Graphics.plot x y
+done;;
+
+
+(* Logistic function, note the . for float operators *)
+let rec logistic r x = (r *. x *. (1.0 -. x));;
+
+let rec iterate i fn x =
+  if i = 1 then x
+  else iterate (i-1) fn (fn x);;
+
+iterate 100 (fun x -> logistic 1. x) 0.5;;
+iterate 100 (fun x -> logistic 2. x) 0.5;;
+
+clear_graph();
+for xt = 0 to 6399 do
+  let x = xt/10 in
+  let x01 = (float_of_int xt) /. 6400.  in
+  let r = (4. *. x01) in
+  let y01 = (iterate 1 (fun x -> logistic r x) 0.5) in
+  let y   = (int_of_float (y01 *. 480.)) in
+  set_color red;
+  Graphics.plot x y;
+  let y01 = logistic r y01 in 
+  let y   = (int_of_float (y01 *. 480.)) in
+  set_color blue;
+  Graphics.plot x y;
+  let y01 = logistic r y01 in 
+  let y   = (int_of_float (y01 *. 480.)) in
+  set_color magenta;
+  Graphics.plot x y;
+  let y01 = logistic r y01 in 
+  let y   = (int_of_float (y01 *. 480.)) in
+  set_color green;
+  Graphics.plot x y;
+  let y01 = logistic r y01 in 
+  let y   = (int_of_float (y01 *. 480.)) in
+  set_color blue;
+  Graphics.plot x y;
+done;;
+
+
+
+
+
