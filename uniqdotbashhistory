@@ -1,0 +1,280 @@
+alsactl
+alsactl --help
+alsamixer 
+apropos term
+apt-cache search matplotlib
+arandr
+bash
+cd ~/iqtest && sudo service postgresql stop && sudo mkdir /var/run/postgresql ; sudo chown john.john /var/run/postgresql/ && /usr/lib/postgresql/9.1/bin/postgres -D pg
+dmesg | grep "eth\|wl\|net\|802"
+emacs ~/data/stuff.org
+export DATABASE_URL=postgresql://localhost:5432/iqtest && lein repl
+find ~/data/ -name "*solow*"
+firefox
+fnd FactorPrint.m
+fndg \*.m arg
+fndg \*.m narg
+fndg \*.m struct
+fnd graphsearch.clj 
+fndg struct
+fnd IndexTo\*
+for i in $files ; do echo $i; done
+git difftool
+git fetch --tags heroku master
+git gui
+gitkall
+git pull
+gitpullall 
+git pull heroku master
+git pull origin master
+gitpushall
+git push heroku master
+git push origin master
+git status
+git status >>.gitignore
+git status --porcelain
+gnome-panel 
+gnome-power-statistics 
+gnome-terminal
+gpaint
+gpointing-device-settings 
+grep -r var --include "*.m" *
+heroku scale web=0
+heroku scale web=1
+hgg
+~/hobby-code/wirelessreset.bash 
+~/hobby-code/wirelessreset.bash 2&>wirelessresetatideaspace
+~/hobby-code/wirelessreset.bash 2&>wirelessresetatideaspaceoneduroam
+htop
+ifconfig
+igg
+inkscape
+ip link
+ipython
+ipython notebook Chapter1_Introduction.ipynb --pylab inline
+ipython notebook MorePyMC.ipynb 
+ipython notebook --pylab inline
+ipython --version
+iwconfig
+iwlist 
+iwlist scan
+iwlist wlan0 scan
+jobs
+krita
+lein clean
+lein deps
+lein repl
+lein run
+ls --reverse --sort=time *.pdf
+ls --reverse --sort=time *.pdf | tail 20
+ls --reverse --sort=time *.pdf | tail -n 20
+ls --reverse --sort=time *.pdf | tail -n 21
+ls --reverse --sort=time *.pdf | tail -n 25
+ls --reverse --sort=time *.pdf | tail -n 30
+lsrt
+mtpaint
+mv uniq-sorted-collated-grand-unified-session-db grand-unified-session-db
+mypaint
+nethogs
+netstat
+nettop
+nm-applet 
+nm-tool
+ocaml
+ocamlc graphics.cma grtest1.ml -o grtest
+./ocaml-graphics 
+ocaml-graphics
+ocamlmktop -o ocaml-graphics graphics.cma
+octave
+panel-test-applets 
+patch <optimization.diff 
+patch optimization.diff 
+patch -p2 <optimization.diff 
+patch -p2 optimization.diff 
+patch -p <optimization.diff 
+patch -p optimization.diff 
+pgrep -lf gnome-
+pgrep -lf supp
+ping www.google.com
+pinta
+pulseaudio 
+pwd
+python
+reset
+rgbpaint
+rgrep "para"
+rgrep "para" "*.m"
+rlwrap ocaml
+setxkbmap -?
+setxkbmap -h
+setxkbmap --help
+setxkbmap -option ctrl:nocaps
+ssh-add
+su
+sudo add-apt-repository ppa:cassou/emacs
+sudo apt-add-repository ppa:octave/stable
+sudo apt-cache search findlib
+sudo apt-cache search netlogo
+sudo apt-cache search ocaml
+sudo apt-cache search topfind
+sudo apt-cache search typerex
+sudo apt-get autoremove
+sudo apt-get curl
+sudo apt-get install curl
+sudo apt-get install epiphany-browser
+sudo apt-get install fldiff
+sudo apt-get install git
+sudo apt-get install git-gui
+sudo apt-get install gpaint
+sudo apt-get install gpointing-device-settings 
+#sudo apt-get install --install-suggested synaptic ocaml 
+sudo apt-get install --install-suggested synaptic ocaml 
+sudo apt-get install --install-suggests synaptic ocaml
+sudo apt-get install ipython
+sudo apt-get install ipython-notebook
+sudo apt-get install mtpaint rgbpaint xpaint mypaint
+sudo apt-get install mtpaint rgbpaint xpaint mypaint gimp krita pinta inkscape gpaint xara-gtk 
+sudo apt-get install mtpaint rgbpaint xpaint mypaint gimp krita pinta inkscape karbon14 xara-gtk skencil 
+sudo apt-get install netlogo
+sudo apt-get install ntop
+sudo apt-get install ocaml 
+sudo apt-get install ocaml-findlib
+sudo apt-get install octave
+sudo apt-get install postgresql
+sudo apt-get install python-matplotlib
+sudo apt-get install python-scipy
+sudo apt-get install synaptic ocaml
+sudo apt-get install synaptic ocaml camlp4 libncurses5-dev libtinfo-dev ocaml-base ocaml-base-nox ocaml-interp
+sudo apt-get install synaptic ocaml camlp4 libncurses5-dev libtinfo-dev ocaml-base ocaml-base-nox ocaml-interp tuareg-mode ocaml-mode
+sudo apt-get install ubuntu-restricted-extras
+sudo apt-get install --with-suggested synaptic ocaml
+sudo apt-get remove --purge ntop
+sudo apt-get update
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get upgrade
+sudo fdisk -l
+sudo ifconfig
+sudo ifconfig eth2 down
+sudo ifconfig eth2 up
+sudo ifdown -a
+sudo ifup -a
+sudo ip link
+sudo iwconfig
+sudo iwlist eth2 scan | grep "Quality\|ESSID:\"BT"
+sudo iwlist eth2 scan | grep "Quality" | sort >doom && cat doom && wc doom
+sudo iwlist scan
+sudo iwlist wlan0 scan | grep "Quality\|ESSID:\"BT"
+sudo iwlist wlan1 scan
+sudo iwlist wlan1 scan | grep -c 10 "eduroam"
+sudo iwlist wlan1 scan | grep -C 10 eduroam
+sudo iwlist wlan1 scan | grep -c 1 "Quality=3" | sort >doom && cat doom && wc doom
+sudo iwlist wlan1 scan | grep -c1 "Quality=3" | sort >doom && cat doom && wc doom
+sudo iwlist wlan1 scan | grep "Cipher" 
+sudo iwlist wlan1 scan | grep "Cipher\|Quality\|SSID" 
+sudo iwlist wlan1 scan | grep --context=10 "eduroam"
+sudo iwlist wlan1 scan | grep --context 1 "Quality=3" | sort >doom && cat doom && wc doom
+sudo iwlist wlan1 scan | grep "Quality"
+sudo iwlist wlan1 scan | grep "Quality=3" | sort >doom && cat doom && wc doom
+sudo iwlist wlan1 scan | grep "Quality\|Cloud"
+sudo iwlist wlan1 scan | grep "Quality\|ESSID"
+sudo iwlist wlan1 scan | grep "Quality\|ESSID:\"BT"
+sudo iwlist wlan1 scan | grep "Quality\|ESSID:\"BTWifi"
+sudo iwlist wlan1 scan | grep "Quality\|ESSID:\"BTWiFi"
+sudo iwlist wlan1 scan | grep "Quality" | sort
+sudo iwlist wlan1 scan | grep "Quality" | sort >doom
+sudo iwlist wlan1 scan | grep "Quality" | sort >doom && cat doom && wc doom
+sudo iwlist wlan1 scan | grep "Quality\|SSID"
+sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+sudo modprobe wl
+sudo nethogs
+sudo nethogs wlan0
+sudo nethogs wlan1
+sudo nm-tool
+sudo ntop
+sudo pkill -f wpa_supplicant
+sudo pkill gnome
+sudo pm-hibernate
+sudo rmmod mac80211 
+sudo rmmod rt2800lib
+sudo rmmod rt2800usb
+sudo rmmod rt2x00lib
+sudo rmmod rt2x00usb
+sudo rmmod wl
+sudo service networking 
+sudo service networking restart
+sudo service networking start
+sudo service networking stop
+sudo service networking stop eth2
+sudo service network-interface
+sudo service network-interface eth2 status
+sudo service network-interface status
+sudo service network-manager restart
+sudo service network-manager start
+sudo service network-manager stop
+sudo su
+sudo synaptic
+sudo ufw enable
+sudo ufw status
+sudo update-grub
+sudo vi /etc/default/grub
+sudo vi /etc/default.grub
+sudo vi /etc/default.grug
+sudo vi /etc/login.defs
+sudo wget --output-document=/etc/apt/sources.list.d/medibuntu.list http://www.medibuntu.org/sources.list.d/$(lsb_release -cs).list && sudo apt-get --quiet update && sudo apt-get --yes --quiet --allow-unauthenticated install medibuntu-keyring
+sudo wireshark
+sudo xfce4-power-manager --no-daemon
+su fred
+synclient AreaBottomEdge=4000 && setxkbmap -option ctrl:nocaps
+synclient VertEdgeScroll=true
+tail -f /var/log/syslog
+tail project.clj 
+./unify.bash 
+unison /home/john/Desktop/unison /mnt/wd/unison
+watch -d ls -al
+watch -d ls -al 
+watch -d "ls -al *.mp4"
+watch -d ls -al *.mp4
+watch -d -n 1 'iwlist eth1 scan'
+watch -d -n 1 'iwlist eth1 scan | grep "ESS\|ual"'
+watch -d -n 1 'iwlist eth1 scan | grep "ESS\|ual\|annel:1"'
+watch -d -n 1 'iwlist wlan0 scan'
+watch -d -n 1 'iwlist wlan0 scan | grep -C 10 laren'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|annel"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|laren"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|req"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|req\|ual"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|req\|ual\|annel:1"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|ual"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|\|ual\|annel:1"'
+watch -d -n 1 'iwlist wlan0 scan | grep "ESS\|ual\|annel:1"'
+watch -d sudo iwlist wlan1 scan | grep -C 10 eduroam
+watch -d (sudo iwlist wlan1 scan | grep "Quality" | sort)
+watch -d $(sudo iwlist wlan1 scan | grep "Quality" | sort )
+watch -d \(sudo iwlist wlan1 scan | grep "Quality" | sort \)
+watch -d \(sudo iwlist wlan1 scan | grep "Quality" | sort\)
+watch -d sudo iwlist wlan1 scan | grep "Quality" | sort
+watch 'iwlist wlan0 scan | grep -C 10 laren'
+watch iwlist wlan0 scan | grep -C 10 laren
+watch -n 10 -d "ls -al *.mp4"
+watch -n 10 -d "ls -al *.mp4*"
+wc doom
+wc ~/hobby-code/SCC.txt 
+wc /home/john/Desktop/SCC.txt 
+wc SCC.txt 
+wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+which fndg
+which lein
+wpa_gui
+xara 
+xara-gtk
+xara-gtk --help
+xfce4-power-information
+xfce4-power-manager
+xfce4-power-manager --no-daemon
+xfce4-power-manager --quit
+xfce4-power-manager-settings 
+xfce4-volumed 
+xfterm4 
+xpaint
+xscreensaver
+xterm
