@@ -7,6 +7,8 @@
                  [org.clojure/core.logic "0.8.1"]
                  [com.cemerick/pomegranate "0.0.13"]
 		 [simple-plotter "0.1.2"]
+
+ ;                [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
                  ]
 
 ;; The magic words are:
@@ -17,6 +19,7 @@
 
 ;; (cemerick.pomegranate/add-dependencies :coordinates '[[org.clojure/tools.trace "0.7.5"]])
 
+  :jvm-opts ["-Xmx900M"] 	
   :repl-options { 
                  :port 4001 
                  :init (do (println "hello from hobby-code/project.clj")
