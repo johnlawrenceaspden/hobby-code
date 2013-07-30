@@ -1,0 +1,65 @@
+#use "topfind";;
+#require "str";;
+
+let parse(fname, edges, revedges) = 
+let line = ref "" in
+let chan = open_in fname in
+try
+  while true do
+    line := input_line chan;
+    let l = (List.map int_of_string (Str.split (Str.regexp " +" ) !line)) in
+    match l with
+      [a;b] -> 
+        Hashtbl.add edges    a b;
+        Hashtbl.add revedges b a;
+(*        print_int a; print_string(":"); print_int b; print_string("\n")*)
+    | _ -> 
+      print_string "fail:"; 
+      print_string("-"); print_string(!line);print_string("-\n");
+
+  done;
+with End_of_file -> close_in chan;;
+
+
+let edges = Hashtbl.create 10000000;;
+let revedges = Hashtbl.create 10000000;;
+
+parse("/home/john/hobby-code/SCC.txt", edges, revedges);;
+
+Hashtbl.find_all edges 1;;
+Hashtbl.find_all revedges 1;;
+Hashtbl.find_all edges 8;;
+
+
+let rec search edges explored numbering node_to_explore count =
+  (if (Hashtbl.mem explored node_to_explore) then
+      "done"
+   else 
+      (( Hashtbl.add explored node_to_explore true) ;  
+       ( List.iter 
+           (fun node -> search edges explored numbering node count) 
+           (Hashtbl.find_all edges node_to_explore));
+       ( Hashtbl.add numbering count);
+       ( count:=((!count)+1) );
+       "doom" ));;
+
+
+
+
+
+
+  "doom"
+  
+
+let explored = Hashtbl.create 1000000;;
+let numbering = Hashtbl.create 1000000;;
+let count = ref 0;;
+
+search edges explored numbering 1 count;;
+
+Hashtbl.mem explored 1;;
+
+if (Hashtbl.mem explored 1) then
+    "done"
+  else 
+    "doom";;
