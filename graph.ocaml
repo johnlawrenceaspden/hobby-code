@@ -24,7 +24,7 @@ with End_of_file -> close_in chan;;
 let edges = Hashtbl.create 10000000;;
 let revedges = Hashtbl.create 10000000;;
 
-parse("/home/john/hobby-code/SCC.txt", edges, revedges);;
+parse("/home/john/Desktop/SCC.txt", edges, revedges);;
 
 Hashtbl.find_all edges 1;;
 Hashtbl.find_all revedges 1;;

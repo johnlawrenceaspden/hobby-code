@@ -1,0 +1,26 @@
+(*First problem to solve is reading a file*)
+
+let filename="/home/john/Desktop/SCC.txt";;
+
+(* Subproblem is to split the lines by whitespace *)
+#load "str.cma";;
+
+let split = Str.split (Str.regexp_string " ");;
+
+(* and to convert strings to integers *)
+let strtoint s =
+  Scanf.sscanf s "%d" (fun i -> i);;
+
+
+let rec read n vs ch =
+  if (n == 0) then vs else
+    match try Some(split (input_line ch)) with _ -> None with
+    | None -> vs
+    | Some[a;b] -> read (n-1) ((strtoint a, strtoint b)::vs) ch;;
+
+let edgelist=read 10 [] (open_in filename);;
+
+(* triumphantly produces *)
+[(2, 47647); (2, 47646); (1, 4); (1, 8); (1, 3); (1, 7); (1, 6); (1, 5);
+ (1, 2); (1, 1)]
+
