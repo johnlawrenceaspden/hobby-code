@@ -1,5 +1,7 @@
 (require 'clojure.tools.reader.edn)
 
+(def filename "/home/john/Desktop/SCC.txt")
+
 (defn add-edge [edgemap [from to]] (conj edgemap [ from (conj (edgemap from #{}) to)]))
 
 (defn make-edgehash [edge-seq edges counter]
