@@ -25,8 +25,8 @@
        (map clojure.tools.reader.edn/read-string l))
      {} 0 reverse)))
 
-(defn read-reverse-edges [filename] (make-edges filename true))
-(defn read-forward-edges [filename] (make-edges filename false))
+(defn read-reverse-edges [filename] (read-edges filename true))
+(defn read-forward-edges [filename] (read-edges filename false))
 
 
 
@@ -57,7 +57,7 @@
               (recur edges rest visited-set (cons finished-list partition-list)))))))
 
 
-(def filename "/home/john/Desktop/SCCsmall.txt")
+(def filename "/home/john/Desktop/SCC.txt")
 
 
 (def reverse-edges (read-reverse-edges filename))
