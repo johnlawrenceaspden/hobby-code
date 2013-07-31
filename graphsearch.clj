@@ -2,215 +2,60 @@
 
 (defn add-edge [edgemap [from to]] (conj edgemap [ from (conj (edgemap from #{}) to)]))
 
-(defn make-graph [edge-seq edges revedges nodes counter]
-  (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
-  (if (empty? edge-seq) [edges revedges nodes]
-      (let [ns (first edge-seq)]
-        (if (= (count ns) 2)
-          (let [[a b] ns]
-            (recur (rest edge-seq) 
-                   (add-edge edges    [a b]) 
-                   (add-edge revedges [b a]) 
-                   (conj (conj nodes a) b)
-                   (inc counter)))
-          (do (print "failzor: " (first edge-seq) "->" ns)
-              (recur (rest edge-seq) edges revedges nodes counter))))))
+(defn make-graph 
+  ([edge-seq] (make-graph edge-seq {} {} #{} 0))
+  ([edge-seq edges revedges nodes counter]
+     (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
+     (if (empty? edge-seq) [edges revedges nodes]
+         (let [ns (first edge-seq)]
+           (if (= (count ns) 2)
+             (let [[a b] ns]
+               (recur (rest edge-seq) 
+                      (add-edge edges    [a b]) 
+                      (add-edge revedges [b a]) 
+                      (conj (conj nodes a) b)
+                      (inc counter)))
+             (do (print "failzor: " (first edge-seq) "->" ns)
+                 (recur (rest edge-seq) edges revedges nodes counter)))))))
 
-(def filename "/home/john/Desktop/SCC.txt")
+;; Here's a graph
+;; 154382697
+;; ABCDEFGHI
+(def graphstring
+  ":F :C\n:G :C\n:I :E\n:C :B\n:E :H\n:B :I\n:D :A\n:F :D\n:H :I\n:B :G\n:A :F\n")
 
+(def edge-lines (clojure.string/split graphstring #"\n"))
 
-(time (def scc-graph 
-        (with-open [rdr (clojure.java.io/reader filename)]
-          (make-graph 
-           (for [l (for [l (take 1000000 (line-seq rdr))] (clojure.string/split l #"\s"))] 
-                          (map clojure.tools.reader.edn/read-string l)) 
-                        {} {} #{} 0))))
+(def edge-pairs (for [l edge-lines] (clojure.string/split l #"\s")))
 
-;;100 84msecs
-;;1000 250
-;;10000 2470
-;;100000 29249 / 10% mem
-;;1000000 295931 / 36.4%mem virt 680m res 361m
+(def edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l)))
+  
+;; Our representation of it is edges forwards, edges backwards, list of nodes
+(def small-graph (make-graph edge-seq))
 
+(clojure.pprint/pprint small-graph)
 
-
-(defn make-nodelist [edge-seq nodes counter]
-  (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
-  (if (empty? edge-seq) [nodes]
-      (let [ns (first edge-seq)]
-        (if (= (count ns) 2)
-          (let [[a b] ns]
-            (recur (rest edge-seq) 
-                   (conj (conj nodes a) b)
-                   (inc counter)))
-          (do (print "failzor: " (first edge-seq) "->" ns)
-              (recur (rest edge-seq)  nodes counter))))))
-
-
-
-(time (def scc-nodes (with-open [rdr (clojure.java.io/reader filename)]
-                       (let [scc (take 1000000 (line-seq rdr))
-                             edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-                             edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-                         (make-nodelist edge-seq  #{} 0)))))
-
-(count (first scc-nodes))
-
-;; 1000 289msecs
-;; 10000 1864
-;; 100000 19025
-;; 1000000 199597
-
-(time (def scc-nodes (with-open [rdr (clojure.java.io/reader filename)]
-                       (make-nodelist 
-                        (for [l (for [l 
-                                      (take 10000000 (line-seq rdr))] 
-                                  (clojure.string/split l #"\s"))] 
-                          (map clojure.tools.reader.edn/read-string l))
-                        #{} 0))))
-
-;; 1000 200
-;; 10000 1900
-;; 100000 19795
-(def scc-nodes nil)
-(def scc-graph nil)
+;; [{:A #{:F},
+;;   :H #{:I},
+;;   :D #{:A},
+;;   :B #{:G :I},
+;;   :E #{:H},
+;;   :C #{:B},
+;;   :I #{:E},
+;;   :G #{:C},
+;;   :F #{:C :D}}
+;;  {:F #{:A},
+;;   :G #{:B},
+;;   :D #{:F},
+;;   :A #{:D},
+;;   :I #{:B :H},
+;;   :H #{:E},
+;;   :B #{:C},
+;;   :E #{:I},
+;;   :C #{:F :G}}
+;;  #{:A :C :B :F :G :D :E :I :H}]
 
 
-
-(defn make-edgehash [edge-seq edges counter]
-  (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
-  (if (empty? edge-seq) edges
-      (let [ns (first edge-seq)]
-        (if (= (count ns) 2)
-          (let [[a b] ns]
-            (recur (rest edge-seq) 
-                   (add-edge edges    [a b]) 
-                   (inc counter)))
-          (do (print "failzor: " (first edge-seq) "->" ns)
-              (recur (rest edge-seq) edges counter))))))
-
-
-(time (def scc-edges (with-open [rdr (clojure.java.io/reader filename)]
-                       (make-edgehash
-                        (for [l (for [l 
-                                      (take 10000000 (line-seq rdr))] 
-                                  (clojure.string/split l #"\s"))] 
-                          (map clojure.tools.reader.edn/read-string l))
-                        {} 0))))
-
-;100          35
-;1000        331
-;10000      2217
-;100000    22907
-;5105000 1335183
-
-(count scc-edges); 739454
-(count (keys scc-edges)); 739454
-(max (keys scc-edges))
-(min (keys scc-edges))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; DEAD BELOW HERE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;(def scc (clojure.string/split-lines (slurp "SCC.txt")))
-;;(def edge-pairs (for [l scc] (clojure.string/split l #"\s")))
-;;(def edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l)))
-;;(take 10 edge-seq) ;-> ((1 1) (1 2) (1 5) (1 6) (1 7) (1 3) (1 8) (1 4) (2 47646) (2 47647))
-
-
-
-(def sccgraph 
-  (let [scc (clojure.string/split-lines (slurp filename))
-        edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-        edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-    (make-graph edge-seq {} {} #{} 0)))
-
-;; How to read such a big file
-(time (with-open [rdr (clojure.java.io/reader filename)]
-                       (count (line-seq rdr))))
-;; 11 secs to read whole file and count the lines (not bad, since wc takes 17secs!)
-
-(time (with-open [rdr (clojure.java.io/reader filename)]
-        (let [scc (line-seq rdr)
-              edge-pairs (for [l scc] (clojure.string/split l #"\s"))]
-           (count edge-pairs))))
-;; 80 secs to count the word pairs
-
-(time (with-open [rdr (clojure.java.io/reader filename)]
-        (let [scc  (line-seq rdr)
-              edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-              edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-           (count edge-seq))))
-
-;; 95 secs
-
-(time (with-open [rdr (clojure.java.io/reader filename)]
-        (let [scc  (line-seq rdr)
-              edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-              edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-           (reduce + (map count edge-seq)))))
-
-;; 95 secs
-
-(time (def edge-seq 
-        (with-open [rdr (clojure.java.io/reader "/home/john/hobby-code/SCC.txt")]
-          (let [scc  (line-seq rdr)
-                edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-                edge-seq   (doall (for [l edge-pairs]
-                                    (doall (map clojure.tools.reader.edn/read-string l))))]
-           (doall edge-seq)))))
-
-;; 199 seconds for 1000000, 16.6 secs for 100000 -> 1000 secs to read file
-
-(time (reduce + (map count edge-seq)))
-;; 0.7 secs for 100000, 7 secs for 1000000, -> 35 secs for whole file
-
-(time (count (first (make-graph edge-seq {} {} #{} 0))))
-;; 8 secs for 100000, 106 secs for 1000000 -> ~ 600secs for whole file)
-
-(time (def scc-graph
-        (with-open [rdr (clojure.java.io/reader filename)]
-          (let [scc  (line-seq rdr)
-                edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-                edge-seq   (doall (for [l edge-pairs]
-                                    (doall (map clojure.tools.reader.edn/read-string l))))]
-           (make-graph edge-seq {} {} #{} 0)))))
-
-;; 23secs for 100000 -> 1000secs for whole thing ~ 20mins
-
-(count (nth scc-graph 2))
-
-
-
-
-
-
-(time (with-open [rdr (clojure.java.io/reader filename)]
-        (let [scc (line-seq rdr)
-              edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-              edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-           (count (first (make-graph (take 10000 edge-seq) {} {} #{} 0))))))
-
-;; 2252msecs
-
-(time (with-open [rdr (clojure.java.io/reader filename)]
-        (let [scc (line-seq rdr)
-              edge-pairs (for [l scc] (clojure.string/split l #"\s"))
-              edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-           (count (first (make-graph (take 100000 edge-seq) {} {} #{} 0))))))
-
-;; 24290 msecs. There are 5 million lines in our file so we're talking 30mins just to read them in!
-
-
-(def midi-scc-graph scc-graph)
-
-(count (nth midi-scc-graph 2))
-
-(def-let [[ edges revedges nodes ] scc-graph])
-
-;; First let's look at our small example
 (def-let [[ edges revedges nodes ] small-graph])
 
 nodes ;-> #{:A :C :B :F :G :D :E :I :H}
@@ -219,6 +64,7 @@ revedges ;-> {:F #{:A}, :G #{:B}, :D #{:F}, :A #{:D}, :I #{:B :H}, :H #{:E}, :B 
 
 ;; How shall we do a search on such a graph?
 
+;; Here's a functional, iterative version of depth-first search
 (defn dfs [visited-set to-visit-list]
   (if (empty? to-visit-list) visited-set
       (let [[node & rest] to-visit-list]
@@ -341,20 +187,3 @@ revedges ;-> {:F #{:A}, :G #{:B}, :D #{:F}, :A #{:D}, :I #{:B :H}, :H #{:E}, :B 
 
 
 
-;; Here's a graph
-;; 154382697
-;; ABCDEFGHI
-(def graphstring
-  ":F :C\n:G :C\n:I :E\n:C :B\n:E :H\n:B :I\n:D :A\n:F :D\n:H :I\n:B :G\n:A :F\n")
-
-(def edge-lines (clojure.string/split graphstring #"\n"))
-
-(def edge-pairs (for [l edge-lines] (clojure.string/split l #"\s")))
-
-(def edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l)))
-  
-
-(def small-graph (make-graph edge-seq {} {} #{} 0)) ;-> 
-; [{:A #{:F}, :H #{:I}, :D #{:A}, :B #{:G :I}, :E #{:H}, :C #{:B}, :I #{:E}, :G #{:C}, :F #{:C :D}}
-;  {:F #{:A}, :G #{:B}, :D #{:F}, :A #{:D}, :I #{:B :H}, :H #{:E}, :B #{:C}, :E #{:I}, :C #{:F :G}}
-;  #{:A :C :B :F :G :D :E :I :H}]
