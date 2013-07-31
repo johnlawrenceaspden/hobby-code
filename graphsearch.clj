@@ -18,25 +18,101 @@
 
 (def filename "/home/john/Desktop/SCC.txt")
 
-(time (def scc-graph (with-open [rdr (clojure.java.io/reader filename)]
-                       (let [scc (line-seq rdr)
+
+(time (def scc-graph 
+        (with-open [rdr (clojure.java.io/reader filename)]
+          (make-graph 
+           (for [l (for [l (take 1000000 (line-seq rdr))] (clojure.string/split l #"\s"))] 
+                          (map clojure.tools.reader.edn/read-string l)) 
+                        {} {} #{} 0))))
+
+;;100 84msecs
+;;1000 250
+;;10000 2470
+;;100000 29249 / 10% mem
+;;1000000 295931 / 36.4%mem virt 680m res 361m
+
+
+
+(defn make-nodelist [edge-seq nodes counter]
+  (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
+  (if (empty? edge-seq) [nodes]
+      (let [ns (first edge-seq)]
+        (if (= (count ns) 2)
+          (let [[a b] ns]
+            (recur (rest edge-seq) 
+                   (conj (conj nodes a) b)
+                   (inc counter)))
+          (do (print "failzor: " (first edge-seq) "->" ns)
+              (recur (rest edge-seq)  nodes counter))))))
+
+
+
+(time (def scc-nodes (with-open [rdr (clojure.java.io/reader filename)]
+                       (let [scc (take 1000000 (line-seq rdr))
                              edge-pairs (for [l scc] (clojure.string/split l #"\s"))
                              edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
-                         (make-graph edge-seq {} {} #{} 0)))))
+                         (make-nodelist edge-seq  #{} 0)))))
 
-;; 1000       345 msecs
-;; 10000     2371
-;; 100000   23951
-;; 1000000 299598
-;; 5105042 runs out of heap space after reading about 4000000 records
-;; apparently the jvm default heap size is 512M and that's why memory consumption
-;; doesn't go above 50%.
-;; add  :jvm-opts ["-Xmx900M"] 
-;; 5105042 
+(count (first scc-nodes))
+
+;; 1000 289msecs
+;; 10000 1864
+;; 100000 19025
+;; 1000000 199597
+
+(time (def scc-nodes (with-open [rdr (clojure.java.io/reader filename)]
+                       (make-nodelist 
+                        (for [l (for [l 
+                                      (take 10000000 (line-seq rdr))] 
+                                  (clojure.string/split l #"\s"))] 
+                          (map clojure.tools.reader.edn/read-string l))
+                        #{} 0))))
+
+;; 1000 200
+;; 10000 1900
+;; 100000 19795
+(def scc-nodes nil)
+(def scc-graph nil)
 
 
 
+(defn make-edgehash [edge-seq edges counter]
+  (when (zero? (mod counter 1000)) (println counter (System/nanoTime)))
+  (if (empty? edge-seq) edges
+      (let [ns (first edge-seq)]
+        (if (= (count ns) 2)
+          (let [[a b] ns]
+            (recur (rest edge-seq) 
+                   (add-edge edges    [a b]) 
+                   (inc counter)))
+          (do (print "failzor: " (first edge-seq) "->" ns)
+              (recur (rest edge-seq) edges counter))))))
 
+
+(time (def scc-edges (with-open [rdr (clojure.java.io/reader filename)]
+                       (make-edgehash
+                        (for [l (for [l 
+                                      (take 10000000 (line-seq rdr))] 
+                                  (clojure.string/split l #"\s"))] 
+                          (map clojure.tools.reader.edn/read-string l))
+                        {} 0))))
+
+;100          35
+;1000        331
+;10000      2217
+;100000    22907
+;5105000 1335183
+
+(count scc-edges); 739454
+(count (keys scc-edges)); 739454
+(max (keys scc-edges))
+(min (keys scc-edges))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DEAD BELOW HERE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;(def scc (clojure.string/split-lines (slurp "SCC.txt")))
 ;;(def edge-pairs (for [l scc] (clojure.string/split l #"\s")))
