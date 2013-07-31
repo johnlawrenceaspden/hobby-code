@@ -185,5 +185,67 @@ revedges ;-> {:F #{:A}, :G #{:B}, :D #{:F}, :A #{:D}, :I #{:B :H}, :H #{:E}, :B 
 (sort (map count sccs))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; We'd like to get rid of the recursion
+
+
+
+(defn ^:dynamic dfs [edges to-visit visited-set finished-list]
+  (if (empty? to-visit) [visited-set finished-list]
+      (let [[node & rst] to-visit]
+        (if (visited-set node) (recur edges rst visited-set (cons node finished-list))
+            (let [visited-set (conj visited-set node)
+                  newedges (edges node)
+                  new-to-visit (filter (comp not visited-set) newedges)]
+              (if (empty? new-to-visit )
+                (recur edges rst visited-set (cons node finished-list))
+                (recur edges (concat new-to-visit to-visit) visited-set finished-list)))))))
+
+
+(= (nasty-dfs-with-finish-order :A) (dfs edges '(:A) #{} '()))
+(map (fn[node] (= (nasty-dfs-with-finish-order node) (dfs edges (list node) #{} '()))) nodes)
+
+
+(defn dfs-loop [edges node-order visited-set finished-list]
+  (if (empty? node-order) [visited-set finished-list]
+      (let [[start-node & rest] node-order]
+        (if (visited-set start-node) (recur edges rest visited-set finished-list)
+            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set finished-list)]
+              (recur edges rest visited-set finished-list))))))
+    
+
+
+
+(dfs '(:A) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:A :F :D :C :B :I :E :H :G)]
+(dfs '(:B) #{:A :C :B :F :G :D :E :I :H} (list :A :F :D :C :B :I :E :H :G))
+
+(dfs-loop edges (seq nodes) #{} '())
+(dfs-loop revedges (seq nodes) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:E :I :H :C :G :B :A :D :F)]
+
+(dfs edges (list :E) #{} '()) ;-> [#{:E :I :H} (:E :H :I)]
+;; don't do (dfs edges (list :I) #{:E :I :H} '(:E :H :I))
+(dfs edges (list :C) #{:E :I :H} '()) ;-> [#{:C :B :G :E :I :H} (:C :B :G)]
+(dfs edges (list :A) #{:C :B :G :E :I :H} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:A :F :D)]
+
+(defn dfs-loop2 [edges node-order visited-set partition-list]
+  (if (empty? node-order) partition-list
+      (let [[start-node & rest] node-order]
+        (if (visited-set start-node) (recur edges rest visited-set partition-list)
+            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set '())]
+              (recur edges rest visited-set (cons finished-list partition-list)))))))
+
+(dfs-loop revedges (seq nodes) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:E :I :H :C :G :B :A :D :F)]
+(dfs-loop2 edges '(:E :I :H :C :G :B :A :D :F) #{} '())
+
+
+
+
+
+
+
+
+
+
 
 
