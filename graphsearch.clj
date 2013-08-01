@@ -32,8 +32,8 @@
              (do (print "failzor: " (first edge-seq) "->" ns)
                  (recur (rest edge-seq) edges revedges nodes counter)))))))
 
-(defn graph-from-string [s]
-  (let [edge-lines (clojure.string/split graphstring #"\n")
+(defn graph-from-string [graph-string]
+  (let [edge-lines (clojure.string/split graph-string #"\n")
         edge-pairs (for [l edge-lines] (clojure.string/split l #"\s"))
         edge-seq   (for [l edge-pairs] (map clojure.tools.reader.edn/read-string l))]
     (make-graph edge-seq)))
@@ -265,112 +265,17 @@
 ;-> ((:F :D :A) (:B :G :C) (:H :I :E))
 ;-> ((:F :D :A) (:B :G :C) (:I :E :H))
 
+;; Here's another graph
+;; A->B A->E B->C B->A  C->D C->I D->C E->F F->E F->I I->H H->G G->I
 
+(def another-graph 
+  (graph-from-string ":A :B\n:A :E\n :B :C\n:B :A\n:C :D\n:C :I\n:D :C\n:E :F\n:F :E\n:F :I\n:I :H\n:H :G\n:G :I\n"))
 
-
-
-
-
-
-
-
-
-
-
-
-
-;; Notice how this expression has ordered the nodes by scc membership
-(dfs-loop (small-graph :edges) 
-          (dfs-loop (small-graph :revedges) 
-                    (seq (small-graph :nodes)))) ;-> (:A :F :D :C :B :G :E :H :I)
-
-;; We can add labels as we dfs too
-
-(defn dfs-with-order-and-labels [node edges visited-set finish-order label labels]
-  (if (@visited-set node) 'done
-      (do 
-        (swap! visited-set conj node)
-        (doseq [e (edges node)] (dfs-with-order-and-labels e edges visited-set finish-order label labels))
-        (swap! labels conj [node label])
-        (swap! finish-order conj node))))
-
-(defn dfs-loop-with-order-and-labels [node-order edges]
-  (let [visited-set  (atom #{})
-        finish-order  (atom '())
-        labels (atom {})]
-    (loop [no node-order]
-      (if (empty? no) [@finish-order @labels]
-          (do
-            (dfs-with-order-and-labels (first no) edges visited-set finish-order (first no) labels)
-            (recur (rest no)))))))
-
-
-
-(dfs-loop-with-order-and-labels (seq nodes) revedges) ;-> [(:A :F :D :C :B :I :E :H :G) {:A :A, :F :A, :D :A, :C :A, :B :A, :I :A, :E :A, :H :A, :G :A}]
-(def labeled-sccs (second (dfs-loop-with-order-and-labels 
-                            (first (dfs-loop-with-order-and-labels (seq nodes) revedges))
-                            edges)))
-
-(def sccs (for [a (partition-by second (seq labeled-sccs))] (map first a)))
-
-(sort (map count sccs))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; We'd like to get rid of the recursion
-
-
-
-(defn ^:dynamic dfs [edges to-visit visited-set finished-list]
-  (if (empty? to-visit) [visited-set finished-list]
-      (let [[node & rst] to-visit]
-        (if (visited-set node) (recur edges rst visited-set (cons node finished-list))
-            (let [visited-set (conj visited-set node)
-                  newedges (edges node)
-                  new-to-visit (filter (comp not visited-set) newedges)]
-              (if (empty? new-to-visit )
-                (recur edges rst visited-set (cons node finished-list))
-                (recur edges (concat new-to-visit to-visit) visited-set finished-list)))))))
-
-
-(= (nasty-dfs-with-finish-order :A) (dfs edges '(:A) #{} '()))
-(map (fn[node] (= (nasty-dfs-with-finish-order node) (dfs edges (list node) #{} '()))) nodes)
-
-
-(defn dfs-loop [edges node-order visited-set finished-list]
-  (if (empty? node-order) [visited-set finished-list]
-      (let [[start-node & rest] node-order]
-        (if (visited-set start-node) (recur edges rest visited-set finished-list)
-            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set finished-list)]
-              (recur edges rest visited-set finished-list))))))
-    
-
-
-
-(dfs '(:A) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:A :F :D :C :B :I :E :H :G)]
-(dfs '(:B) #{:A :C :B :F :G :D :E :I :H} (list :A :F :D :C :B :I :E :H :G))
-
-(dfs-loop edges (seq nodes) #{} '())
-(dfs-loop revedges (seq nodes) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:E :I :H :C :G :B :A :D :F)]
-
-(dfs edges (list :E) #{} '()) ;-> [#{:E :I :H} (:E :H :I)]
-;; don't do (dfs edges (list :I) #{:E :I :H} '(:E :H :I))
-(dfs edges (list :C) #{:E :I :H} '()) ;-> [#{:C :B :G :E :I :H} (:C :B :G)]
-(dfs edges (list :A) #{:C :B :G :E :I :H} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:A :F :D)]
-
-(defn dfs-loop2 [edges node-order visited-set partition-list]
-  (if (empty? node-order) partition-list
-      (let [[start-node & rest] node-order]
-        (if (visited-set start-node) (recur edges rest visited-set partition-list)
-            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set '())]
-              (recur edges rest visited-set (cons finished-list partition-list)))))))
-
-(dfs-loop revedges (seq nodes) #{} '()) ;-> [#{:A :C :B :F :G :D :E :I :H} (:E :I :H :C :G :B :A :D :F)]
-(dfs-loop2 edges '(:E :I :H :C :G :B :A :D :F) #{} '())
-
-
-
+(strongly-connected-components (another-graph :edges) (another-graph :revedges) (shuffle (seq (another-graph :nodes)))) 
+;-> ((:A :B) (:E :F) (:C :D) (:H :G :I))
+;-> ((:D :C) (:B :A) (:E :F) (:G :I :H))
+;-> ((:C :D) (:A :B) (:F :E) (:H :G :I))
+;-> ((:D :C) (:A :B) (:F :E) (:H :G :I))
 
 
 
