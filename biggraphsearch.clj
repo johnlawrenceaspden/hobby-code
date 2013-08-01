@@ -29,40 +29,70 @@
 (defn read-forward-edges [filename] (read-edges filename false))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn dfs [edges to-visit visited-set finished-list]
-  (if (empty? to-visit) [visited-set finished-list]
-      (let [[node & rst] to-visit]
-        (if (visited-set node) (recur edges rst visited-set (cons node finished-list))
-            (let [visited-set (conj visited-set node)
-                  newedges (edges node)
-                  new-to-visit (filter (comp not visited-set) newedges)]
-              (if (empty? new-to-visit )
-                (recur edges rst visited-set (cons node finished-list))
-                (recur edges (concat new-to-visit to-visit) visited-set finished-list)))))))
+(defn ^:dynamic iter-dfs-with-finish-order
+  ( [edges to-visit-list visited-set finish-order] (iter-dfs-with-finish-order edges to-visit-list visited-set #{} finish-order))
+  ( [edges to-visit-list visited-set pending-set finish-order]
+      (if (empty? to-visit-list) {:finish-order finish-order :visited-set visited-set }
+          (let [[node & rest] to-visit-list]
+            (if (visited-set node) 
+              ;; If it's been seen before we either ignore it, or move it from pending set to finished set
+              (if (pending-set node) 
+                (recur edges rest visited-set (disj pending-set node) (conj finish-order node)) 
+                (recur edges rest visited-set pending-set finish-order))
+              ;; If it's never been seen before, check its descendants
+              (let [new-to-visit (filter #(not (visited-set %)) (edges node))]
+                (if (empty? new-to-visit)
+                  ;; and either put it straight on the finish list
+                  (recur edges rest (conj visited-set node) pending-set (conj finish-order node))
+                  ;; or mark it pending and put all its descendants on the to-visit-list
+                  (recur edges (concat new-to-visit to-visit-list) (conj visited-set node) (conj pending-set node) finish-order))))))))
 
-(defn dfs-loop [edges node-order visited-set finished-list]
-  (if (empty? node-order) finished-list
-      (let [[start-node & rest] node-order]
-        (if (visited-set start-node) (recur edges rest visited-set finished-list)
-            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set finished-list)]
-              (recur edges rest visited-set finished-list))))))
+(defn iter-dfs-loop-1 
+  ([edges node-order] (iter-dfs-loop-1 edges node-order #{} '()))
+  ([edges node-order visited-set finish-order]
+    (cond (empty? node-order) {:finish-order finish-order :visited-set visited-set }
+          (visited-set (first node-order)) (recur edges (rest node-order) visited-set finish-order)
+          :else (let [{vs :visited-set fo :finish-order}
+                      (iter-dfs-with-finish-order edges (list (first node-order)) visited-set finish-order)]
+                  (recur edges (rest node-order) vs fo)))))
 
 
-(defn dfs-loop2 [edges node-order visited-set partition-list]
-  (if (empty? node-order) partition-list
-      (let [[start-node & rest] node-order]
-        (if (visited-set start-node) (recur edges rest visited-set partition-list)
-            (let [[visited-set finished-list] (dfs edges (list start-node) visited-set '())]
-              (recur edges rest visited-set (cons finished-list partition-list)))))))
 
+
+
+
+(defn strongly-connected-components [edges revedges node-order]
+  (let [magic-order (:finish-order (iter-dfs-loop revedges node-order))]
+    (loop [magic-order magic-order 
+           partition '() 
+           visited-set #{}]
+      (if (empty? magic-order) partition
+          (let [{vs :visited-set fo :finish-order} 
+                (iter-dfs-with-finish-order edges
+                  (list (first magic-order)) visited-set '())]
+            (if (empty? fo)
+              (recur (rest magic-order) partition vs)
+              (recur (rest magic-order) (cons fo partition) vs)))))))
+
+
+(defn iter-dfs-loop-2 
+  ([edges magic-order] (iter-dfs-loop-2 edges magic-order #{} '()))
+  ([edges magic-order visited-set partition]
+     (if (empty? magic-order) partition
+         (let [{vs :visited-set fo :finish-order} 
+               (iter-dfs-with-finish-order edges
+                 (list (first magic-order)) visited-set '())]
+           (if (empty? fo)
+             (recur edges (rest magic-order) partition vs)
+             (recur edges (rest magic-order) (cons fo partition) vs))))))
 
 (def filename "/home/john/Desktop/SCC.txt")
 
-
 (def reverse-edges (read-reverse-edges filename))
 
-(def magic-order (dfs-loop reverse-edges (range 1 100) #{} '()))
+(def magic-order (iter-dfs-loop-1 reverse-edges (range 1 875714) #{} '()))
 
 (def reverse-edges nil)
 
