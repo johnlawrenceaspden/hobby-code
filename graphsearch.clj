@@ -270,7 +270,7 @@
 ;; A->B A->E B->C B->A  C->D C->I D->C E->F F->E F->I I->H H->G G->I
 
 (def another-graph 
-  (graph-from-string ":A :B\n:A :E\n :B :C\n:B :A\n:C :D\n:C :I\n:D :C\n:E :F\n:F :E\n:F :I\n:I :H\n:H :G\n:G :I\n"))
+  (graph-from-string ":A :B\n:A :E\n:B :C\n:B :A\n:C :D\n:C :I\n:D :C\n:E :F\n:F :E\n:F :I\n:I :H\n:H :G\n:G :I\n"))
 
 (strongly-connected-components (another-graph :edges) (another-graph :revedges) (shuffle (seq (another-graph :nodes)))) 
 ;-> ((:A :B) (:E :F) (:C :D) (:H :G :I))
@@ -278,10 +278,98 @@
 ;-> ((:C :D) (:A :B) (:F :E) (:H :G :I))
 ;-> ((:D :C) (:A :B) (:F :E) (:H :G :I))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; To make this algorithm stack-overflow proof, we have to rephrase the crucial 
+;; dfs from its natural expression as a recursion to an iteration. 
+
+;; this is actually quite hard, since we mark a node visited before we make the recursive calls
+;; but only mark it finished after they return.
+
+;; This means that we need to create a pending list, whose nodes have been visited, had some descendants shoved onto the stack, 
+;; but haven't been finished yet.
+
+(defn ^:dynamic iter-dfs-with-finish-order
+  ( [edges to-visit-list visited-set finish-order] (iter-dfs-with-finish-order edges to-visit-list visited-set #{} finish-order))
+  ( [edges to-visit-list visited-set pending-set finish-order]
+      (if (empty? to-visit-list) {:finish-order finish-order :visited-set visited-set }
+          (let [[node & rest] to-visit-list]
+            (if (visited-set node) 
+              ;; If it's been seen before we either ignore it, or move it from pending set to finished set
+              (if (pending-set node) 
+                (iter-dfs-with-finish-order edges rest visited-set (disj pending-set node) (conj finish-order node)) 
+                (iter-dfs-with-finish-order edges rest visited-set pending-set finish-order))
+              ;; If it's never been seen before, check its descendants
+              (let [new-to-visit (filter #(not (visited-set %)) (edges node))]
+                (if (empty? new-to-visit)
+                  ;; and either put it straight on the finish list
+                  (iter-dfs-with-finish-order edges rest (conj visited-set node) pending-set (conj finish-order node))
+                  ;; or mark it pending and put all its descendants on the to-visit-list
+                  (iter-dfs-with-finish-order edges (concat new-to-visit to-visit-list) (conj visited-set node) (conj pending-set node) finish-order))))))))
+
+(require 'clojure.tools.trace)
+(clojure.tools.trace/dotrace [iter-dfs-with-finish-order] (iter-dfs-with-finish-order (small-graph :edges) '(:E) #{} #{} '()))
 
 
+(iter-dfs-with-finish-order (small-graph :edges) '(:E) #{} '()) ;-> {:finish-order (:E :H :I), :visited-set #{:E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:I) #{:E :I :H} '()) ;-> {:finish-order (), :visited-set #{:E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:H) #{:E :I :H} '()) ;-> {:finish-order (), :visited-set #{:E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:C) #{:E :I :H} '()) ;-> {:finish-order (:C :B :G), :visited-set #{:C :B :G :E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:G) #{:C :B :G :E :I :H} '()) ;-> {:finish-order (), :visited-set #{:C :B :G :E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:B) #{:C :B :G :E :I :H} '()) ;-> {:finish-order (), :visited-set #{:C :B :G :E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:A) #{:C :B :G :E :I :H} '()) ;-> {:finish-order (:A :F :D), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:D) #{:A :C :B :F :G :D :E :I :H} '()) ;-> {:finish-order (), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+(iter-dfs-with-finish-order (small-graph :edges) '(:F) #{:A :C :B :F :G :D :E :I :H} '()) ;-> {:finish-order (), :visited-set #{:A :C :B :F :G :D :E :I :H}}
 
 
+(defn ^:dynamic iter-dfs-loop 
+  ([edges node-order] (iter-dfs-loop edges node-order #{} '()))
+  ([edges node-order visited-set finish-order]
+    (cond (empty? node-order) {:finish-order finish-order :visited-set visited-set }
+          (visited-set (first node-order)) (recur edges (rest node-order) visited-set finish-order)
+          :else (let [{vs :visited-set fo :finish-order}
+                      (iter-dfs-with-finish-order edges (list (first node-order)) visited-set finish-order)]
+                  (recur edges (rest node-order) vs fo)))))
+
+
+(iter-dfs-loop (small-graph :edges) (shuffle (seq (small-graph :nodes)))) 
+;-> {:finish-order (:F :D :A :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :C :B :G :I :E :H), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :G :C :B :H :I :E), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
+
+
+(defn strongly-connected-components [edges revedges node-order]
+  (let [magic-order (:finish-order (iter-dfs-loop revedges node-order))]
+    (loop [magic-order magic-order 
+           partition '() 
+           visited-set #{}]
+      (if (empty? magic-order) partition
+          (let [{vs :visited-set fo :finish-order} 
+                (iter-dfs-with-finish-order edges
+                  (list (first magic-order)) visited-set '())]
+            (if (empty? fo)
+              (recur (rest magic-order) partition vs)
+              (recur (rest magic-order) (cons fo partition) vs)))))))
+
+(strongly-connected-components (small-graph :edges) (small-graph :revedges) (shuffle (seq (small-graph :nodes)))) 
+;-> ((:F :D :A) (:B :G :C) (:H :I :E))
+;-> ((:F :D :A) (:B :G :C) (:H :I :E))
+;-> ((:F :D :A) (:B :G :C) (:E :H :I))
+;-> ((:F :D :A) (:G :C :B) (:E :H :I))
+;-> ((:F :D :A) (:B :G :C) (:I :E :H))
+;-> ((:F :D :A) (:G :C :B) (:I :E :H))
+
+(strongly-connected-components (another-graph :edges) (another-graph :revedges) (shuffle (seq (another-graph :nodes)))) 
+;-> ((:B :A) (:C :D) (:F :E) (:H :G :I))
+;-> ((:A :B) (:C :D) (:F :E) (:G :I :H))
+;-> ((:B :A) (:C :D) (:F :E) (:G :I :H))
+;-> ((:B :A) (:C :D) (:F :E) (:H :G :I))
+;-> ((:A :B) (:E :F) (:C :D) (:I :H :G))
+;-> ((:B :A) (:D :C) (:F :E) (:H :G :I))
 
 
 
