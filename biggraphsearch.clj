@@ -16,7 +16,6 @@
           (do (print "failzor: " (first edge-seq) "->" ns)
               (recur (rest edge-seq) edges counter reverse))))))
 
-
 (defn read-edges [filename reverse] 
   (with-open [rdr (clojure.java.io/reader filename)]
     (make-edgehash
@@ -31,7 +30,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn ^:dynamic iter-dfs-with-finish-order
+(defn iter-dfs-with-finish-order
   ( [edges to-visit-list visited-set finish-order] (iter-dfs-with-finish-order edges to-visit-list visited-set #{} finish-order))
   ( [edges to-visit-list visited-set pending-set finish-order]
       (if (empty? to-visit-list) {:finish-order finish-order :visited-set visited-set }
@@ -59,24 +58,6 @@
                   (recur edges (rest node-order) vs fo)))))
 
 
-
-
-
-
-(defn strongly-connected-components [edges revedges node-order]
-  (let [magic-order (:finish-order (iter-dfs-loop revedges node-order))]
-    (loop [magic-order magic-order 
-           partition '() 
-           visited-set #{}]
-      (if (empty? magic-order) partition
-          (let [{vs :visited-set fo :finish-order} 
-                (iter-dfs-with-finish-order edges
-                  (list (first magic-order)) visited-set '())]
-            (if (empty? fo)
-              (recur (rest magic-order) partition vs)
-              (recur (rest magic-order) (cons fo partition) vs)))))))
-
-
 (defn iter-dfs-loop-2 
   ([edges magic-order] (iter-dfs-loop-2 edges magic-order #{} '()))
   ([edges magic-order visited-set partition]
@@ -85,20 +66,29 @@
                (iter-dfs-with-finish-order edges
                  (list (first magic-order)) visited-set '())]
            (if (empty? fo)
-             (recur edges (rest magic-order) partition vs)
-             (recur edges (rest magic-order) (cons fo partition) vs))))))
+             (recur edges (rest magic-order) vs partition)
+             (recur edges (rest magic-order) vs (cons fo partition)))))))
 
 (def filename "/home/john/Desktop/SCC.txt")
+(def nodenums (range 1 875714))
+
+;; (def filename "/home/john/Desktop/SCC10.txt")
+;; (def nodenums (list 1 2 3 4 5 6 7 8 47646 47647)))
+
+;; (def filename "/home/john/Desktop/SCCsmall.txt")
+;; (def nodenums (range 1 875714))
+
 
 (def reverse-edges (read-reverse-edges filename))
 
-(def magic-order (iter-dfs-loop-1 reverse-edges (range 1 875714) #{} '()))
+(def magic-order (:finish-order (iter-dfs-loop-1 reverse-edges nodenums)))
 
+;; allow this to become garbage now, order is only important thing
 (def reverse-edges nil)
 
 (def forward-edges (read-forward-edges filename))
                                         
-(def partition-list (dfs-loop2 forward-edges magic-order #{} '()))
+(def partition-list (iter-dfs-loop-2 forward-edges magic-order))
  
 (def partition-sizes (map count partition-list))
 
