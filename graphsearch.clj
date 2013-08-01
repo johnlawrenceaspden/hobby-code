@@ -2,10 +2,8 @@
 
 (require 'clojure.tools.reader.edn)
 
-
 ;; Here's a toy directed graph. Try drawing it and see if you can see any structure in it.
 ;; F -> C, G -> C, I -> E, C -> B, E -> H, B -> I, D -> A, F -> D, H -> I, B -> G, A -> F
-
 
 ;; Here's the same graph as it might be stored in a text file
 (def graphstring
@@ -14,7 +12,8 @@
 ;; When we read it in, it would be nice to know:
 ;; What the nodes are, which nodes you can get to from a node, and which nodes you can get to a node from.
 
-(defn add-edge [edgemap [from to]] (conj edgemap [ from (conj (edgemap from #{}) to)]))
+(defn add-edge [edgemap [from to]] 
+  (conj edgemap [ from (conj (edgemap from #{}) to)]))
 
 (defn make-graph 
   ([edge-seq] (make-graph edge-seq {} {} #{} 0))
@@ -65,7 +64,8 @@
 ;;   :C #{:F :G}},
 ;;  :nodes #{:A :C :B :F :G :D :E :I :H}}
 
-;; The natural expression of depth-first search is as a recursion which keeps a mutable list of visited nodes.
+;; The natural expression of depth-first search is as a recursion
+;; which keeps a mutable list of visited nodes.
 
 (defn rec-dfs 
   ([edges node] (rec-dfs edges node (atom #{})))
@@ -104,13 +104,16 @@
 
 ;; This should be safe if we have enough memory to hold the graph and the visited-set.
 
-;; They produce the same set of visited nodes for a given starting node.
 
+;; Since the iterative version was easy to write but looks harder to
+;; understand, I will permit myself a paranoid check.
 (defn compare [edges nodes]
   (for [n nodes]
     (= (iter-dfs  edges n) (rec-dfs edges n))))
 
+;; They produce the same set of visited nodes for a given starting node.
 (compare (small-graph :edges) (small-graph :nodes)) ;-> (true true true true true true true true true)
+
 ;; Since the reversed graph is also a graph, this is valid too:
 (compare (small-graph :revedges) (small-graph :nodes)) ;-> (true true true true true true true true true)
 
@@ -131,13 +134,16 @@
 ;; If you start in CBG, you'll see both CBG and EIH
 ;; and if you start in AFD, you'll see AFD, CBG and EIH, (the whole graph).
 
-;; We call EIH, CBG, and AFD the strongly connected components
-;; From any node in an scc, you can get to any other.
-;; Some sccs are 'downstream' of others, which means that you can get from one to the other but not back.
+;; We call EIH, CBG, and AFD the strongly connected components.  
+
+;; From any node in an scc, you can get to any other.  Some sccs are
+;; 'downstream' of others, which means that you can get from one to
+;; the other but not back.
 
 ;; We say that the sccs form a meta-graph: AFD -> CBG -> EIH. 
 
-;; If we reverse the directions of the edges, then we'll get the same sccs, and the edges in the meta-graph will be reversed
+;; If we reverse the directions of the edges, then we'll get the same
+;; sccs, but the edges in the meta-graph will be reversed.
 
 (iter-dfs (small-graph :revedges) :A) ;-> #{:A :F :D}
 (iter-dfs (small-graph :revedges) :B) ;-> #{:A :C :B :F :G :D}
@@ -152,10 +158,11 @@
 ;; By inspection, EIH -> CBG -> AFD in the reversed graph,
 ;; which is the same meta-graph only with all its edges reversed.
 
-;; Notice that there are no cycles in the meta-graph. Can there be?
+;; Notice that there are no cycles in the meta-graph. Can there ever be?
 
-;; One thing we can do with our mutating recursion is to keep track of when we are done with
-;; each node, which is to say, that we have already visited every node to which it leads
+;; One thing we can do with our mutating recursion is to keep track of
+;; when we are done with each node, which is to say, when we have
+;; already visited every node to which it leads
 
 (defn rec-dfs-with-finish-order 
   ([edges node] (rec-dfs-with-finish-order edges node (atom #{}) (atom '())))
@@ -186,37 +193,26 @@
 (compare2 (small-graph :edges) (small-graph :nodes)) ;-> (true true true true true true true true true)
 (compare2 (small-graph :revedges) (small-graph :nodes)) ;-> (true true true true true true true true true)
 
-;; We might be interested in the order we compute if we do dfs from every node 
-;; whilst remembering where we've already been and what we've done so far
-;; (of course this will depend to some extent on the ordering we choose for the starting nodes)
+;; We can compute a finish order for the whole graph if we dfs from every node, 
+;; but preserve the visited-set and finish-orders between invocations
 (defn ^:dynamic dfs-loop 
   ([edges node-order] (dfs-loop edges node-order (atom #{}) (atom '())))
   ([edges node-order visited-set finish-order]
     (cond (empty? node-order) {:finish-order @finish-order :visited-set @visited-set }
-          (@visited-set (first node-order)) (dfs-loop edges (rest node-order) visited-set finish-order) 
+          (@visited-set (first node-order)) (recur edges (rest node-order) visited-set finish-order) 
           :else (let [{vs :visited-set fo :finish-order}
                       (rec-dfs-with-finish-order edges (first node-order) visited-set finish-order)]
-                  (dfs-loop edges (rest node-order) (atom vs) (atom fo))))))
+                  (recur edges (rest node-order) (atom vs) (atom fo))))))
 
 
-(dfs-loop (small-graph :edges) '(:A)) ;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-(dfs-loop (small-graph :edges) '(:B)) ;-> {:finish-order (:B :I :E :H :G :C), :visited-set #{:C :B :G :E :I :H}}
-(dfs-loop (small-graph :edges) '(:C)) ;-> {:finish-order (:C :B :I :E :H :G), :visited-set #{:C :B :G :E :I :H}}
-(dfs-loop (small-graph :edges) '(:D)) ;-> {:finish-order (:D :A :F :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-(dfs-loop (small-graph :edges) '(:E)) ;-> {:finish-order (:E :H :I), :visited-set #{:E :I :H}}
-(dfs-loop (small-graph :edges) '(:F)) ;-> {:finish-order (:F :D :A :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-(dfs-loop (small-graph :edges) '(:G)) ;-> {:finish-order (:G :C :B :I :E :H), :visited-set #{:C :B :G :E :I :H}}
-(dfs-loop (small-graph :edges) '(:H)) ;-> {:finish-order (:H :I :E), :visited-set #{:E :I :H}}
-(dfs-loop (small-graph :edges) '(:I)) ;-> {:finish-order (:I :E :H), :visited-set #{:E :I :H}}
+(dfs-loop (small-graph :edges) (seq (small-graph :nodes))) 
+;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
 
-(dfs-loop (small-graph :edges) '(:I :G :A)) ;-> {:finish-order (:A :F :D :G :C :B :I :E :H), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-(dfs-loop (small-graph :edges) '(:A :F :D)) ;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-
-(dfs-loop (small-graph :edges) (seq (small-graph :nodes))) ;-> {:finish-order (:A :F :D :C :B :I :E :H :G), :visited-set #{:A :C :B :F :G :D :E :I :H}}
-
-;; Now, there is something interesting about the finish order of dfs on the reversed graph:
+;; Now, the clever bit is to compute this finish order for the reversed graph:
 (:finish-order (dfs-loop (small-graph :revedges) (seq (small-graph :nodes))))
 ;-> (:E :I :H :C :G :B :A :D :F)
+
+;; And then notice what that order does when we do dfs on the original graph
 
 (rec-dfs (small-graph :edges) :E) ;-> #{:E :I :H}
 (rec-dfs (small-graph :edges) :I) ;-> #{:E :I :H}
@@ -230,7 +226,8 @@
 
 ;; It is in some sense the 'right' order for discovering the strongly connected components.
 
-;; Let's see if we can take advantage of that:
+;; Let's see if we can take advantage of that, by passing on the visited set between calls:
+
 (rec-dfs-with-finish-order (small-graph :edges) :E (atom #{}) (atom '())) ;-> {:finish-order (:E :H :I), :visited-set #{:E :I :H}}
 (rec-dfs-with-finish-order (small-graph :edges) :I (atom #{:E :I :H}) (atom '())) ;-> {:finish-order (), :visited-set #{:E :I :H}}
 (rec-dfs-with-finish-order (small-graph :edges) :H (atom #{:E :I :H}) (atom '())) ;-> {:finish-order (), :visited-set #{:E :I :H}}
@@ -247,16 +244,20 @@
     (loop [magic-order magic-order partition '() visited-set #{}]
       (if (empty? magic-order) partition
           (let [{vs :visited-set fo :finish-order} 
-                (rec-dfs-with-finish-order edges (first magic-order) (atom visited-set) (atom '()))]
+                (rec-dfs-with-finish-order edges 
+                  (first magic-order) 
+                  (atom visited-set) 
+                  (atom '()))]
             (if (empty? fo) 
               (recur (rest magic-order) partition vs)
               (recur (rest magic-order) (cons fo partition) vs)))))))
 
-
+;; Behold:
 (strongly-connected-components (small-graph :edges) (small-graph :revedges) (seq (small-graph :nodes))) 
 ;-> ((:A :F :D) (:C :B :G) (:E :H :I))
 
-;; Notice that the order we choose might affect the result, but not the partition
+;; Notice that the order we choose might affect the various intermediate results,
+;; and indeed the final result,  but not the partition into strongly connected components
 (strongly-connected-components (small-graph :edges) (small-graph :revedges) (shuffle (seq (small-graph :nodes)))) 
 ;-> ((:F :D :A) (:B :G :C) (:H :I :E))
 ;-> ((:D :A :F) (:B :G :C) (:I :E :H))
@@ -265,7 +266,7 @@
 ;-> ((:F :D :A) (:B :G :C) (:H :I :E))
 ;-> ((:F :D :A) (:B :G :C) (:I :E :H))
 
-;; Here's another graph
+;; Here's another graph, just to prove it wasn't a fluke.
 ;; A->B A->E B->C B->A  C->D C->I D->C E->F F->E F->I I->H H->G G->I
 
 (def another-graph 
