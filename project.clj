@@ -19,7 +19,7 @@
 
 ;; (cemerick.pomegranate/add-dependencies :coordinates '[[org.clojure/tools.trace "0.7.5"]])
 
-  :jvm-opts ["-Xmx800M"] 	
+  :jvm-opts ["-Xmx900M"] 	
   :repl-options { 
                  :port 4001 
                  :init (do (println "hello from hobby-code/project.clj")
