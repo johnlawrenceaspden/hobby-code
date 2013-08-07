@@ -23,6 +23,11 @@
   :repl-options { 
                  :port 4001 
                  :init (do (println "hello from hobby-code/project.clj")
+                           ;(set! *print-length* 103)
+                           ;(set! *print-level* 13)
+                           (alter-var-root (var *print-length*) (fn[f] 103))
+                           (alter-var-root (var *print-level*) (fn[f] 13))
+
                            (defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
 
                            (defmacro def-let
@@ -32,7 +37,7 @@
                                    names-values (partition 2 (second let-expr))
                                    defs   (map #(cons 'def %) names-values)]
                                (concat (list 'do) defs more)))
-                           (println "defined user/def-let and user/dbg"))
+                           (println "defined user/def-let and user/dbg, set! *print-level* and *print-length*"))
                  }
   :source-paths ["."]
   :min-lein-version "2.0.0"
