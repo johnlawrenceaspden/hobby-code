@@ -23,12 +23,15 @@
   :repl-options { 
                  :port 4001 
                  :init (do (println "hello from hobby-code/project.clj")
-                           ;(set! *print-length* 103)
-                           ;(set! *print-level* 13)
-                           (alter-var-root (var *print-length*) (fn[f] 103))
-                           (alter-var-root (var *print-level*) (fn[f] 13))
+                           (set! *print-length* 103)
+                           (set! *print-level* 13)
+                           ;(alter-var-root (var *print-length*) (fn[f] 103))
+                           ;(alter-var-root (var *print-level*) (fn[f] 13))
+                           (defn no-medusa[]
+                             (set! *print-length* 103)
+                             (set! *print-level* 13))
 
-                           (defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
+                           (defmacro dbg[x] `(let [x# ~x] (println "dbg:" '~x "->" x#) x#))
 
                            (defmacro def-let
                              "like let, but binds the expressions globally."
