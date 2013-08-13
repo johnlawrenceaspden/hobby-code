@@ -3,8 +3,9 @@
 ;; I've recently seen in various places the Diversity Predition Theorem, variously expressed as:
 
 ;; Crowd Error = Average Error - Diversity
-;; Being different is as important as being good
 ;; The Crowd Beats the Average
+;; Being different is as important as being good
+;; Encourage Diversity
 
 ;; I'm not going to argue with a mathematical tautology, but I'm a bit sceptical about the 
 ;; happy feelings induced by this law.
