@@ -32,11 +32,11 @@ sudo nm-tool
 sudo service network-manager stop
 sleep 1
 sudo service networking stop
-sleep 1
-sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
-sleep 1
+#sleep 1
+#sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+#sleep 1
 sudo pkill -f wpa_supplicant
-sudo modprobe wl
+#sudo modprobe wl
 sleep 1
 sudo service networking start
 sleep 1
