@@ -686,3 +686,23 @@
                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
                       (local-set-key (kbd "<f12>") 'other-window)))
 
+(defun haskellxr ()
+  (interactive)
+  (move-beginning-of-line nil)
+  (set-mark-command nil)
+  (move-end-of-line nil)
+  (kill-ring-save (point) (line-beginning-position nil))
+  (other-window 1)
+  (yank)
+  (comint-send-input)
+  (other-window 1))
+
+
+(add-hook 'haskell-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-c M-o") 'delete-buffer)
+                      (local-set-key (kbd "<f12>") 'other-window)
+                      (local-set-key (kbd "C-x C-r") 'haskellxr)))
+
+
+
