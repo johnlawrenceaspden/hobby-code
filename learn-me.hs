@@ -98,6 +98,48 @@ take 20 (map square [1..])
 
 take 20 (cycle [1,2,3])
 
+replicate 3 10
+
+repeat 5
+
+[x*2 | x <- [1,3..10]]
+
+[x*x | x <- [1,3..20], (mod x 3) == 1]
+
+[(x,y,z) | x<- [1..10], y<-[1..10], z<-[1..10], x<y, x*x+y*y==z*z]
+
+let gcd a b = (if a==0 then b else (if a<b then (gcd b a) else (gcd (a - b) b)))
+
+(gcd (gcd (3*3*3) (2*3*3)) (2*2*3)) 
+
+[(x,y,z) | x<- [1..100], y<-[1..100], z<-[1..100], x<y, x*x+y*y==z*z, (gcd (gcd x y ) z)==1]
+
+let length' xs = sum [ 1 | _ <- xs]
+
+length' "cabbages"
+
+let xxs=[[1,2,3],[4,5,6],[7,8,9]]
+
+[[x | x<-xs, (even x)] |xs <- xxs]
+
+[[1,2,3],[4,5,6],[7,8,9]]
+[[1,2,3],[4,5,6],[7,8,9,10]]
+[(1,2,3),(4,5,6),(7,8,9)]
+
+zip [1,2,3][4,5,6]
+
+zip [1,2,3]["one","two","three"]
+
+:t 'a'
+:t (* 2 3)
+:t (map, 2, 3)
+:t True
+:t "hello"
+:t (True, 'a')
+
+
+
+
 
 
 
