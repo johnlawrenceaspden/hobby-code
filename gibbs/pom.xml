@@ -1,8 +1,10 @@
-<!-- mvn clean compile install exec:java -->
+<!-- mvn clean compile install exec:exec -->
 
 <!-- $ mvn compile -->
+<!-- I think the difference between exec:java and exec:exec is whether the program gets its own vm or not -->
  <!-- $ mvn exec:java -->
  <!-- or $ mvn exec:java -Dexec.mainClass="Gibbs" -->
+<!-- $ mvn exec:exec -->
 <!-- $ mvn clean -->
 <!-- $ mvn install -->
 
@@ -26,6 +28,12 @@
           <arguments>
             <argument>arg0</argument>
             <argument>arg1</argument>
+          </arguments>
+          <executable>java</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>Gibbs</argument>
           </arguments>
         </configuration>
       </plugin>
