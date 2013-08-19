@@ -379,9 +379,11 @@
      (funcall eval-command)
      (pop-to-buffer edit-buffer))))
 
-(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-nrepl)
+;(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-nrepl)
 
-
+(add-hook 'clojure-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-x C-r") 'copy-last-expression-to-nrepl)))
 
 
 
