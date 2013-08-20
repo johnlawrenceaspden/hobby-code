@@ -6,31 +6,31 @@
 ;; against it.
 
 ;; As part of his campaign, he pointed me to
-;; http://timsalimans.com/gibbs-sampling-with-julia/ and
+;; http://timsalimans.com/gibbs-sampling-with-julia/ and that lead to:
 ;; http://darrenjw.wordpress.com/2011/07/16/gibbs-sampler-in-various-languages-revisited/
-;; which compare various languages on a simple gibbs sampler.
+;; which compares various languages on a simple gibbs sampler.
 
 ;; Darren's timings go from 7 minutes (for R) to 8 seconds (for C)
-;; The point of Tim's posts is that Matlab can be persuaded to run this quickly, 
-;; and that Julia just does!
+;; The point of Tim's posts is that Matlab *can* be persuaded to run this quickly, 
+;; and that Julia just does.
 
-;; Two languages that also do well are Java and Scala, with timings around
-;; the 11 second mark for his simple Gibbs sampler benchmark.
+;; Two other languages that also do well are Java and Scala, with timings around
+;; the 11 second mark for the simple Gibbs sampler benchmark.
 
 ;; This is a bit of a red rag to a bull, as far as I'm concerned. One
 ;; reason I like clojure so much is that it lets me think at a very
 ;; abstract level.
 
-;; With most abstract languages, you pay a very heavy speed penalty,
-;; and Clojure's no exception, but generally, if it goes slowly enough
-;; to annoy you, there's a simple way to speed it up.
+;; With most abstract languages, you pay a heavy speed penalty, and
+;; Clojure's no exception, but generally, if it goes slowly enough to
+;; annoy you, there's a simple way to speed it up.
 
 ;; So I'm thinking, 'If Java and Scala can go that quickly then surely
 ;; Clojure can'.  It's been a while since I last tried to speed
 ;; something up, and a lot has changed since.
 
 
-;; Firstly, for comparison, I ran his C program on my little netbook and it took 91 seconds
+;; Firstly, for comparison, I ran Darren's C program on my little netbook and it took 91 seconds
 ;; And the Java program 147 seconds.
 ;; So I'm guessing his computer's about 11 times faster than mine, give or take.
 
@@ -77,7 +77,7 @@
 ;; with jars and classpaths and poms.xml, and the corresponding libgsl
 ;; for the C program required a weird bit of debugging before I could
 ;; get it to work. But the combination of pomegranate and maven
-;; makes adding libraries childs play.
+;; makes adding libraries child's play.
 
 ;; On the other hand, you do have to import every java class that you
 ;; intend to use in Clojure by hand. There's no way to translate * as
@@ -87,7 +87,7 @@
 (import java.util.Date)
 
 
-;; If we care about speed in Clojure, then this is always a cool thing to have on:
+;; If we care about speed in Clojure, then this is always a cool thing to do:
 (set! *warn-on-reflection* true)
 ;; The point of it is to warn you when Clojure can't find the type of
 ;; a java object at compile time.  When this happens, it uses
@@ -99,22 +99,22 @@
 (def N 50000)
 (def thin 1000)
 
-(def rngEngine (cern.jet.random.tdouble.engine.DoubleMersenneTwister. (Date.)))
+(def rngEngine (DoubleMersenneTwister. (Date.)))
 
-(def rngN (cern.jet.random.tdouble.Normal. 0.0,1.0,rngEngine))
-(def rngG (cern.jet.random.tdouble.Gamma.  1.0,1.0,rngEngine))
+(def rngN (Normal. 0.0,1.0,rngEngine))
+(def rngG (Gamma.  1.0,1.0,rngEngine))
 
-;; I'm just translating as literally as possible here, but I'm going
-;; to leave out the printing until the end so that I can play with the
+;; I'm translating as literally as possible here, but I'm going to
+;; leave the printing out until the end so that I can play with the
 ;; program without generating screenfuls of crap.
 
-;; The original program is very imperative, and doesn't really fit
+;; The original is very imperative, and doesn't really fit
 ;; Clojure's natural style. You can't just change the values of things
 ;; in Clojure, you have to use Software Transactional Memory.  
 
 ;; This has good and bad aspects, but when you're trying to make a
-;; literal translation it looks very ugly, and is going to have a huge
-;; overhead in a calculation like this.
+;; literal translation of an imperative program it looks very ugly,
+;; and it's going to have a huge overhead in a calculation like this.
 
 (defn literal[]
   (let [x (atom 0) y (atom 0)]
@@ -124,7 +124,7 @@
         (swap! x (fn[_] (.nextDouble rngG 3.0 (+ (* @y @y) 4))))
         (swap! y (fn[_] (.nextDouble rngN (/ (+ 1 @x)) (/ 1.0 (Math/sqrt (+ 2 (* 2 @x)))))))))))
 
-;; As soon as you define this function, you get:
+;; Notice that as soon as you define this function, you get:
 ;; Reflection warning, NO_SOURCE_PATH:6 - call to nextDouble can't be resolved.
 ;; Reflection warning, NO_SOURCE_PATH:7 - call to nextDouble can't be resolved.
 
@@ -135,7 +135,8 @@
 
 (time (literal)) ;-> let's say about 90 minutes or so.
 
-;; Luckily, reflection warnings are easy to fix:
+;; Luckily, reflection warnings are easy to fix. 
+;; You just tell the compiler the type of the mysterious object:
 (defn literal-with-reflections-fixed[]
   (let [x (atom 0) y (atom 0)]
     (dotimes [i N]
@@ -153,10 +154,13 @@
 ;; it heavily in future.
 
 ;; But the obvious bottleneck is still all that use of the STM
-;; mechanism in the tight inner loop.  Besides, it's just nasty. That's
-;; really not what Clojure's heavily guarded mutable state is for.
+;; mechanism in the middle of the tight inner loop.  Besides, it's
+;; just nasty. That's really not what Clojure's heavily guarded
+;; mutable state is for.
  
-;; Let's get rid of that and replace it with clojure's natural loop/recur mechanism 
+;; Let's get rid of that and replace it with clojure's natural loop/recur mechanism
+;; in the inner loop, where we're just throwing away the intermediate values, 
+;;  and use the elegant iterate for the outer loop, where we want them.
 
 (defn gibbs-loop [[x y]]
   (loop [j thin x x y y]
@@ -175,23 +179,42 @@
 
 ;; It's probably possible to bum a few more cycles out of this code, but it's hard to think of why you'd care.
 
-;; Clojure's never going to run faster than Java when you're asking them to perform the same computation, 
-;; So the best we could hope for is to get rid of the 50% slowdown over Java. I'm sure that's possible, but I think the code above is 
-;; a nice compromise between an elegant expression of the idea, speed, and flexibility. 
+;; Clojure's never going to run faster than Java when you're asking
+;; them to perform the same computation, So the best we could hope for
+;; is to get rid of the 50% slowdown over Java. I'm sure that's
+;; possible, but I think the code above is a nice compromise between
+;; speed, elegant expression of the idea, and flexibility. All of
+;; which are important in real programs.
 
 ;; I did say that I'd cover writing all this to a file as well (and numbering the iterations), so
 
 (time (spit "delete.me" (apply str (map (fn [i [x y]] (str i " " x " " y "\n")) (range) (take N samples)))))
 ;; 3 seconds. Told you that wasn't the hard part.
 
+;; What I really have no idea how to do, let alone to do fast, is to
+;; make a traditional unix-style command line utility that can be run
+;; from the command prompt and write to stdout.
 
+;; I imagine it's possible, but the amount of
+;; library/classpath/maven/#! trickery required is going to be
+;; immense. And I don't think there's any getting away from the fact
+;; that clojure takes ages to start up.
+
+;; That's a real shame, because I really love that style of programming. I miss it.
+
+;; I wish that there was a language like clojure that lived in the traditional UNIX/C world rather than on the JVM. 
+
+;; Pretty much everything about the JVM drives me up the wall. But
+;; actually it's not the JVM's fault that clojure takes ages to
+;; start. The Java version of this program starts almost instantly.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; Footnotes
 
-;; If you'd written this sampler in clojure in the first place, your original code would probably have looked something like this:
+;; If you'd written this sampler in clojure in the first place, your
+;; original code would probably have looked something like this:
 
 (defn gibbs [[x y]]
   (let [x (.nextDouble rngG 3.0 (+ (* y y) 4))
@@ -238,20 +261,18 @@
 ;; I think it's worth having the explicit loop/recur in the inner loop
 
 ;; On the other hand:
+
 (defn samples-loop [N]
   (loop [x 0.0 y 0.0 j thin i N acc []]
-      (let [x (.nextDouble ^Gamma rngG 3.0 (+ (* y y) 4))
-            y (.nextDouble ^Normal rngN (/ (+ 1 x)) (/ 1.0 (Math/sqrt (+ 2 (* 2 x)))))]
+      (let [x (.nextDouble ^Gamma rngG 3 (+ (* y y) 4))
+            y (.nextDouble ^Normal rngN (/ (+ 1 x)) (/ 1 (Math/sqrt (+ 2 (* 2 x)))))]
         (if (> j 0) (recur x y (dec j) i acc)
             (if (> i 0) (recur x y thin (dec i) (conj acc [x y])))))))
 
 ;; Has clearly left the path of righteousness. 
 
-;; Although it does achieve speed
-
-(time (last (samples-loop 1000)))
-;; 3721
+;; Although it does achieve the speed for which it sold its soul.
 
 (time (last (samples-loop 50000)))
-
+;; 182 seconds
 
