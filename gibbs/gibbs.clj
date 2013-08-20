@@ -30,9 +30,10 @@
 ;; something up, and a lot has changed since.
 
 
-;; Firstly, for comparison, I ran Darren's C program on my little netbook and it took 91 seconds
-;; And the Java program 147 seconds.
-;; So I'm guessing his computer's about 11 times faster than mine, give or take.
+;; Firstly, for comparison, I ran Darren's C program on my little
+;; netbook and it took 91 seconds. The Java program took 147 seconds.
+;; So I'm guessing his computer's about 11 times faster than mine,
+;; give or take, but that the scale factor's about constant.
 
 ;; Here's the Java program that did rather well:
 
