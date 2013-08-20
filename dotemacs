@@ -12,7 +12,7 @@
 )
 
 ;; Install list 
-;; undo-tree, ac-nrepl, clojure-mode, melpa, nrepl, nrepl-ritz, and rainbow-delimiters
+;; undo-tree, ac-nrepl, clojure-mode, nrepl, nrepl-ritz, and rainbow-delimiters
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -648,18 +648,6 @@
 (global-undo-tree-mode)
 
 
-;; nrepl seems to be the new way to connect to clojure programs instead of slime
-;; nrepl brings clojure-mode, dash, and s with it when installed
-(require 'nrepl)
-
-
-;; irritating popup stacktraces off
-;; this seems to work if you do it in the scratch buffer but not if it's here.
-;; Maybe it gets reset when you start a new session?
-(setq-default nrepl-popup-stacktraces nil)
-
-
-
 ;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
 (defun yank-escaped-string ()
   (interactive)
@@ -732,27 +720,59 @@
                 (remove-if-not 'buffer-file-name (buffer-list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
-;;(require 'nrepl)
+(require 'rainbow-delimiters)
+
+(require 'nrepl)
  
-;; ;; Configure nrepl.el
-;; (setq nrepl-hide-special-buffers t)
-;; (setq nrepl-popup-stacktraces-in-repl t)
-;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
+;; Configure nrepl.el
+(setq nrepl-hide-special-buffers t)
+(setq nrepl-popup-stacktraces nil)
+(setq nrepl-popup-stacktraces-in-repl t)
+(setq nrepl-history-file "~/.emacs.d/nrepl-history")
  
-;; ;; Some default eldoc facilities
-;; (add-hook 'nrepl-connected-hook
-;;           (defun pnh-clojure-mode-eldoc-hook ()
-;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-;;             (nrepl-enable-on-existing-clojure-buffers)))
+;; Some default eldoc facilities
+(add-hook 'nrepl-connected-hook
+          (defun pnh-clojure-mode-eldoc-hook ()
+            (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+            (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+            (nrepl-enable-on-existing-clojure-buffers)))
  
-;; ;; Repl mode hook
-;; (add-hook 'nrepl-mode-hook 'subword-mode)
+;; Repl mode hook
+(add-hook 'nrepl-mode-hook 'subword-mode)
  
 ;; ;; Auto completion for NREPL
-;; (require 'ac-nrepl)
+(require 'ac-nrepl)
 
-;; (eval-after-load "auto-complete"
-;;   '(add-to-list 'ac-modes 'nrepl-mode))
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'nrepl-mode))
 
-;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+
+;; Object inspector
+
+;; git clone https://github.com/vitalreactor/nrepl-inspect.git
+;; cd nrepl-inspect
+;; lein install
+
+;; and add this to ~/.lein/profiles.clj
+;; {:user 
+;;  {:dependencies [[nrepl-inspect "0.3.0"]]
+;;   :repl-options {:nrepl-middleware
+;;                  [inspector.middleware/wrap-inspect]}}}
+
+(load-file "~/nrepl-inspect/nrepl-inspect.el")
+(define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
+
+
+;; Sadly all the stuff with ritz seems to be well and truly broken, 
+;; but one day...
+
+(require 'nrepl-ritz)
+
+;; Ritz middleware
+(define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+(define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+(define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+(define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+
+
