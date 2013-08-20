@@ -1,11 +1,20 @@
 ;; -*- mode: lisp-interaction; -*-
-
 (when (>= emacs-major-version 24)
   (require 'package)
+  ;; packages normally enabled after this file, so do it now instead
+  ;; then we can require as normal
+  (setq package-enable-at-startup nil)
+  ;; and tell it not to initialize them twice
   (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t))
+  ; MELPA is bleeding edge, marmalade is stable
+  ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+)
 
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;; Install list 
+;; undo-tree, ac-nrepl, clojure-mode, melpa, nrepl, nrepl-ritz, and rainbow-delimiters
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
@@ -191,7 +200,7 @@
 (tool-bar-mode -1)
 ;; disable scrollbar
 (toggle-scroll-bar -1)
-;; disable menu bar
+;; disable menu bar. actually I quite like the menu bar.
 ;(menu-bar-mode -1)
 
 ;; ;; disable splash screen and show unknown files in speedbar
@@ -616,7 +625,7 @@
   ido-confirm-unique-completion t) ; wait for RET, even with unique completion
 
 ;; when using ido, the confirmation is rather annoying...
- (setq confirm-nonexistent-file-or-buffer nil)
+(setq confirm-nonexistent-file-or-buffer nil)
 
 
 (ido-mode 'both) ;; for buffers and files
@@ -640,7 +649,10 @@
 
 
 ;; nrepl seems to be the new way to connect to clojure programs instead of slime
+;; nrepl brings clojure-mode, dash, and s with it when installed
 (require 'nrepl)
+
+
 ;; irritating popup stacktraces off
 ;; this seems to work if you do it in the scratch buffer but not if it's here.
 ;; Maybe it gets reset when you start a new session?
@@ -719,4 +731,28 @@
           (delq (current-buffer) 
                 (remove-if-not 'buffer-file-name (buffer-list)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
+;;(require 'nrepl)
+ 
+;; ;; Configure nrepl.el
+;; (setq nrepl-hide-special-buffers t)
+;; (setq nrepl-popup-stacktraces-in-repl t)
+;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
+ 
+;; ;; Some default eldoc facilities
+;; (add-hook 'nrepl-connected-hook
+;;           (defun pnh-clojure-mode-eldoc-hook ()
+;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+;;             (nrepl-enable-on-existing-clojure-buffers)))
+ 
+;; ;; Repl mode hook
+;; (add-hook 'nrepl-mode-hook 'subword-mode)
+ 
+;; ;; Auto completion for NREPL
+;; (require 'ac-nrepl)
 
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'nrepl-mode))
+
+;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
