@@ -707,5 +707,16 @@
                       (local-set-key (kbd "C-x C-r") 'haskellxr)
                       (local-set-key (kbd "C-x r") 'haskellxr)))
 
+(defun kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+
+
+(defun kill-all-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
 
 
