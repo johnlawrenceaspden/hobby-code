@@ -727,7 +727,7 @@
 ;; Configure nrepl.el
 (setq nrepl-hide-special-buffers t)
 (setq nrepl-popup-stacktraces nil)
-(setq nrepl-popup-stacktraces-in-repl t)
+(setq nrepl-popup-stacktraces-in-repl nil)
 (setq nrepl-history-file "~/.emacs.d/nrepl-history")
  
 ;; Some default eldoc facilities
