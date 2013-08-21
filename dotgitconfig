@@ -5,3 +5,5 @@
 	tool = xxdiff
 [push]
 	default = simple
+[core]
+	excludesfile = /home/john/gitignore
