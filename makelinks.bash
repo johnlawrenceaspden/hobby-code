@@ -12,4 +12,8 @@ ln -s ~/hobby-code/authorized_keys ~/.ssh/authorized_keys
 
 echo replacing ~/.lein/profiles.clj
 mv ~/.lein/profiles.clj ~/.lein/old.profiles.clj
-ln -s ~/hobby-code/profiles.clj ~/.lein/profiles.clj
+ln -s ~/hobby-code/hidefromleiningen/profiles.clj ~/.lein/profiles.clj
+
+echo replacing ~/.lein/globaluser/user.clj
+mv ~/.lein/globaluser/user.clj ~/.lein/globaluser/old.user.clj
+ln -s ~/hobby-code/hidefromleiningen/user.clj ~/.lein/globaluser/user.clj
