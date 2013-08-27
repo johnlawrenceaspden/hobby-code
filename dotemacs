@@ -1,18 +1,38 @@
 ;; -*- mode: lisp-interaction; -*-
 (when (>= emacs-major-version 24)
   (require 'package)
-  ;; packages normally enabled after this file, so do it now instead
+
+                                        ; MELPA is bleeding edge, marmalade is stable
+                                        ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
+  ;; packages are normally enabled after this file has run, do it now instead
   ;; then we can require as normal
   (setq package-enable-at-startup nil)
   ;; and tell it not to initialize them twice
   (package-initialize)
-  ; MELPA is bleeding edge, marmalade is stable
-  ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-)
 
-;; Install list 
-;; undo-tree, ac-nrepl, clojure-mode, nrepl, nrepl-ritz, and rainbow-delimiters
+  ;; Install list 
+  (mapc
+   (lambda (package)
+     (or (package-installed-p package)
+         (if (y-or-n-p (format "Package %s is missing. Install it? " package)) 
+             (package-install package))))
+   '(ac-nrepl ; 0.18         installed  auto-complete sources for Clojure using nrepl completions
+     ack-and-a-half ; 1.2.0        installed  Yet another front-end for ack
+     auto-complete ;; 1.4          installed  Auto Completion for GNU Emacs
+     clojure-cheatsheet ;; 20130819.... installed  The Clojure Cheatsheet in Emacs [github]
+     clojure-mode ;; 2.1.0        installed  Major mode for Clojure code
+     ess ;; 5.14         installed  Edit and interact with statistical programs like R, S-Plus, SAS, Stata and JAGS
+     ess-smart-underscore ;; 0.79         installed  Ess Smart Underscore
+     nrepl      ;; 0.1.8        installed  Client for Clojure nREPL
+     nrepl-ritz ;; 0.6.0        installed  nrepl extensions for ritz
+     rainbow-delimiters ;; 1.3.4        installed  Highlight nested parens, brackets, braces a different color at each depth.
+     undo-tree ;;0.6.3        installed  Treat undo history as a tree
+     )))
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -775,4 +795,12 @@
 (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
 (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
 
+
+;; Ack and a half
+(require 'ack-and-a-half)
+
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 
