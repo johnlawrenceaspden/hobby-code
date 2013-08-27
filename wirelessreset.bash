@@ -4,11 +4,12 @@ set -x
 sudo ip link
 sudo iwconfig
 sudo nm-tool
+sudo iwlist wlan0 scan | grep "ESSID\|Channel\|ual"
 
 # this sequence restored comms in the Maypole when it was broken
 # when typed in, but when run as a script broke it irrevocably
 
-# it (typed in) also cures the problem in the boathouse if the wireless wakes up broken
+# it (typed in) also cures the problem in the Boathouse if the wireless wakes up broken
 
 # reboot and it still didn't work, but then try this sequence again
 # and all was suddenly well.
@@ -33,7 +34,14 @@ sudo service network-manager stop
 sleep 1
 sudo service networking stop
 #sleep 1
+
+# this used to work, but now on either mini it just results in 
+#sudo nm-tool
+#** (process:8627): WARNING **: Couldn't connect to system bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+# which will probably be worth googling one day when you have a network connection
+
 #sudo modprobe -r b43 ssb wl mac80211 cfg80211 bcma 
+#sudo modprobe -r rtl8192ce
 #sleep 1
 sudo pkill -f wpa_supplicant
 #sudo modprobe wl
