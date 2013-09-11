@@ -2,8 +2,8 @@
 (when (>= emacs-major-version 24)
   (require 'package)
 
-                                        ; MELPA is bleeding edge, marmalade is stable
-                                        ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  ;; MELPA is bleeding edge, marmalade is stable
+  ;;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
   ;; packages are normally enabled after this file has run, do it now instead
