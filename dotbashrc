@@ -402,6 +402,7 @@ function gitpushall
 function gitpullall
 {
     for i in ~/hobby-code/ ~/data ~/iqtest/ ; do cd $i && git pull ; done
+    cd ~/iqtest ; git remote update ;
 }
 
 
