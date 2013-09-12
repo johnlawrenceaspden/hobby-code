@@ -24,7 +24,6 @@
      clojure-cheatsheet ;; 20130819.... installed  The Clojure Cheatsheet in Emacs [github]
      clojure-mode ;; 2.1.0        installed  Major mode for Clojure code
      ess ;; 5.14         installed  Edit and interact with statistical programs like R, S-Plus, SAS, Stata and JAGS
-     ess-smart-underscore ;; 0.79         installed  Ess Smart Underscore
      nrepl      ;; 0.1.8        installed  Client for Clojure nREPL
      nrepl-ritz ;; 0.6.0        installed  nrepl extensions for ritz
      rainbow-delimiters ;; 1.3.4        installed  Highlight nested parens, brackets, braces a different color at each depth.
@@ -612,12 +611,6 @@
 (setq split-width-threshold nil) ;; but don't split anything vertically
 ; can test the behaviour like this
 ;(split-window-sensibly (first (window-list)))
-
-
-
-(require 'ido)
-(ido-mode 'both)
-
 
 
 ;; ido makes competing buffers and finding files easier
