@@ -375,15 +375,15 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 function vcstatuses 
 {
-    for i in ~/hobby-code ~/data ; do
+    for i in ~/hobby-code ~/data ~/iqtest ; do
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master ; 
     done ;
-    i=~/iqtest
-    echo "--" && echo "$i" && echo "--" && cd "$i" && git status &&
-    echo "-------log vs origin/master-----------" &&
-    git log origin/master..master && 
-    echo "-------log vs heroku/master-----------" &&
-    git log heroku/master..master; 
+    # i=~/iqtest
+    # echo "--" && echo "$i" && echo "--" && cd "$i" && git status &&
+    # echo "-------log vs origin/master-----------" &&
+    # git log origin/master..master && 
+    # echo "-------log vs heroku/master-----------" &&
+    # git log heroku/master..master; 
 
     # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ; 
     # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
