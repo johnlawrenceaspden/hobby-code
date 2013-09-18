@@ -17,3 +17,7 @@ ln -s ~/hobby-code/hidefromleiningen/profiles.clj ~/.lein/profiles.clj
 echo replacing ~/.lein/globaluser/user.clj
 mv ~/.lein/globaluser/user.clj ~/.lein/globaluser/old.user.clj
 ln -s ~/hobby-code/hidefromleiningen/user.clj ~/.lein/globaluser/user.clj
+
+echo replacing ~/gitignore
+mv ~/gitignore ~/old.gitignore
+ln -s ~/hobby-code/gitignore ~/gitignore
