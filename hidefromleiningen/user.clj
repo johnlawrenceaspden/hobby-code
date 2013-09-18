@@ -53,4 +53,17 @@
                (printf "[%2d] %s\n" i (nth e 2))))))))
 
 
-(println "end of user.clj (defined user/def-let dbg and show, set! *print-level* and *print-length* and *warn-on-reflection*)")
+(defmacro require-on-fly 
+  "(require-on-fly org.clojure/math.combinatorics \"0.0.4\" clojure.math.combinatorics)"
+  [thing version requirename]
+  `(do (require 'cemerick.pomegranate)
+       (cemerick.pomegranate/add-dependencies 
+        :coordinates [['~thing ~version]]
+        :repositories (merge cemerick.pomegranate.aether/maven-central  {"clojars" "http://clojars.org/repo"}))
+       (require '~requirename)))
+
+
+
+
+
+(println "end of user.clj (defined user/def-let dbg show and require-on-fly, set! *print-level* and *print-length* and *warn-on-reflection*)")
