@@ -38,6 +38,7 @@
 
    ["Leeds" "Liverpool" 73]
    ["Leeds" "Manchester" 40]
+
    ["Liverpool" "Manchester" 27]])
 
 ;; First we do two preprocessing steps:
@@ -82,7 +83,7 @@
 
 ;; By the Power of Kruskal:
 
-(def tree (second (reduce add-link [city-partition '()] ordered)))
+(def tree (second (reduce add-link [city-partition '()] links)))
 ;; ["London" "Bristol" 100]
 ;; ["Birmingham" "Bristol" 79]
 ;; ["Birmingham" "Liverpool" 75]
@@ -97,6 +98,29 @@
 
 ;; And it will use 351 glorious miles of shining steel.
 
+;; Can we do better?
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; One way to do better, of course, if you were the head of the railway-building department
+;; would be increase the size of your empire to the maximum you can get away with
+
+;; Kruskal's Algorithm is equally good at finding maximal spanning trees
+
+(def max-tree (second (reduce add-link [city-partition '()] (reverse links))))
+
+(doseq [i max-tree] (println i))
+;; [London Birmingham 103]
+;; [Bristol Leeds 171]
+;; [London Leeds 175]
+;; [London Liverpool 178]
+;; [Sheffield Bristol 180]
+;; [London Manchester 181]
+
+(reduce + (map (fn[[_ _ x]] x) max-tree)) ;-> 988
+
+;; Now the railway goes in a star topology out from London to the great cities.
+
+;; Ridiculous
 
 
