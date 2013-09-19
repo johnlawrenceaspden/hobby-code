@@ -135,6 +135,7 @@ cities ;-> ["London" "Birmingham" "Sheffield" "Bristol" "Leeds" "Liverpool" "Man
               (reduce (fn[uf x] (assoc uf x [leader-a []])) uf followers-b))) ;; and change every member of the 'b group' to follow the 'a group leader' instead
           (join union-find b a)))))) ;; but if a's in the smaller group do it the other way round
 
+
 ;; I have a feeling that I should try to factor this function a bit. 
 ;; But I'm so proud of the fact that I got it working that I don't want to mess it up.
 ;; I think this feeling makes me what used to be called in my C days 'a three star programmer'.
