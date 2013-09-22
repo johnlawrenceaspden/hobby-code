@@ -6,6 +6,8 @@
 ;; And some things
 (def things (map (fn[[c v]] {:cost c :value v}) [[1 20][3 30][3 21][6 40]]))
 
+things ;-> ({:cost 1, :value 20} {:cost 3, :value 30} {:cost 3, :value 21} {:cost 6, :value 40})
+
 (defn price [things]    (reduce + (map :cost  things)))
 (defn evaluate [things] (reduce + (map :value things)))
 
@@ -15,6 +17,173 @@
 ;; And you want to know, given your budget, how much of the value you can get.
 
 ;; The trick is to notice that there's a structure to this problem.
+
+;; Imagine that a semi-good fairy is happy to tell you the answer to all simpler knapsack questions
+
+;; She will, for instance, tell you what you should buy if you only have a budget of 11 
+
+;; And she will tell you what you should buy if you have a budget of twelve, but one of the items is not available.
+
+;; But she will not tell you the answer to the question you want answered.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; You reason as follows:
+
+;; Should I buy the first thing, with the value of 20 and the cost of 1? 
+
+;; It seems obvious that you should. It's very small and it's worth a lot.
+
+;; But if you do, that leaves you with a budget of 11.
+
+;; So you say to the fairy
+
+;; "What should I buy if I had a budget of 11, and the precious thing {:cost 1, :value 20} were not available?"
+
+;; She says "You should buy {:cost 6, :value 40}, and {:cost 3, :value 30}. That will cost you only 9, but get you 70!"
+
+;; And you think to yourself: "Plus the precious thing, means cost 10 and value 90". Job done.
+
+;; "But I will just check."
+
+;; "Oh wise fairy, what should I buy had I a budget of 12 and the precious thing were not available?"
+
+;; She says "You should buy {:cost 3, :value 30} {:cost 3, :value 21} {:cost 6, :value 40}, for a cost of 12 and a value of 91"
+
+;; You note a certain awe-inspiring lack of smugness in the way she delivers this news.
+
+;; Assuming you trust the fairy, you are now really done.
+
+;; You either have to buy the precious thing, or not. If you do, then the best you can do is 90. If you don't, you can get 91.
+
+;; Sadly, you put the precious thing back on the shelf and buy everything else.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; "By the way," you ask the fairy. "How do you know the answers to the lesser questions?"
+
+;; "I don't at first", she says, "I think it out the same way as you did, and then ask other fairies about the easier sub-problems.
+
+;; "Would you like to join the large but finite society of weakly semi-good fairies?"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn knapsack [things budget]
+  (cond (empty? things) {:value 0 :purchases '()}
+        (zero? budget)  {:value 0 :purchases '()}
+        :else (let [precious (first things)]
+                (if (< budget (:cost precious))
+                  (knapsack (rest things) budget)
+                  (let [q1 (knapsack (rest things) (- budget (:cost precious)))
+                        q2 (knapsack (rest things) budget)]
+                    (if (> (+ (:value q1) (:cost precious))
+                           (:value q2))
+                      {:purchases (cons precious (:purchases q1)) :value (+ (:value q1) (:value precious))}
+                      q2))))))
+
+
+(defn knapsack [things budget]
+  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
+        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
+        :else   (let [precious (first things)]     ;; do we buy the precious thing?
+                  (if (< budget (:cost precious))  ;; can we afford it?
+                    (knapsack (rest things) budget) ;; if not ignore it
+                    ;; otherwise ask two fairies and cunningly compare their answers.
+                    (let [q1 (knapsack (rest things) (- budget (:cost precious)))
+                          q2 (knapsack (rest things) budget)]
+                      (if (> (:value q2) (+ (:value q1) (:cost precious))) q2
+                        {:purchases (cons precious (:purchases q1)) :value (+ (:value q1) (:value precious))}
+                        ))))))
+
+
+(defn knapsack [things budget]
+  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
+        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
+        :else   (let [precious     (first things)
+                      best-without (knapsack (rest things) budget)]
+                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
+                    best-without
+                    ;; otherwise ask two fairies and cunningly compare their answers.
+                    (let [best-with (knapsack (rest things) (- budget (:cost precious)))]
+                      (if (> (:value best-without) (+ (:value best-with) (:cost precious))) best-without
+                        {:purchases (cons precious (:purchases best-with)) :value (+ (:value best-with) (:value precious))}
+                        ))))))
+
+
+
+(defn knapsack [things budget]
+  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
+        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
+        :else   (let [precious     (first things)
+                      best-without (knapsack (rest things) budget)]
+                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
+                    best-without
+                    ;; otherwise ask two fairies and cunningly compare their answers.
+                    (let [sub-problem (knapsack (rest things) (- budget (:cost precious)))
+                          best-with {:purchases (cons precious (:purchases sub-problem)) :value (+ (:value sub-problem) (:value precious))}]
+                      (if (> (:value best-with) (:value best-without)) best-with best-without))))))
+
+
+
+(defn knapsack [things budget]
+  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
+        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
+        :else   (let [precious     (first things)
+                      best-without (knapsack (rest things) budget)] ;; ask a fairy
+                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
+                    best-without ;; if not we're done.
+                    ;; otherwise ask a second fairy and cunningly compare their answers.
+                    (let [sub-problem (knapsack (rest things) (- budget (:cost precious)))
+                          best-with {:purchases (cons precious (:purchases sub-problem)) :value (+ (:value sub-problem) (:value precious))}]
+                      (max-key :value best-with best-without))))))
+
+
+;; Ta-daa:
+(knapsack things budget) ;-> {:purchases ({:cost 3, :value 30} {:cost 3, :value 21} {:cost 6, :value 40}), :value 91}
+              
+            
+
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;; If (knapsack budget things) is the optimal purchase given all the things 
 ;; then we can say:
@@ -26,6 +195,7 @@
 ;; had better be the same answer, since if we're not going to buy it anyway, 
 ;; it shouldn't matter whether it's for sale or not.
 
+;; Obviously, if we can't afford the (first things), then it can't be in the basket 
 
 ;; But if we can afford the first thing, then we can imagine what
 ;; would happen if we bought it and then worked out what the best
