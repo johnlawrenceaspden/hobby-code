@@ -68,64 +68,6 @@ things ;-> ({:cost 1, :value 20} {:cost 3, :value 30} {:cost 3, :value 21} {:cos
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(defn knapsack [things budget]
-  (cond (empty? things) {:value 0 :purchases '()}
-        (zero? budget)  {:value 0 :purchases '()}
-        :else (let [precious (first things)]
-                (if (< budget (:cost precious))
-                  (knapsack (rest things) budget)
-                  (let [q1 (knapsack (rest things) (- budget (:cost precious)))
-                        q2 (knapsack (rest things) budget)]
-                    (if (> (+ (:value q1) (:cost precious))
-                           (:value q2))
-                      {:purchases (cons precious (:purchases q1)) :value (+ (:value q1) (:value precious))}
-                      q2))))))
-
-
-(defn knapsack [things budget]
-  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
-        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
-        :else   (let [precious (first things)]     ;; do we buy the precious thing?
-                  (if (< budget (:cost precious))  ;; can we afford it?
-                    (knapsack (rest things) budget) ;; if not ignore it
-                    ;; otherwise ask two fairies and cunningly compare their answers.
-                    (let [q1 (knapsack (rest things) (- budget (:cost precious)))
-                          q2 (knapsack (rest things) budget)]
-                      (if (> (:value q2) (+ (:value q1) (:cost precious))) q2
-                        {:purchases (cons precious (:purchases q1)) :value (+ (:value q1) (:value precious))}
-                        ))))))
-
-
-(defn knapsack [things budget]
-  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
-        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
-        :else   (let [precious     (first things)
-                      best-without (knapsack (rest things) budget)]
-                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
-                    best-without
-                    ;; otherwise ask two fairies and cunningly compare their answers.
-                    (let [best-with (knapsack (rest things) (- budget (:cost precious)))]
-                      (if (> (:value best-without) (+ (:value best-with) (:cost precious))) best-without
-                        {:purchases (cons precious (:purchases best-with)) :value (+ (:value best-with) (:value precious))}
-                        ))))))
-
-
-
-(defn knapsack [things budget]
-  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
-        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
-        :else   (let [precious     (first things)
-                      best-without (knapsack (rest things) budget)]
-                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
-                    best-without
-                    ;; otherwise ask two fairies and cunningly compare their answers.
-                    (let [sub-problem (knapsack (rest things) (- budget (:cost precious)))
-                          best-with {:purchases (cons precious (:purchases sub-problem)) :value (+ (:value sub-problem) (:value precious))}]
-                      (if (> (:value best-with) (:value best-without)) best-with best-without))))))
-
-
-
 (defn knapsack [things budget]
   (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
         (zero?  budget)  {:value 0 :purchases '()} ;; no money left
@@ -135,7 +77,8 @@ things ;-> ({:cost 1, :value 20} {:cost 3, :value 30} {:cost 3, :value 21} {:cos
                     best-without ;; if not we're done.
                     ;; otherwise ask a second fairy and cunningly compare their answers.
                     (let [sub-problem (knapsack (rest things) (- budget (:cost precious)))
-                          best-with {:purchases (cons precious (:purchases sub-problem)) :value (+ (:value sub-problem) (:value precious))}]
+                          best-with {:purchases (cons precious (:purchases sub-problem)) 
+                                     :value (+ (:value precious) (:value sub-problem))}]
                       (max-key :value best-with best-without))))))
 
 
@@ -144,22 +87,102 @@ things ;-> ({:cost 1, :value 20} {:cost 3, :value 30} {:cost 3, :value 21} {:cos
               
             
 
-        
-        
+;; Here is a more complex problem        
+(def stuff (doall (take 80 (repeatedly (fn[] {:cost (inc (rand-int 10)) :value (inc (rand-int 10))})))))
+stuff ;-> ({:cost 6, :value 7} {:cost 6, :value 7} {:cost 9, :value 3} {:cost 8, :value 1} {:cost 5, :value 7} {:cost 7, :value 2} {:cost 9, :value 9} {:cost 7, :value 2} {:cost 10, :value 4} {:cost 8, :value 2} {:cost 2, :value 2} {:cost 7, :value 9} {:cost 5, :value 4} {:cost 3, :value 7} {:cost 5, :value 4} {:cost 3, :value 6} {:cost 3, :value 2} {:cost 9, :value 4} {:cost 1, :value 7} {:cost 10, :value 10} {:cost 4, :value 2} {:cost 6, :value 8} {:cost 3, :value 4} {:cost 4, :value 7} {:cost 1, :value 4} {:cost 6, :value 4} {:cost 6, :value 9} ...)
+
+(knapsack stuff 1) ;-> {:purchases ({:cost 1, :value 7}), :value 7}
+(knapsack stuff 2) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7}), :value 14}
+(knapsack stuff 3) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 5}), :value 19}
+(knapsack stuff 4) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5}), :value 23}
+(knapsack stuff 5) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5}), :value 27}
+(knapsack stuff 6) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 5} {:cost 3, :value 10}), :value 29}
+(knapsack stuff 7) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5} {:cost 3, :value 10}), :value 33}
+(knapsack stuff 8) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5} {:cost 3, :value 10}), :value 37}
+(knapsack stuff 9) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5} {:cost 3, :value 10} {:cost 2, :value 4}), :value 37}
+(knapsack stuff 10) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 3, :value 8} {:cost 1, :value 4} {:cost 1, :value 5} {:cost 3, :value 10}), :value 41}
+(knapsack stuff 11) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 7} {:cost 3, :value 8} {:cost 1, :value 4} {:cost 1, :value 5} {:cost 3, :value 10}), :value 45}
+
+(time (knapsack stuff 1)) ;-> {:purchases ({:cost 1, :value 7}), :value 7}
+"Elapsed time: 0.592813 msecs"
+(time (knapsack stuff 2)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7}), :value 14}
+"Elapsed time: 1.224386 msecs"
+(time (knapsack stuff 3)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 5}), :value 19}
+"Elapsed time: 2.837093 msecs"
+(time (knapsack stuff 4)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5}), :value 23}
+"Elapsed time: 7.351429 msecs"
+(time (knapsack stuff 5)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5}), :value 23}
+"Elapsed time: 16.989729 msecs"
+(time (knapsack stuff 5)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 4} {:cost 1, :value 5}), :value 23}
 
 
 
+(defn ^:dynamic knapsack [things budget]
+  (cond (empty? things)  {:value 0 :purchases '()} ;; nothing to buy
+        (zero?  budget)  {:value 0 :purchases '()} ;; no money left
+        :else   (let [precious     (first things)
+                      best-without (knapsack (rest things) budget)] ;; ask a fairy
+                  (if (< budget (:cost precious))  ;; can we afford the precious thing?
+                    best-without ;; if not we're done.
+                    ;; otherwise ask a second fairy and cunningly compare their answers.
+                    (let [sub-problem (knapsack (rest things) (- budget (:cost precious)))
+                          best-with {:purchases (cons precious (:purchases sub-problem)) 
+                                     :value (+ (:value precious) (:value sub-problem))}]
+                      (max-key :value best-with best-without))))))
+
+(def knapsack (memoize knapsack))
+
+(time (knapsack stuff 5))
+"Elapsed time: 35.340664 msecs"
+(time (knapsack stuff 6)) ;-> {:purchases ({:cost 1, :value 7} {:cost 1, :value 7} {:cost 1, :value 5} {:cost 3, :value 10}), :value 29}
+(time (knapsack stuff 7))
+"Elapsed time: 27.208697 msecs"
+(time (knapsack stuff 10))
+(time (knapsack stuff 100))
+"Elapsed time: 283.731678 msecs"
+(time (knapsack stuff 1000))
+"Elapsed time: 1695.912931 msecs"
+(time (knapsack stuff 10000))
+"Elapsed time: 1087.614701 msecs"
+
+(time (knapsack (take 80 (repeatedly (fn[] {:cost (inc (rand-int 10)) :value (inc (rand-int 10))}))) 80))
+
+(def stuff (take 160 (repeatedly (fn[] {:cost (inc (rand-int 10)) :value (inc (rand-int 10))}))))
+(time (knapsack (take 80 stuff) 160))
 
 
+(def fib (memoize (fn [n] (if (< n 2) (bigint n) (+ (fib (dec n)) (fib (dec (dec n))))))))
 
 
+(time (fib 10))
+(time (fib 20))
+(time (fib 30))
+(time (fib 80))
+(time (fib 160)) ;; stack overflow
+(time (fib 320)) ;; stack overflow
 
+(def factorial (memoize (fn [n] (if (< n 1) 0 (+ n (factorial (dec n)))))))
 
+(factorial 1)
+(factorial 80)
+(factorial 160) ;; stack overflow
+(factorial 320)
+(factorial 3200)
+(factorial 4000) ;; stack overflow here
 
+;; Does anyone know what gives here?
 
+;; I'm trying to memoize a rather complicated recursion, and it's blowing stack after not terribly many calls.
 
+;; The simplest possible test case that manifests the behaviour seems to be:
 
+(clojure-version) ;; "1.5.1"
 
+(def gauss-recurse (fn [n] (if (< n 1) 0 (+ n (gauss-recurse (dec n))))))
+(gauss-recurse 3500) ;-> 6126750
+
+(def gauss-memoized (memoize (fn [n] (if (< n 1) 0 (+ n (gauss-memoized (dec n)))))))
+(gauss-memoized 160)   ;; StackOverflowError   clojure.lang.RT.boundedLength (RT.java:1654)
 
 
 
