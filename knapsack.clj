@@ -19,28 +19,28 @@
 
 ;; What do you buy? 
 
-(defn value [sorted-things]
+;; If you can put them in an order, then you can buy as many as you can afford 
+(defn value [sorted-things budget]
   (evaluate
-   (let [order   sorted-things
-         baskets (reductions conj '() order)]
+   (let [ baskets (reductions conj '() sorted-things)]
      (last (take-while #(<= (price %) budget) baskets)))))
 
-;; Well, if you're a cynic
-(value (sort-by :cost things)) ;-> 71
+;; So if you're a cynic
+(value (sort-by :cost things) budget) ;-> 71
 ;; Then you come away with 71's worth
 
 ;; And if you're an idealist
-(value (reverse (sort-by :value things))) ;-> 91
+(value (reverse (sort-by :value things)) budget) ;-> 91
 ;; Then you do way better with 91
 
 ;; A more cunning approach is to take things in order of their price/value ratio
-(value (reverse (sort-by (fn [{:keys[value cost]}] (/ value cost)) things))) ;-> 71
+(value (reverse (sort-by (fn [{:keys[value cost]}] (/ value cost)) things)) budget) ;-> 71
 ;; Sadly that does worse than the approach that only pays attention to the value.
 
 ;; So it seems that out of the three natural-seeming 'greedy algorithms', the best solution is 91
 
 
-;; Yet another approach is to exhaustively search the space of possibilities:
+;; Another approach is to exhaustively search the space of possibilities:
 
 (defn subsets [things]
   (if (empty? things) '(())
@@ -61,15 +61,15 @@
 ;; lots of other things which are worth a fair bit and dirt cheap.
 
 ;; Personally my money would have been on the 'buy things in order of
-;; price/value ratio' approach, but we above that that fails in at
+;; price/value ratio' approach, but we saw above that that fails in at
 ;; least one easy case.
 
 ;; So it appears that if we are faced with a problem like this, ( and
 ;; there are many such problems ), then we are doomed.
 
 ;; Exhaustive search is not feasible once you've got more than a very
-;; few items, and yet the various greedy algorithms above get the
-;; wrong answers.
+;; few items, and yet the various greedy algorithms above will all get
+;; the wrong answers.
 
 ;; And yet if you write down a knapsack problem like this, you will
 ;; not find it appallingly difficult to pick the best arrangement.
