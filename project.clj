@@ -6,6 +6,7 @@
 
 
 ;; :jvm-opts ["-Xmx900M"] 	
+  :jvm-opts ["-Xss50M"] 	
 
   :source-paths ["."]
 )
