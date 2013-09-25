@@ -60,7 +60,7 @@
 
 ;; rather more quickly
 (time (asum a))
-"Elapsed time: 85.445153 msecs"
+"Elapsed time: 85.445153 msecs" ;; 52 with *unchecked-math*
 499999500000
 
 ;; It turns out that areduce is a macro
@@ -85,7 +85,7 @@
 
 
 (time (my-asum a))
-"Elapsed time: 73.69296 msecs"
+"Elapsed time: 73.69296 msecs" ;; 44 with *unchecked-math*
 499999500000
 
 ;; This just makes it a spot more readable
@@ -97,7 +97,7 @@
         ret))))
 
 (time (my-asum a))
-"Elapsed time: 73.981615 msecs"
+"Elapsed time: 73.981615 msecs" ;; 44
 499999500000
 
 
@@ -118,7 +118,7 @@
       (if (< i N) (recur (unchecked-inc i))))))
 
 (time (my-amap a b c))
-"Elapsed time: 188.844755 msecs"
+"Elapsed time: 188.844755 msecs" ;; 77 with *unchecked-math*
 
 (aget c 0) ;-> 0
 (aget c 999999) ;-> 1999998
@@ -137,7 +137,7 @@
 ;; Which, thank the Lord Harry, is not particularly slower
 
 (def c (time (my-amap a b)))
-"Elapsed time: 192.613251 msecs"
+"Elapsed time: 192.613251 msecs" ;; 77 with *unchecked math*
 
 (aget c 0) ;-> 0
 (aget c 999999) ;-> 1999998
@@ -150,7 +150,7 @@
     c))
 
 (def c (time (my-amap a b)))
-"Elapsed time: 190.621796 msecs"
+"Elapsed time: 190.621796 msecs" ;; 74
 
 (aget c 0) ;-> 0
 (aget c 999999) ;-> 1999998
@@ -168,8 +168,8 @@
       (aset c i (+ (aget xs i) (aget ys i))))
     c))
 
-(def c (time (my-amap a b)))
-"Elapsed time: 172.431145 msecs"
+(def c (time (my-amap a b))) 
+"Elapsed time: 172.431145 msecs" ;; 88 with *unchecked-math*, so that's a slowdown
 
 (aget c 0) ;-> 0
 (aget c 999999) ;-> 1999998
@@ -188,7 +188,7 @@
 ;; Doesn't seem enormously faster, but it's not slower, at least.
 
 (time (my-asum a))
-"Elapsed time: 72.29411 msecs"
+"Elapsed time: 72.29411 msecs" ;; 44 with *unchecked-math*
 499999500000
 
 
@@ -197,12 +197,11 @@
 (time (dotimes [i 100] 
         (my-amap a b)
         (my-asum a)))
-"Elapsed time: 24742.951321 msecs"
+"Elapsed time: 24742.951321 msecs" ;; 12040 with *unchecked-math*
 
 ;; So from our original ten seconds, we're down to 0.25 seconds, a speed up of 40x
 
 ;; But we're still 15 times slower than C.
-
 
 ;; The corresponding C program takes 1.7 seconds on this machine (and java about half that speed)
 
@@ -213,6 +212,14 @@
 
 ;; It's possible that Java and C are both doing some sort of dead code elimination and 
 ;; so looking artificially fast.
+
+;; This doubles the speed of everything. sigh.
+(set! *unchecked-math* true)
+
+(/ 12 1.7) ;-> 7.0588235294117645 
+
+;; 7x slower than C, and 1/3 the speed of java itself
+
 
 
 ;; For reference, here's the thing I'm comparing it with
