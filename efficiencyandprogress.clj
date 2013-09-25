@@ -1,13 +1,13 @@
 ;; Efficiency and Progress
 ;; Are ours once again
 ;; Now that we have the neut-ron bomb
-;; It's nice and quick and clean and get-s things done.
+;; It's nice and quick and clean and ge-ets things done...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; When you program in Clojure, you get the raw speed of assembler.
 
-;; Unfortunately, that is assembler on a ZX81, running a Z80 processor at 4MHz.
+;; Unfortunately, that is, assembler on a ZX81, running a Z80 processor at 4MHz in 1981.
 
 ;; If anything, that comparison is unfair to my old ZX81. Does anyone
 ;; remember '3D Invaders', a fast and exciting first person shooter /
@@ -15,7 +15,10 @@
 ;; screen*?
 
 ;; Once upon a time, I had the knack of making clojure run at the same
-;; speed as Java, which is not far off the same speed as C.
+;; speed as Java, which is not far off the same speed as C, which is
+;; not far off the speed of the sort of hand-crafted machine code which
+;; no-one in their right mind ever writes, in these degenerate latter
+;; days which we must reluctantly learn to call the future.
 
 ;; But I seem to have lost the knack. Can anyone show me what I am doing wrong?
 
@@ -23,9 +26,66 @@
 ;; the real speed of the machine, as long as you're prepared to write
 ;; code that is more like Java or C than Clojure.
 
+;; So here are some thoughts about how to do this.
+
+;; Which I offer up only as a basis for discussion, and not in any way
+;; meaning to stir up controversy, or as flame-bait or ammunition for
+;; trolls or anything of that sort.
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Clojure is very slow:
+
+(time (reduce + (map + (range 1000000) (range 1000000))))
+"Elapsed time: 5316.638869 msecs"
+;-> 999999000000
+
+;; The greater part of its slowness seems to be do with lazy sequences
+
+(time (def seqa (doall (range 1000000))))
+"Elapsed time: 3119.468963 msecs"
+(time (def seqb (doall (range 1000000))))
+"Elapsed time: 2839.593429 msecs"
+
+(time (reduce + (map + seqa seqb)))
+"Elapsed time: 3558.975552 msecs"
+;-> 999999000000
+
+;; It looks as though making a new sequence is the expensive bit
+(time (doall (map + seqa seqb)))
+"Elapsed time: 3612.553803 msecs"
+;-> (0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 ...)
+
+;; Just adding things up is way faster
+(time (reduce + seqa))
+"Elapsed time: 315.717033 msecs"
+499999500000
+
+
+;; I wondered if there was a way of avoiding lazy-seqs
+
+(time (def veca (vec seqa)))
+"Elapsed time: 470.512696 msecs"
+
+(time (def vecb (vec seqb)))
+"Elapsed time: 374.796054 msecs"
+
+;; After all, 'use the right data structure for the problem' is pretty much lesson 1, and if vectors are not a good data structure
+;; for this problem, then what is?
+
+;; But it seems that despite the speed of making the vectors, it doesn't help much when we do our thing.
+(time (reduce + (mapv + veca vecb)))
+"Elapsed time: 4329.070268 msecs"
+999999000000
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; That is the natural expression in clojure of an operation which I
+;; have reason to believe should take about 16ms when given its
+;; natural expression in C
+
+;; That's a factor 30 slowdown, which actually isn't that bad!
 
 (time (doall (map + (range 1000000) (range 1000000))))
 "Elapsed time: 8109.315787 msecs"
@@ -233,46 +293,4 @@
 ;; 7x slower than C, and 1/3 the speed of java itself
 
 
-
-;; For reference, here's the thing I'm comparing it with
-
-;; #include<stdio.h>
-
-;; #define N 1000000
-
-;; int a[N];
-;; int b[N];
-;; int c[N];
-
-;; int main(void)
-;; {
-;;   int i, count;
-;;   long long sum=0;
-
-;;   for (i=0; i< N; i++) {
-;;     a[i]=i;
-;;     b[i]=i;
-;;   }
-
-
-;;   for(count=0; count<100; count++){
-;;     for (i=0; i< N; i++) {
-;;       c[i]=a[i]+b[i];
-;;     }
-
-
-;;     for (i=0; i< N; i++) {
-;;       sum+=a[i];
-;;     }
-;;   }
-
-;;   printf("sum=%lli\n", sum);
-;; }
-
-;; /* gcc -std=gnu99 -Ofast efficiencyandprogress.c -o efficiencyandprogress && time ./efficiencyandprogress */
-;; /* sum=49999950000000 */
-
-;; /* real	0m1.735s */
-;; /* user	0m1.668s */
-;; /* sys	0m0.044s */
 
