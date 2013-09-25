@@ -5,11 +5,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; I used to be able to get Clojure to run fast.
+;; When you program in Clojure, you get the raw speed of assembler.
 
-;; But I seem to have lost the art.
+;; Unfortunately, that is assembler on a ZX81, running a Z80 processor at 4MHz.
 
-;; Can anyone show me how it should be done these days?
+;; If anything, that comparison is unfair to my old ZX81. Does anyone
+;; remember '3D Invaders', a fast and exciting first person shooter /
+;; flight simulator that ran in 1K of RAM *including memory for the
+;; screen*?
+
+;; Once upon a time, I had the knack of making clojure run at the same
+;; speed as Java, which is not far off the same speed as C.
+
+;; But I seem to have lost the knack. Can anyone show me what I am doing wrong?
+
+;; At any rate, it isn't too hard to get it to run at something like
+;; the real speed of the machine, as long as you're prepared to write
+;; code that is more like Java or C than Clojure.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
