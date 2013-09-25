@@ -204,9 +204,16 @@
 ;; But we're still 15 times slower than C.
 
 
-;; The corresponding C program takes 1.7 seconds on this machine
+;; The corresponding C program takes 1.7 seconds on this machine (and java about half that speed)
 
 (/ 25 1.7) ;-> 14.705882352941178
+
+;; I can live with that, but once upon a time, I could make clojure run at
+;; the same speed as java, and that was nice.
+
+;; It's possible that Java and C are both doing some sort of dead code elimination and 
+;; so looking artificially fast.
+
 
 ;; For reference, here's the thing I'm comparing it with
 
