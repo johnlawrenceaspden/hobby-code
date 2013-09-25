@@ -1,3 +1,27 @@
+/* A guest language on this blog. A welcome, please, for C */
+
+/* The reason that I am off on this particular one at the moment is
+   because I recently waited 3 hours for a clojure program to
+   terminate, after about a day trying to get it to run at all. */
+
+/* When it became apparent that it was not going to finish any time
+   soon, I hacked together an answer in C, using what should have been
+   a less efficient algorithm that I had come up with while
+   waiting. */
+
+/* That program took about 15 minutes to write and 65 seconds to run,
+   and got the correct answer. */
+
+/* That comparison is entirely unfair to both clojure and C in all
+   sorts of ways, but if I am going to spend time getting clojure to
+   run at C-ish speeds, I need to know what I should be aiming for. */
+
+/* This program is what I am using as a comparison for (reduce + (map + _ _ )) */
+
+/* To make sure that clever compilers and runtimes aren't doing any
+   sneaky dead-code elimination, it is actually doing some sort of
+   computation. But it is mainly mapping and reducing. Lots.*/
+
 #include<stdio.h>
 
 #define N 1000000
