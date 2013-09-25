@@ -74,18 +74,38 @@
 ;; for this problem, then what is?
 
 ;; But it seems that despite the speed of making the vectors, it doesn't help much when we do our thing.
+;; In fact it's a bit slower
 (time (reduce + (mapv + veca vecb)))
 "Elapsed time: 4329.070268 msecs"
 999999000000
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; So lets say 3600ms to add together two arrays of 1000000 elements and sum the result.
 
-;; That is the natural expression in clojure of an operation which I
-;; have reason to believe should take about 16ms when given its
-;; natural expression in C
+;; In C on the same machine (my little netbook with its 1.66GHz Atom
+;; and 512kb cache) this seems to take 16 ms, being 8ms for the map
+;; and 8 ms for the reduce.  I'm assuming that that time is mostly
+;; spent waiting on the main memory, but I may be wrong. Who knows how
+;; these things are done?
 
-;; That's a factor 30 slowdown, which actually isn't that bad!
+(/ 3600 16) ;-> 225
+
+;; So shall we call this a 225x slowdown for the natural expression in
+;; the two languages of mapping and reducing?
+
+(time (reduce + seqa))
+"Elapsed time: 358.152249 msecs"
+499999500000
+
+;; If we just look at the reduction, then that's 
+(/ 358 8.) ; 44.75
+
+
+;; So around 50x
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (time (doall (map + (range 1000000) (range 1000000))))
 "Elapsed time: 8109.315787 msecs"
