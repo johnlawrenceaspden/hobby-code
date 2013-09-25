@@ -32,6 +32,42 @@
  */
  
 public class efficiencyandprogress {
+
+
+    public static void main(String[] args) {
+
+
+        final int N = 1000000; 
+        
+        int[] a = new int[N];
+        int[] b = new int[N];
+        int[] c = new int[N];
+
+        int i, count;
+        long sum=0;
+
+        for (i=0; i< N; i++) {
+            a[i]=i;
+            b[i]=i;
+            
+        }
+        for(count=0; count<100; count++){
+            for (i=0; i< N; i++) {
+                c[i]=a[i]+b[i];
+            }
+
+
+            for (i=0; i< N; i++) {
+                sum+=a[i];
+            }
+        }
+
+        System.out.println("sum="+ sum);
+
+    }
+}
+
+/*
     public static double sum(double[] array) {
         double total = 0.0;
         for (int i = 0; i < array.length; i++) {
@@ -39,8 +75,6 @@ public class efficiencyandprogress {
         }
         return total;
     }
- 
-    public static void main(String[] args) {
         double[] array = new double[10000];
         for (int i = 0; i < array.length; i++) {
             array[i] = (double)i;
@@ -70,5 +104,4 @@ public class efficiencyandprogress {
             System.out.println("Computed " + grand_total +
                                " in " + (stop - start) + " msecs");
         }
-    }
-}
+*/
