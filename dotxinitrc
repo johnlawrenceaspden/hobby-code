@@ -1,3 +1,4 @@
 synclient AreaBottomEdge=4000
 setxkbmap -option ctrl:nocaps
 xinput set-int-prop "Wacom Bamboo Connect Pen stylus" "Wacom Tablet Area" 32 0 00 23175 8600
+/home/john/.screenlayout/maxresdualmonitors.sh
