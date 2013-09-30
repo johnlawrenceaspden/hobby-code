@@ -27,6 +27,7 @@
   :repl-options  { 
                   :port 4001 
                   :init [(println "hello from ~/.lein/profiles.clj")]
+		  :timeout 900000 ;; leiningen is a heap of shit
                   }
   :nrepl-middleware [inspector.middleware/wrap-inspect
                      ritz.nrepl.middleware.javadoc/wrap-javadoc
