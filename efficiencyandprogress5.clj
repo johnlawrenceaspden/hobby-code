@@ -1,110 +1,149 @@
-;; Efficiency and Progress IV: Avoiding Leiningen
-
-;; It turns out that there are many relevant variables when attempting
-;; to speed up Clojure.
-
-;; Java can start in 'client mode' or 'server mode'. The difference
-;; seems to be that 'server mode' is faster, and speeds up as you run
-;; it.  
-
-;; It's also, rather amazingly, true that leiningen turns off the
-;; default jvm runtime optimizations!
-
-;; You're supposed to be able to control this by adding
-
-  :jvm-opts ^:replace ["-server"]
-
-;; to project.clj, and initially this did seem to work for me.
-
-;; However now it's stopped working, and things that were fast have
-;; become slow.
-
-;; You can get the classpath that leiningen would use like this:
-
-LEIN_CLASSPATH=`lein classpath`
-
-;; And then start a repl with:
-
-rlwrap java -server -classpath $LEIN_CLASSPATH clojure.main 
-
-;; Apart from the initial run of leiningen to work out the classpath,
-;; which you only have to do occasionally, this is a much quicker way
-;; to start a repl, and rlwrap provides a command-line environment
-;; that works like the bash shell and which I find very nice.
-
-;; Of course, you'll want to make a version that will talk to emacs
-;; via nrepl, and providing that the nrepl jar is on the classpath,
-;; this will do the trick:
-
-rlwrap java -server -classpath $LEIN_CLASSPATH clojure.main -e "( do (require 'clojure.tools.nrepl.server) (clojure.tools.nrepl.server/start-server :bind \"127.0.0.1\" :port 4001))" -r
-
-;; In fact, if you have clojure-1.5.1 and nrepl 0.2.3 in your maven repository, then you can create a minimal classpath like this:
-CLP=$HOME/.m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar:$HOME/.m2/repository/org/clojure/tools.nrepl/0.2.3/tools.nrepl-0.2.3.jar
-;; And then run the clojure/repl/nrepl process like this:
-rlwrap java -server -classpath $CLP clojure.main -e "( do (require 'clojure.tools.nrepl.server) (clojure.tools.nrepl.server/start-server :bind \"127.0.0.1\" :port 4001))" -r
-
-;; And there are many variations on this theme.
-
-
+;; Efficiency and Progress V:
 
 ;; Recap
 
 ;; This is slow:
 (time (reduce + (map + (range 1000000) (range 1000000))))
-"Elapsed time: 2237.631681 msecs"
-999999000000
 
 ;; C can perform roughly equivalent task in 8.6 ms, and Java in around 20 ms
 
 ;; So do we have to drop into C or Java when we want to make algorithms fast?
 ;; I hope not! 
 
-;; It turns out that there are many relevant variables 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; I'm starting clojure like this, so that I know it's running as fast as it can
+;; rlwrap java -server -classpath ~/.m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar:. clojure.main
+
+(clojure-version) ;-> "1.5.1"
+((into{} (System/getProperties)) "java.version") ;-> "1.7.0_25"
+((into{} (System/getProperties)) "java.vm.name") ;-> "OpenJDK Server VM"
+((into{} (System/getProperties)) "sun.management.compiler") ;-> "HotSpot Tiered Compilers"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Repeated runs through this little benchmark now show 
+;; Hotspot doing its thing and speeding up the calculation
+(time (reduce + (map + (range 1000000) (range 1000000))))
+999999000000
+"Elapsed time: 2852.570643 msecs"
+"Elapsed time: 2756.410014 msecs"
+"Elapsed time: 1907.089513 msecs"
+"Elapsed time: 1872.189534 msecs"
+"Elapsed time: 1870.054495 msecs"
+"Elapsed time: 1907.627285 msecs"
+
+;; Setting these two variables is a good thing when trying to achieve C/Java like speeds
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* true)
-(clojure-version) ;-> "1.5.1"
-((into{} (System/getProperties)) "java.vm.version") ;-> "23.7-b01"
-((into{} (System/getProperties)) "java.vm.name") ;-> "OpenJDK Server VM"
 
-;; Java can start in 'client mode' or 'server mode'. The difference
-;; seems to be that 'server mode' is faster, and speeds up as you run
-;; it.  
+;; And doesn't seem to make any difference to this code
+(time (reduce + (map + (range 1000000) (range 1000000))))
+999999000000
+"Elapsed time: 1883.237194 msecs"
 
-;; It's also, rather amazingly, true that leiningen turns off the
-;; default jvm runtime optimizations!
+;; So I think it's safe to conclude that Clojure written idiomatically is around 100x slower than Java
 
-;; Leiningen is a useful for stopping one from having to use XML for
-;; dependencies, but I'd rather it not do this sort of thing, so I've
-;; taken to starting repls like:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; LEIN_CLASSPATH=`lein classpath`
-;; rlwrap java -server -classpath $LEIN_CLASSPATH clojure.main 
+;; My best shot so far is:
 
-;; Apart from the initial run of leiningen to work out the classpath,
-;; this runs much faster, and rlwrap provides a much better
-;; command-line environment that works like the bash shell.
+(def N 1000000)
+(def a (int-array (range N)))
+(def b (int-array N))
 
-;; Of course, you'll want to make a version that will talk to emacs via nrepl, and providing that the nrepl jar is on the classpath, this will do the trick:
+(time 
+ (let [a ^ints a b ^ints b N ^int N]
+   (loop [count 0 sum 0]
+     (if (= count 1000) sum
+         (do 
+           (println count sum)
+           (dotimes [i N] (aset b i (+ (aget a i)(aget b i))))
+           (recur (inc count) (+ sum (loop [i 0 ret 0] 
+                                       (if (= i N) ret
+                                           (recur (unchecked-inc i) (+ ret (aget b i))))))))))))
 
-;; rlwrap java -server -classpath $LEIN_CLASSPATH clojure.main -e "( do (require 'clojure.tools.nrepl.server) (clojure.tools.nrepl.server/start-server :bind \"127.0.0.1\" :port 4001))" -r
+;; Bernard suggests:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+(time
+ (let [a ^ints a b ^ints b N ^int N]
+   (loop [count (long 0) sum (long 0)]
+     (if (== count 1000) sum
+         (do
+           ;; (println count sum)
+           (let [b (amap  a idx ret (+ (aget a idx) (aget b idx)))]
+             (recur (inc count) (areduce ^ints b i res (long sum) (unchecked-add res (aget ^ints b i))))))))))
 
 
+;; Dmitry Groshev:
+
+(defn test3 []
+(let [^ints a a
+^ints b b
+N (int N)]
+(loop [count (int 0) sum (long 0)]
+(if (== count 1000) sum
+(do
+(loop [i (int 0)]
+(when (< i N)
+(aset b i (+ (aget a i) (aget b i)))
+(recur (inc i))))
+(recur (inc count)
+(+ sum (long (loop [i (int 0) ret (long 0)]
+(if (== i N) ret
+(recur (inc i)
+(+ ret (aget b i)))))))))))))
 
 
+(defmacro c-for
+"C-like loop with nested loops support"
+[loops & body]
+(letfn [(c-for-rec [loops body-stmts]
+(if (seq loops)
+(let [[var init check next] (take 4 loops)]
+`((loop [~var ~init]
+(when ~check
+~@(c-for-rec (nthrest loops 4) body-stmts)
+(recur ~next)))))
+body-stmts))]
+`(do ~@(c-for-rec loops body) nil)))
+
+This way
+
+(loop [i (int 0)]
+(when (< i N)
+(aset b i (+ (aget a i) (aget b i)))
+(recur (inc i))))
+
+becomes
+
+(c-for [i (int 0) (< i N) (inc i)]
+(aset b i (+ (aget a i) (aget b i))))
+
+
+
+;; And James Reeves, by private e-mail after he couldn't comment on this blog
+
+(defn asum [^ints xs]
+  (areduce xs i s 0 (unchecked-add s (aget xs i))))
+
+(defn amap-add [^ints xs ^ints ys]
+  (dotimes [i (alength xs)]
+    (aset xs i (unchecked-add (aget xs i) (aget ys i)))))
+
+(defn test-low-level []
+  (let [a (int-array 1000000)
+        b (int-array 1000000)]
+    (dotimes [i (alength a)]
+      (aset a i i))
+    (loop [count 0, sum 0]
+      (amap-add b a)
+      (if (< count 1000)
+        (recur (unchecked-inc count) (unchecked-add sum (asum b)))
+        sum))))
+
+(defn -main []
+  (time (println (str "sum=" (test-low-level)))))
 
 
 
