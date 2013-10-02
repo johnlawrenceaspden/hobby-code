@@ -10,6 +10,7 @@
 ;; Apparently the tiered compilation thing is leiningen throwing the JVM's optimizations overboard in order to reduce its own startup time.
 ;; This doesn't seem to make any difference either way
 ;; On the other hand, Dmitry pointed out that my java starts up in client mode
+;; This used to work, but has now stopped doing, so lein repl starts up in client mode with optimizations turned off.
   :jvm-opts ^:replace ["-server"]
 
   :source-paths ["."]
