@@ -51,6 +51,20 @@ int main(void)
   printf("sum=%lli\n", sum);
 }
 
+/* Best timing so far */
+
+/* gcc -std=gnu99 -Ofast -march=native efficiencyandprogress.c -o efficiencyandprogress && time ./efficiencyandprogress */
+/* sum=250249749750000000 */
+
+/* real	0m8.583s */
+/* user	0m8.548s */
+/* sys	0m0.024s */
+
+/* 8.6 ms to add two arrays of ints and then add one of them up */
+
+
+/************************************************************************************/
+
 /* gcc -std=gnu99 -Ofast efficiencyandprogress.c -o efficiencyandprogress && time ./efficiencyandprogress */
 /* sum=250249749750000000 */
 
