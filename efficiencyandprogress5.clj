@@ -5,7 +5,7 @@
 ;; This is slow:
 (time (reduce + (map + (range 1000000) (range 1000000))))
 
-;; C can perform roughly equivalent task in 8.6 ms, and Java in around 20 ms
+;; C can perform roughly equivalent task in 8.6 ms, and Java in around 16 ms
 
 ;; So do we have to drop into C or Java when we want to make algorithms fast?
 ;; I hope not! 
@@ -46,7 +46,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; My best shot so far is:
+;; I have a little microbenchmark written in C which represents the
+;; sort of things I am trying to do by adding length 1000000 vectors
+;; and then adding up all the numbers in the vectors repeatedly.
+
+;; Appropriately compiled, it runs in 8.6 seconds
+
+;; Approximately the same program, translated into Java, runs in
+;; around 16 seconds with java7 -server
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; In idiomatic Clojure I reckone this program would take about 1600
+;; seconds, or about half an hour. And that's actually reflective of
+;; the difference between C and Clojure that I've observed while
+;; trying to write algorithms code as part of the Coursera/Stanford
+;; Algorithms II class (which I very highly recommend!)
+
+;; My best shot in non-idiomatic Clojure so far is:
 
 (def N 1000000)
 (def a (int-array (range N)))
@@ -63,62 +80,82 @@
                                        (if (= i N) ret
                                            (recur (unchecked-inc i) (+ ret (aget b i))))))))))))
 
-;; Bernard suggests:
+"Elapsed time: 177181.749304 msecs"
+250249749750000000
+;; Which is unreadable and still about 11x slower than Java, but gets the right answer
 
-(time
- (let [a ^ints a b ^ints b N ^int N]
-   (loop [count (long 0) sum (long 0)]
-     (if (== count 1000) sum
-         (do
-           ;; (println count sum)
-           (let [b (amap  a idx ret (+ (aget a idx) (aget b idx)))]
-             (recur (inc count) (areduce ^ints b i res (long sum) (unchecked-add res (aget ^ints b i))))))))))
+;; I am so unused to using mutation in Clojure that I keep forgetting
+;; to reset the variables and then being surprised when the answers
+;; are wrong. It really screws up the REPL way of programming! No
+;; wonder LISP developed the functional style that's now becoming so
+;; fashionable.
 
 
-;; Dmitry Groshev:
+
+;; After an awful lot of essentially random screwing around, I managed
+;; to concoct another version, which uses the areduce macro instead of
+;; the explicit inner loop above.
+(def N 1000000)
+(def a (int-array (range N)))
+(def b (int-array N))
+
+
+(time 
+ (let [a ^ints a b ^ints b]
+   (loop [count 0 sum 0]
+     (if (= count 1000) sum
+         (do 
+           (println count sum)
+           (dotimes [i N] (aset b i (+ (aget a i)(aget b i))))
+           (recur (inc count) (+ sum (areduce b i ret 0 (+ ret (aget b i))))))))))
+
+"Elapsed time: 63657.893856 msecs"
+250249749750000000
+
+;; I have no idea why this runs so much faster. A profiler would be
+;; very useful here, but jvisualvm, which I used to find really useful
+;; when tuning clojure, is giving me no real information and wasting
+;; an awful lot of time in return. It only seems to profile at the
+;; level of Java classes, and so this loop code isn't visible to it.
+
+;; Still, down to about 4x slower than Java, maybe 7x slower than C,
+;; and (I think) quite a lot more readable.
+
+
+
+;; Various commenters have been kind enough to suggest improvements over my pitiful effort.
+
+;; Dmitry Groshev's:
+
+(def N 1000000)
+(def a (int-array (range N)))
+(def b (int-array N))
 
 (defn test3 []
-(let [^ints a a
-^ints b b
-N (int N)]
-(loop [count (int 0) sum (long 0)]
-(if (== count 1000) sum
-(do
-(loop [i (int 0)]
-(when (< i N)
-(aset b i (+ (aget a i) (aget b i)))
-(recur (inc i))))
-(recur (inc count)
-(+ sum (long (loop [i (int 0) ret (long 0)]
-(if (== i N) ret
-(recur (inc i)
-(+ ret (aget b i)))))))))))))
+  (let [^ints a a
+        ^ints b b
+        N (int N)]
+    (loop [count (int 0) sum (long 0)]
+      (if (== count 1000) sum
+          (do
+            (loop [i (int 0)]
+              (when (< i N)
+                (aset b i (+ (aget a i) (aget b i)))
+                (recur (inc i))))
+            (recur (inc count)
+                   (+ sum (long (loop [i (int 0) ret (long 0)]
+                                  (if (== i N) ret
+                                      (recur (inc i)
+                                             (+ ret (aget b i)))))))))))))
 
 
-(defmacro c-for
-"C-like loop with nested loops support"
-[loops & body]
-(letfn [(c-for-rec [loops body-stmts]
-(if (seq loops)
-(let [[var init check next] (take 4 loops)]
-`((loop [~var ~init]
-(when ~check
-~@(c-for-rec (nthrest loops 4) body-stmts)
-(recur ~next)))))
-body-stmts))]
-`(do ~@(c-for-rec loops body) nil)))
+(time (test3))
 
-This way
+"Elapsed time: 45213.470027 msecs"
+250249749750000000
 
-(loop [i (int 0)]
-(when (< i N)
-(aset b i (+ (aget a i) (aget b i)))
-(recur (inc i))))
+;; Gets down to 3x slower than Java, 5x slower than C
 
-becomes
-
-(c-for [i (int 0) (< i N) (inc i)]
-(aset b i (+ (aget a i) (aget b i))))
 
 
 
@@ -142,204 +179,54 @@ becomes
         (recur (unchecked-inc count) (unchecked-add sum (asum b)))
         sum))))
 
-(defn -main []
-  (time (println (str "sum=" (test-low-level)))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; Sadly the code is completely unreadable, but we may be able to do something about that. 
-;; We are in a lisp after all:
-
-;; It turns out there are macros for doing this sort of thing:
-
-(def N 1000000)
-(def a (int-array (range N)))
-(def b (int-array N))
-
-(time 
- (let [a ^ints a]
-   (areduce a i ret 0 (+ ret (aget a i)))))
-
-"Elapsed time: 46.748545 msecs"
-499999500000
-
-;; It's worth examining what areduce is doing
-(macroexpand '(areduce a i ret 0 (+ ret (aget a i))))
-;; (let* [a__4717__auto__ a] (clojure.core/loop [i 0 ret 0] (if (clojure.core/< i (clojure.core/alength a__4717__auto__)) (recur (clojure.core/unchecked-inc i) (+ ret (aget a i))) ret)))
-
-(time (let [a ^ints a]
-        (let* [a__4717__auto__ a] 
-              (clojure.core/loop [i 0 ret 0] 
-                (if (clojure.core/< i (clojure.core/alength a__4717__auto__)) 
-                  (recur (clojure.core/unchecked-inc i) (+ ret (aget a i))) ret)))))
-"Elapsed time: 46.674857 msecs"
-
-;; edited for clarity
-(time (let [a ^ints a] 
-            (loop [i 0 ret 0] 
-              (if (< i (alength a)) 
-                (recur (unchecked-inc i) (+ ret (aget a i))) ret))))
-"Elapsed time: 40.352545 msecs"
-;; weirdly the editing seems to have actually speeded it up. I have absolutely no idea why.
-
-;; And there's also amap, which seems weirdly slower, even though it's doing three array accesses instead of one.
-(time (let [a ^ints a b ^ints b] 
-        (amap a i ret (+ (aget b i)(aget a i)))))
-"Elapsed time: 203.306294 msecs"
-#<int[] [I@116fc35> ;; Apparently this means 'integer array'
-
-;; It turns out that amap does what my iteration did but without mutation, by making a copy
-(macroexpand '(amap a i ret (+ (aget b i)(aget a i))))
-
-(time 
- (let [a ^ints a b ^ints b]
-   (let [ret (clojure.core/aclone a)] 
-     (loop [i 0] 
-       (if (< i (alength a)) 
-         (do (clojure.core/aset ret i (+ (aget b i) (aget a i))) 
-             (recur (clojure.core/unchecked-inc i))) 
-         ret)))))
-"Elapsed time: 187.263691 msecs"
-#<int[] [I@b3f01d> ;; Again, this seems to have got slightly faster just because I tidied it up.
-
-
-
-
-;; Let's try the long calculation again using amap and areduce
-
-(time
- (let [a ^ints a b ^ints b]
-   (loop [count 0 sum 0 b b]
-     (if (< count 1000)
-       (do (println count sum)
-           (let [b (amap a i ret (+ (aget b i) (aget a i)))]
-             (let [sum (+ sum (areduce b i ret 0 (+ ret (aget b i))))]
-               (recur (unchecked-inc count) sum b))))
-       sum))))
-
-;; This just freezes solid and I've no idea why. I can't actually understand it.
-
-
-
-(time
- (let [a ^ints a b ^ints b]
-   (loop [count 0 sum 0 b b]
-     (if (= count 1000) sum
-         (do (println count sum)
-             (recur (unchecked-inc count) (+ sum (areduce b i ret 0 (+ ret (aget b i)))) (amap a i ret (+ (aget b i) (aget a i)))))))))
-
-
-
-
-
-(def N 1000000)
-(def a (int-array (range N)))
-(def b (int-array N))
-
-
-(time 
- (let [a ^ints a b ^ints b]
-   (loop [count 0 sum 0]
-     (if (= count 1000) sum
-         (do 
-           (println count sum)
-           (dotimes [i N] (aset b i (+ (aget a i)(aget b i))))
-           (recur (inc count) (+ sum (areduce b i ret 0 (+ ret (aget b i))))))))))
-
-     
- "Elapsed time: 126538.750983 msecs"
+(time (test-low-level))
+"Elapsed time: 46496.528226 msecs"
 250249749750000000
 
 
 
+;; Has managed to get down to the same speed, whilst splitting the
+;; inner loops off into nice little functions!
 
+;; I think this version wins hands down for general comprehensibility.
 
+;; So well done James, this is this blog's readership's collective
+;; best shot at this problem so far.
 
+;; We're down to 3x slower than Java, 5x slower than C, and readable
+;; if not quite as readable as it would be in a language designed for
+;; imperative loops over arrays.
 
+;; If I can learn to produce code like this reliably and without too
+;; much buggering about, then I may be able to stay in Clojure for the
+;; tight loops parts of my algorithms code. A factor of 5 I can
+;; tolerate for the convenience of doing everything else in Clojure.
 
+;; As Dmitry pointed out, it may be possible to use macros to make a
+;; little language to make this easier
 
+;; And James shows us another possible route with functions.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; I still don't understand why these similar looking bits of code run
+;; at such different speed, and that worries me, because that's going
+;; to translate to a lot of screwing around while trying to write such
+;; things.
 
+;; And also, why even after all this are we not as fast as Java?
 
+;; Bernard said something about 'removing synchronization', which
+;; sounds scary.
 
+;; Another approach, of course, would be to write pure Java classes to
+;; do the heavy lifting and call them from Clojure code which does the
+;; pre-processing, but that sounds like a fairly nasty and fragile
+;; approach itself, and I'd rather avoid doing that if I can. But it
+;; should be a bit easier than using C within python, at least.
 
+;; I should also investigate core.matrix and hiphip, two projects
+;; targeted at this sort of thing.
 
-   
+;; If anyone knows how to use them to solve this problem, please chip in.
 
-(def N 1000000)
-(def a (int-array (range N)))
-(def b (int-array N))
-
-
-(time 
- (let [a ^ints a b ^ints b]
-   (loop [count 0 sum 0 b ^ints b]
-     (if (= count 1000) sum
-         (do 
-           (println count sum)
-           (let [b ^ints (amap b i ret (+ (aget a i) (aget b i)))]
-             (recur (inc count) (+ sum (areduce b i ret 0 (+ ret (aget b i)))) b)))))))
-    
-form-init4591430370612349788.clj:8 recur arg for primitive local: sum is not matching primitive, had: Object, needed: long
-Auto-boxing loop arg: sum
-
-"Elapsed time: 59580.516979 msecs"
-250249749750000000
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-;; There are actually helpful macro for doing such things
-(time 
- (let [b ^ints b]
-   (areduce b i ret 0 (+ ret (aget b i)))))
-"Elapsed time: 100.587301 msecs"
-999999000000
-
-;; here's the map version. It's a bit difficult to understand what it
-;; does unless you're used to constructing the loops by hand
-(time 
- (let [b ^ints b a ^ints a]
-   (amap b i ret (+ (aget a i) (aget b i)))))
-
-
-
-(macroexpand '(amap b i ret (+ (aget a i) (aget b i))))
