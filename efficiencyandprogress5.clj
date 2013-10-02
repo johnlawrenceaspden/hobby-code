@@ -42,7 +42,8 @@
 999999000000
 "Elapsed time: 1883.237194 msecs"
 
-;; So I think it's safe to conclude that Clojure written idiomatically is around 100x slower than Java
+;; So I think it's safe to conclude that Clojure written idiomatically
+;; is around 100x slower than Java And around 200x slower than C
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -57,13 +58,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; In idiomatic Clojure I reckone this program would take about 1600
+;; In idiomatic Clojure I reckon this program would take about 1600
 ;; seconds, or about half an hour. And that's actually reflective of
 ;; the difference between C and Clojure that I've observed while
 ;; trying to write algorithms code as part of the Coursera/Stanford
 ;; Algorithms II class (which I very highly recommend!)
 
-;; My best shot in non-idiomatic Clojure so far is:
+;; My best shot in non-idiomatic Clojure in the last post was:
 
 (def N 1000000)
 (def a (int-array (range N)))
@@ -82,11 +83,13 @@
 
 "Elapsed time: 177181.749304 msecs"
 250249749750000000
-;; Which is unreadable and still about 11x slower than Java, but gets the right answer
+
+;; Which is unreadable and still about 11x slower than Java, but gets
+;; the right answer
 
 ;; I am so unused to using mutation in Clojure that I keep forgetting
 ;; to reset the variables and then being surprised when the answers
-;; are wrong. It really screws up the REPL way of programming! No
+;; are wrong. It really screws up the REPL way of programming. No
 ;; wonder LISP developed the functional style that's now becoming so
 ;; fashionable.
 
@@ -190,8 +193,8 @@
 
 ;; I think this version wins hands down for general comprehensibility.
 
-;; So well done James, this is this blog's readership's collective
-;; best shot at this problem so far.
+;; So well done James, this is this blog's collective best shot at
+;; this problem so far.
 
 ;; We're down to 3x slower than Java, 5x slower than C, and readable
 ;; if not quite as readable as it would be in a language designed for
@@ -209,10 +212,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; I still don't understand why these similar looking bits of code run
-;; at such different speed, and that worries me, because that's going
-;; to translate to a lot of screwing around while trying to write such
-;; things.
+;; I still don't understand why these similar looking bits of code
+;; (things like areduce are only macros that write code much like the
+;; explicit loops) run at such different speeds, and that worries me,
+;; because that's going to translate to a lot of screwing around while
+;; trying to write such things.
 
 ;; And also, why even after all this are we not as fast as Java?
 
