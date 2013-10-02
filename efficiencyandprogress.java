@@ -9,31 +9,25 @@ public class efficiencyandprogress {
 
     public static long microbenchmark()
     {
-          final int N = 1000000; 
+        final int N = 1000000; 
         
         int[] a = new int[N];
         int[] b = new int[N];
-        int[] c = new int[N];
 
         int i, count;
         long sum=0;
 
         for (i=0; i< N; i++) {
             a[i]=i;
-            b[i]=i;
-            
         }
+
         for(count=0;count<1000; count++){
             for (i=0; i< N; i++) {
-                c[i]=a[i]+b[i];
-            }
-
-            if(count/100*100==count) {
-                System.out.println("count" + count);
+                b[i]+=a[i];
             }
 
             for (i=0; i< N; i++) {
-                sum+=a[i];
+                sum+=b[i];
             }
         }
         
@@ -48,19 +42,10 @@ public class efficiencyandprogress {
     }
 }
 
-// time java -server efficiencyandprogress 
-// count0
-// count100
-// count200
-// count300
-// count400
-// count500
-// count600
-// count700
-// count800
-// count900
-// sum=499999500000000
+// javac efficiencyandprogress.java 
+// time java -server efficiencyandprogress
+// sum=250249749750000000
 
-// real	0m20.021s
-// user	0m20.016s
-// sys	0m0.144s
+// real	0m19.306s
+// user	0m21.200s
+// sys	0m11.804s
