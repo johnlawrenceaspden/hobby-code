@@ -28,6 +28,7 @@
      nrepl-ritz ;; 0.6.0        installed  nrepl extensions for ritz
      rainbow-delimiters ;; 1.3.4        installed  Highlight nested parens, brackets, braces a different color at each depth.
      undo-tree ;;0.6.3        installed  Treat undo history as a tree
+     sml-mode ;; 6.4
      )))
 
 
