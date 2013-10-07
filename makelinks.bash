@@ -10,6 +10,8 @@ echo replacing ~/.ssh/authorized_keys
 mv ~/.ssh/authorized_keys ~/.ssh/old.authorized_keys
 ln -s ~/hobby-code/authorized_keys ~/.ssh/authorized_keys
 
+mkdir -p ~/.lein/globaluser
+
 echo replacing ~/.lein/profiles.clj
 mv ~/.lein/profiles.clj ~/.lein/old.profiles.clj
 ln -s ~/hobby-code/hidefromleiningen/profiles.clj ~/.lein/profiles.clj
