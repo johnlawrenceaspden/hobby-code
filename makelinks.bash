@@ -23,3 +23,5 @@ ln -s ~/hobby-code/hidefromleiningen/user.clj ~/.lein/globaluser/user.clj
 echo replacing ~/gitignore
 mv ~/gitignore ~/old.gitignore
 ln -s ~/hobby-code/gitignore ~/gitignore
+
+mkdir -p ~/emacs.d/tmp
