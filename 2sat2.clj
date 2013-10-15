@@ -1,4 +1,4 @@
-;; 2-SAT
+;; 2-SAT : Generalizing a Bit
 
 ;; Let's generalize our problem a bit:
 
@@ -118,8 +118,47 @@
 ;-> ({:x2 false, :x1 true} {:x2 true, :x1 false})
 
 ;; Then there are only two ways
+
+;; Or we could specify that we want one with :x1 true
 (exhaustive-search-solve
- [{:x1 true  :x2 true} {:x1 false  :x2 false}])
+ [{:x1 true  :x2 true} {:x1 false  :x2 false} {:x1 true}]) 
+;-> ({:x2 false, :x1 true})
+
+;; Or even demand that x1 is true and x2 is true
+(exhaustive-search-solve
+ [{:x1 true  :x2 true} {:x1 false  :x2 false} {:x1 true} {:x2 true}]) 
+;-> ()
+
+;; That leads to an unsatifiable problem.
+
+;; I've just realized that I've accidentally over-generalised this to
+;; be able to represent the general problem of boolean satisfiability.
+
+(exhaustive-search-solve
+ [{:x1 false :x2 false} 
+  {:x2 false :x3 false :x4 false :x5 true}
+  {:x1 true} 
+  {:x4 false :x1 false}
+  {:x3 true :x2 false}
+  {:x3 true :x4 true}
+  {:x4 true :x5 true}
+  ]) 
+
+;-> ({:x2 false, :x1 true, :x4 false, :x5 true, :x3 true})
+
+;; Good Old Clojure!
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
