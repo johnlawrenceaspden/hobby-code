@@ -1,3 +1,8 @@
+(* 360 (/ Math/PI) 0.5 (Math/acos (/ 2 (Math/sqrt 14))))
+
+
+
+
 ;; hello world dialog box
 
 (import javax.swing JOptionPane)
