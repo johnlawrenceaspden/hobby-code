@@ -140,7 +140,6 @@
 
 ;; It works the same whichever order you do the drawing in.
 (make-blackboard "sworrA!" 10)
-(ink yellow)
 (draw-arrow arrow1)
 (draw-arrow arrow2)
 (ink green)
@@ -159,7 +158,7 @@
 ;; way of talking about moving around in the plane. It works exactly
 ;; as it works for vectors.
 
-;; Now we're going to do something slightly wierder, but in the same spirit.
+;; Now we're going to do something slightly weirder, but in the same spirit.
 
 ;; Adding two arrows went like (a,b)+(c,d) -> (a+b, c+d)
 
@@ -221,7 +220,7 @@
 
 ;; Arrow 3 will be a tiny arrow, just a bit longer than 1 mile long, and 
 ;; just a bit to the north of due east.
-(def arrow3 [1, 0.1])
+(def arrow3 [1, 1/10])
 
 (do 
   (make-blackboard "Arrow3 * Arrow1" 10)
@@ -240,6 +239,7 @@
 (ink red)
 (draw-arrow (multiply-arrows arrow3 arrow1))
 (draw-arrow (multiply-arrows arrow3 (multiply-arrows arrow3 arrow1)))
+(draw-arrow (multiply-arrows arrow3 (multiply-arrows arrow3 (multiply-arrows arrow3 arrow1))))
 ;; and so on
 (def arrows (iterate (fn[x] (multiply-arrows arrow3 x)) arrow1))
 (draw-arrow (nth arrows 3))
