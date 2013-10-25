@@ -1,86 +1,17 @@
-;; Feynman's Arrows : What are the Complex Numbers?
-
-;; I've lost count of the number of times I've met physicists and even
-;; professional mathematicians who think there's something a bit
-;; spooky and unreal about the complex numbers.
-
-;; There isn't.
-
-;; Imagine that you're sitting in front of a photo-manipulation
-;; program, and you're able to enlarge a photograph by a factor of
-;; 2, and rotate it 30 degrees clockwise.
-
-;; I don't think anyone is going to find that spooky. If you do, go
-;; find a photo manipulation program and do it a couple of times.
-
-;; If you do it twice, then you'll find that that gives you the same
-;; effect as enlarging the photo by a factor of four and rotating it
-;; 60 degrees clockwise.
-
-;; In fact, how would we get our original photo back? My first guess
-;; would be that I should shrink it by a factor of four and rotate it
-;; 60 degrees anticlockwise. And that's the right answer. Go and try
-;; it if it's not obvious.
-
-;; And if you have your head round that, then you understand the
-;; complex numbers.
-
-;; If the mathematicians of the 16th century had been thinking about
-;; how to use photoshop, instead of worrying about how to solve cubic
-;; equations, then they'd have come up with the complex numbers in
-;; about fifteen minutes flat, and they'd have thought they were the
-;; most obvious thing in the world, and it would never have occurred
-;; to them to talk about 'imaginary numbers', and an awful lot of
-;; terror and confusion would have been avoided over the years.
-
-;; And if the complex numbers had been found that way, then I think
-;; we'd teach them to little children at about the same time we teach
-;; them about fractions, and well before we teach them about the
-;; really weird stuff like the square roots of two.
-
-;; And the little children would have no problem at all with them, 
-;; and they would think that they were fun, and easy.
+;; Feynman's Arrows II : OK, so what are the complex numbers?
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Here's some code from the previous post
 
-;; In his wonderful little book QED, Richard Feynman managed to
-;; explain the soul of Quantum Field Theory without using the complex
-;; numbers at all.
-
-;; Instead he talks about little arrows, which rotate like the hands
-;; on a stopwatch, and occasionally he needs to add them up and rotate
-;; them to work out what light and electrons are going to do.
-
-;; Before we talk about the complex numbers, let's think about
-;; Feynman's arrows.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; GRAPHICS CODE
-
-;; I'd like to draw some pictures.  And I'd like to use my
-;; 'simple-plotter' library, which is on clojars:
-;; https://clojars.org/simple-plotter
-
-;; This is probably the most complicated bit of this post, but it's
-;; just graphics, and it doesn't matter in the slightest, so feel free
-;; to skip over it unless you're interested in how to draw little
-;; arrows on a computer.
-
-;; You can add this:
-;; [simple-plotter "0.1.2"] 
-
-;; to your project file and restart everything, or if you are wise and
-;; have the incomparable pomegranate on your classpath you can do:
+;; requires [simple-plotter "0.1.2"] 
 
 (require 'cemerick.pomegranate)
 (cemerick.pomegranate/add-dependencies 
  :coordinates '[[simple-plotter "0.1.2"]] 
  :repositories {"clojars" "http://clojars.org/repo"})
 
-;; Either way, once the library is added to classpath
 (use 'simple-plotter)
 
-;; We can use it to draw arrows with tiny heads on them, so:
 (defn draw-offset-arrow [[a b][c d]]
   (let [headx (+ a c) 
         heady (+ b d)]
@@ -88,7 +19,6 @@
     (line headx heady (+ headx (* -0.086 c) (* -0.05 d)) (+ heady (*  0.05 c) (* -0.086 d)))
     (line headx heady (+ headx (* -0.086 c) (*  0.05 d)) (+ heady (* -0.05 c) (* -0.086 d)))))
 
-;; And we'll usually think of our arrows as having their tails at [0,0]
 (defn draw-arrow [[a b]] (draw-offset-arrow [0 0] [a b]))
 
 (defn make-blackboard [title size]
@@ -96,165 +26,498 @@
   (axes)
   (ink yellow))
 
-;; END OF GRAPHICS CODE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Here's everything we know about the arrows so far:
+(defn add-arrows[[a b][c d]]   
+  [(+ a c) (+ b d)])
 
-;; So, with a few bits of graphics code so that the computer can do
-;; what Feynman could do on a blackboard:
-
-;; Let us make a blackboard:
-(make-blackboard "Arrows!" 10)
-
-;; This arrow points roughly northeast (3 miles east and 4 miles north, in fact)
-(def arrow1 [3,4])
-
-;; put it on the blackboard
-(draw-arrow arrow1)
-
-;; And this one points more southeast (4 miles east and -3 north, or 3 miles south)
-(def arrow2 [4,-3])
-
-;; put it on the blackboard
-(draw-arrow arrow2) 
-
-;; And we can add these arrows in what I'd hope is a really obvious way.
-(defn add-arrows [arw1 arw2] (mapv + arw1 arw2))
-
-(add-arrows arrow1 arrow2) ;-> [7 1]
-
-;; Draw that too, but in red chalk
-(do (ink red) 
-    (draw-arrow (add-arrows arrow1 arrow2)))
-
-;; This addition rule looks very simple in terms of coordinates, and geometrically it's 
-;; very simple too. 
-
-;; You draw one arrow (it's already there actually)
-(do (ink green) (draw-arrow arrow1))
-
-;; And then starting at the head of the first one, you draw the second one
-(do (ink green) (draw-offset-arrow arrow1 arrow2))
-
-;; And the sum is the arrow (in red) that points at the head of the
-;; second green arrow.
-
-;; It works the same whichever order you do the drawing in.
-(make-blackboard "sworrA!" 10)
-(ink yellow)
-(draw-arrow arrow1)
-(draw-arrow arrow2)
-(ink green)
-(draw-offset-arrow arrow2 arrow1)
-(ink red)
-(draw-arrow (add-arrows arrow2 arrow1))
-
-;; It shouldn't be too hard to see how that's going to work for any
-;; two arrows to produce a new one. And it should come as no surprise
-;; that it works the same way whichever order you add the arrows in.
-
-(add-arrows arrow2 arrow1) ;-> (7 1)
-(add-arrows arrow1 arrow2) ;-> (7 1)
-
-;; So the addition of arrows is fairly straightforward, and it gives a
-;; way of talking about moving around in the plane. It works exactly
-;; as it works for vectors.
-
-;; Now we're going to do something slightly wierder, but in the same spirit.
-
-;; Adding two arrows went like (a,b)+(c,d) -> (a+b, c+d)
-
-;; But we'll say that to multiply two arrows, 
-
-;; (a,b)*(c,d) -> (ac-db, ad+cb)
-
-;; This rule looks a bit odd, but it turns out to be the way to think
-;; about composing zooms and twists that I was talking about above,
-;; that the ancient philosophers might have come up with if they'd
-;; spent their days messing about with photoshop rather than dying of
-;; plague or being set on fire by religious people.
-
-;; At any rate it's a very easy rule to explain to a computer:
 (defn multiply-arrows[[a b][c d]]
   [(- (* a c) (* d b)) (+ (* a d) (* c b))])
 
-;; And, like arrow-addition, it's also symmetric.
-;; Do a few by hand to see how it works!
+;; That's easier to read in the standard prefix notation
+;; (a,b)+(c,d) -> (a+b, c+d)
+;; (a,b)*(c,d) -> (ac-db, ad+cb)
 
-;; Here's what we get if we multiply our two favourite arrows.
-(multiply-arrows arrow1 arrow2) ;-> [24 7]
-(multiply-arrows arrow2 arrow1) ;-> [24 7]
+;; We also had a few favourite arrows that we'd played with:
+(def arrow1 [3,4])
+(def arrow2 [4,-3])
+(def arrow3 [1,1/10])
 
-;; Here's another way of saying the same thing
-(defn multiply-arrows[arrow1 arrow2]
-  [(reduce - (map * arrow1 arrow2))
-   (reduce + (map * arrow1 (reverse arrow2)))])
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(multiply-arrows arrow1 arrow2) ;-> [24 7]
-(multiply-arrows arrow2 arrow1) ;-> [24 7]
+(do (make-blackboard "Favourite Arrows" 6)
+    (doseq [i [arrow1 arrow2 arrow3]] (draw-arrow i)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; You might be able to see that there's a sense here of multiplying things, 
-;; and of exchanging x coordinates and y coordinates, and taking pluses to minuses.
+;; The first thing I want you to notice is that there's a subset of
+;; the arrows that works exactly like the numbers that we all got
+;; comfortable with in primary school. They're the ones where the 
+;; arrows point due east or west.
 
-;; You might notice above that arrow2 [4, -3] is arrow1 [3,4] rotated by 90 degrees,
-;; and that to get one from the other (3,4) -> (-4, 3), we exchange x and y and
-;; swap +4 for -4.
+(add-arrows [10 0] [5 0]) ;-> [15 0]
+;; (10,0) + (5,0) -> (15,0) is like 10 + 5 -> 15
 
-;; In fact, we've encoded the idea of 'rotating and zooming' into our multiplication law.
+(multiply-arrows [4 0] [3 0]) ;-> [12 0]
+;; (4,0) * (3,0) -> (12,0) is like 4 * 3 -> 12
 
-;; Let's draw our example arrows and what they multiply to
+;; And so since it doesn't matter whether we think about (3,0) or 3,
+;; we'll just forget about the difference, and sometimes write (3,0),
+;; and sometimes write 3, depending on convenience.
+
+;; We say that the 'real numbers' are embedded in the arrows. What we
+;; mean is that there's a structure in the arrows that's just like the
+;; real numbers, and so wherever we were going to use real numbers we
+;; can just use horizontal arrows instead and everything will work out
+;; exactly the same.
+
+;; There's another subset of the arrows, that point due north and due south.
+
+;; Under addition, they're just like the real numbers too.
+
+;; (0, 10)+ (0, 3) -> (0, 13)
+
+;; But under multiplication, they end up turning each other into horizontal arrows
+
+;; (0, 10) * (0, 4) -> (0x0-10x4, 0x10+4x0) = (-40, 0)
+
+;; You can see why pretty easily. 
+
+;; (0, 10) represents 'turn 90 degrees clockwise and magnify by 10',
+;; and (0, 4) means 'turn 90 degrees clockwise and magnify by 4'
+
+;; And the product (-40, 0) means turn 180 degrees and multiply by 40. 
+
+;; In this view, (-1, 0), or just -1 means 'turn 180 degrees (no zooming!)'
+
+;; And the (0,1)*(0,1) -> (-1, 0) is just the fact 'if you turn 90
+;; degrees clockwise and don't zoom, and then you turn another 90
+;; degrees clockwise and don't zoom, then that's the same as if you'd
+;; turned 180 degrees, without zooming'.
+
+;; So as long as we're talking about arrows, the thing we've called
+;; -1, or the pair (-1,0), or the arrow length 1 that points east, or
+;; the idea of turning through 180 degrees, does have a 'square root'.
+
+;; There is a thing, the arrow length 1 that points straight north, or
+;; the pair (0,1), or the idea of turning 90 degrees, that if you
+;; multiply it by itself you get -1.
+
+(multiply-arrows [0,1] [0,1]) ;-> [-1 0]
+
+;; Two quarter-turns make a half-turn
+(do (make-blackboard "Something Whose Square is (-1,0)" 2)
+    (draw-arrow [0,1])
+    (ink red)
+    (draw-arrow (multiply-arrows [0,1] [0,1]))))
+
+;; We call that arrow i, for historical reasons. And notice that another way of writing
+;; 5+3i is (5,0)+(3,0)*(0,1) -> (5,3)
+
+;; So we have yet another way of describing our pairs
+
+(defn print-arrow [[a b]]
+   (str "the pair (" a "," b "), "
+        "also known as the complex number " a "+"b"i, "
+        "also known as the arrow " (cond (> a 0) (str a " north") (= a 0) "" :else (str (- a) "south"))
+        " and " (cond (> b 0) (str b " east") (= b 0) "" :else (str (- b) "west"))))
+
+(print-arrow arrow1) ;-> "the pair (3,4), also known as the complex number 3+4i, also known as the arrow 3 north and 4 east"
+(print-arrow [1/11 0.25]) ;-> "the pair (1/11,0.25), also known as the complex number 1/11+0.25i, also known as the arrow 1/11 north and 0.25 east"
+
+
+;; But there are also some more things we want to talk about, and at
+;; this point we leave maths for primary schools behind and move on to
+;; the sort of things that you can only explain to teenagers.
+
+;; How much zoom does an arrow represent?
+;; Well, the magnification factor is the length of the arrow, which we can work out using pythagoras' theorem.
+
+(defn zoom [[a b]]
+  (Math/sqrt (+ (* a a) (* b b))))
+
+(zoom arrow1) ;-> 5.0
+(zoom arrow2) ;-> 5.0
+(zoom arrow3) ;-> 1.004987562112089
+
+;; And in fact, that works as you'd expect it to: 
+(* (zoom arrow1) (zoom arrow2)) ;-> 25.0
+(zoom (multiply-arrows arrow1 arrow2)) ;-> 25.0
+
+;; Arrow multiplication makes the length of the product equal to the
+;; product of the lengths of the things you're multiplying.
+
+;; What about the twist?  Twist is the angle an arrow makes with the
+;; line pointing east (or the positive half of the real numbers, if we
+;; want to think that the real numbers are embedded in our arrows)
+
+(defn twist [[a b]]
+  (Math/atan2 b a))
+
+;; Arrows which are also real numbers like 1, aka 1+0i, aka (1,0) have no twist.
+(twist [1 0]) ;-> 0.0
+
+;; An arrow which goes 1 east and 1 north
+(twist [1 1]) ;-> 0.7853981633974483
+
+
+;; Eek, scary, radians. Make them go away!!
+
+(defn radians-to-degrees [x] (* 360 x (/ 1 2 Math/PI)))
+
+(radians-to-degrees (twist [1 1])) ;-> 45.0 degrees
+
+;; Actually, I rather like radians.
+
+;; The key to radian angles is to think in terms of the circle constant tau
+
+(def tau (* 2 Math/PI))
+
+tau ;-> 6.283185307179586
+
+;; Tau is how far it is round a circle, if the circle has radius one. 
+
+;; So tau/8 is 'one eighth of a turn'
+
+(/ tau 8)     ;-> 0.7853981633974483
+(twist [1 1]) ;-> 0.7853981633974483
+
+;; Radians would be a lovely, simple way to measure angles if only
+;; we'd taken pi to be 'circumference over radius' rather than the
+;; weird 'circumference over diameter'. So just use tau instead and
+;; pretend we made the right choice way back when.
+
+(defn radians-to-turns[x]
+  (/ x tau))
+
+(radians-to-turns (twist [1 1])) ;-> 0.125 ;; one eighth of a turn, see.
+
+;; Now we can see what cos and sin (in radians) are really for:
+
+;; If we travel one-eighth of the way (anticlockwise) round a circle (of radius one)
+
+(Math/cos (/ tau 8)) ;-> 0.7071067811865476
+(Math/sin (/ tau 8)) ;-> 0.7071067811865475
+
+;; Then we're as far north as we are east (about 7/10ths north and east)
+
+;; If we go 1/100th of the way round a circle of radius one
+(Math/cos (/ tau 100)) ;-> 0.9980267284282716
+(Math/sin (/ tau 100)) ;-> 0.06279051952931337
+
+;; then our east-ness has hardly changed, but we've moved about tau/100 north.
+
+;; Well, yes. That was the plan. Move 1/100th of the distance
+;; round. That's not very far, so you've been pretty much going due
+;; north all the time. So you're roughly tau/100 north of where you
+;; started.
+
+
+;; We can make an arrow that is some part of the way round
+
+(defn make-arrow-no-zoom [angle-in-radians]
+  [(Math/cos angle-in-radians) (Math/sin angle-in-radians)])
+
+
+(do (make-blackboard "One Eighth of the Way Round" 2)
+    (draw-arrow (make-arrow-no-zoom (/ tau 8))))
+
+
+;; It feels like we should add this zoom and turn thing to our arrow-printing routine now:
+(defn print-arrow [[a b :as arrow]]
+   (str "the pair (" a "," b "), "
+        "also known as the complex number " a "+"b"i, "
+        "also known as the arrow " (cond (> a 0) (str a " north") (= a 0) "" :else (str (- a) "south"))
+        " and " (cond (> b 0) (str b " east") (= b 0) "" :else (str (- b) "west"))
+        ", also known as zoom " (zoom arrow) " twist " (radians-to-turns (twist arrow)) "tau"))
+
+(print-arrow [0,0]) ;-> "the pair (0,0), also known as the complex number 0+0i, also known as the arrow  and , also known as zoom 0.0 twist 0.0tau"
+(print-arrow [1,0]) ;-> "the pair (1,0), also known as the complex number 1+0i, also known as the arrow 1 north and , also known as zoom 1.0 twist 0.0tau"
+(print-arrow [0,1]) ;-> "the pair (0,1), also known as the complex number 0+1i, also known as the arrow  and 1 east, also known as zoom 1.0 twist 0.25tau"
+
+;; That could totally use some tidying up
+
+;; In fact, printing these damned things turns out to be the most complicated thing about them.
+
+(defn print-arrow [[a b :as arrow]]
+   (str "the pair (" a "," b "), "
+        "also known as the complex number " 
+        (cond (and (= a 0) (= b 0)) (str "0 also known as zero")
+              (and (= a 0) (= b 1)) (str "i also known as the unit north arrow")
+              (and (= a 0) (= b -1)) (str "-i also known as the unit south arrow")
+              (and (= a 1) (= b 0)) (str "1 also known as the unit east arrow")
+              (and (= a -1) (= b 0)) (str "-1 also known as the unit west arrow")
+              (= a 0) (if (> b 0) (str b "i also known as the arrow " b "north") (str b "i also known as the arrow " b " south"))
+              (= b 0) (if (> a 0) (str a " also known as the arrow " a "east") (str a " also known as the arrow " a " west"))
+              :else (cond (and (> a 0) (> b 0)) (str a "+" b "i, also known as the arrow " a " east and " b " north")
+                          (and (< a 0) (> b 0)) (str a "+" b "i, also known as the arrow " (- a) " west and " b " north")
+                          (and (> a 0) (< b 0)) (str a "-" (- b) "i, also known as the arrow " a " east and " (- b) " south")
+                          (and (< a 0) (< b 0)) (str a "-" (- b) "i, also known as the arrow " (- a) " west and " (- b) " south")))
+        ", also known as zoom " (zoom arrow) " twist " (radians-to-turns (twist arrow)) "tau"))
+
+(print-arrow [0,0]) ;-> "the pair (0,0), also known as the complex number 0 also known as zero, also known as zoom 0.0 twist 0.0tau"
+(print-arrow [1,0]) ;-> "the pair (1,0), also known as the complex number 1 also known as the unit east arrow, also known as zoom 1.0 twist 0.0tau"
+(print-arrow [0,1]) ;-> "the pair (0,1), also known as the complex number i also known as the unit north arrow, also known as zoom 1.0 twist 0.25tau"
+(print-arrow [3, -4]) ;-> "the pair (3,-4), also known as the complex number 3-4i, also known as the arrow 3 east and 4 south, also known as zoom 5.0 twist -0.14758361765043326tau"
+(print-arrow [3, 4]) ;-> "the pair (3,4), also known as the complex number 3+4i, also known as the arrow 3 east and 4 north, also known as zoom 5.0 twist 0.14758361765043326tau"
+(print-arrow [-3, 4]) ;-> "the pair (-3,4), also known as the complex number -3+4i, also known as the arrow 3 west and 4 north, also known as zoom 5.0 twist 0.35241638234956674tau"
+(print-arrow [-3, -4]) ;-> "the pair (-3,-4), also known as the complex number -3-4i, also known as the arrow 3 west and 4 south, also known as zoom 5.0 twist -0.35241638234956674tau"
+
+
+
+;; How about making an arrow that is 1/100th of a full turn, and repeatedly multiplying 
+;; (make-arrow-no-zoom (/ tau 8)) by it, and plotting all the results?
+
+(do (make-blackboard "One Hundred Hundreths of Tau" 2)
+    (draw-arrow (make-arrow-no-zoom (/ tau 8)))
+    (doseq [i (take 100 
+                    (reductions multiply-arrows 
+                                (make-arrow-no-zoom (/ tau 8)) 
+                                (repeat (make-arrow-no-zoom (/ tau 100)))))]
+      (draw-arrow i)))
+
+
+;; OK, what if we want some sort of zooming factor in our arrows?
+;; Zooming factors without turns are just real numbers, so we can multiply a pure zoom by a pure turn
+(defn make-arrow [angle-in-radians zoom]
+  (multiply-arrows 
+   [zoom 0] 
+   (make-arrow-no-zoom angle-in-radians)))
+
+(def slight-zoom-and-twist (make-arrow (/ tau 100) 1.01))
+
+(do (make-blackboard "Another Spiral" 2)
+    (doseq [i (take 500 
+                    (reductions multiply-arrows [1/10,0] (repeat slight-zoom-and-twist)))]
+      (draw-arrow i))
+    (ink red)
+    (draw-arrow slight-zoom-and-twist))
+
+(def slight-shrink-and-anti-twist (make-arrow (- (/ tau 100)) (/ 1.01)))
+
+(do (make-blackboard "Spiral In" 2)
+    (doseq [i (take 500 
+                    (reductions multiply-arrows [2,0] (repeat slight-shrink-and-anti-twist)))]
+      (draw-arrow i))
+    (ink red)
+    (draw-arrow slight-shrink-and-anti-twist))
+  
+;; I'm starting to feel the need for a length scale on these arrow diagrams, let's plot the unit circle
+
+(do (make-blackboard "Unit Circle" 2)
+    (doseq [[x y] (reductions multiply-arrows [1,0] (repeat 200 (make-arrow-no-zoom (/ tau 200))))]
+      (plot x y)))
+
+;; In fact let's have that on all blackboards from now on
+(defn make-blackboard [title size]
+  (create-window title 400 400 white black (- size) size (- size) size)
+  (axes)
+  (doseq [[x y] (reductions multiply-arrows [1,0] (repeat 200 (make-arrow-no-zoom (/ tau 200))))]
+    (plot x y))
+  (ink yellow))
+
+;; Did you notice that slight-zoom-and-twist and slight-shrink-and-anti-twist were opposite operations?
+(multiply-arrows slight-shrink-and-anti-twist slight-zoom-and-twist) ;-> [1.0 0.0]
 
 (do 
-  (make-blackboard "Arrow1 * Arrow1" 30) ;; <- Much bigger blackboard needed!
-  (ink yellow)
-  (draw-arrow arrow1)
-  (draw-arrow arrow2)
+  (make-blackboard "With Scale" 1.1)
+  (draw-arrow slight-shrink-and-anti-twist)
+  (draw-arrow slight-zoom-and-twist)
   (ink red)
-  (draw-arrow (multiply-arrows arrow1 arrow2)))
-
-;; It turns out that the product of [3,4] and [4,-3] is a gigantic arrow.
-
-(multiply-arrows arrow1 arrow2) ;-> [24 7]
+  (draw-arrow (multiply-arrows slight-shrink-and-anti-twist slight-zoom-and-twist)))
 
 
-;; What happens, if, instead of taking arrow1 and arrow2 we multiply
-;; arrow1 by a much smaller arrow?
+;; In general, to find the inverse arrow, the thing that will undo the
+;; thing, you shrink instead of zooming, and you twist the other way
 
-;; Arrow 3 will be a tiny arrow, just a bit longer than 1 mile long, and 
-;; just a bit to the north of due east.
-(def arrow3 [1, 0.1])
+(defn inverse [arrow]
+  (make-arrow (- (twist arrow)) (/ (zoom arrow))))
 
 (do 
-  (make-blackboard "Arrow3 * Arrow1" 10)
-  (ink yellow)
+  (make-blackboard "Inverse" 3)
   (draw-arrow arrow1)
-  (ink cyan)
-  (draw-arrow arrow3)
+  (draw-arrow (inverse arrow1))
   (ink red)
-  (draw-arrow (multiply-arrows arrow3 arrow1)))
+  (draw-arrow (multiply-arrows arrow1 (inverse arrow1))))
+
+;; There's also the idea of a conjugate, which is the opposite twist but the same zoom
+
+(defn conjugate [arrow]
+  (make-arrow (- (twist arrow)) (zoom arrow))))
+
+(conjugate arrow1) ;-> [3.0000000000000004 -3.9999999999999996]
+
+(do 
+  (make-blackboard "Conjugate" 10)
+  (draw-arrow arrow1)
+  (ink green)
+  (draw-arrow (conjugate arrow1))
+  (ink red)
+  (draw-arrow (multiply-arrows arrow1 (conjugate arrow1))))
+
+;; Just kidding
+(defn conjugate [[a b]]
+  [a (- b)])
+
+;; This is what it really looks like:
+(do 
+  (make-blackboard "Conjugate" 10)
+  (draw-arrow arrow1)
+  (ink green)
+  (draw-arrow (conjugate arrow1))
+  (ink red)
+  (draw-arrow (multiply-arrows arrow1 (conjugate arrow1))))
+
+;; Either way, if you multiply an arrow by its conjugate, you end up with 
+;; an arrow which is one of the real numbers, whose zoom factor is the square of the zoom factor of the arrow
+
+(zoom arrow1) ;-> 5.0
+(zoom (multiply-arrows arrow1 (conjugate arrow1))) ;-> 25.0
+
+(do 
+  (make-blackboard "Multiply by Conjugate" 25)
+  (draw-arrow arrow1)
+  (ink green)
+  (draw-arrow (conjugate arrow1))
+  (ink red)
+  (draw-arrow (multiply-arrows arrow1 (conjugate arrow1))))
+
+;; Well, anyway, blah, blah blah, are we all happy with how the arrows
+;; aka complex numbers work now? All the usual properties seem pretty obvious.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Just to clear up something that might have been bothering you, why
+;; did we choose that multiplication rule which looked weird but
+;; turned out to work well and be about adding angles?
+
+;; Recall the trig identities:
+;; cos(a+b) = cos(a)cos(b) - sin(a)sin(b)
+;; sin(a+b) = cos(a)sin(b) + sin(a)cos(b)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; Arrow 3 represents a very small turn anticlockwise, and a very small zoom
+;; The whole point of this so far has been:
 
-;; Look at what happens if we keep multiplying arrow1 by arrow3
+;; Nobody needs to make up an 'imaginary' number in order to 'satisfy the equation x*x+1=0'.
 
-(ink red)
-(draw-arrow (multiply-arrows arrow3 arrow1))
-(draw-arrow (multiply-arrows arrow3 (multiply-arrows arrow3 arrow1)))
-;; and so on
-(def arrows (iterate (fn[x] (multiply-arrows arrow3 x)) arrow1))
-(draw-arrow (nth arrows 3))
-(draw-arrow (nth arrows 4))
-(draw-arrow (nth arrows 5))
-(doseq [ i (take 100 arrows)]
-  (draw-arrow i))
+;; You just think about these arrows, and how you multiply and add them.
 
-;; By repeatedly applying very small turns and very small zooms, we've
-;; made a beautiful expanding spiral.
+;; The arrows are clearly real, not-scary things that actually exist
+;; and are quite friendly and fun, and are useful for thinking about
+;; photoshop and drawing spirally arrow things.
+
+;; And if you play with them for a bit you realize that:
+
+;; (a) they behave a lot like numbers in that they can be added and
+;; multiplied and subtracted and divided and all the distributive,
+;; commutative, associative properties that you've grown up with also
+;; apply to the arrows.
+
+;; (b) they've got a copy of the numbers that you already know inside
+;; them. So in particular, there's an arrow (which means half-turn, no
+;; zoom) which behaves awfully like -1 behaves.
+
+;; (c) there's a thing (actually two things, because a clockwise
+;; quarter turn done twice is also a half-turn) which, when squared,
+;; becomes the thing that you've noticed acts like -1.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; The traditional presentation of the complex numbers goes something like:
+
+;; It's not nice that there's no solution to x^2-1=0, so let's imagine
+;; what, if such a thing existed, it would have to be like.
+
+;; Understandably, this leaves most of the people who see it rigid
+;; with terror and suspicion.
+
+;; This presentation has the virtue of historical accuracy, in that
+;; historically, people viewed 'imaginary numbers' with suspicion and
+;; terror.
+
+;; But it doesn't have the virtue of historical accuracy in the sense
+;; that it's actually true.
+
+;; Nobody has ever had the slightest problem with x^2-1 not having a
+;; solution. It would be a bit freaky if it did. It makes about as
+;; much sense as demanding that the colour blue has a square root, and
+;; adding that to the number system and seeing what happens.
+
+;; However there were some weird things going on when people were
+;; trying to solve cubic equations, and those persuaded people that if
+;; they pretended that negative numbers had square roots, they could
+;; sometimes get them to cancel out and get real answers to cubics
+;; that way. And since these tricks with 'imaginary numbers' seemed to
+;; usually work, people got to not noticing how odd it was to
+;; manipulate something that didn't exist.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; This arrow presentation on the other hand, goes something like:
+
+;; Here are some things that we made up that behave in fairly
+;; straightforward ways.  They'll probably turn out to be useful for
+;; describing displacement and rotation and zooming.
+
+;; Hidden inside them is a structure which is just like the numbers we already know.
+
+;; Later on we'll see:
+
+;; As it happens, we can define polynomials here, and guess what? They
+;; always have roots. That's kind of cute, if polynomials are your thing.
+
+;; But actually that's not what the complex numbers are about. They
+;; are about rotation and growth and decay and geometry and periodic
+;; processes and simple harmonic motion and oscillations and
+;; frequencies and oh yes, nearly forgot, they turn out to be absolutely
+;; essential for describing the structure of the universe.
+
+;; And a lot of this cool stuff is rendered much less easy to
+;; understand than it should be by this spooky aura that's left over
+;; from the eighteenth century or whenever, when people were so
+;; nervous of 'imaginary numbers' that even the great mathematician
+;; Euler kept making stupid mistakes when he talked about them.
+
+;; Oh, yes, Euler's Identity e^(i*pi) = -1
+
+;; From Wikipedia:
+
+;; Euler's formula is ubiquitous in mathematics, physics, and engineering. 
+;; The physicist Richard Feynman called the equation "our jewel" and "one of the most remarkable, almost astounding, formulas in all of mathematics."
+;; A poll of readers conducted by The Mathematical Intelligencer named Euler's identity as the "most beautiful theorem in mathematics".
+;; Another poll of readers that was conducted by Physics World in 2004 chose Euler's identity tied with Maxwell's equations (of electromagnetism) as the "greatest equation ever".
+
+;; Well, alright, it's pretty neat. I like Euler's Identity.
+
+;; It turns out to mean 'If you turn for the time it takes you to do half a turn, you'll be pointing backwards.'
+
+;; Profound, huh?
 
 
-;; And I think, I genuinely think, that you might be able to get small
-;; children to play with these arrows and to make this pretty spiral, just
-;; after you've taught them about fractions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

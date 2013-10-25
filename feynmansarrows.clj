@@ -130,7 +130,7 @@
 ;; very simple too. 
 
 ;; You draw one arrow (it's already there actually)
-(do (ink green) (draw-arrow arrow1))
+(do (ink yellow) (draw-arrow arrow1))
 
 ;; And then starting at the head of the first one, you draw the second one
 (do (ink green) (draw-offset-arrow arrow1 arrow2))
@@ -257,116 +257,4 @@
 ;; after you've taught them about fractions.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; How long is that thing anyway? Remember Pythagoras?
-(defn length [arrow]
-  (Math/sqrt (reduce + (map * arrow arrow))))
-
-(length (multiply-arrows arrow1 arrow2)) ;-> 25.0
-
-;; Oooh. That's a suspiciously round number. 
-
-;; How long were the originals?
-
-(length arrow1) ;-> 5.0
-(length arrow2) ;-> 5.0
-
-;; So our multiplication rule seems to multiply arrow lengths
-
-;; What about the direction of the red arrow? 
-
-
-
-
-
-
-
-
-
-
-
-;; Well notice that arrow1 is turned a bit anticlockwise from (1,0), the arrow pointing east
-
-(ink green) ;hard to see
-(draw-arrow [1 0])
-
-;; And that arrow2 is turned a bit clockwise from there.
-
-;; And think of the arrows as meaning 'a zoom and a twist'.
-
-;; How much zoom? The length of the arrow.
-
-;; How much turn? The amount the arrow is turned away from (1,0), our
-;; 'favourite arrow', which means 'do nothing', or 'leave everything
-;; the same'.
-
-;; So if we think that arrow1 might represent zoom by a factor of 5
-;; and turn anticlockwise by something like 60 degrees.
-
-;; And we think that arrow 2 might represent zoom by a factor of 5 and
-;; turn clockwise by a bit less.
-
-;; Then it doesn't look too strange that arrow1*arrow2 might mean do
-;; both, one after the other, and end up meaning 'zoom by a factor of
-;; 25 and turn a bit anticlockwise'
-
-;; Which it looks as though the red arrow might well mean.
-
-;; Let's test our idea with some smaller arrows.
-
-;; Arrow 3 will be [1,0.1]
-(def arrow3 [1,0.1])
-
-(cls)
-(ink white)
-(axes)
-(ink yellow)
-(draw-arrow arrow3)
-
-
-;; Now I hope you'll agree with me that while this is a bit strange,
-;; it's all perfectly easy to understand, and there's nothing magical going on.
-
-;; And it gives us a nice way to talk about plane geometry.
-
-;; We have arrows, which we can think of either as 'displacements', using our addition rule,
-;; or 'turns and zooms', using our multiplication rule.
-
-
-
-
-
-
-
-
-
-
-
-;; The traditional explanation goes something like:
-
-;; 'We'd like to be able to solve x^2-1=0', but we can't, so we just
-;; pretend that we can and treat the answer as a number, and nothing
-;; goes wrong and it turns out to be useful.
-
-;; Now to be honest, I was once deeply immersed in the dark arts of
-;; pure mathematics, and if you're interested in logic and set theory
-;; and the consistency of axioms and models and all this and that,
-;; then there is a way in which that sort of idea actually makes sense.
-
-;; But you will not meet many people who understand it, and so it just
-;; sounds like witchcraft and ad-hockery.
 
