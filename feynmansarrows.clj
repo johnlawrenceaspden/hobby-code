@@ -35,6 +35,7 @@
 
 ;; And if the complex numbers had been found that way, then I think
 ;; we'd teach them to little children at about the same time we teach
+
 ;; them about fractions, and well before we teach them about the
 ;; really weird stuff like the square roots of two.
 
@@ -132,7 +133,7 @@
 ;; You draw one arrow (it's already there actually)
 (do (ink yellow) (draw-arrow arrow1))
 
-;; And then starting at the head of the first one, you draw the second one
+;; And then you draw the second one, but starting at the head of the first one:
 (do (ink green) (draw-offset-arrow arrow1 arrow2))
 
 ;; And the sum is the arrow (in red) that points at the head of the
@@ -214,9 +215,12 @@
 
 (multiply-arrows arrow1 arrow2) ;-> [24 7]
 
+;; The two arrows we started with were five long, but the result of multiplying them is 25 long.
+;; Of course, we could have guessed that. 500% zoom followed by 500% zoom is 2500% zoom!
+
 
 ;; What happens, if, instead of taking arrow1 and arrow2 we multiply
-;; arrow1 by a much smaller arrow?
+;; arrow1 by a much smaller arrow, so that it will not grow so much?
 
 ;; Arrow 3 will be a tiny arrow, just a bit longer than 1 mile long, and 
 ;; just a bit to the north of due east.
