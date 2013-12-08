@@ -66,12 +66,16 @@ initial-state
 
 (nth chain 10) ;-> ;[O X X X O X X X O O O O O O X O O]
 
-(count (partition-by identity '[O X X X O X X X O O O O O O X O O]))
+(filter #(= 'O (first %))(partition-by identity '[O X X X O X X X O O O O O O X O O]))
 
-(frequencies (take 100000 (for [ s (drop 100 chain)] (count (partition-by identity s)))))
+(count (filter #(= 'O (first %))(partition-by identity '[O X X X O X X X O O O O O O X O O])))
 
+(defn occupied [state]
+  (count (filter #(= 'O (first %))(partition-by identity state))))
+
+(frequencies (take 100000 (for [ s (drop 100 chain)] (occupied s))))
+{4 30236, 5 36465, 3 10554, 2 1241, 6 17829, 7 3418, 8 236, 1 21}
 ;; three times out of 99000. (* 99900 0.000411) is 41. Sigh.
-{2 3, 3 56, 4 500, 5 1898, 6 5675, 7 9975, 8 17614, 9 19345, 10 19406, 11 13512, 12 7726, 13 3182, 14 872, 15 236}
 
 (defn swap2 [state]
   (let[i (rand-int (dec (count state)))
@@ -84,7 +88,31 @@ initial-state
 
 (def chain2 (iterate swap2 initial-state))
 
-(frequencies (take 100000 (for [ s (drop 100 chain2)] (count (partition-by identity s)))))
+(frequencies (take 100100 (for [ s (drop 100 chain2)] (occupied s))))
+{6 18029, 5 36456, 4 30459, 7 3495, 3 10420, 2 943, 8 198}
+
+(frequencies 
+ (take 100100 
+       (for [ s (drop 100 (iterate swap2 (shuffle initial-state)))] 
+         (occupied s))))
+
+{5 36816, 4 29803, 3 9572, 6 18823, 7 3754, 2 1028, 8 243, 1 61}
+{5 37202, 4 29686, 3 9787, 2 1257, 6 18358, 7 3585, 8 181, 1 44}
+
 
 ;; Doesn't look likely either!
-{3 110, 4 402, 5 1820, 6 5393, 7 10672, 8 16472, 9 20905, 10 18497, 11 13933, 12 7481, 13 3197, 14 920, 15 198}
+(/ 100000. 17 13 11) ;-> 41.13533525298231
+;; Whatever process we're looking for should come up 41 times
+
+(defn factorial[n] (reduce * (range 1 (inc n))))
+
+(factorial 3)
+
+(def pf (/ (* (factorial 10) (factorial 7)) (factorial 17))) ; 1/19448
+
+(* 8. pf)
+(* (/(* 9. 8 7) 2) pf)
+
+
+
+
