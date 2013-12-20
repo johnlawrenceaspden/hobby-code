@@ -2,11 +2,11 @@
 
 John Aspden 07943 155029  / 0114 2341378
 
-James Howard 07988 843475 (very competent rower/ex-boat pikey, lives in Histon)
-Emma  Howard 07989 444046 
-
-James Tidy 07724 056240
+James Tidy 07724 056240 (local boat enthusiasts)
 Amy        07828 763885
+
+James Howard 07988 843475 (very competent rower/ex-boat pikey, sadly now lives on Tyneside)
+Emma  Howard 07989 444046 
 
 or just ask anyone on a boat nearby!
 
@@ -43,12 +43,14 @@ Don't move it in strong stream or wind. Go slow and careful. Turn very gently an
 ** Stern Gland
 Remember to retighten grease injector every time prop has turned. Leaking stern gland and clogged pump/dead battery can sink boat.
 
+
 * Minor Threats
 ** Toilet
 *Never* put anything down a boat toilet that you haven't eaten. Carefully selected soft toilet paper is also ok.
 Anything else will instantly jam the mechanism. Repair needs a plumber, extensive destruction and probably new parts.
 ** Discharged Batteries
    Batteries in low charge state are damaged by it. If you notice voltage less than 12.2 unloaded / less than 50%, run engine until back to 80%/when charging stops
+   Engine needs throttle blipped gently to 'prime' alternator. If it's not going then the rev counter will be dead and the yellow battery light will be on. When alternator is running with engine idle it should be putting 20A into the batteries, and the battery meter should show this. If the initial throttle blip doesn't start it, leave the engine running gently for a few minutes and try again. I don't know why this is. Maybe there is damp in the alternator and it needs to warm up before it will start working?
 ** Water Pump Burnout
 If you run out of water, the pump will run continuously, which will burn it out. Switch off in fuse cupboard.
 ** Water Leak
@@ -56,35 +58,21 @@ Any water leak, turn off water pump and stopcock in left hand front cupboard.
 ** Sewage Tank
 When full, toilet won't flush. Careful not to cause it to overflow, empty tank ASAP before anything gross happens.
 ** Burglars
-Not much of a problem apparently, but I leave the bank side and front door curtains shut usually so that no-one can see in.
-Don't leave hatch open when going out, since it's just about possible that someone will notice and climb round/over.
+Not much of a problem apparently, but I leave the bank side and front door curtains shut usually so that no-one can see in. 
+Don't leave hatch open when going out, since it's possible that someone will notice and climb round/over. It's easy to see from the bridge/other side of the river.
 
 * Stove
-
-** Fire is a bit screwed at the moment
-At the moment, the fire is drawing too much air, and so you need to keep lots of ash in the fire to calm it down.
-There are parts on order but they're not here yet (at some point they will turn up at Outspoken addressed to me). I've stuffed cardboard into the ash pit vents to control the air inflow. Don't let them fall out or move so they're not covering the vents.
-
-If you take all the ash out it will burn extremely hot, and might cause a fire.
-
-If it gets away from you, take everything flammable away from the fire, and put ash on top of the coal to form a blanket and calm it down. If it's looking dangerous or out of control CALL THE FIRE BRIGADE before anything dreadful happens.
-
----
-
+** remove ash every time you put new coal on
 Careful not to spill hot ash, I've already made two holes in the carpet.
+
+The Guardian is exactly the right size to lay in front of the fire to keep ash off the floor when messing. When done, fold up the top sheet of paper and bin it.
 
 Ash goes into ash box, then when cooled empty the box into the bin on the common. 
 Only once it's cold though, or it will set fire to the bin bags.
 
 Suck up spilt dust with hoover. Don't use brush, it just makes it worse.
 
----
-
-Should the fire go out, don't remove the ash or unburnt coal. Make a little hole in the coal, put a firelighter in the hole and then put a couple of pieces of kindling wood on top to make a 'combustion chamber'. Light the firelighter, then put coal on top of the wood.
-
-It's difficult to light wet coal directly. Make sure there's always some coal in the bucket drying out so you don't end up with a dead fire and only wet coal to light it with.
-
-** Normal usage (when fire is properly sealed)
+** Normal usage 
 If you open the vents and go out or leave the front open for long you'll burn down the boat!
 
 Regulate heat by controlling amount of air allowed in. 
@@ -97,11 +85,23 @@ fully closed: fire may go out. don't use.
 tau/8 / 45 degrees: fire will stay in for 12hours+, doesn't put out much heat. 
 tau/4 / 90 degrees:  usual setting unless it's very cold
 tau/2 / 180 degrees: fire will be very hot, but coal will all be used up in a few hours.
+** if fire is drawing too much air
+It shouldn't do. It's properly sealed, but if it does you can:
+Put a layer of ash on top of the burning coal to calm it down
+Put cardboard strips in the ash pit vents to make a better seal
+
+If it gets away from you, take everything flammable away from the fire, and put ash on top of the coal to form a blanket and calm it down. If it's looking dangerous or out of control CALL THE FIRE BRIGADE before anything dreadful happens.
+
+** relighting if it goes out
+Should the fire go out, don't remove the ash or unburnt coal. Make a little hole in the coal, put a firelighter in the hole and then put a couple of pieces of kindling wood on top to make a 'combustion chamber'. Light the firelighter, then put coal on top of the wood.
+
+It's difficult to light wet coal directly. Make sure there's always some coal in the bucket drying out so you don't end up with a dead fire and only wet coal to light it with. If you find yourself with no dry coal then try the blue plastic bucket which is usually in the foredeck well or on the bank next to the boat.
+
 
 * Electricity
 Powers everything. Enough from solar panels even in mid-winter to power systems, cabin lights, radio.
 
-Battery monitor on cupboard door at sleeping cabin end. 12.6 volt is fully charged, 12.0 is half-charged. Don't let it get that low.
+Battery monitor on cupboard door at sleeping cabin end. 12.6 volt is fully charged, 12.2 is half-charged. Don't let it get that low.
 
 Fridge is huge consumer of electricity and mid winter it draws more power than the solar panels can provide.
 You can make more electricity by running the engine when the batteries are low. Wait until the engine is warmed up before revving it up with the neutral button pressed in to make the alternator work. RPM indicator will read zero unless alternator is generating electricity.
@@ -116,7 +116,7 @@ If you'd like other lights on for a while, then there are LED replacements in th
 * Hot Water
 Produced as side effect of running engine. But I find it easier to make small amounts in the kettle, and take showers elsewhere.
 
-There's also a little eberspacher water heater which burns diesel to heat water. Run that for half an hour and you should have enough hot water for a shower.
+There's also a little eberspacher water heater which burns diesel to heat water. Run that for half an hour and you should have enough hot water for a shower. The eberspacher will only work if the battery voltage is high enough, so if it doesn't, run the engine to charge the batteries and that will also make hot water as it runs.
 
 * Shower
 I avoid using it in cold weather. It makes lots of condensation, runs down the water tank, and you need to heat the water first.
@@ -149,8 +149,9 @@ Turn everything off if leaving boat alone for a long time.
 Main use is to disable water pump in event of running out of water, but you also lose the front sockets and radio on the same switch.
 
 * Fridge
-Uses loads of power, you'll need to run the engine occasionally if you want the fridge on. 
-Its switch also controls the incandescent cabin wall lights so they won't work if the fridge is off. But you shouldn't put them on in winter as they use far too much electricity.
+Uses loads of power, you'll need to run the engine occasionally if you want the fridge on. I don't use it in the Winter. If you put stuff on the back steps in cold months it won't go off in a hurry.
+
+The fridge switch also controls the incandescent cabin wall lights so they won't work if the fridge is off. But you shouldn't put them on in winter anyway as they use far too much electricity.
 
 * Inverter
 Turns 12v into 240v, can be used for mobile chargers, laptops, although I have 12v versions. Main use is for DAB radio, although boat FM radio is better and uses less power.
