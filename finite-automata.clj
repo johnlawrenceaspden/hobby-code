@@ -2,11 +2,15 @@
 
 ;; I just did Jeff Ullmann's Stanford Course 'Automata' through Coursera. It was fascinating.
 
-;; A finite automaton is a mathematical model representing a simple computer. But it's very close to being a computer.
-;; In fact you can code them up in Verilog and make them out of silicon. In chip design they're known as finite state machines.
+;; A finite automaton is a mathematical model representing a simple
+;; computer. But it's very close to being a computer.  In fact you can
+;; code them up in Verilog and make them out of silicon. In chip
+;; design they're known as finite state machines.
 
-;; They're strictly less powerful than real computers and programs, but they can still do lots of stuff.
-;; On the other hand, we can determine what it is that they do much more easily than we can with computers and programs.
+;; They're strictly less powerful than real computers and programs,
+;; but they can still do lots of stuff.  On the other hand, we can
+;; determine what it is that they do much more easily than we can with
+;; computers and programs.
 
 ;; Here's an example of an automaton
 
@@ -15,7 +19,7 @@
 ;; A -1-> B
 ;; B -1-> B
 ;; B -0-> A
-;; B is accepting
+;; B is an accepting state
 
 ;; INSERT IMAGE automaton1.png
 
@@ -30,13 +34,19 @@
 (automatonI :start) ;-> :A
 
 ;; The first character of the string is a 1, and so it transitions to B
-(((automatonI :transition) 1) (automatonI :start)) ;-> :B
+(((automatonI :transition) 1) 
+ (automatonI :start)) ;-> :B
 
 ;; The second character is 0, so it transitions back to :A
-(((automatonI :transition) 0) (((automatonI :transition) 1) (automatonI :start))) ;-> :A
+(((automatonI :transition) 0) 
+ (((automatonI :transition) 1) 
+  (automatonI :start))) ;-> :A
 
 ;; And so on
-(reduce (fn[state input] (((automatonI :transition) input) state)) (automatonI :start) (list 1 0 1 1 0 1 0 1 1)) ;-> :B
+(reduce 
+ (fn[state input] (((automatonI :transition) input) state)) 
+ (automatonI :start) 
+ (list 1 0 1 1 0 1 0 1 1)) ;-> :B
 
 ;; The final state after all the input is consumed is :B, which is an accepting state
 
@@ -48,15 +58,20 @@
 
 
 (final-state automatonI (list 1 0 1 1 0 1 0 1 1)) ;-> :B
+(final-state automatonI (list 1 0 1 1 0 1 0 1 0)) ;-> :A
 
 ;; And so the string 101101011 is accepted by the automaton.
 
 (defn accepts [automaton string]
   (not (nil? ((automaton :accept) 
-              (final-state automaton string))))
+              (final-state automaton string)))))
 
-;; We might ask what other types of strings are accepted
+(accepts automatonI (list 1 0 1 1 0 1 0 1 1)) ;-> true
+(accepts automatonI (list 1 0 1 1 0 1 0 1 0)) ;-> false
 
+;; We might ask what other strings are accepted
+
+;; First let's generate all possible strings of zeros and ones
 (defn extend [ss] (for [a ss b '(0 1)] (cons b a)))
 
 (extend '(())) ;-> ((0) (1))
@@ -70,14 +85,16 @@
 
 strings01 ;-> (() (0) (1) (0 0) (1 0) (0 1) (1 1) (0 0 0) (1 0 0) (0 1 0) (1 1 0) (0 0 1) (1 0 1) (0 1 1) (1 1 1) (0 0 0 0) (1 0 0 0) (0 1 0 0) (1 1 0 0) (0 0 1 0) (1 0 1 0) (0 1 1 0) (1 1 1 0) (0 0 0 1) (1 0 0 1) (0 1 0 1) (1 1 0 1) ...)
 
+;; As you may have guessed, this automaton accepts strings that end in 1
+
 (filter (partial accepts automatonI) strings01) ;-> ((1) (0 1) (1 1) (0 0 1) (1 0 1) (0 1 1) (1 1 1) (0 0 0 1) (1 0 0 1) (0 1 0 1) (1 1 0 1) (0 0 1 1) (1 0 1 1) (0 1 1 1) (1 1 1 1) (0 0 0 0 1) (1 0 0 0 1) (0 1 0 0 1) (1 1 0 0 1) (0 0 1 0 1) (1 0 1 0 1) (0 1 1 0 1) (1 1 1 0 1) (0 0 0 1 1) (1 0 0 1 1) (0 1 0 1 1) (1 1 0 1 1) ...)
 
-;; As you may have guessed, this automaton accepts only those strings that end in 1
+;; Proof by trying a finite number of cases:
 
 (map last (filter (partial accepts automatonI) strings01)) ;-> (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...)
 (map last (filter (comp not (partial accepts automatonI)) strings01)) ;-> (nil 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...)
 
-;; Here's a slightly more interesting one:
+;; Here's a (slightly) more interesting variant:
 
 ;; INSERT AUTOMATONII.PNG
 
@@ -96,10 +113,11 @@ strings01 ;-> (() (0) (1) (0 0) (1 0) (0 1) (1 1) (0 0 0) (1 0 0) (0 1 0) (1 1 0
                    :transition { 1 {:A :B :B :A :C :C}
                                  0 {:A :A :B :C :C :B}}})
 
+;; INSERT AUTOMATONIII.PNG
+
 (filter (partial accepts automatonIII) strings01) ;-> (() (0) (0 0) (1 1) (0 0 0) (1 1 0) (0 1 1) (0 0 0 0) (1 1 0 0) (0 1 1 0) (1 0 0 1) (0 0 1 1) (1 1 1 1) (0 0 0 0 0) (1 1 0 0 0) (0 1 1 0 0) (1 0 0 1 0) (0 0 1 1 0) (1 1 1 1 0) (0 1 0 0 1) (1 0 1 0 1) (0 0 0 1 1) (1 1 0 1 1) (0 1 1 1 1) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 1 1 0 0 0) ...)
 
-;; Can you see what it's doing? 
-
+;; Can you see what this one is doing? 
 
 ;; Here's a clue
 
@@ -114,6 +132,8 @@ strings01 ;-> (() (0) (1) (0 0) (1 0) (0 1) (1 1) (0 0 0) (1 0 0) (0 1 0) (1 1 0
 
 (for [[k v] (group-by (partial accepts automatonIII) (take 100 strings01))]
   [k (sort (distinct (map to-integer v)))])
+;;-> ([true (0 3 6 9 12 15 18 21 24 27 30 33 36)] 
+;;    [false (1 2 4 5 7 8 10 11 13 14 16 17 19 20 22 23 25 26 28 29 31 32 34 35)])
 
 ;; Can you get it to work the right way round? 
 
