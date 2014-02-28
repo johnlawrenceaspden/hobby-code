@@ -1,0 +1,164 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Trig Substitutions
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+http://maxima.sourceforge.net/docs/tutorial/en/gaertner-tutorial-revision/Pages/TrigTrans0001.htm
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: subsect start ]
+simple round trip
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+s3c: sin(x)^3*cos(x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(s3c, [x, 0,2*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rs3c: trigreduce(s3c);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([s3c,sin(2*x)/4, -sin(4*x)/8], [x, 0,2*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn3: trigexpand(fn2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(fn3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+an example from the manual
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+this is supposed to be tricky, but it appears that maxima has got better at this sort of thing.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+result: integrate(9/cos(7*x)^2, x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(result, x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+another go at what the manual says:
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+this is what was supposed to be produced by the integration
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+fn: 18*sin(14*x)/(7*sin (14*x)^2 + 7*cos (14*x)^2 + 14*cos(14*x) + 7);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn2: trigsimp(fn);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(fn2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we need to give maxima a hand here
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+fn3: fn2, 14*x=2*y;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn4: trigexpand(fn3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn5:trigsimp(fn4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn6:trigreduce(fn5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn7: fn6, y=7*x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(fn7,[x,0,2*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn1: trigsimp(fn);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn2: fn1, 14*x=2*y;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigexpand(fn2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn3: trigsimp(fn2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn4: trigexpand(fn3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn5: trigsimp(fn4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(fn5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+trigreduce rewrites expressions as a sum of terms 
+each of which contains only a single sin or cos
+(fourier decomposition?)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(sin(x+y)*cos(2*x)^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+trigexpand simplifies the arguments
+(sin(A+B)=sinAcosB+sinBcosA
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trigexpand(sin(x+y)*cos(2*x)^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(trigexpand(sin(x+y)*cos(2*x)^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(trigreduce(sin(x+y)*cos(2*x)^2));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
