@@ -1,0 +1,25 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+An identity for binomials
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factorsum(makefact(binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+minfactorial(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

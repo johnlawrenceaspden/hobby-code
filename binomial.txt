@@ -1,0 +1,18 @@
+Theorem:
+
+{maxima binomial(n-1,i-1)+binomial(n-1,i)=binomial(n,i) maxima}&{latex  {{n-1}\choose{i}}+{{n-1}\choose{i-1}}={{n}\choose{i}} latex}
+
+Proof:
+
+We prove this formula by subtracting the right hand side from the left hand side
+
+{maxima binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i) maxima}&{latex  -{{n}\choose{i}}+{{n-1}\choose{i}}+{{n-1}\choose{i-1}} latex}
+
+= {maxima makefact(binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i)) maxima}&{latex  -\ifrac{n!}{i!\,\left(n-i\right)!}+\ifrac{\left(n-1\right)!}{\left(i-1\right)!\,\left(n-i\right)!}+\ifrac{\left(n-1\right)!}{i!\,\left(n-i-1\right)!} latex}
+
+= {maxima factorsum(makefact(binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i))) maxima}&{latex  \ifrac{\left(i-1\right)!\,\left(n-1\right)!\,\left(n-i\right)!-\left(i-1\right)!\,n!\,\left(n-i-1\right)!+i!\,\left(n-1\right)!\,\left(n-i-1\right)!}{\left(i-1\right)!\,i!\,\left(n-i-1\right)!\,\left(n-i\right)!} latex}
+
+
+= {maxima minfactorial(factorsum(makefact(binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i)))) maxima}&{latex  \ifrac{\left(i-1\right)!\,\left(n-i\right)\,\left(n-1\right)!\,\left(n-i-1\right)!-\left(i-1\right)!\,n\,\left(n-1\right)!\,\left(n-i-1\right)!+i\,\left(i-1\right)!\,\left(n-1\right)!\,\left(n-i-1\right)!}{i\,\left(i-1\right)!^2\,\left(n-i\right)\,\left(n-i-1\right)!^2} latex}
+
+= {maxima ratsimp(minfactorial(factorsum(makefact(binomial(n-1,i-1)+binomial(n-1,i)-binomial(n,i))))) maxima}&{latex  0 latex}
