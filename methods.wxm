@@ -1,0 +1,90 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+plotting a vector field (need xmaxima)
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+plotdf(exp(-x)+y,[trajectory_at,2,-0.1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+contour_plot(x^2+y^2, [x,-4,4],[y,-4,4]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+contour_plot ((u^4 - v^4 + 2*u^2 +2*v^2), [u, -1, 1], [v, -2, 2],
+                    [gnuplot_preamble, "set cntrparam levels 12"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+Matrix Ops
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+M: matrix ([3, 7, aa, bb], [-1, 8, 5, 2], [9, 2, 11, 4], [9, 2, 11, 4]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+echelon(M);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eivals(M);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+div, grad, curl and all that
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+load("vect");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grad(x^2+y^2+z^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+div(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grad(x^2+y^2+z^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+curl(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+curl([-y,x,z*z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

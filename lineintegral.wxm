@@ -1,0 +1,33 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+differential: x^2*y*diff(x) +y*z*diff(y)+z*x*diff(z);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+path:[x = cos(t), y=sin(t), z=sin(t)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fndt: sublis(path, integrand);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fn: ev(fndt, diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand: fn, del(t)=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(integrand, [t,0,2*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrand, t, 0, 2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

@@ -1,0 +1,190 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+First Steps in Maxima
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: section start ]
+symbolic algebra
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+(x+2*y)^4;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factor(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+differentiation
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(sin(x)*cos(x), x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(sin(x)*cos(x),x,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+finite fourier sums
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(sin(x)^5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+integration
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((x+1)/(x^3-8),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+can avoid being asked questions with assumptions
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(m>4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^m*(a+b*x)^3,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factor(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x/(x^3+1),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+eek!, but help is at hand
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+another example of integration, differentiation, simplification
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(a*x)*sin(x)*cos(x),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+giving it a hand
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+fn(x):=1/((x-3)^4+1/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+int: integrate(fn(x),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+failzor! can change variables by hand
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+inty: changevar(int,x-3-y,y,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+I don't get this bit:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(inty,integrate);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+now back substitute
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+sfx: %, y=x-3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and try various simplifications
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+sfx2: ratsimp(sfx);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sfx3: radcan(sfx2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sfx4: logcontract(sfx3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+looks like that's about as good as it gets
+
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([fn,sfx4],[x,0,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+look under the hood, as it were
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(1/(x^3+1), x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%, x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

@@ -1,0 +1,74 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Curvature
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: subsect start ]
+The curvature of a circle
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+alpha(t) := [sin(t), cos(t)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(alpha(z),z);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+J(a):=[-a[2],a[1]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+J(alpha(y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+alpha(z).J(alpha(z));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kappa(fn,t):=diff(fn(t),t,2).J(diff(fn(t),t))
+/((diff(fn(t),t).diff(fn(t),t))^(3/2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kappa(alpha,t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+surely a circle has constant curvyness?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+An eight-curve
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+eight(t):=[sin(t), sin(t)*cos(t)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(append('[parametric], eight(z), [[z, -%pi,%pi]], [[nticks, 360]]));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kappa(eight, z);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(kappa(eight,z), [z, -%pi, %pi]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

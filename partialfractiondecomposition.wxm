@@ -1,0 +1,103 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: section start ]
+Partial Fraction Decomposition
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+r:1/(x^4+x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+partfrac(r, x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+by hand
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+p1: a/x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+p2: b/x^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+p3:(c*x+d)/(x^2+1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pf: p1+p2+p3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+epf: ratsimp(pf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+n:num(epf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(n,x,3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(n,x,3)=0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+equations: [coeff(n,x,3)=0,
+            coeff(n,x,2)=0,
+            coeff(n,x,1)=0,
+            coeff(n,x,0)=1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(equations,[a,b,c,d]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solution: first(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+at(p1+p2+p3, solution);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or we could get all lispy and avoid some of the manual steps
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+n;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+terms: maplist(lambda([item],item),n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r:1/(x^4+x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+map(lambda([term],
+ coeff(term,  x, hipow(term, x)) =
+ coeff(num(r),x, hipow(term, x)))
+    , terms);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(%,[a,b,c,d]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+at(p1+p2+p3,first(%));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
