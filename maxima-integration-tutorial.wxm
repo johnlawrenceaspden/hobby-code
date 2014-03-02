@@ -1,0 +1,379 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Maxima By Example Chapter 7: Symbolic Integration
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+example 1: round-tripping an integration
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(x)^3, x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+example 2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x/sqrt(b^2-x^2),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+definite integral
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(cos(x)^2*exp(x),x,0,%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ldefint(cos(x)^2*exp(x),x,0,%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+defint(cos(x)^2*exp(x),x,0,%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+infinite range
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^2*exp(-x^2),x,minf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^2*exp(-x^2),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(erf(x),[x,-4,4]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+[limit(erf(x),x,inf), limit(erf(x),x,-inf)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+using assume
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+(assume(a>1), facts());
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^a/(x+1)^(5/2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+forget(a>1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+forget(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+facts();
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+is(a>1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^a/(x+1)^(5/2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^a/(x+1)^(5/2),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+fail!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^a/(x+1)^(5/2),x), risch;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gradef(q(u),sin(u^2))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand: sin(r(x)^2)*'diff(r(x),x)/q(r(x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrand,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(q,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+depends(r,x,q,r);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(q,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+area of unit square
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(1,y,0,1),x,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+facts();
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+area of ellipse
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(a>0,b>0,x>0,x<a,y>0,y<b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+facts();
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+[xmax:(a/b)*sqrt(b^2-y^2),ymax:(b/a)*sqrt(a^2-x^2)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(1,x,0,xmax),y,0,b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(1,y,0,ymax),x,0,a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(y^2,x,0,xmax),y,0,b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+moment of inertia about x-axis (sigma is density)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+sigma: m/(%pi*a*b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+4*sigma*integrate(integrate(y^2,x,0,xmax),y,0,b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+derivative of a definite integral
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr: 'integrate(f(x,y),x,a(y),b(y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(expr,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+example
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr: 'integrate(x^2+2*x*y,x,a,b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(expr,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(expr,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(%,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+example 2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr: 'integrate(x^2+2*x*y, x,a,b(y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(expr,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,nouns,b(y)=y^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(expr,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+eek, this is supposed to work
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr: 'integrate(2*x+t,x,t,t^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+(diff(expr,t),expand(%%));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+integration by parts
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+iparts(f,h,var):=block([g],
+    g: integrate(h,var),
+    f*g - 'integrate(g*diff(f,var),var));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+iparts(x^2,sin(x),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+collectterms(%,cos(x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x^2*sin(x),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+change of variables
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr:'integrate(2*x*(x^2+1)^3,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+changevar(expr,x^2+1-u,u,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+inu: ev(%,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsubst(x^2+1,u,inu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(x^2+1,u,inu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(u=x^2+1,inu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+example 2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+expr: 'integrate((x+2)/sqrt(x+1),x,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+changevar(expr,u-sqrt(x+1),u,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+of course, it's perfectly capable of doing this without help
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((x+2)/sqrt(x+1),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+sign errors
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+i1:integrate(exp(y^2),y,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(i1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(erf(%i));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(exp(y^2),y,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
