@@ -1,0 +1,137 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+The Sips vs Maxima Integration Challenge
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate('integrate(1/(1+y*x^3), x, y,2 ), y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(y>0, x>0, y<2, x<2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+maxima churns for ages and then gives up
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(1/(1+y*x^3), x, y,2 ), y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Can get a plausible value numerically
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(romberg(1/(1+y*x^3), x, y,2 ), y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(1/(1+y*x^3), [x,0,2],[y,0,2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+splitting the integrals doesn't help
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+i1: integrate(1/(1+y*x^3), x, y, 2 );
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(i1, y, 0, 2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+look at some simpler cases
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(y>0, x>0, y<2, x<2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(1/(1+y*x), [x,0,2],[y,0,2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(romberg(1/(1+y*x), x, y,2 ),y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+exact: integrate(integrate(1/(1+y*x), x, y,2 ), y, 0, 2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+what? How on earth has this got imaginary numbers in it?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(imagpart(exact));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(realpart(exact));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Ooh. turns out it was right all along. sorry I doubted you, maxima.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+deals even more easily with this case
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+exact2: integrate(integrate(1/(1+y*x^2), x, y,2 ), y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(exact2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(romberg(1/(1+x^2*y), x, y,2 ), y, 0, 2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+try another
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+exact22: integrate(integrate(1/(1+y^2*x^2), x, y,2 ), y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(romberg(1/(1+x^2*y^2), x, y,2 ), y, 0, 2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(realpart(exact22));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-0.125*+1.548908023675014;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this looks broken
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+-float(%pi*log(17)-8*atan(4)*log(4) +8*log(2)*atan(4))/8;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
