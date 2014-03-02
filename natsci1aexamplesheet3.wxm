@@ -1,0 +1,180 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Natsci Maths 1A, Example Sheet 3
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: section start ]
+Scalar and Vector Fields
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: subsect start ]
+S3 For each of the following functions f(x)=f(x,y,z), evaluate Grad f
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vect);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(x*y*z)), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(  exp(-1/(x*y*z))     )), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(  exp(-alpha^2*x^2-beta^2*y^2-gamma^2*z^2)     )), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(  (x^2+y^2+z^2)^-(1/2)   )), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(  (x^2+y^2+z^2)^(1/2)   )), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(  F((x^2+y^2+z^2)^(1/2))   )), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: title   start ]
+22 Evaluate various line integrals of a conservative vector field
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+How do we do line integrals?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+set up the vector field and a path
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+F:[4*x^3*z+2*x, z*z-2*y, x^4+2*y*z];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+path:[x=t,y=t,z=0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we make a differential form from the field
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+differentialform: F[1]*diff(x)+F[2]*diff(y)+F[3]*diff(z);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and substitute in the values of x, y, z in terms of t
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+fn:sublis(path, differentialform);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+get rid of anything like del(0)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+fndt:ev(fn,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+integrate dt by getting rid of del(t) and integrating dt
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand: subst(1, del(t), fndt);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(integrand, t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we can wrap all this into a function
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+lineintegral(F, path, param, p0, p1):=
+    block([ differentialform, fndt, fn, integrand],
+        differentialform: F[1]*diff(x)+F[2]*diff(y)+F[3]*diff(z),
+        fn:sublis(path, differentialform),
+        fndt: ev(fn, diff),
+        integrand: subst(1, del(param), fndt),
+        integrate(integrand, param, p0, p1))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lineintegral(F, [x=t,y=t,z=t], t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lineintegral(F, [x=0,y=0,z=t], t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lineintegral(F, [x=0,y=t,z=1], t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lineintegral(F, [x=t,y=1,z=1], t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+so the integral over the three paths is equal to the integral over the direct path.
+In fact we can define phi to be the integral of the form over the straight line from the origin to a,b,c
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+declare(a,constant);
+declare(b,constant);
+declare(c, constant);
+lineintegral(F, [x=a*t, y=b*t, z=c*t], t, 0, 1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+define phi in agreement with this
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+phi(x,y,z):=y*z*z+x^4*z-y^2+x^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and take its gradient to get the field back, thus proving that the field is conservative
+and any route will do
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vect);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(grad(phi(x,y,z))), diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+of course, we could have taken the curl of F to check
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(curl(F)), diff);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
