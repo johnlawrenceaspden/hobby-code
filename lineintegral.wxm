@@ -2,7 +2,7 @@
 /* [ Created with wxMaxima version 12.04.0 ] */
 
 /* [wxMaxima: input   start ] */
-differential: x^2*y*diff(x) +y*z*diff(y)+z*x*diff(z);
+integrand: x^2*y*diff(x) +y*z*diff(y)+z*x*diff(z);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
