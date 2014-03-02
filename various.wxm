@@ -1,0 +1,66 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: section start ]
+Integrations
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(1/(1+x^3), x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(1/(1+x^3), x,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+F: integrate(1/(1+x^3), x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+radcan(diff(F,x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+Partial Derivatives
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=x*x-y*y;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(x,y),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+Solving Linear Equations
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([u=2*x+y,v=x+2*y],[x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: section start ]
+Solving ODEs
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+ode1:'diff(f(x),x)=f(x)+sin(x);
+atvalue(f(x),x=0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+soln:desolve([ode1],[f(x)]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s:rhs(soln);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(s(x),[x,0,1]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

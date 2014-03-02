@@ -1,0 +1,29 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+assume(%pi/2>a,a>0,sin(a)>0,sin(a)<1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s: 'integrate(sin(theta)^3*cos(theta)^2, theta, 0, a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+p: changevar(s,x-sin(theta),x,theta);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(p,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(s,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate((1-x)^10*x^9,x,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
