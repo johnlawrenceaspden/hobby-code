@@ -1,0 +1,129 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Vector Calculus (with vect)
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:[1,2,3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:[2,-1,4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+3*a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a+b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a.b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vect);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a~b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sqrt(a.a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+(a.b)/(a.a)*a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c:[-5,2,9];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a.b~c;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+load(vect) seems to produce something irritating that needs lots of expressing and eving
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y,z):=x^2+y^2+z^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grad(f(x,y,z));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+curl([2*x,2*y,2*z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and yet..
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+curl(grad(f(x,y,z)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+remember to put the (x,y,z) in here or you get zero!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+div(grad(f(x,y,z)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(%,diff);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+div(grad(f));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+??express;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

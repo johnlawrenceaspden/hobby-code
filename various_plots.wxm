@@ -1,0 +1,53 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+load(draw);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+implicit plots
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+ellipse1:x^2/3+y^2+z^2=3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,implicit(ellipse1,x,-3,3,y,-2,2,z,-2,2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+explicit plots
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=(x^2-y^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(explicit(f,x,-3,3,y,-3,3));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,explicit(f,x,-3,3,y,-3,3));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,explicit(f,x,-3,3,y,-3,3), contour_levels=15, contour=map);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,explicit(x^4-y^4-x^2+4*y^2,x,-1.5,1.5,y,1,2), contour_levels=40);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,explicit(x^4-y^4-x^2+4*y^2,x,-1.5,1.5,y,-2,2), contour_levels=40, contour=surface);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+draw3d(enhanced3d=true,explicit(x^4-y^4-x^2+4*y^2,x,-1.5,1.5,y,-2,2), contour=surface, surface_hide=true);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

@@ -1,0 +1,107 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Plotting a vector field
+
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: subsect start ]
+example 1
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+load(draw);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coord: setify(makelist(k,k,-4,4));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+points2d: listify(cartesian_product(coord, coord))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vf2d(x,y):=vector([x,y],[cos(y),x]/6);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vect2: makelist(vf2d(k[1],k[2]),k,points2d)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+apply(draw2d,append([head_length=0.1,color=blue], vect2))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+example 2
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vector3d);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(f, x,y, gdf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=x^2-y^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grad(f(x,y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+there really ought to be some way of turning [a,b,c] into [a,b]!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+vf2d(x,y):=vector([x,y],[2*x,-2*y]/8);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vect2: makelist(vf2d(k[1],k[2]),k,points2d)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+apply(draw2d,append([head_length=0.1,color=blue], vect2))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+or ploteq will do the gradient of a scalar field
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+have to remember the minus sign. It wants to do -grad.
+click on the figure to produce contours!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ploteq(-(x^2-y^2),[x,y],[x,-4,4],[y,-4,4],[vectors,"blue"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+3d version (sucky slow)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+points3d: listify(cartesian_product(coord,coord,coord))$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vf3d(x,y,z):=vector([x,y,z],[z,x,y]/8);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vect3: makelist(vf3d(k[1],k[2],k[3]),k,points3d)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+apply(draw3d, append([head_length=0.1,color=blue], vect3))$
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

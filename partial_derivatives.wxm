@@ -1,0 +1,46 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=exp(x^2)*sin(y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+[x,y]:[s^2*t,s*t^2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+I think x and y here are getting defined as expressions rather than
+as functions? This is confusing
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(x,y),s);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(x,y),t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(x,y),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+hmm..
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(u,v),u);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(u,v),v);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(u,y),u);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

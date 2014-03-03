@@ -1,0 +1,21 @@
+load("draw");
+kill(f, x, y, gdf); 
+f(x,y) := x^2 - y^2;
+scalefactors([x,y]);
+gdf(x,y):=grad(f(x,y));
+ev(express(gdf(x,y)), diff); 
+define(gdf(x,y), %); 
+
+
+
+coord: setify(makelist(k,k,-4,4));
+
+points2d: listify(cartesian_product(coord, coord));
+
+vf2d(x,y) := vector([x,y], gdf(x,y)/8); 
+vect2: makelist(vf2d(k[1],k[2]), k, points2d);
+apply(draw2d, append([head_length=0.1, color=blue], vect2));
+
+
+
+
