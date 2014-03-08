@@ -1,0 +1,114 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Flux through a hemisphere
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vect);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+first express our hemisphere in terms of a,theta,and phi
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+X:[a*sin(theta)*cos(phi),a*sin(theta)*sin(phi), a*cos(theta)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+now work out the vector area element
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(X,theta);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(X,phi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+taking care to get the right sign (I want our normals sticking out)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+dS:express(diff(X,theta)~diff(X,phi));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(dS);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(dS)/X;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+by a geometrical argument it should be:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+(X/a)*a^2*sin(theta);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+so it's a relief to see that these expressions are the same
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: subsect start ]
+Find a flux through a hemisphere
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+constant vector field 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+F:[alpha,beta,gamma];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(F.dS,theta,0,%pi/2),phi,0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+linear field from centre
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+G:X;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(X.dS,theta,0,%pi/2),phi,0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+what about a scaled version of that field?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+G:[l*X[1],m*X[2],n*X[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(G.dS,theta,0,%pi/2),phi,0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factor(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we should expect that since flux over baseplate is 0, 
+volume of hemisphere is 2/3*pi*a^3 and div G is l+m+n
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(express(div([l*x,m*y,n*z])),diff);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
