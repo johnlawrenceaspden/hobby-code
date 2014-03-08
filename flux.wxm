@@ -6,8 +6,8 @@ Flux through a hemisphere
    [wxMaxima: title   end   ] */
 
 /* [wxMaxima: comment start ]
-Finding the flux of various vector fields through a hemisphere
-we'll take the hemisphere to be half of a sphere of radius a, above the x,y plane
+Finding the flux of various vector fields through a hemisphere.
+We'll take the hemisphere to be half of a sphere of radius a, above the x,y plane
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: comment start ]
@@ -43,7 +43,7 @@ Find various fluxes
    [wxMaxima: section end   ] */
 
 /* [wxMaxima: comment start ]
-having set up the geometry, calculating fluxes is easy
+Having set up the geometry, calculating fluxes is easy
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: subsect start ]
@@ -55,7 +55,7 @@ F:[alpha,beta,gamma];
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-integrate(integrate(F.dS,theta,0,%pi/2),phi,0,2*%pi);
+integrate(integrate(F.dS,phi,0,2*%pi),theta,0,%pi/2);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: subsect start ]
@@ -83,11 +83,12 @@ integrate(integrate(G.dS,theta,0,%pi/2),phi,0,2*%pi);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-notice that the flux is constant for these fundamental forces, as if something was flowing out from the centre.
+Notice that the flux is constant for these fundamental forces, as if something was flowing out from the centre.
+Whatever surface you choose, if it encloses the origin, the same amount will flow through it.
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: subsect start ]
-elliptical-type field (lx,my,nz)
+elliptical field (lx,my,nz)
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -103,8 +104,8 @@ factor(%);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-we should expect that since flux over baseplate is 0, 
-volume of hemisphere is 2/3*pi*a^3 and div G is l+m+n
+We should expect that since div G is l+m+n 
+the volume of hemisphere is 2/3*pi*a^3 and there's no flux through the base.
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -140,7 +141,7 @@ If we hadn't been able to guess the vector area element, we could have got it fr
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: comment start ]
-take the partial derivatives with respect to the parameters
+Take the partial derivatives with respect to the parameters
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -152,7 +153,7 @@ diff(X,phi);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-and take their cross product, taking care to get the right sign (I want our normals sticking out)
+And take their cross product, taking care to get the right sign (I want our normals sticking out)
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -160,7 +161,7 @@ dS:express(diff(X,theta)~diff(X,phi));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-we can get maxima to simplify this
+We can get maxima to simplify this
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -168,7 +169,7 @@ dS:trigsimp(dS);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-notice that it's a multiple of our X vector. the normals are sticking out radially
+Notice that it's a multiple of our X vector. The normals are sticking out radially
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -176,7 +177,7 @@ dS/X;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-the a*sin(theta) part makes up for the fact that we're over-counting 
+The a*sin(theta) part makes up for the fact that we're over-counting 
 the flux through the north pole when we do our integral.
    [wxMaxima: comment end   ] */
 
