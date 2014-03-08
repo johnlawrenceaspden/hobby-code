@@ -708,6 +708,19 @@
                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
                       (local-set-key (kbd "<f12>") 'other-window)))
 
+; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
+; there too
+(add-hook 'python-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
+
+(add-hook 'inferior-python-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-c M-o") 'delete-buffer)
+                      (local-set-key (kbd "<f12>") 'other-window)))
+
+
+
 (defun haskellxr ()
   (interactive)
   (move-beginning-of-line nil)
