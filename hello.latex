@@ -1,0 +1,10 @@
+\documentclass{article}
+\pagestyle{empty}
+\begin{document}
+\huge
+Hello
+
+pdflatex hello.latex
+$$\left[ a\,\cos \varphi\,\sin \vartheta , a\,\sin \varphi\,\sin 
+ \vartheta , a\,\cos \vartheta \right] $$
+\end{document}
