@@ -1,0 +1,283 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+a:[1,2,3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:[2,-1,4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+3*a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a+b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a.b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+1*2+2*-1+3*4;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vect);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a~b;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sqrt(a.a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a.b/a.a*a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c:[-5,2,9];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a.b~c;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plane1:3*x+4*y+5*z;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(draw);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true, implicit(plane1,x,-4,4,y,-4,4,z,-6,6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ellips1:x^2/3+y^2+z^2=3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true, implicit(ellips1,x,-4,4,y,-4,4,z,-2,2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:[1,1,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:[1,2,3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c:[0,0,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ab: b-a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ac:c-a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+n:express(ab~ac);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r:[x,y,z];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r0:a;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plane: n.r=n.r0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true, implicit(plane,x,-4,4,y,-4,4,z,-2,2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+cone:x^2+y^2=z^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true, implicit(cone,x,-1,1,y,-1,1,z,-0.5,0.5));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+hyperboloid:x^2+y^2-z^2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true, implicit(hyperboloid,x,-2,2,y,-2,2,z,-1.5,1.5));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r(t):=[t,cos(t),sin(t)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(parametric(cos(t),-cos(t),sin(t),t,-4,4));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+limit(r(t),t,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(r(t),t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+who knows what is going on here?:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wrong(t):=diff(r(t),t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wrong(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(rp(t),diff(r(t),t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rp(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(eigen);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+uvect(rp(t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(T(t),%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(Tp(t),diff(T(t),t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+uvect(Tp(t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(N(t),%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+express(T(t)~N(t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(B(t),%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sqrt(Tp(t).Tp(t))/sqrt(rp(t).rp(t));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+define(kappa(t),%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r(t),t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=(x^2-y^2)^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(explicit(f(x,y),x,-3,3,y,-3,3));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true,explicit(f(x,y),x,-3,3,y,-3,3));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(explicit(f(x,y),x,-5,5,y,-5,5),contour_levels=15,contour=map);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxcontour_plot(f(x,y),[x,-5,5],[y,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(enhanced3d=true,
+    explicit(f(x,y),x,-5,5,y,-5,5),
+    contour_levels=15,contour=surface,surface_hide=true);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(f);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(f(x,y),x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(diff(f(x,y),x),y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(diff(f(x,y),y),x);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
