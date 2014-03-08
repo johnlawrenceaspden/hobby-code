@@ -1,0 +1,28 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Parametric Plots
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+torus:parametric_surface(
+(2-0.2*cos(phi))*sin(theta),
+(2-0.2*cos(phi))*cos(theta),
+0.2*sin(phi),phi,0,2*%pi,theta,0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spiral:parametric((2-0.5*cos(t))*sin(t/4),
+(2-0.5*cos(t))*cos(t/4),
+0.5*sin(t),t,0,8*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(nticks=200,surface_hide=true,
+color=orange,torus,
+line_width=2,color=blue,spiral)$
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
