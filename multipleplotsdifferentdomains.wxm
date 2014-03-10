@@ -1,0 +1,42 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Multiple Plots Over Different Domains
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+an example
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw2d(
+    explicit(sqrt(x),x,0,5),
+    color = red,
+    explicit(sqrt(5)*exp(-(x-5)^2),x,-1,10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+a smug example
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x, a) := sqrt(a) * exp(-(x-a)^2);
+fmax(x) := sqrt(x);
+flist: makelist(f(x, a), a, [0, 1/2, 1, 2, 5])$
+par: map(lambda([f], explicit(f, x, -1, 10)), flist)$
+par: append([explicit(fmax, x, 0, 5), color=red], par)$
+load(draw);
+apply(wxdraw2d, par);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+under the wizard's skirts:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+grind(par);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

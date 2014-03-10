@@ -1,0 +1,209 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Monte Carlo Beach
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: subsect start ]
+Children toss pebbles onto a circle inscribed in a square
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+the probability of it landing in the circle, given that it lands in the square
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+p: %pi/4;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+is about 78%
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(p);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+they do it lots of times and multiply the average result by four, enabling them to produce
+childish estimates of pi
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trials:16;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Bernoulli distribution for repeated independent trials
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+number of successful trials should follow binomial distribution 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+bernoulli(p,n,r):=(binomial(n,r)*(p)^r*(1-p)^(n-r));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+paranoid check, do the seventeen possibilities for 16 trials add up to one?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+total_probability:ratsimp(sum (bernoulli(p,trials,i), i, 0, trials));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+estimate pi as 4 * i / trials
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+mean: ratsimp(sum((4*i/trials)*bernoulli(p,trials,i), i, 0, trials));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance: ratsimp(sum(bernoulli(p,trials,i)*(4*i/trials-mean)^2, i, 0, trials));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+standard_deviation: sqrt(variance);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+therefore, if the children take their average squared error
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(variance);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or even better, its square root, which will give them an idea of how wrong they are:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(variance));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+They should find that they can get pi to 2.7-3.5
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: subsect start ]
+Theoretical Calculation
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+In fact the total variance should be 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+variance(trials):=trials*(4/trials)^2*p*(1-p);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(variance(16));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+esd(trials):=sqrt(variance(trials));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(esd(16));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Experimental Calculation
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+here's some of the (diligent) children's actual data
+showing the square root of the average square error that they got for various numbers of pebbles thrown
+(running each trial 500 times)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+sds:[0.4011045171719132, 0.29173894153773655, 0.20954052655952435, 0.14034222257337572, 0.10400845603616682, 0.0722539344836887, 0.05231897416617325, 0.0355351494833818, 0.026774930122339013];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+powers: [16, 32, 64, 128, 256, 512, 1024, 2048, 4096];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Plots
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+this is the theoretical curve (plotted log-log)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([discrete,log(powers),log(esd(powers))]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and this is the children's experimental one 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([discrete,log(powers),log(sds)]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Lines of best fit
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+load(stats);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+theoretical: transpose(float(log(matrix(powers, esd(powers)))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+empirical:transpose(float(log(matrix(powers,sds))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+theoretical line of best fit has a slope of -0.5, showing that error 
+should go down like the square root of the number of trials
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+theor: linear_regression(theoretical);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+empirically that's born out very closely. Slope of -0.49...
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+empir: linear_regression(empirical);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Plot data points and line of best fit
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+y: take_inference('b_estimation, empir) . [1,'x];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* plot data and regression line */
+wxdraw2d(grid = true,
+       points(empirical),
+       color = black,
+       explicit(y, x,2,9) ) $
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

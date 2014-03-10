@@ -1,0 +1,71 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Log-Linear Regression
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+results from estimating pi by direct sampling
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+load("stats");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fpprintprec:4;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+results: matrix([16,0.4011045171719132],
+     [32, 0.29173894153773655], 
+     [64, 0.20954052655952435],
+     [128, 0.14034222257337572],
+     [256, 0.10400845603616682],
+     [512, 0.0722539344836887],
+     [1024, 0.05231897416617325],
+     [2048, 0.0355351494833818],
+     [4096, 0.026774930122339013]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+lr:float(log(results));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mod: linear_regression(lr);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* explicit expression of the regression line */
+y: take_inference('b_estimation, mod) . [1,'x];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* plot data and regression line */
+wxdraw2d(grid = true,
+       points(lr),
+       color = black,
+       explicit(y, x,2,9) ) $
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* coefficients */
+coef: take_inference('b_estimation, mod);
+coef[1];
+coef[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* confidence interval for b_1 */
+take_inference('b_conf_int, mod)[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* critical probability for test of independece */
+take_inference('b_p_values, mod)[2];
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
