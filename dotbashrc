@@ -126,8 +126,6 @@ export -f doc
 
 
 
-alias clj='rlwrap clojure'
-
 function fnd
 {
     echo find . -iname "$1"
@@ -409,3 +407,8 @@ function gitpullall
 alias dgg="cd ~/data && git gui"
 alias hgg="cd ~/hobby-code && git gui"
 alias igg="cd ~/iqtest && git gui"
+
+alias cljmkclasspath='cd ~/hobby-code && lein classpath > LEIN_CLASSPATH && cd -'
+alias cljnoport='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -classpath $LEIN_CLASSPATH clojure.main'
+alias clj='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -server -Xmx800M -classpath $LEIN_CLASSPATH clojure.main -e "( do (require '\''clojure.tools.nrepl.server) (clojure.tools.nrepl.server/start-server :bind \"127.0.0.1\" :port 4001))"'
+
