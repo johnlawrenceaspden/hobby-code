@@ -6,7 +6,7 @@ Volumes of Hyperspheres
    [wxMaxima: title   end   ] */
 
 /* [wxMaxima: input   start ] */
-svol(d):= %pi^(d/2)/gamma(d/2+1);
+svol(d):=%pi^(d/2)/(d/2)!;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -46,11 +46,55 @@ wxplot2d(svol(d),[d,0,20]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
+wxplot2d(log(svol(d)),[d,0,200]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
 solve(diff(svol(d),d)=0);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
 wxplot2d(svol(d),[d,5.2,5.3]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+four ways of saying the same thing
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+(1/2)!;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+0.5!;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(%pi)/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gamma(1.5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+and thus, another hypersphere-volume formula
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(d):= %pi^(d/2)/gamma(d/2+1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+although I like
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+(tau/2)^(d/2)/(d/2)!;
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
