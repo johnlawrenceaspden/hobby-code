@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Volumes of Hyperspheres
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(d):= %pi^(d/2)/gamma(d/2+1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(6);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(7);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(8);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(svol(d),[d,0,20]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(diff(svol(d),d)=0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(svol(d),[d,5.2,5.3]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

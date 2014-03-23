@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Six Sigma WTF?
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+gaussian(x):=1/sqrt(2*%pi)*exp(-1/2*x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(gaussian(x),[x,-6,6]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x*gaussian(x),x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(x*x*gaussian(x),x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp((integrate(gaussian(x),x,t,inf)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+fractionabove(t):=-1/2*(erf(t/sqrt(2))-1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+1000000000*float(fractionabove(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+six sigma events happen one time in a billion
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+1000000*float(fractionabove(6-1.5));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the quoted 3.4 defects per million allows for the mean to drift 1.5 sigma.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+this also explains why the defects below don't get counted, the mean is only going to drift one way.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(exp(18));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
