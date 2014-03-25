@@ -1,0 +1,185 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Hypersphere Recurrence
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+the volume of the one-sphere of radius r is 2r
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[1](r):=2*r;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+knowing this, we can calculate the volume of the unit three sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate('integrate(r*vol[1](sqrt(1-r^2)), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[3]:integrate(integrate(r*vol[1](sqrt(1-r^2)), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wtf? why is this the same?
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(r*vol[1](r), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this gives us the constant on the volume of the 3 sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[3](r):=c[3]*r^3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+which we can integrate to get the volume of the unit 5 sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[5]:integrate(integrate(r*vol[3](r), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and the seven sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[7]:integrate(integrate(r*c[5]*r^5, r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we also know the volume of the 2-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[2](r):=%pi*r^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and so on
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[4]:integrate(integrate(r*vol[2](r), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and so on ....
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[6]:integrate(integrate(r*vol[4](r), r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the general argument is thus:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(n>0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(r*c[n]*r^n, r,0,1), phi, 0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and so we have this recurrence for the constants c[n]
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+recurr: c[n+2]=2*pi*c[n]/(n+2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+where
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[1]=2; c[2]=%pi;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+unfortunately:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+load(solve_rec);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve_rec(c[n+2]=2*%pi*c[n]/(n+2), c[n],c[1]=2,c[2]=%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+but we can work out by looking at the even cases that
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c[n]:=(%pi)^(n/2)/(n/2)!;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+does the job, and in fact, the definition of fractional factorials like (1/2)!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+(1/2)!;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+means that this is the formula for both odd and even hyperspheres
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[1]; c[2]; radcan(minfactorial(c[n+2]/c[n]));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[n](r):=c[n]*r^n;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[3](1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vol[5](1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[5];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+c[6];
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
