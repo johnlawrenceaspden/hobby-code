@@ -1,0 +1,198 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+The Average Value of a function over hyperspheres
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+the two-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+int2:integrate(integrate(r^2*r, r, 0,1), phi, 0, 2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+area:integrate(integrate(1*r, r, 0,1), phi, 0, 2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+int2/area;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the three-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+int3:integrate(integrate(integrate(r^2*r^2*sin(theta), r, 0,1), phi, 0, 2*%pi), theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vol:integrate(integrate(integrate(1*r^2*sin(theta), r, 0,1), phi, 0, 2*%pi), theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+int3/vol;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the four-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+int4:integrate(integrate(integrate(integrate(r^2*r^3*(sin(theta))^2*sin(theta2), r, 0,1), phi, 0, 2*%pi), theta, 0, %pi),theta2,0,%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+hvol:integrate(integrate(integrate(integrate(1*r^3*(sin(theta))^2*sin(theta2), r, 0,1), phi, 0, 2*%pi), theta, 0, %pi),theta2,0,%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+int4/hvol;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+in fact the angles don't matter, we can drop all that
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r^2*r^3,r, 0,1)/integrate(1*r^3,r,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the five-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r^2*r^4,r, 0,1)/integrate(1*r^4,r,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the ten-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r^2*r^9,r, 0,1)/integrate(1*r^9,r,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and finally, the mighty n-sphere
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(n>1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r^2*r^(n-1),r, 0,1)/integrate(1*r^(n-1),r,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+of course, we might actually want the average distance, rather than the rms distance
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(r*r^(n-1),r, 0,1)/integrate(1*r^(n-1),r,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+as n->infinity, the rms and mean distances tend to each other as they tend to one
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(100/102));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(100/101);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(sqrt(1/(1+2*x)),x,0,4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(1/(1+x),x,0,4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(n):=sqrt(n/(n+2))-n/(n+1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+limit(n*n*f(n),n,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+limit((n/(n+1)),n,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(f(10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(log(f(n)),[n,1,300]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+as the number of dimensions grows larger, the integral mostly takes place on the surface of the sphere, 
+so the average value is closer and closer to one!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+of course, the average value of 2*sqrt(1-r^2) over the 3-sphere is the volume of the four-sphere!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+int3:integrate(integrate(integrate(2*sqrt(1-r^2)*r^2*sin(theta), r, 0,1), phi, 0, 2*%pi), theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and since that integral is separable, we can actually calculate hypersphere volumes directly
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(1,phi, 0, 2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(2*sqrt(1-r^2)*r^2, r, 0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta), theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta)^2, theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta)^3, theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta)^4, theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta)^5, theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sin(theta)^6, theta, 0, %pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(n>0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(2*sqrt(1-r^2)*r^(n-1), r, 0,1);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

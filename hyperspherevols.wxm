@@ -97,5 +97,25 @@ although I like
 (tau/2)^(d/2)/(d/2)!;
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: input   start ] */
+svol(d+1)/svol(d);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+minfactorial(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factcomb(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(3)/svol(2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+svol(4)/svol(3);
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
