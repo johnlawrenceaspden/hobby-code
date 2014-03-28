@@ -1,0 +1,137 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: comment start ]
+Solutions of the simple harmonic oscillator
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[0]:exp(-1/2*x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[0]], [x,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[1]:sqrt(2)*x*phi[0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[1]], [x,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Once we have the two basic solutions, there's a recurrence to get all the higher ones
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[n]:=radcan(sqrt(2/n)*x*phi[n-1] - sqrt((n-1)/n)*phi[n-2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[0],phi[1],x*phi[1],phi[2]],[x,-5,5], [legend,"phi[0]","phi[1]","x*phi[1]","phi[2]"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[10]], [x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[10];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(phi[40], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+check schrodinger equation works:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+d2[n]:=factor(1/2*diff(phi[n],x,2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[40], d2[40]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vphi[n]:=1/2*x*x*phi[n];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[40], vphi[40]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+H[n]:=d2[n]-vphi[n];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[40], H[40]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+E[n]:=radcan(H[n]/phi[n]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+E[40];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+there are also normalization and orthogonality relations
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(phi[40]^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(phi[5]*phi[20],x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(phi[1]^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(phi[2]^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[10], d2[10]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[20], d2[20]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[30], d2[30]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi[40], d2[40]], [x,-15,15]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d([phi[50], d2[50],vphi[50]], [x,-15,15],[legend,"phi","d2","V"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+all these should really be multiplied by:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(sqrt(%pi)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+to get the normalization right, but it clutters the equations
+   [wxMaxima: comment end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
