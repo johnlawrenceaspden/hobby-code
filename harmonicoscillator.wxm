@@ -6,7 +6,7 @@ Solutions of the simple harmonic oscillator
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-phi[0]:exp(-1/2*x^2);
+phi[0]:exp(-1/2*x^2)/sqrt(sqrt(%pi));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -120,18 +120,6 @@ wxplot2d([phi[40], d2[40]], [x,-15,15]);
 /* [wxMaxima: input   start ] */
 plot2d([phi[50], d2[50],vphi[50]], [x,-15,15],[legend,"phi","d2","V"]);
 /* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: comment start ]
-all these should really be multiplied by:
-   [wxMaxima: comment end   ] */
-
-/* [wxMaxima: input   start ] */
-float(sqrt(sqrt(%pi)));
-/* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: comment start ]
-to get the normalization right, but it clutters the equations
-   [wxMaxima: comment end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
