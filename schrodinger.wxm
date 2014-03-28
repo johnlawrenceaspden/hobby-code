@@ -1,0 +1,61 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Schrodinger Equation / Harmonic Oscillator
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi(x):=(A*x^2+B*x+C)*exp(-x^2/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s:-diff(phi(x),x,2)+x*x*phi(x)=2*E*phi(x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eq:expand(s/exp(-x*x/2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+e1:coeff(eq,x,0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+e2:coeff(eq,x,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+e3:coeff(eq,x,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([e1,e2,e3],[A,B,C,E]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi1(x):=exp(-x^2/2)/(%pi^(1/4));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((phi1(x))^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi2(x):=x*exp(-x^2/2)/(%pi^(1/4))*sqrt(2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((phi2(x))^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([phi1(x),phi2(x)],[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(phi1(x)*phi2(x),x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

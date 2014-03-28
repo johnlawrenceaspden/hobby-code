@@ -1,0 +1,73 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Gateaux but not Frechet differentiable
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,y):=x^3/(x^2+y^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(f(x,y),[x,-0.01,0.01],[y,-0.01,0.01]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+This function has a definite rate of increase in every direction
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+dd:radcan(f(lambda*x,x)/sqrt(x^2+(lambda*x)^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(dd,[lambda,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and yet the derivative is not a linear map
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,0)/x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(0,x)/x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x,x)/x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+even more concretely
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(0.01,0.01);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(0.01,0.00);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(0.00,0.01);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(r*sin(theta), r*cos(theta));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(sin(theta)^3, [theta,0,2*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

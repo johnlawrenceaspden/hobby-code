@@ -1,0 +1,73 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Quantum Mechanics using Computer Algebra
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+finger exercises
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(x^2+2*x+2,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-x)+2*x,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-x)+2*x,x,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(x^2+(a+1)*x+a=0,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(x=2,x*y+x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+conservation law
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+depends([psi,psis],[x,t]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho: psis*psi;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r1:diff(rho,t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r2:subst(%i*hb/(2*m)*diff(psi,x,2)-%i*V*psi,diff(psi,t),r1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r3:subst(-%i*hb/(2*m)*diff(psis,x,2)+%i*V*psis,diff(psis,t),r2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s: -%i*hb/(2*m)*(psis*diff(psi,x)-psi*diff(psis,x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r4:diff(s,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r4+r3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

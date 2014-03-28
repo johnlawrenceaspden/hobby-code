@@ -1,0 +1,89 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: comment start ]
+for desolve, you need to put f(x) in everything
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+eq1:'diff(f(x),x)+f(x)=0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and use atvalue to give initial conditions
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+atvalue(f(x),x=0,3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+you can put the equations and variables in lists 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+desolve([eq1], [f(x)]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+but you don't have to
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+desolve(eq1, f(x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this breaks ode2 though
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+ode2(eq1,f,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+for that, you have to say:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+eq2:'diff(y,x)+y = 0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+odesol2:ode2(eq,y,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ic1(odesol2,x=0,y=3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+a more complicated example
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+eq3:'diff(y,x,2)+y*'diff(y,x)^3 = 0;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+odesol3:ode2(eq3,y,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ic2(odesol3,x=%pi,y=0,'diff(y,x)=2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ic2(odesol3,x=%pi,y=1,'diff(y,x)=4);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+method;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+intfactor;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
