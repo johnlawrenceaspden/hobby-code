@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+rho_free(x,xp,beta):=exp(-(x-xp)^2/(2*beta))/sqrt(2*%pi*beta);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_free(x,y,1),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_free(x,y,2),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_free(x,y,10),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_free(x,y,0.1),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_harmonic_trotter(x,xp,beta):=rho_free(x,xp,beta)*exp(-1/2*beta*1/2*(x^2+xp^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_harmonic_trotter(x,y,0.1),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_harmonic_trotter(x,y,10),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(rho_harmonic_trotter(x,y,1/32),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+r2:integrate(rho_harmonic_trotter(x,s,1/32)*rho_harmonic_trotter(s,y,1/32),s,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxcontour_plot(rho_harmonic_trotter(x,y,1/64),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxcontour_plot(rho_harmonic_trotter(x,y,10),[x,-1,1],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(4/(1+(x-3)^2)+10/(1+(x+3)^2), [x,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
