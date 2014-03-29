@@ -1,0 +1,53 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Hermite Polynomial Recurrence
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+Robert Dodier's reply to my question on Stack Overflow
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[n](x) := sqrt(2/n)*x*phi[n-1](x) - sqrt((n-1)/n)*phi[n-2](x) $
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[0] : lambda ([x], exp(-1/2*x^2)) $
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[1] : lambda ([x], sqrt(2)*x*phi[0](x)) $
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[10];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi10:ratsimp(phi[10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d(phi10,[x,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
