@@ -710,15 +710,20 @@
 
 ; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
 ; there too
+
+(fset 'py-line-to-repl
+      [?\C-a ?\C-  down ?\M-w ?\C-x ?o ?\C-y return ?\C-x ?o])
+
+
 (add-hook 'python-mode-hook
                     (lambda ()
-                      (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
+                      (local-set-key (kbd "<f12>") 'goto-end-of-other-window)
+                      (local-set-key (kbd "<f5>") 'py-line-to-repl)))
 
 (add-hook 'inferior-python-mode-hook
                     (lambda ()
                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
                       (local-set-key (kbd "<f12>") 'other-window)))
-
 
 
 (defun haskellxr ()
