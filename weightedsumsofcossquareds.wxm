@@ -1,0 +1,39 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+tau:2*%pi;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+beta:log(2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(phi,rho);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[n](x):=exp(-n*beta)*cos(n*x)^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[n](x):=sum(phi[i](x),i,1,n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[10](0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([rho[1](x),rho[2](x),rho[3](x),rho[4](x),rho[5](x)]
+    ,[x,0,tau],
+    [legend,"rho1","rho2","rho3","rho4","rho5"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxcontour_plot(phi[3](x)*phi[3](y),[x,0,tau],[y,0,tau]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
