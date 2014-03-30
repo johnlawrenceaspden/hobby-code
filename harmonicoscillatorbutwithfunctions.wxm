@@ -44,10 +44,6 @@ wxplot2d([phi[10](x)], [x,-10,10]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-c
-/* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: input   start ] */
 phi[10];
 /* [wxMaxima: input   end   ] */
 
@@ -60,7 +56,7 @@ check schrodinger equation works:
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-d2[n]:=factor(1/2*diff(phi[n],x,2));
+d2[n](x):=factor(1/2*diff(phi[n](x),x,2));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -68,7 +64,7 @@ wxplot2d([phi[40], d2[40]], [x,-15,15]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-vphi[n]:=1/2*x*x*phi[n];
+vphi[n](x):=1/2*x*x*phi[n](x);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -76,7 +72,7 @@ wxplot2d([phi[40], vphi[40]], [x,-15,15]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-H[n]:=d2[n]-vphi[n];
+H[n](x):=d2[n](x)-vphi[n](x);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -84,7 +80,7 @@ wxplot2d([phi[40], H[40]], [x,-15,15]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-E[n]:=radcan(H[n]/phi[n]);
+E[n](x):=radcan(H[n](x)/phi[n](x));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -105,6 +101,14 @@ integrate(phi[5]*phi[20],x,-inf,inf);
 
 /* [wxMaxima: input   start ] */
 integrate(phi[1]^2,x,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+functions;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */

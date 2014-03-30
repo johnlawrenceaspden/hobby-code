@@ -49,6 +49,22 @@ integrate(psi_a[1](x)*psi_a[1](x),x,0,L);
 integrate(psi_a[1](x)*psi_s[2](x),x,0,L);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: comment start ]
+eigenvalues are easy to calculate
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+E_a[n]:=diff(psi_a[n](x),x,2)/psi_a[n](x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+E_s[n]:=diff(psi_a[n](x),x,2)/psi_a[n](x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+makelist(E_a[i],i,1,20);
+/* [wxMaxima: input   end   ] */
+
 /* [wxMaxima: subsect start ]
 Density Matrices for each eigenvalue
    [wxMaxima: subsect end   ] */
@@ -106,15 +122,68 @@ trigsimp(psi_psi[n](x,x));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-they act as operators preserving their components, annihilating everything else
+they act as operators preserving their components, but annihilating everything else
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-integrate(psi_psi[3](x,y)*psi_a[4](y),y,0,L);
+'integrate(trigreduce(psi_psi[3](x,y)*psi_a[4](y)),y,0,L);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-rho_s[n](beta,x,y):=exp(-beta*2*(%pi*n/L)^2)*(psi_s[n](x)*psi_s[n](y));
+integrate(trigreduce(psi_psi[3](x,y)*psi_a[4](y)),y,0,L);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(integrate(psi_psi[3](x,y)*psi_a[3](y),y,0,L));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Weight the density matrices by thermal coefficients
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+tc[n]:=exp(-beta*E_a[n]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(rho);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[n](beta,x,y):=exp(-beta*tc[n])*psi_psi[n](x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[1](0.5,1,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho[1](0.5,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho[2](0.5,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho[1](0.5,x,y)+rho[2](0.5,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho[1](0.5,x,y)+rho[2](0.5,x,y)+rho[3](0.5,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([rho[1](0.5,x,L-x),
+    rho[2](0.5,x,L-x), 
+    rho[1](0.5,x,L-x)+rho[2](0.5,x,L-x)],[x,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([rho[1](0.5,x,L-x),
+    rho[2](0.5,x,L-x), 
+    rho[3](0.5,x,L-x), 
+    rho[1](0.5,x,L-x)+rho[2](0.5,x,L-x)+rho[3](0.5,x,L-x)],[x,0,L]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
