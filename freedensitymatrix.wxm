@@ -1,0 +1,205 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+The Free Density Matrix for a Particle in a Box
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+tau:2*%pi;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+First, set up our box with its eigenfunctions
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+L:10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_s[n](x):=sqrt(2/L)*cos(tau*(n*x/L));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([psi_s[1](x), psi_s[2](x), psi_s[3](x)],
+    [x,0,L],
+    [legend,"s1","s2","s3"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_a[n](x):=sqrt(2/L)*sin(tau*(n*x/L));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([psi_a[1](x), psi_a[2](x), psi_a[3](x)],
+    [x,0,L],
+    [legend,"a1","a2","a3"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+orthonormality condition is satisfied
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(psi_a[1](x)*psi_a[1](x),x,0,L);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(psi_a[1](x)*psi_s[2](x),x,0,L);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Density Matrices for each eigenvalue
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_psi_a[n](x,y):=psi_a[n](x)*psi_a[n](y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_psi_s[n](x,y):=psi_s[n](x)*psi_s[n](y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(psi_psi_a[1](x,y),[x,0,L],[y,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(psi_psi_s[1](x,y),[x,0,L],[y,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_psi[n](x,y):=psi_psi_s[n](x,y)+psi_psi_a[n](x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi_psi[3](x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(psi_psi[1](x,y),[x,0,L],[y,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(psi_psi[2](x,y),[x,0,L],[y,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(psi_psi[3](x,y),[x,0,L],[y,0,L]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+notice that these density matrices in fact have a simple form:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(trigreduce(psi_psi[n](x,y)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+even simpler on the diagonal!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(psi_psi[n](x,x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+they act as operators preserving their components, annihilating everything else
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(psi_psi[3](x,y)*psi_a[4](y),y,0,L);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_s[n](beta,x,y):=exp(-beta*2*(%pi*n/L)^2)*(psi_s[n](x)*psi_s[n](y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_a[n](beta,x,y):=exp(-beta*2*(%pi*n/L)^2)*(psi_a[n](x)*psi_a[n](y));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_free[n](beta,x,y):=rho_s[n](beta,x,y)+rho_a[n](beta,x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_free[1](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_free[0](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_free[2](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_free(beta,x,y):=
+    rho_free[0](beta,x,y)+
+    rho_free[1](beta,x,y)+
+    rho_free[2](beta,x,y)+
+    rho_free[3](beta,x,y)+
+    rho_free[4](beta,x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot3d([rho_free(beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_s[1](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_s[1](beta,x,y)+rho_a[1](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d([rho_s[2](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot3d([rho_s[1](beta,x,y)*rho_s[2](beta,x,y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot3d([psi_s[0](x)*psi_s[0](y),[x,0,L],[y,0,L]],
+[psi_s[0](x)*psi_s[0](y),[x,0,L],[y,0,L]]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(psi_s[1](x)*psi_s[1](y)*psi_s[1](y),y,0,L);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(phi,rho);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi[n](x):=exp(-n*beta)*cos(n*x)^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[n](x):=sum(phi[i](x),i,1,n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+rho[10](0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([rho[1](x),rho[2](x),rho[3](x),rho[4](x),rho[5](x)]
+    ,[x,0,tau],
+    [legend,"rho1","rho2","rho3","rho4","rho5"]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxcontour_plot(phi[3](x)*phi[3](y),[x,0,tau],[y,0,tau]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
