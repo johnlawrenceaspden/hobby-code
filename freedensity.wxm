@@ -1,0 +1,70 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+a:1+cos(y-x)+1/8*cos(2*(y-x))+1/256*cos(3*(y-x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot3d(a,[x,0,tau],[y,0,tau]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+az:subst(z,y-x,a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([az],[z,-%pi,%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d([az,exp(-z^2)+exp(-(z-tau)^2)],[z,-%pi,%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tau:2*%pi;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+trigexpand(a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigexpand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigexpand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigrat(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigreduce(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigexpand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigsimp(1+cos(y-x)+1/8*cos(2*(y-x))+1/256*cos(3*(y-x)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+trigrat(trigreduce(%););
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
