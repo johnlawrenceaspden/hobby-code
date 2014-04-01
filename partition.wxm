@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+nterms:10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+E[n]:=-(2*n+1)/2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z:sum(exp(E[n]*beta),n,0,nterms);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([Z,1/(2*sinh(beta/2))],[beta,0.1,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+W:trigrat(1/(2*sinh(beta/2)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(1/(1-z),z,0,nterms);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Wseries:exp(-beta/2)*subst(exp(-beta),z,taylor(1/(z-1),z,0,nterms+1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(Wseries);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-Z;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Wseries+Z;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+is(equal(Wseries,Z));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
