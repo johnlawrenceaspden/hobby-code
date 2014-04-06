@@ -83,8 +83,24 @@ a:coeff(quad,x1,2);
 variance:factor(1/(2*a));
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: comment start ]
+note that ab/(a+b)=1/(1/a+1/b)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+altvariance:1/(1/(t1-t0)+1/(t2-t1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factor(altvariance);
+/* [wxMaxima: input   end   ] */
+
 /* [wxMaxima: input   start ] */
 variance,t0=0,t1=1/2,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance,t0=0,t1=dt,t2=2*dt;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -108,6 +124,14 @@ mean:ratsimp(factor(-b/(2*a)));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
+mdt:mean,t0=0,t1=dt,t2=2*dt;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(mdt);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
 m1:mean,t0=0,t1=t,t2=1;
 /* [wxMaxima: input   end   ] */
 
@@ -119,13 +143,13 @@ s:m1,x0=0,x2=1;
 wxplot2d(s,[t,0,1]);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: subsect start ]
+note:getting mean and variance from an exponential quadratic
+   [wxMaxima: subsect end   ] */
+
 /* [wxMaxima: comment start ]
 a gaussian in the standard form:
    [wxMaxima: comment end   ] */
-
-/* [wxMaxima: input   start ] */
-kill(all);
-/* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
 exp(-(x-mu)^2/(2*sigma^2));
@@ -144,7 +168,7 @@ coeff(expand(-(x-mu)^2/(2*s2)),x,2);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-solve([b=mu/s2, a=-1/(2*s2)],[mu,s2]);
+solve([beta=mu/s2, alpha=-1/(2*s2)],[mu,s2]);
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */

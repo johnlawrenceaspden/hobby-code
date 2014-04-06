@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Levy Path Sampling
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+divide path from 0 to 1 into ten steps
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+dt:1/10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+first sample should have variance
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+sqrt(1/(1/dt+1/((10-n)*dt)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+makelist(sqrt(1/(1/dt+1/((10-n)*dt))),n,1,9);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(makelist(sqrt(1/(1/dt+1/((10-n)*dt))),n,1,9));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/(1/10+1/(8/10))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/(1/10+1/(7/10))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/(1/10+1/(6/10))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/(1/10+1/(5/10))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/(1/10+1/(5/10))));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
