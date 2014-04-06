@@ -1,0 +1,182 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Gaussian Random Walks
+
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+suppose we've got two points on a random walk, at (x2,t2) = (1,1) and (x0,t0) =(0,0)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+t0:0$ x0:0$ t2:1$ x2:1$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and a free density matrix that tells us how strong the connection between two points is:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+beta is our 'inverse temperature' parameter, but here we can just think of it as time
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_free(x,y,beta):=exp(-(x-y)^2/(2*beta));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and we want to move the point x1,t1 by metropolis hastings sampling
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+first we need our jump strength
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+jump_strength(x1,t1,x2,t2):=rho_free(x1,x2,t2-t1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+weight(x1,t1):=jump_strength(x0,t0,x1,t1)*jump_strength(x1,t1,x2,t2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+jump_probability(x,y,t1):=min(weight(x,t1)/weight(y,t1),1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+If our initial point is at 1/2,1/2, which is on the direct line from 0,0 to 1,1
+then we have a nice gaussian acceptance probability centred on 1/2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(jump_probability(x,1/2,1/2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+but if we start far out, then pretty much anywhere closer is good, and anywhere further out is forbidden
+(causing acceptance probability 1/2)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(jump_probability(x,5,1/2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+if we start from 0, (remember that the point where we'd like to be is 1/2), then we 
+get a gaussian around 1/2, truncated everywhere closer than 0 is to the favourite point.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(jump_probability(x,0,1/2),[x,-1,2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+try this with a time closer to the endpoint;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(jump_probability(x,9/10,9/10),[x,-1,2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grind(jump_probability(x,9/10,9/10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grind(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-5*x^2/9-5*(x-1)^2+1/2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+factor(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grind(jump_probability(1/10,x,9/10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(-5*x^2/9-5*(x-1)^2+73/18);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Note that for a given time, this is always the same quadratic with a=100/18 and b=-10
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+So we might as well sample directly from a gaussian with mean 9/10 and variance 100/9
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+In fact we're just using metropolis-hastings to sample from weight
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+weight(x,9/10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+log(ratsimp(weight(x,9/10)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:coeff(log(ratsimp(weight(x,9/10))),x,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:coeff(log(ratsimp(weight(x,9/10))),x,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-b/(2*a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+1/(2*-a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:coeff(log(ratsimp(weight(x,t))),x,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:coeff(log(ratsimp(weight(x,t))),x,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+in general, we got
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+variance:factor(1/(2*-a));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or t(1-t), the two time steps!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+mean:factor(-b/(2*a));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or we could be incredibly ultra-general
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+weight(x0,t0,x,t,x2,t2):=jump_strength(x0,t0,x,t)*jump_strength(x,t,x2,t2);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

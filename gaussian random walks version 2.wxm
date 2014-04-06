@@ -1,0 +1,151 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Gaussian Random Walks
+
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+suppose we've got two points on a random walk, at (x2,t2) and (x0,t0)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+and a free density matrix that tells us how strong the connection between two points is:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+rho_free:exp(-(x-y)^2/(2*beta));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+beta is our 'inverse temperature' parameter, but here we can just think of it as time
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+rho:rho_free,x=xa,y=xb,beta=ta-tb;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the probability of the jump from (t0,x0) to (t1,x1) is
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+weight1:rho,xa=x0,ta=t0,xb=x1,tb=t1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+and that from (t1,x1) to (t2,x2) is
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+weight2:rho,xa=x1,ta=t1,xb=x2,tb=t2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+so the total probability is
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+weight:weight1*weight2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this is all unnormalised, but it's gaussian in all the x variables
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+log(weight);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+just look at the quadratic
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+quad:expand(log(weight));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+to find the mean and variance in the distribution for x1 given all the other parameters, 
+we need the coefficients of x1
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+b:coeff(quad,x1,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:coeff(quad,x1,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance:factor(1/(2*a));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance,t0=0,t1=1/2,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance,t0=0,t1=1/4,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+variance,t0=0,t1=3/4,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f:variance,t0=0,t1=t,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(f,[t,0,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mean:ratsimp(factor(-b/(2*a)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+m1:mean,t0=0,t1=t,t2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s:m1,x0=0,x2=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(s,[t,0,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+a gaussian in the standard form:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+exp(-(x-mu)^2/(2*sigma^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(-(x-mu)^2/(2*sigma^2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(expand(-(x-mu)^2/(2*s2)),x,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(expand(-(x-mu)^2/(2*s2)),x,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([b=mu/s2, a=-1/(2*s2)],[mu,s2]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
