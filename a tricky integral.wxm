@@ -1,0 +1,241 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+A tricky integral
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+how on earth do we do:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(t):=(1+t^2)^-300;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(f(t),t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+maxima just churns
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(f(t),t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+we can get a value using numeric integration
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(f,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+first thing I noticed is that (1+1/300)^300 should be jolly close to e
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(((1+1/300)^300-%e)/%e);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+about 1 part in one thousand to be exact, which is good enough!
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+that means that we can get the value at certain strategic points:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(f(sqrt(1/300))-1/%e);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(f(sqrt(2/300))-1/%e^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(f(sqrt(2/300))-1/%e^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+So my first try was the trapezium rule
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float((sqrt(1/300)*(1+1/%e)/2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float((sqrt(1/300)*(1+1/%e)/2)+(sqrt(2/300)-sqrt(1/300))*(1/%e+1/%e^2)/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+but that answer's out by quite a bit, and not cos we only took two terms
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float((sqrt(1/300)*(1+1/%e)/2)+(sqrt(2/300)-sqrt(1/300))*(1/%e+1/%e^2)/2+(sqrt(3/300)-sqrt(2/300))*(1/%e^2-1/%e^3)/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this is why:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([(1+t^2)^-300,(1+sqrt(300)*t*(1/%e-1))],[t,0,sqrt(1/300)]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(1/300));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+in fact a better way to approximate the integral is to spot that sqrt(1)->1/e, sqrt(2)->1/e^2, sqrt(3)->1/e^3 is gaussian-like behaviour
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(x/300,t^2,(1+t^2)^-300);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(300*t^2,x,exp(-x));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this turns out to be a very good approximation
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([f(t)-exp(-300*t^2)],[t,0,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+it can also be written
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(f(t)-exp(-(t*sqrt(300))^2),[t,0,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+as every schoolboy knows:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(exp(-t^2),t,-inf,inf)=integrate(exp(-t^2),t,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+so that:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(exp(-(t*sqrt(300))^2),t,-inf,inf)=integrate(exp(-(t*sqrt(300))^2),t,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+close as dammit:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate(exp(-(t*sqrt(300))^2),t,0,1)=1/2*'integrate(exp(-(t*sqrt(300))^2),t,-inf,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+so our integral should be roughly:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(%pi)/2/sqrt(300));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sqrt(%pi/3)/20);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+which is not bad, and can be done by hand, unlike:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+romberg(f,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+I wondered how good this approximation was for smaller powers
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([(1+t^2)^-16,exp(-(4*t)^2)],[t,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([(1+t^2)^-9,exp(-(3*t)^2)],[t,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([(1+t^2)^-4,exp(-(2*t)^2)],[t,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([(1+t^2)^-1,exp(-(1*t)^2)],[t,-5,5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+maxima can do these integrals with small powers
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((1+t^2)^-1,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-(x)^2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((1+t^2)^-4,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-(2*x)^2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((1+t^2)^-9,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-(3*x)^2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((1+t^2)^-16,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(exp(-(4*x)^2),x,0,inf);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate((1+t^2)^-25,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(integrate((1+t^2)^-16,t,0,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(integrate(exp(-(4*x)^2),x,0,inf));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

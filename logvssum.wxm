@@ -1,0 +1,29 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+log vs sum of inverses
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sum(1/n,n,1,1000));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(log(1000));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sum(1/n,n,1,1000)-log(1000));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float((sum(1/n,n,1,2))-log(2));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sum(1/n,n,2,1000)-log(1000));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
