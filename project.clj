@@ -1,6 +1,7 @@
 (defproject hobby-code "0.0.1"
   :dependencies [
-                 [org.clojure/core.logic "0.8.1"]
+;                 [org.clojure/core.logic "0.8.1"]
+                 [net.mikera/core.matrix "0.22.0"]
  ;                [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
                  ]
 
