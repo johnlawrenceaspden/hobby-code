@@ -1,0 +1,29 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Gaussian Integral
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+numerical approximation by simpson's rule for n=-4,-3,-2,-1,0,1,2,3,4
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+s:(1+2*exp(-1)+2*exp(-4)+2*exp(-9)+exp(-16));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(%pi-s^2);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
