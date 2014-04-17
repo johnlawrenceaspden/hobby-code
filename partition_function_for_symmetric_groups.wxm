@@ -1,0 +1,53 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Partition Function for Symmetric Groups
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[n]:=expand(sum((n-1)!/i!*z[n-i]*Z[i], i, 0, n-1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[0]:1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[10];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[15];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[20];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[20],z[1]=1,z[2]=1,z[3]=1,z[4]=1,z[5]=1,z[6]=1,z[7]=1,z[8]=1,z[9]=1,z[10]=1,z[11]=1,z[12]=1,z[13]=1,z[14]=1,z[15]=1,z[16]=1,z[17]=1,z[18]=1,z[19]=1,z[20]=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+20!;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

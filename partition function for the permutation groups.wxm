@@ -1,0 +1,222 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Partition Function for Permutation Groups
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+As a matter of convenience, let us say that S0=S({}), the symmetric group on no things,
+has 1 element with no cycles, and thus has the partition function Z[0]=1, which is the product of no things.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[0]:1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+In a less made up but still trivial vein, S1=S({1}) has 1 element, with one cycle, length one, and thus has the partition function Z[1]=z[1],
+where we shall think of z[1] as being the weight of a one-cycle, and Z[1] as being the total weight of the group.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[1]:z[1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+S2=S({1,2}) has 2 elements, the identity (1)(2), with two cycles of length one, 
+and a non-trivial element (1 2), with one cycle of length 2, which swaps the two elements.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+We shall say that the weight of an element is the product of the weights of its component cycles, and thus the identity weighs z[1]*z[1], and the swap weighs z[2]
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[2]:z[1]^2+z[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+S3 has 6 elements, (1)(2)(3), (1 2)(3), (1)(2 3), (1 3) (2), (1 2 3), (3 2 1)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Thus by counting directly:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[3]:z[1]^3+3*z[2]*z[1]+2*z[3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+But we could be sneakier:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+If we remove the cycle containing element 3 from each element of S3, we get
+(1)(2), (1 2), (1), (2), () and ().
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Notice that that's one copy of S2 on {1,2}, made by removing a one-cycle,
+one copy of S1 on {1}, one copy of S1 on {2}, both made by removing two-cycles
+and two copies of S0, made by removing 3-cycles
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+So another way of getting Z[3] is:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[3]:2*(z[3]*Z[0])+2*(z[2]*Z[1])+(z[1]*Z[2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+One things that's nice is that 2+3+1 is 6, which is the number of elements of S3. You get one monomial for each element
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+Similarly, when we look at S4, then element 4 could be on a cycle of length 1, in which case it will appear with 
+all elements from S{1,2,3}
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c1:z[1]*Z[3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or it could be on one of three different cycles of length 2, in which case it will appear with elements drawn from S2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c2:3*z[2]*Z[2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or it could be in a cycle of length 3. 4 has to be on that, with two others in order, so we need 3 perm 2, or 6
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c3:z[3]*6*Z[1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+or it could be on a cycle of length 4. There are 3 perm 3 of those
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+c4:3*2*1*z[4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[4]:c1+c2+c3+c4;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+6+8+3+6+1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Similarly
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[5]:4*3*2*1*z[5]*Z[0]+4*3*2*z[4]*Z[1]+4*3*z[3]*Z[2]+4*z[2]*Z[3]+z[1]*Z[4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+24+30+20+20+15+10+1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+This polynomial is telling us that in the group S({1,2,3,4,5}) there are:
+24 elements like (abcde); 
+30 like (abcd)(e);
+20 like (ab)(cde);
+20 like (a)(b)(cde); 
+15 like(a)(bc)(de); 10 like (a)(b)(c)(de);
+and 1 like (a)(b)(c)(d)(e), which is the identity element.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Which I think is a pretty cool thing for a polynomial to tell a man.
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[6]:expand(5*4*3*2*1*z[6]*Z[0]+5*4*3*2*z[5]*Z[1]+5*4*3*z[4]*Z[2]+5*4*z[3]*Z[3]+5*z[2]*Z[4]+z[1]*Z[5]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+120+144+90+90+40+120+40+15+45+15+1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[6],z[1]=1,z[2]=1,z[3]=1,z[4]=1,z[5]=1,z[6]=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(sum((6-1)!/i!*z[6-i]*Z[i], i, 0, 6-1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+is(equal(Z[6],expand(sum((6-1)!/i!*z[6-i]*Z[i], i, 0, 6-1))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[7]:expand(sum((7-1)!/i!*z[7-i]*Z[i], i, 0, 7-1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[7],z[1]=1,z[2]=1,z[3]=1,z[4]=1,z[5]=1,z[6]=1, z[7]=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+7!;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[n]:=expand(sum((n-1)!/i!*z[n-i]*Z[i], i, 0, n-1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[7];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[8];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[9];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Z[9],z[1]=1,z[2]=1,z[3]=1,z[4]=1,z[5]=1,z[6]=1, z[7]=1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+I think this means that in S9, there are 40320 elements which contain 9 cycles, 45360 which contain 8-cycles, and 277200 others
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+40320+45360+277200;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+9!;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
