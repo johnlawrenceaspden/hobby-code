@@ -1,0 +1,73 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: comment start ]
+approximations for the tail of the gaussian using the 1/e heuristic
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+s(n):=(integrate(1/sqrt(2*%pi)*exp(-x^2/2), x,n,inf));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a(n):=(1/sqrt(2*%pi)*exp(-n^2/2)*(sqrt(2+n^2)-n));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a2(n):=(1/sqrt(2*%pi)*exp(-n^2/2)/n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([s(n),a(n),a2(n)],[n,1,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([s(n)/a(n),s(n)/a2(n)],[n,1,8]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([log(s(n)/a(n)),log(s(n)/a2(n))],[n,1,7]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s(n)/a(n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(a(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(a2(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s(6)/a(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s(6)/a2(6));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s(8));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(a2(10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(a(10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(s(10));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
