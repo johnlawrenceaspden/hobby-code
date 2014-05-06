@@ -1,0 +1,210 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+A Geometric Approach to Differential Forms
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: section start ]
+Exercise 3.5
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: input   start ] */
+load(cartan);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+cartan_basis;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:x*y*z*dx~dy+x^2*z*dy~dz-y*dx~dz;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: subsect start ]
+part 1
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:[x,y,2*x+3*y-3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(phi,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(phi,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:diff(phi,y)|(diff(phi,x)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:subst(2*x+3*y-3,z,sc);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(integrand,x,0,1),y,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+part 2
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+psi:[x,y,x^2+y^2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(psi,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(psi,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(psi,x)|omega;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:diff(psi,y)|(diff(psi,x)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:subst(x^2+y^2,z,sc);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(integrand,x,0,1),y,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 3.7
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(omega,phi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:y*dx~dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:[x,y,(x^2+y^2)^(3/2)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(phi,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(phi,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:diff(phi,y)|(diff(phi,x)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+assume(x<1,x>-1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(sc,y,-sqrt(1-x*x),+sqrt(1-x*x)),x,-1,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 3.8
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(omega,phi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:2*z*dx~dz+y*dy~dz-x*dx~dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:[a,a+b,a*b];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:diff(phi,a)|(diff(phi,b)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:subst(a+b,y,subst(a,x,subst(a*b,z,scalar)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(sc,a,0,1),b,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+this is not the answer in the book. but if you do the substitution wrong:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+scdodgy:subst(a+b,y,subst(a,x,subst(a+b,z,scalar)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+then you get -5/6 as promised. I wonder if we made the same mistake?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(scdodgy,a,0,1),b,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 3.9
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+a one-form over a line
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(omega,phi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:y*dx+z*dy+x*y*dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:[t,t^2,1+t];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:(diff(phi,t)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:subst(t^2,y,subst(t,x,subst(1+t,z,scalar)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(sc,t,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
