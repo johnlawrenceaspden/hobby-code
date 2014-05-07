@@ -78,6 +78,8 @@ static const char vroot_rcsid[] =
  "#Id: vroot.h,v 1.4 1991/09/30 19:23:16 stolcke Exp stolcke #";
 #endif
 
+#include<stdio.h>
+
 #include <X11/X.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
