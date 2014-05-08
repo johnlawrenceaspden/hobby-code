@@ -25,7 +25,6 @@ cartan_basis;
 omega:x*y*z*dx~dy+x^2*z*dy~dz-y*dx~dz;
 /* [wxMaxima: input   end   ] */
 
-
 /* [wxMaxima: subsect start ]
 part 1
    [wxMaxima: subsect end   ] */
@@ -204,6 +203,71 @@ sc:subst(t^2,y,subst(t,x,subst(1+t,z,scalar)));
 
 /* [wxMaxima: input   start ] */
 integrate(sc,t,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 3.10
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+a one-form over a line with an orientation given by a second one-form
+(and actually it should be over R^2, but I don't think that matters)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(omega,phi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the orienting form is -dx at the point (2,3)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+orient:-dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:[4*t,6*t,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the parameterization at (2,3) is:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+tangent:subst(3,y,subst(2,x,subst(0,z,diff(phi,t))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tangent|orient;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+the implicit parameterization has the wrong orientation to make our form positive. 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+So we want the negative of the answer using the implicit parameterization.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:sin(y)*dx+cos(x)*dy;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:(diff(phi,t)|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sc:subst(6*t,y,subst(4*t,x,subst(0,z,scalar)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-integrate(sc,t,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+expand(%);
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
