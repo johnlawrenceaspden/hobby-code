@@ -1,4 +1,5 @@
-run: run2
+run: run3
+
 
 run1: simplesquares
 	./$< -root
@@ -6,7 +7,11 @@ run1: simplesquares
 run2: colouredwindow
 	./$< -root
 
-clean: 
+run3: simplest
+	./$< -root
+
+clean:
+	rm simplesquares colouredwindow simplest
 
 %: %.c
 	gcc -o $@ $< -lX11
