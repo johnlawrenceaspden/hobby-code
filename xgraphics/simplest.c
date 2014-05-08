@@ -4,6 +4,8 @@
 
 #define NCOLORS 3
 
+#include "vroot.h"
+
 void main (int argc, char *argv[])
 {
 
