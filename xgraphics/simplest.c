@@ -1,10 +1,17 @@
+/*Valuable interpretation details for this program can be found at 
+http://www.linuxjournal.com/article/4879
+'Learning to Use X11'
+http://www.dis.uniroma1.it/~liberato/screensaver
+'Writing an Xscreensaver Module using Xlib'
+*/
+
 #include<stdlib.h>
 #include<unistd.h>
 #include<X11/Xlib.h>
 
 #define NCOLORS 3
 
-#include "vroot.h"
+#include "vroot.h" //just including this magically makes it work with xscreensaver too
 
 int main (int argc, char *argv[])
 {
