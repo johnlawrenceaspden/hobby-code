@@ -1,9 +1,10 @@
 #include<stdlib.h>
+#include<unistd.h>
 #include<X11/Xlib.h>
 
 #include "vroot.h"
 
-main ()
+int main ()
 {
   Display *dpy;
   Window root;

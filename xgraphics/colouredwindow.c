@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<unistd.h>
 #include<X11/Xlib.h>
 
 #include "vroot.h"
@@ -6,7 +7,7 @@
 
 #define NCOLORS 3
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   Display *dpy;
   Window w;		/* the window to draw into: it may be root */

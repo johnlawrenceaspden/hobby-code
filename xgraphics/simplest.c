@@ -6,7 +6,7 @@
 
 #include "vroot.h"
 
-void main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 
   /* connect to the X server and make a window */
@@ -20,7 +20,7 @@ void main (int argc, char *argv[])
   /* raise it and wait */
   XSelectInput (dpy, w, StructureNotifyMask);
   XMapRaised (dpy, w);
-  for(XEvent e; XWindowEvent (dpy, w, StructureNotifyMask, &e); ( e.type != MapNotify ));
+  for(XEvent e; ( e.type != MapNotify ); XWindowEvent (dpy, w, StructureNotifyMask, &e));
 
 
   /* look up colours by name (defined in /usr/share/X11/rgb.txt) */
