@@ -14,7 +14,7 @@ clean:
 	rm simplesquares colouredwindow simplest
 
 %: %.c
-	gcc -o $@ $< -lX11
+	gcc -std=gnu99 -o $@ $< -lX11
 
 #colouredwindow: colouredwindow.c
 #	gcc -o colouredwindow colouredwindow.c -lX11

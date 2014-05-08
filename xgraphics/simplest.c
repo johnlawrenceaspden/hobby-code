@@ -1,57 +1,41 @@
 #include<stdlib.h>
+#include<unistd.h>
 #include<X11/Xlib.h>
-
-#include "vroot.h"
-
 
 #define NCOLORS 3
 
-main (int argc, char *argv[])
+void main (int argc, char *argv[])
 {
-  Display *dpy;
-  Window w;		/* the window to draw into: it may be root */
-  XWindowAttributes wa;
-  GC g;
-  XEvent e;
-
-  char *colors[NCOLORS]={"red", "green", "blue"};
-  XColor xcolors[NCOLORS];
-  XColor xc, sc;
-  int c;
-
 
   /* open the display (connect to the X server) */
-  dpy = XOpenDisplay (getenv ("DISPLAY"));
-
-
-  /* get the window to draw into */
-  if( argc<=1 )
-    w = DefaultRootWindow (dpy);
-  else { 
-    /* create, name, and map window */
-    w = XCreateSimpleWindow (dpy, DefaultRootWindow (dpy),
-                             200, 200, 400, 400, 1,
-                             BlackPixel (dpy, DefaultScreen (dpy)),
-                             WhitePixel (dpy, DefaultScreen (dpy)));
-    XStoreName (dpy, w, "This is a name");
-    XSelectInput (dpy, w, StructureNotifyMask);
-    XMapRaised (dpy, w);
-    do {
-      XWindowEvent (dpy, w, StructureNotifyMask, &e);
-    } while( e.type != MapNotify );
-  }
+  Display *dpy = XOpenDisplay (getenv ("DISPLAY"));
+  Window w = XCreateSimpleWindow (dpy, DefaultRootWindow (dpy),
+                                  200, 200, 400, 400, 1,
+                                  BlackPixel (dpy, DefaultScreen (dpy)),
+                                  WhitePixel (dpy, DefaultScreen (dpy)));
+  XStoreName (dpy, w, "This is a name");
+  XSelectInput (dpy, w, StructureNotifyMask);
+  XMapRaised (dpy, w);
+  { XEvent e;
+  do {
+    XWindowEvent (dpy, w, StructureNotifyMask, &e);
+  } while( e.type != MapNotify );}
 
 
   /* get attributes of the window */
+  XWindowAttributes wa;
   XGetWindowAttributes(dpy, w, &wa);
 
-
   /* create a GC for drawing in the window */
-  g = XCreateGC (dpy, w, 0, NULL);
+  GC g = XCreateGC (dpy, w, 0, NULL);
 
+  char *colors[NCOLORS]={"red", "green", "blue"};
+  XColor xcolors[NCOLORS];
 
   /* allocate colors */
-  for(c=0; c<NCOLORS; c++) {
+  for(int c=0; c<NCOLORS; c++) {
+    XColor xc, sc;
+
     XAllocNamedColor(dpy,
                      DefaultColormapOfScreen(DefaultScreenOfDisplay(dpy)),
                      colors[c],
