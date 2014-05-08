@@ -7,32 +7,26 @@
 void main (int argc, char *argv[])
 {
 
-  /* open the display (connect to the X server) */
+  /* connect to the X server and make a window */
   Display *dpy = XOpenDisplay (getenv ("DISPLAY"));
   Window w = XCreateSimpleWindow (dpy, DefaultRootWindow (dpy),
                                   200, 200, 400, 400, 1,
                                   BlackPixel (dpy, DefaultScreen (dpy)),
                                   WhitePixel (dpy, DefaultScreen (dpy)));
-  XStoreName (dpy, w, "This is a name");
+  XStoreName (dpy, w, "simplest.c : a cut down x client");
+
+  /* raise it and wait */
   XSelectInput (dpy, w, StructureNotifyMask);
   XMapRaised (dpy, w);
-  { XEvent e;
-  do {
-    XWindowEvent (dpy, w, StructureNotifyMask, &e);
-  } while( e.type != MapNotify );}
-
-
-  /* get attributes of the window */
-  XWindowAttributes wa;
-  XGetWindowAttributes(dpy, w, &wa);
+  for(XEvent e; XWindowEvent (dpy, w, StructureNotifyMask, &e); ( e.type != MapNotify ));
 
   /* create a GC for drawing in the window */
   GC g = XCreateGC (dpy, w, 0, NULL);
 
-  char *colors[NCOLORS]={"red", "green", "blue"};
+  /* look up colours by name (defined in /usr/share/X11/rgb.txt) */
+  char *colors[NCOLORS]={"navy", "cornflower blue", "blue"};
   XColor xcolors[NCOLORS];
 
-  /* allocate colors */
   for(int c=0; c<NCOLORS; c++) {
     XColor xc, sc;
 
@@ -41,8 +35,13 @@ void main (int argc, char *argv[])
                      colors[c],
                      &sc, &xc);
     xcolors[c]=sc;
+    
   }
 
+
+  /* get attributes of the window */
+  XWindowAttributes wa;
+  XGetWindowAttributes(dpy, w, &wa);
 
   /* draw something */
   while (1)
