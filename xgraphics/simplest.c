@@ -68,5 +68,6 @@ int main (int argc, char *argv[])
     usleep (10);
   }
 
+  XDestroyWindow( dpy, w );
   XCloseDisplay (dpy);
 }
