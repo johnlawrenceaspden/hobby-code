@@ -1,3 +1,10 @@
+// From "Learning to Use X11"
+// http://www.linuxjournal.com/article/4879
+
+// sudo apt-get install libx11-dev
+// gcc -o x1 x1.cc -lX11
+
+
 #include "X11/Xlib.h"
 
 int main(){
