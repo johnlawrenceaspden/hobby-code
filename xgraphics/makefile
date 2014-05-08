@@ -1,9 +1,14 @@
-run: simplest
+FAVOURITE := simplest
+
+run: $(FAVOURITE)
 	./$< -root
 
-install: simplest
-	rm ~/bin/simplest
-	ln simplest ~/bin/simplest 
+install: $(FAVOURITE)
+	rm ~/bin/$(FAVOURITE)
+	ln simplest ~/bin/$(FAVOURITE)
+	@echo "add "
+	@echo "$(FAVOURITE)" "-root                              \\\n\\"
+	@echo "to the ~/.xscreensaver file if it's not already there"
 
 %: %.c vroot.h
 	gcc -std=gnu99 -o $@ $< -lX11
@@ -14,4 +19,6 @@ PRGS := $(patsubst %.c,%,$(SRCS))
 all:$(PRGS)
 
 clean:
-	rm $(PRGS)
+	-rm -f $(PRGS)
+
+.PHONY: install clean all run
