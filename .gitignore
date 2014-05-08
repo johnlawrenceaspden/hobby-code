@@ -14,3 +14,6 @@ a.out
 SCC.txt
 octave-core
 LEIN_CLASSPATH
+xgraphics/simplest
+xgraphics/colouredwindow
+xgraphics/simplesquares
