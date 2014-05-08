@@ -17,3 +17,5 @@ LEIN_CLASSPATH
 xgraphics/simplest
 xgraphics/colouredwindow
 xgraphics/simplesquares
+sdl/hello
+sdl/hello.bmp
