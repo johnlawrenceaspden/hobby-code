@@ -22,8 +22,6 @@ void main (int argc, char *argv[])
   XMapRaised (dpy, w);
   for(XEvent e; XWindowEvent (dpy, w, StructureNotifyMask, &e); ( e.type != MapNotify ));
 
-  /* create a GC for drawing in the window */
-  GC g = XCreateGC (dpy, w, 0, NULL);
 
   /* look up colours by name (defined in /usr/share/X11/rgb.txt) */
   char *colors[NCOLORS]={"navy", "cornflower blue", "blue"};
@@ -32,12 +30,9 @@ void main (int argc, char *argv[])
   for(int c=0; c<NCOLORS; c++) {
     XColor xc, sc;
 
-    XAllocNamedColor(dpy,
-                     DefaultColormapOfScreen(DefaultScreenOfDisplay(dpy)),
-                     colors[c],
-                     &sc, &xc);
+    XAllocNamedColor(dpy, DefaultColormapOfScreen(DefaultScreenOfDisplay(dpy)),
+                     colors[c], &sc, &xc);
     xcolors[c]=sc;
-    
   }
 
 
@@ -45,28 +40,26 @@ void main (int argc, char *argv[])
   XWindowAttributes wa;
   XGetWindowAttributes(dpy, w, &wa);
 
+  /* create a GC for drawing in the window */
+  GC g = XCreateGC (dpy, w, 0, NULL);
+
   /* draw something */
-  while (1)
-    {
-      /* set a random foreground color */
-      XSetForeground(dpy, g, xcolors[random()%NCOLORS].pixel);
+  while (1) {
+    /* set a random foreground color */
+    XSetForeground(dpy, g, xcolors[random()%NCOLORS].pixel);
 
+    /* draw a square */
+    XFillRectangle (dpy, w, g, random()%(wa.width-50),
+                    random()%(wa.height-40), 50, 40);
 
-      /* draw a square */
-      XFillRectangle (dpy, w, g, random()%(wa.width-50),
-                      random()%(wa.height-40), 50, 40);
+    /* once in a while, clear all */
+    if( random()%500<1 )
+      XClearWindow(dpy, w);
 
-
-      /* once in a while, clear all */
-      if( random()%500<1 )
-        XClearWindow(dpy, w);
-
-
-      /* flush changes and sleep */
-      XFlush(dpy);
-      usleep (10);
-    }
-
+    /* flush changes and sleep */
+    XFlush(dpy);
+    usleep (10);
+  }
 
   XCloseDisplay (dpy);
 }
