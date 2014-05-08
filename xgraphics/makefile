@@ -19,4 +19,7 @@ clean:
 #colouredwindow: colouredwindow.c
 #	gcc -o colouredwindow colouredwindow.c -lX11
 
+install: simplest
+	rm ~/bin/simplest
+	ln simplest ~/bin/simplest 
 
