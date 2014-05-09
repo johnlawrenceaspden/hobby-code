@@ -64,48 +64,44 @@ int main (int argc, char *argv[])
     double psix(double u,double v) {return u;}
     double psiy(double u,double v) {return v;}
 
+
+    void drawparallelograms(double phix(double,double),
+                            double phiy(double,double),
+                            double u0,double u1,double v0,double v1,
+                            int colour){
+        XSetForeground(dpy, g, xcolors[colour].pixel);
+        XDrawLine(dpy, w, g,
+                  wscale(phix(u0,v0)),hscale(phiy(u0,v0)),
+                  wscale(phix(u0,v1)),hscale(phiy(u0,v1)));
+        XDrawLine(dpy, w, g,
+                  wscale(phix(u0,v0)),hscale(phiy(u0,v0)),
+                  wscale(phix(u1,v0)),hscale(phiy(u1,v0)));
+    }
+
+    void drawsolidparallelograms(double phix(double,double),
+                            double phiy(double,double),
+                            double u0,double u1,double v0,double v1,
+                            int colour){
+      double u01=(u0+u1)/2;
+      double v01=(v0+v1)/2;
+      drawparallelograms(phix,phiy,u0,u01,v0,v01,colour);
+      drawparallelograms(phix,phiy,u01,u1,v01,v1,colour);
+    }
+
+
+
     for(double u=-1;u<1;u+=0.1){
       for(double v=-1;v<1;v+=0.1){
 
-        XSetForeground(dpy, g, xcolors[2].pixel);
-        XDrawLine(dpy, w, g,
-                  wscale(phix(u,v)),    hscale(phiy(u,v)),
-                  wscale(phix(u,v+0.1)),hscale(phiy(u,v+0.1)));
-        XDrawLine(dpy, w, g,
-                  wscale(phix(u,v))    ,hscale(phiy(u,v)),
-                  wscale(phix(u+0.1,v)),hscale(phiy(u+0.1,v)));
-
-        XSetForeground(dpy, g, xcolors[3].pixel);
-        XDrawLine(dpy, w, g,
-                  wscale(psix(u,v)),    hscale(psiy(u,v)),
-                  wscale(psix(u,v+0.1)),hscale(psiy(u,v+0.1)));
-        XDrawLine(dpy, w, g,
-                  wscale(psix(u,v))    ,hscale(psiy(u,v)),
-                  wscale(psix(u+0.1,v)),hscale(psiy(u+0.1,v)));
-
+        drawsolidparallelograms(phix,phiy,u,u+0.1,v,v+0.1,2);
+        drawsolidparallelograms(psix,psiy,u,u+0.1,v,v+0.1,3);
 
         /* flush changes and sleep */
         XFlush(dpy);
         usleep (100000);
 
-
-
-        XSetForeground(dpy, g, xcolors[0].pixel);
-        XDrawLine(dpy, w, g,
-                  wscale(phix(u,v)),    hscale(phiy(u,v)),
-                  wscale(phix(u,v+0.1)),hscale(phiy(u,v+0.1)));
-        XDrawLine(dpy, w, g,
-                  wscale(phix(u,v))    ,hscale(phiy(u,v)),
-                  wscale(phix(u+0.1,v)),hscale(phiy(u+0.1,v)));
-
-        XSetForeground(dpy, g, xcolors[1].pixel);
-        XDrawLine(dpy, w, g,
-                  wscale(psix(u,v)),    hscale(psiy(u,v)),
-                  wscale(psix(u,v+0.1)),hscale(psiy(u,v+0.1)));
-        XDrawLine(dpy, w, g,
-                  wscale(psix(u,v))    ,hscale(psiy(u,v)),
-                  wscale(psix(u+0.1,v)),hscale(psiy(u+0.1,v)));
-
+        drawparallelograms(phix,phiy,u,u+0.1,v,v+0.1,0);
+        drawparallelograms(psix,psiy,u,u+0.1,v,v+0.1,1);
       }}
   }
 
