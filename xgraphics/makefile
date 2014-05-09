@@ -1,4 +1,4 @@
-FAVOURITE := simplest
+FAVOURITE := hyperbolic
 
 run: $(FAVOURITE)
 	./$< -root
