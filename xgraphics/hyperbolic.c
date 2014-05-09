@@ -2,8 +2,6 @@
 #include<unistd.h>
 #include<X11/Xlib.h>
 
-#define NCOLORS 3
-
 #include "vroot.h" //just including this magically makes it work with xscreensaver too
 
 int main (int argc, char *argv[])
@@ -24,7 +22,8 @@ int main (int argc, char *argv[])
 
 
   /* look up colours by name (defined in /usr/share/X11/rgb.txt) */
-  char *colors[NCOLORS]={"navy", "red", "blue"};
+#define NCOLORS 4
+  char *colors[NCOLORS]={"navy", "red", "red", "blue"};
   XColor xcolors[NCOLORS];
 
   for(int c=0; c<NCOLORS; c++) {
@@ -48,10 +47,9 @@ int main (int argc, char *argv[])
     XGetWindowAttributes(dpy, w, &wa);
 
 
-    /* set a random foreground color */
-    XSetForeground(dpy, g, xcolors[random()%NCOLORS].pixel);
-
     XClearWindow(dpy, w);
+
+
     int wscale(double u){
       return wa.width*(u-(-2))/(2-(-2));
     }
@@ -68,12 +66,16 @@ int main (int argc, char *argv[])
 
     for(double u=-1;u<1;u+=0.1){
       for(double v=-1;v<1;v+=0.1){
+
+        XSetForeground(dpy, g, xcolors[2].pixel);
         XDrawLine(dpy, w, g,
                   wscale(phix(u,v)),    hscale(phiy(u,v)),
                   wscale(phix(u,v+0.1)),hscale(phiy(u,v+0.1)));
         XDrawLine(dpy, w, g,
                   wscale(phix(u,v))    ,hscale(phiy(u,v)),
                   wscale(phix(u+0.1,v)),hscale(phiy(u+0.1,v)));
+
+        XSetForeground(dpy, g, xcolors[3].pixel);
         XDrawLine(dpy, w, g,
                   wscale(psix(u,v)),    hscale(psiy(u,v)),
                   wscale(psix(u,v+0.1)),hscale(psiy(u,v+0.1)));
@@ -81,9 +83,29 @@ int main (int argc, char *argv[])
                   wscale(psix(u,v))    ,hscale(psiy(u,v)),
                   wscale(psix(u+0.1,v)),hscale(psiy(u+0.1,v)));
 
+
         /* flush changes and sleep */
         XFlush(dpy);
         usleep (100000);
+
+
+
+        XSetForeground(dpy, g, xcolors[0].pixel);
+        XDrawLine(dpy, w, g,
+                  wscale(phix(u,v)),    hscale(phiy(u,v)),
+                  wscale(phix(u,v+0.1)),hscale(phiy(u,v+0.1)));
+        XDrawLine(dpy, w, g,
+                  wscale(phix(u,v))    ,hscale(phiy(u,v)),
+                  wscale(phix(u+0.1,v)),hscale(phiy(u+0.1,v)));
+
+        XSetForeground(dpy, g, xcolors[1].pixel);
+        XDrawLine(dpy, w, g,
+                  wscale(psix(u,v)),    hscale(psiy(u,v)),
+                  wscale(psix(u,v+0.1)),hscale(psiy(u,v+0.1)));
+        XDrawLine(dpy, w, g,
+                  wscale(psix(u,v))    ,hscale(psiy(u,v)),
+                  wscale(psix(u+0.1,v)),hscale(psiy(u+0.1,v)));
+
       }}
   }
 
