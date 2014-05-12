@@ -8,8 +8,7 @@
                    (concat '(0) (regions (dec n) (dec m))) 
                    (concat (regions (dec n) (dec m)) '(0)))))
 
-;; In fact, I reckon that I can prove it.  But I also reckon that
-;; proof is worthless unless it's about facts you actually believe.
+;; In fact, I reckon that I can prove it. 
 
 ;; It's quite easy to prove something that isn't true. Usually when
 ;; you run across a counterexample, that shows you where the
@@ -17,14 +16,17 @@
 
 ;; So I'd like to verify the formula on lots of examples.
 
-;; But how? 
+;; But how?
 
 ;; These I can count in my head.
 
-(regions 3 0) ;-> (0 0 0 1)
-(regions 3 1) ;-> (0 0 1 2)
-(regions 3 2) ;-> (0 1 4 4)
-(regions 3 3) ;-> (1 6 12 8) ; 1 point where three planes meet, six coordinate half-axes, three coordinate planes divided into four quadrants each, and eight octants
+(regions 3 0) ;-> (0 0 0 1) ; just space, no planes
+(regions 3 1) ;-> (0 0 1 2) ; a plane cuts space in half
+(regions 3 2) ;-> (0 1 4 4) ; two planes intersect in one line, cutting space into four
+(regions 3 3) ;-> (1 6 12 8) ; 1 point where three planes meet, 
+                             ; six coordinate half-axes, 
+                             ; three coordinate planes divided into four quadrants each,
+                             ; and eight octants
 
 ;; I am sort of confident that four planes make fifteen regions and intersect in four points.
 (regions 3 4) ;-> (4 18 28 15)
@@ -34,7 +36,8 @@
 ;; And at this point my intuition breaks.
 (regions 3 5) ;-> (10 40 55 26)
 
-;; I mean, five planes, any three intersect in a point, 10 ways to choose 3 planes from five ok,
+;; I mean, five planes, any three intersect in a point,
+;; 10 ways to choose 3 planes from five, so 10 points,
 ;; but after that I'm dead.
 
 ;; And this? Six choose 3 is 20, I can see that....
@@ -55,7 +58,8 @@
 
 ;; So I don't even know if that's evidence or not.
 
-;; One nice thing about it has an alternating sum property, like the Euler index.
+;; One nice thing about it, the formula has an alternating sum property, 
+;; like the Euler index.
 
 (defn signature [lst]
   (reduce + 
@@ -72,4 +76,4 @@
 (regions 23 20) ;-> (0 0 0 1 40 760 9120 77520 496128 2480640 9922560 32248320 85995520 189190144 343982080 515973120 635043840 635043840 508035072 317521920 149422080 49807360 10485760 1048576)
 (signature (regions 23 20)) ;-> 1
 
-;; But annoyingly, you can just read that straight from the recursion!
+;; But annoyingly, you can just read that property straight from the recursion!
