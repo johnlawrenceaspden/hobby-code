@@ -5,6 +5,14 @@
 A Geometric Approach to Differential Forms
    [wxMaxima: title   end   ] */
 
+/* [wxMaxima: comment start ]
+
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: section start ]
+Chapter 4: Differentiation of Forms
+   [wxMaxima: section end   ] */
+
 /* [wxMaxima: input   start ] */
 load(cartan);
 /* [wxMaxima: input   end   ] */
@@ -43,6 +51,138 @@ integrand:trigsimp(scalar);
 
 /* [wxMaxima: input   start ] */
 'integrate('integrate(integrand,theta,0,2*%pi),z,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.1
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y)*dx+g(x,y)*dy;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.1
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:x*y^2*dx+x^3*z*dy-(y+z^9)*dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+point:[2,3,-1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+V:[1,2,3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+W:[-1,0,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Exterior derivative calculated directly
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+domega:ratsimp(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spoint:[x=point[1],y=point[2],z=point[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+domegaatpoint:subst(spoint,domega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+W|(V|domegaatpoint);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+directional derivative of omega(V) in the direction of W
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+omegaV:(V|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pointtW:point+t*W;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spoint:[x=point[1],y=point[2],z=point[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spointtW:[x=pointtW[1],y=pointtW[2],z=pointtW[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deltaWomegaV:(subst(spointtW,omegaV)-subst(spoint,omegaV));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deltaWomegaV:ratsimp(deltaWomegaV);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gradVomegaW:limit(deltaWomegaV/t,t,0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+directional derivative of omega(W) in the direction of V
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+omegaW:(W|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pointtV:point+t*V;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spoint:[x=point[1],y=point[2],z=point[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spointtV:[x=pointtV[1],y=pointtV[2],z=pointtV[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deltaVomegaW:(subst(spointtV,omegaW)-subst(spoint,omegaW));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deltaVomegaW:ratsimp(deltaVomegaW);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gradWomegaV:limit(deltaVomegaW/t,t,0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gradWomegaV-gradVomegaW;
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */

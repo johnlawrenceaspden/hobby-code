@@ -1,0 +1,93 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: input   start ] */
+kill(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Derivative of omega in the direction V at the point p
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:x*y*z*z;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+p:[2,3,-1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+V:[1,2,3];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+from first principles
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+p2:p+t*V;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sp:[x=p[1],y=p[2],z=p[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sp2:[x=p2[1],y=p2[2],z=p2[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deltaomega:subst(sp2,omega)-subst(sp,omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+slope:ratsimp(deltaomega/t);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gVomega:limit(slope,t,0);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+by taking derivative and substituting
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+gvomega:subst([del(x)=V[1],del(y)=V[2],del(z)=V[3]],diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(sp,gvomega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+using vector package
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+load(vector);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+grad(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+V.grad(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+spoint:[x=p[1],y=p[2],z=p[3]];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,V.grad(omega));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
