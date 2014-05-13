@@ -507,5 +507,109 @@ integrand:trigsimp(scalar);
 integrate(integrate(integrate(integrand,r,1,2),theta,0,2*%pi),z,0,1);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: subsect start ]
+Exercise 3.14
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:x*(dx~dy~dz);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+def_xyz:[x=r*cos(theta),y=r*sin(theta),z=z];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:subst(def_xyz,[x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:subst(def_xyz,(diff(phi,z)|(diff(phi,theta)|(diff(phi,r)|omega))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:trigsimp(scalar);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(integrate(integrand,r,1,2),theta,0,%pi/2),z,0,2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 3.15
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(psi,phi,omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:(dx~dy~dz);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+def_xyz:[x=r*sin(theta)*cos(psi),y=r*sin(theta)*sin(psi),z=r*cos(theta)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:subst(def_xyz,[x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:subst(def_xyz,(diff(phi,psi)|(diff(phi,theta)|(diff(phi,r)|omega))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:trigsimp(scalar);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(integrate(integrand,r,1,2),theta,0,%pi/2),psi,0,%pi/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Summary 6.3 A sample 2-form
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+kill(psi,phi,omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:(x^2+y^2)*(dx~dy)+z*(dy~dz);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+def_xyz:[x=cos(theta),y=sin(theta),z=z];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+phi:subst(def_xyz,[x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:subst(def_xyz,(diff(phi,z)|(diff(phi,theta)|omega)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:trigsimp(scalar);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate('integrate(integrand,theta,0,2*%pi),z,0,1);
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$

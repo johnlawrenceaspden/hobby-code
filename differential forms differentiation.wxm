@@ -1,0 +1,49 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+A Geometric Approach to Differential Forms
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+load(cartan);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Integration of a form
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:(x^2+y^2)*(dx~dy)+z*(dy~dz);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+chart:[x=cos(theta),y=sin(theta),z=z];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi:subst(chart,[x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:subst(chart,(diff(psi,z)|(diff(psi,theta)|omega)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:trigsimp(scalar);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+'integrate('integrate(integrand,theta,0,2*%pi),z,0,1);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
