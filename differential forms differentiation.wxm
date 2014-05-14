@@ -185,5 +185,61 @@ gradWomegaV:limit(deltaVomegaW/t,t,0);
 gradWomegaV-gradVomegaW;
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: comment start ]
+calculated going through grad rather than by taking limit
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(V|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+WdotgradOmegaV:subst([del(z)=W[3],del(y)=W[2],del(x)=W[1]],diff(V|omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,WdotgradOmegaV);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+diff(W|omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+VdotgradOmegaW:subst([del(z)=V[1],del(y)=V[2],del(x)=V[3]],diff(W|omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,VdotgradOmegaW);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+VdotgradOmegaW-WdotgradOmegaV;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(VdotgradOmegaW-WdotgradOmegaV);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,VdotgradOmegaW-WdotgradOmegaV);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+more musings
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+W|(V|ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,W|(V|ext_diff(omega)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst(spoint,V|(W|ext_diff(omega)));
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
