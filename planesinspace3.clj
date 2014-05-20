@@ -3,9 +3,10 @@
 
 ;; But I'd like some sort of empirical confirmation of this result.
 
-;; Both forms and vectors in 3 space can be represented as ordered sets of three numbers
+;; Forms in 3-space can be represented as ordered sets of three numbers
 (def a-form [1 2 3])
 
+;; As can vectors
 (def a-point [2 3 5])
 
 ;; And we evaluate the form on the vector
@@ -61,9 +62,11 @@
 (defn sig [point planes]
   (for [p planes] (sign (side p point))))
 
+;; We can check which side of each plane the point is on
 (sig (first points) (take 3 planes)) ;-> (+ - +)
 
 ;; Every different region gives a different signature. 
+;; The more planes, the more signatures.
 
 (count (frequencies (take 10 (map #(sig % (take 1 planes)) points)))) ;-> 2
 (count (frequencies (take 10 (map #(sig % (take 2 planes)) points)))) ;-> 4
@@ -71,6 +74,10 @@
 (count (frequencies (take 10 (map #(sig % (take 4 planes)) points)))) ;-> 7
 (count (frequencies (take 10 (map #(sig % (take 5 planes)) points)))) ;-> 7
 (count (frequencies (take 10 (map #(sig % (take 6 planes)) points)))) ;-> 7
+
+;; But the more planes we have, the smaller the smallest regions are
+;; and thus the chance of a point falling in every one goes down.
+
 
 ;; The more points we take, the more likely we are to get one in every region
 
