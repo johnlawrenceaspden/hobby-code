@@ -195,3 +195,32 @@
 ;; So we push it a bit further, and lo and behold, it seems to struggle on to 42.
 
 ;; This is not a good way to run experiments. I'm getting the answer that I want from theory.
+
+;; Luckily I currently have my hands on a gigantic 8 xeon server
+;; so I can use clojure's easy concurrency to push this quite a lot
+;; further than my poor little netbook would be able to go
+(time (do
+  (def doom (repeatedly 7 #(agent nil)))
+  (print (map deref doom))
+  (doseq [a doom] (send a (fn[a] (sample-chosen-planes six-planes 10000000))))
+  (print (map deref doom))
+  (doseq [a doom] (await a))
+  (print (map deref doom))))
+
+;; (nil nil nil nil nil nil nil)
+;; (nil nil nil nil nil nil nil)
+;; (42 42 42 42 42 42 42)
+;; "Elapsed time: 485837.446802 msecs"
+
+(time (do
+  (def doom (repeatedly 7 #(agent nil)))
+  (print (map deref doom))
+  (doseq [a doom] (send a (fn[a] (sample-it 6 10000000))))
+  (print (map deref doom))
+  (doseq [a doom] (await a))
+  (print (map deref doom))))
+
+;; (nil nil nil nil nil nil nil)
+;; (nil nil nil nil nil nil nil)
+;; (39 42 39 41 41 42 42)
+;; "Elapsed time: 706346.297653 msecs"
