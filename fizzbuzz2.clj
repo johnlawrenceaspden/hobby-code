@@ -38,7 +38,7 @@
 (map (= 0 #(% quot 3)) (range 1 101))
 ;; ClassCastException java.lang.Boolean cannot be cast to clojure.lang.IFn  clojure.core/map/fn--4207 (core.clj:2485)
 
-;; double bugger
+;; bugger
 (map #(= 0 (quot % 3)) (range 1 101)) ;-> (true true false false false false false false false false false false false false false false false false false false false false false false false false false ...)
 
 ;; ok
@@ -113,7 +113,7 @@
           (divides? 5 %)  "Buzz" 
           :else %) (map inc (range))))
 
-;; there are those who would call this 'premature abstraction', but they deserve not the name of men.
+;; There are those who would call this 'premature abstraction', but they deserve not the names of men.
 (print (take 100 fizzbuzz))
 ;; (1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 Buzz Fizz 22 23 Fizz Buzz 26 Fizz ...)
 
