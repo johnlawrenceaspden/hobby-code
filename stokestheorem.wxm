@@ -1,0 +1,81 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+An example of Stokes Theorem
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+integrate ydx-x^2dy around the unit circle both ways
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+load(cartan);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+init_cartan([x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+form and its derivative
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+omega: y*dx-x^2*dy;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+domega:ratsimp(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+transform unit circle into rectangular region
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+chart:[x=r*cos(theta),y=r*sin(theta)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+psi:subst(chart,[x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+integrate omega around the boundary
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+scalar:subst(chart,(diff(psi,theta)|omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+boundary:'integrate(subst(R,r,scalar),theta,0,2*%pi);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(boundary,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+integrate d(omega) over the region
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+dscalar:(diff(psi,r)|(diff(psi,theta)|subst(chart,domega)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+integrand:trigsimp(dscalar);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+region:'integrate('integrate(integrand,theta,0,2*%pi),r,0,R);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ev(region,nouns);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
