@@ -338,7 +338,7 @@ radcan(%)^2;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-this complains about broken syntax and I can't see why
+Actually we can stick the whole thing in a for loop and simplify as we go along, giving:
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -348,11 +348,11 @@ a[1,0]:1;
 
 /* [wxMaxima: input   start ] */
 for row:2 while row<=15 do (
-    col:(row-1);
-    for r:0 while r<=col do (a[r,col]:0);
-    for c:0 while c<col do (a[row,c]:(sum(a[i,c],i,0,row-1))/row);
-    a[row,col]:sqrt(1-sum(a[row,c]^2,c,0,col-1));
-);
+    (col:(row-1)),
+    for r:0 while r<=col do (a[r,col]:0),
+    for c:0 while c<col do (a[row,c]:(sum(a[i,c],i,0,row-1))/row),
+    a[row,col]:radcan(sqrt(1-sum(a[row,c]^2,c,0,col-1))),
+    disp(a[row,col]^2));
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
