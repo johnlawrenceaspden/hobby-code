@@ -74,7 +74,7 @@ ratsimp(%);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: subsect start ]
-Exercise 4.1
+Exercise 4.2
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -239,6 +239,26 @@ subst(spoint,W|(V|ext_diff(omega)));
 
 /* [wxMaxima: input   start ] */
 subst(spoint,V|(W|ext_diff(omega)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.3
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:y*dx-x^2*dy;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+domega:ratsimp(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+subst([x=1,y=1],([2,3]|([1,2]|domega)));
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
