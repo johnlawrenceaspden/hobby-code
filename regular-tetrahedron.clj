@@ -86,7 +86,7 @@ tet3 ;-> ((0.816496580927726 0.28867513459481287 1/2) (0 0.8660254037844386 1/2)
 
 (map #(/ (+ 2 %) (* 2 (inc %))) (range 1 20)) ;-> (3/4 2/3 5/8 3/5 7/12 4/7 9/16 5/9 11/20 6/11 13/24 7/13 15/28 8/15 17/32 9/17 19/36 10/19 21/40)
 
-;; So I boldly conjecture that the height of a hyper-tetrahedron is sqrt(d+1/(2*d)))
+;; So I boldly conjecture that the height of a hyper-tetrahedron is sqrt((d+1)/(2*d)))
 
 (map -
      (map (comp #(* % %) ffirst) (rest tets))
