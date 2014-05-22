@@ -357,5 +357,261 @@ ratsimp([0,0,1]|([0,1,0]|([1,0,0]|domega)));
 ratsimp(domega);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: subsect start ]
+Exercise 4.6
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f:x^2*y^3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+-subst([x=-1,y=1],f)-subst([x=1,y=-1],f)-subst([x=-1,y=-1],f);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+algebraic identities for exterior differentiation
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.7
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(f(x,y)*dx);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(f(x,y))~dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(f(x,y)*dx)-ext_diff(f(x,y))~dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.8
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y,z]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z)*dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z)*dx~dy;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z)*dx~dy~dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(ext_diff(omega));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Exercise 4.9
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+there's a weird alternating sign on the product rule for the exterior derivative
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+d(0form ~ 1form) = d(0form)~1form+0form~d(1form)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y,z,w]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mu:g(x,y)*dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om:ext_diff(omega~mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+do_m:ext_diff(omega)~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+o_dm:omega~ext_diff(mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om-(do_m+o_dm);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+d(1form ~ 0form) = d(1form)~0form+1form~d(0form)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y,z,w]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y)*dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mu:g(x,y);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mu~omega;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+hang on a minute, isn't this supposed to be alternating?
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om:ext_diff(omega~mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+do_m:ext_diff(omega)~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+o_dm:omega~ext_diff(mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+NB
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om-(do_m+o_dm);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+in fact: 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om-(do_m-o_dm);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y,z,w]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z,w)*dx;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mu:g(x,y,z,w)*dy~dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om:ext_diff(omega~mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+do_m:ext_diff(omega)~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+o_dm:omega~ext_diff(mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om-(do_m-o_dm);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+remvalue(all); init_cartan([x,y,z,w,u]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+omega:f(x,y,z,w,u)*dx~dw;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+mu:g(x,y,z,w,u)*dy~dz;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ext_diff(omega); ext_diff(mu); omega~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om:ext_diff(omega~mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+do_m:ext_diff(omega)~mu;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+o_dm:omega~ext_diff(mu);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+d_om-(do_m+o_dm);
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
