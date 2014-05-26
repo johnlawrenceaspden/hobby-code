@@ -1,0 +1,17 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: subsect start ]
+Taylor Series for 1/(e^x-1)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(1/(exp(x)-1),x,0,10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(cot(x),x,0,5);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
