@@ -1,0 +1,93 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Basel Sum
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x,[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2)*(1-(x/%pi/4)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2)*(1-(x/%pi/4)^2)*(1-(x/%pi/5)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2)*(1-(x/%pi/4)^2)*(1-(x/%pi/5)^2)*(1-(x/%pi/6)^2),[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([sin(x),x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2)
+*(1-(x/%pi/4)^2)*(1-(x/%pi/5)^2)*(1-(x/%pi/6)^2)
+*(1-(x/%pi/7)^2)*(1-(x/%pi/8)^2)*(1-(x/%pi/9)^2)],[x,-10,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+basel:x*(1-(x/%pi)^2)*(1-(x/%pi/2)^2)*(1-(x/%pi/3)^2)
+*(1-(x/%pi/4)^2)*(1-(x/%pi/5)^2)*(1-(x/%pi/6)^2)
+*(1-(x/%pi/7)^2)*(1-(x/%pi/8)^2)*(1-(x/%pi/9)^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eb:expand(basel);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(eb,x);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(eb,x^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+coeff(eb,x^3);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sum(1/(n^2),n,1,9);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+taylor(sin(x),x,0,10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+baselsum:%pi^2/6;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(baselsum);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sum(1/(n^2),n,1,9));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(sum(1/(n^2),n,1,15000));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+sheesh.
+   [wxMaxima: comment end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
