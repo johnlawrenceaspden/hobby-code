@@ -1,0 +1,75 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Memoizing Recurrence
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+The coordinates of the points on a higher dimensional tetrahedron (euclidean simplex)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+http://stackoverflow.com/questions/23793581/how-do-i-translate-a-complicated-recurrence-from-clojure-to-maxima/23821371#23821371
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+average (lst) := apply ("+", lst) / length (lst);
+sqsum (lst) := apply ("+", map (lambda ([x], x^2), lst));
+
+tet [row, col] :=
+  if row < col + 1 then 0
+  else if row > col + 1 then average (makelist (tet [i, col], i, 0, row - 1))
+  else if row = col + 1 then sqrt (1 - sqsum (makelist (tet [row, i], i, 0, col - 1)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[0,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[0,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[0,2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[1,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[1,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[1,2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[2,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[2,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[2,2];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[3,0];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[3,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tet[3,2];
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

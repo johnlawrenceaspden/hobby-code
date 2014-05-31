@@ -1,0 +1,348 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 12.04.0 ] */
+
+/* [wxMaxima: title   start ]
+Solving tan(x)=x
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([tan(x),x],[x,0,3*%pi],[y,-1,10]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x):=tan(x)-x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(f(x),[x,0,6*%pi],[y,-1,1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(1/(1+(f(x)^2)),[x,0,6*%pi]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+low_guess(n):=(2*n)*%pi/2+0.01;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+high_guess(n):=(2*n+1)*%pi/2-(0.1/n)^2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(low_guess(10));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root(n):=find_root(tan(x)-x,x,low_guess(n),high_guess(n));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root(5);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root(10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root(10000000);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deficit(n):=float(root(n)-(2*n+1)*%pi/2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deficit(1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deficit(10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+deficit(100);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+map(deficit,'(1,10,100,1000,10000,100000));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+load("newton1.mac");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+guess that the roots will be just below the quarter and three quarter turns
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+guess(n):=(2*n+1)*%pi/2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess(1));
+float(f(guess(1)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess(10)),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+tan(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(2)-0.2;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(2)-0.1;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(3)-0.1;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(4)-0.1;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(5)-0.1;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(6)-0.05;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(7)-0.05;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(8)-0.05;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(9)-0.04;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(10)-0.04;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(11)-0.04;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(1)-0.02;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+guess:guess(40)-0.007;
+float(guess);
+float(f(guess));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:newton(tan(x)-x,x,float(guess),1e-10);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(guess-root);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+root:find_root(tan(x)-x,x,80*%pi/2+0.1,81*%pi/2);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
