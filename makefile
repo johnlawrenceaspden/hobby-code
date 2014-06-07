@@ -1,5 +1,5 @@
-run: integral
-	./integral
+run: jerry
+	./jerry
 
-integral: integral.c
-	gcc integral.c -o integral
+jerry: jerry.c
+	gcc jerry.c -o jerry
