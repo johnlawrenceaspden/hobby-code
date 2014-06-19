@@ -6,10 +6,6 @@ load(cartan);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-
-/* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: input   start ] */
 init_cartan([x,y]);
 /* [wxMaxima: input   end   ] */
 

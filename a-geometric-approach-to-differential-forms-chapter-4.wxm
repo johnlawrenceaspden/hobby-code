@@ -386,19 +386,35 @@ Exercise 4.7
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
-remvalue(all); init_cartan([x,y]);
+remvalue(all); init_cartan([x,y,z]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-ext_diff(f(x,y)*dx);
+f:f(x,y,z);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-ext_diff(f(x,y))~dx;
+omega:(a(x,y,z)*dx+b(x,y,z)*dy+c(x,y,z)*dz);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-ext_diff(f(x,y)*dx)-ext_diff(f(x,y))~dx;
+df:ext_diff(f);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+domega:ext_diff(omega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+L:ext_diff(f*domega);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+R:ext_diff(f)~domega;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+L-R;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: subsect start ]
