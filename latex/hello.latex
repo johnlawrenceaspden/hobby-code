@@ -2,9 +2,25 @@
 \pagestyle{empty}
 \begin{document}
 \huge
-Hello
+
+To compile this file, use:
+
+make
+
+or
+
+latex hello.latex
+xdvi hello.dvi
+
+or
 
 pdflatex hello.latex
+evince hello.pdf
+
+
+
 $$\left[ a\,\cos \varphi\,\sin \vartheta , a\,\sin \varphi\,\sin 
  \vartheta , a\,\cos \vartheta \right] $$
+
+
 \end{document}
