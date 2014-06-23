@@ -1,8 +1,19 @@
-\documentclass{article}
+\documentclass[12pt]{article}
+
+\usepackage{ifpdf}
+\usepackage{mla}
+\usepackage{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
 \pagestyle{empty}
+
+\singlespacing
+
 \begin{document}
 \huge
 
+\begin{mla}{John}{Aspden}{Professor's name}{Class name}{\today}{Title}
 To compile this file, use:
 
 make
@@ -21,8 +32,11 @@ evince hello.pdf
 There's also a homework.tex file, ripped off from: http://joshldavis.com/2014/02/12/doing-your-homework-in-latex/
 
 This gets latex distribution
+
 sudo apt-get install texlive
+
 This gets the algorithm.sty file which homework.tex depends on
+
 sudo apt-get install texlive-science 
 
 
@@ -30,4 +44,15 @@ $$\left[ a\,\cos \varphi\,\sin \vartheta , a\,\sin \varphi\,\sin
  \vartheta , a\,\cos \vartheta \right] $$
 
 
+\begin{workscited}
+\bibent
+Austen, Jane. \textit{Pride \& Prejudice}. New York: Grosset \& Dunlap, 1931.
+
+\bibent
+Dickinson, Emily. \textit{The Complete Poems}. Boston: Little, Brown, 1924.
+
+\end{workscited}
+
+
+\end{mla}
 \end{document}
