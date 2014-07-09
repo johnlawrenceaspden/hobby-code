@@ -4,7 +4,15 @@
 ;                 [net.mikera/core.matrix "0.22.0"]
 ;                 [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
                  [simple-plotter "0.1.2"]
+                 [cascalog "2.0.0"]
                  ]
+
+  :profiles 
+  {:dev 
+   {:dependencies [[org.apache.hadoop/hadoop-core "1.1.2"]]}}
+  :jvm-opts ["-Xms768m" "-Xmx768m"]
+
+
 
 ;;  Heap to 800M, Stack to 50M
 ;;  :jvm-opts ["-Xmx800M", "-Xss50M"]
