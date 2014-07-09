@@ -1,0 +1,23 @@
+After the first bit of
+
+http://www.ercoppa.org/Linux-Install-Hadoop-220-on-Ubuntu-Linux-1304-Single-Node-Cluster.htm
+
+the test run looks like
+
+Start Hadoop
+
+start-dfs.sh && start-yarn.sh
+
+Test Hadoop
+
+~/hadoop/bin/hadoop jar ~/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.2.0-tests.jar TestDFSIO -write -nrFiles 20 -fileSize 10
+
+Check the results and remove files:
+
+~/hadoop/bin/hadoop jar ~/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.2.0-tests.jar TestDFSIO -clean
+
+And:
+
+~/hadoop/bin/hadoop jar ~/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.2.0.jar pi 2 5
+
+stop-dfs.sh && stop-yarn.sh
