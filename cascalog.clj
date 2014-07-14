@@ -64,8 +64,56 @@ sentence ;-> [["Four score and seven years ago our fathers brought forth on this
 ;; Which makes me wonder what defmapcatfn is doing. I mean, why aren't all fns mapcatfns?
 ;; I think the :< and :> are pipelining operators like in unix
 
+;; Data Tuples
+
+;; look at some vars from the playground
+person ;-> [["alice"] ["bob"] ["chris"] ["david"] ["emily"] ["george"] ["gary"] ["harold"] ["kumar"] ["luanne"]]
+age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george" 31] ["gary" 28] ["kumar" 27] ["luanne" 36]]
+
+(?- (stdout)
+    (<- [?doom]
+        (age ?foo ?doom)))
+;; 28
+;; 33
+;;... appear on console
+
+(?- (stdout)
+    (<- [?foo]
+        (age ?foo ?doom)))
+;; alice
+;; bob
+;;... appear
+
+;; Recall from above
+(def/defmapcatfn tokenise [line]
+        (clojure.string/split line #"[\[\]\\\(\),.)\s]+"))
+
+(tokenise sentence) ; urk
+
+;; This appears to be a sane thing to do though
+(tokenise (ffirst sentence)) ; ["Four" "score" "and" "seven" "years" "ago" "our" "fathers" "brought" "forth" "on" "this" "continent" "a" "new" "nation"]
+
+(?- (stdout) 
+    (<- [?word]
+        ((first sentence) :> ?line)
+        (tokenise :< ?line :> ?word)))
 
 
+;; Now, an incomprehensible word count example:
+(require '[cascalog.logic.ops :as c])
+
+(?- (stdout)
+    (<- [?word ?count]
+        (sentence :> ?line)
+        (tokenise :< ?line :> ?word)
+        (c/count :> ?count)))
+
+;; ....
+;; who	        3
+;; will	        1
+;; work	        1
+;; world	1
+;; years	1
 
 
 
