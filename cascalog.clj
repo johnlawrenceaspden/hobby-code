@@ -32,9 +32,9 @@ sentence ;-> [["Four score and seven years ago our fathers brought forth on this
 
 
 ;; We can split the lines into words like this
-(clojure.string/split 
- (ffirst sentence)
- ) ;-> ["Four" "score" "and" "seven" "years" "ago" "our" "fathers" "brought" "forth" "on" "this" "continent" "a" "new" "nation"]
+(clojure.string/split  
+ (ffirst sentence) 
+ #"[\[\]\\\(\),.)\s]+") ;-> ["Four" "score" "and" "seven" "years" "ago" "our" "fathers" "brought" "forth" "on" "this" "continent" "a" "new" "nation"]
 
 
 ;; And we can make that into a hadoop operation
@@ -93,9 +93,16 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
 ;; This appears to be a sane thing to do though
 (tokenise (ffirst sentence)) ; ["Four" "score" "and" "seven" "years" "ago" "our" "fathers" "brought" "forth" "on" "this" "continent" "a" "new" "nation"]
 
+;; I'm a bit worried that
 (?- (stdout) 
     (<- [?word]
         ((first sentence) :> ?line)
+        (tokenise :< ?line :> ?word)))
+
+;; both these appear to work as expected
+(?- (stdout) 
+    (<- [?word]
+        (sentence :> ?line)
         (tokenise :< ?line :> ?word)))
 
 
