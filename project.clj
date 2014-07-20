@@ -7,6 +7,7 @@
 ;                 [simple-plotter "0.1.2"]
                  [cascalog "2.0.0"]
                  [clojure-csv/clojure-csv "2.0.1"]
+                 [org.clojure/data.json "0.2.5"]
                  ]
 
   :profiles 

@@ -4,6 +4,11 @@
 ;; solution is to move the hidden ~/.lein directory to olddotlein
 ;; so that the user.clj file doesn't get read in
 
+;; I think what's happening is that hadoop is launching sub-clojures
+;; which are going through leiningen somehow and so if the .lein file
+;; is as usual, they re-use user.clj and something in my usual startup
+;; code is clashing with the hadoop code.
+
 ;; Ripped off from
 ;; http://cascalog.org/articles/getting_started.html
 
@@ -147,6 +152,7 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
 
 (use 'cascalog.api)
 
+;; run cities-parser on every line of our csv file
 (?<-
  (stdout)
  [?city ?state]
@@ -154,7 +160,25 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
  (cities-parser ?line :> ?city ?state))
 
 
+;; [org.clojure/data.json "0.2.5"]
+(require '[clojure.data.json :as json])
+
+(def buildings [" {\"name\":\"Chrysler Building\",\"city\":\"New York\"}",
+                 "{\"name\":\"Empire State Building\",\"city\":\"New York\"}"])
+                 {\"name\":\"John Hancock Center\",\"city\":\"Chicago\"}
+                 {\"name\":\"Walt Disney Concert Hall\",\"city\":\"Los Angeles\"}
+                 {\"name\":\"Transamerica Pyramid\",\"city\":\"San Francisco\"}
+                 {\"name\":\"Space Needle\",\"city\":\"Seattle\"}")
 
 
 
 
+(json/read-str buildings) ; {"name" "Chrysler Building", "city" "New York"}
+
+(defn buildings-parser[line] (map (json/read-str line) ["name" "city"]))
+
+(buildings-parser buildings)
+
+(?<- (stdout) [?name ?city]
+     (buildings ?line)
+     (buildings-parser ?line :> ?name ?city))
