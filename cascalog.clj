@@ -122,7 +122,36 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
 ;; world	1
 ;; years	1
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Here I'm stealing from http://blog.factual.com/clojure-on-hadoop-a-new-hope
+
+(def cities
+  ["New York, NY"
+   "Chicago, IL"
+   "Los Angeles, CA"
+   "San Francisco, CA"
+   "Seattle, WA"])
+
+; csv parser from 
+; [clojure-csv/clojure-csv "2.0.1"]
+(require '[clojure-csv.core :as csv] )
+
+(first cities) ; "New York, NY"
+(csv/parse-csv (first cities)) ;-> (["New York" " NY"])
+
+(defn cities-parser [line]
+  (map #(.trim %) (first (csv/parse-csv line))))
+
+(cities-parser (first cities)) ; ("New York" "NY")
+
+(use 'cascalog.api)
+
+(?<-
+ (stdout)
+ [?city ?state]
+ (cities ?line)
+ (cities-parser ?line :> ?city ?state))
 
 
 

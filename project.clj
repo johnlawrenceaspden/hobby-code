@@ -1,10 +1,12 @@
 (defproject hobby-code "0.0.1"
   :dependencies [
+                 [org.clojure/clojure "1.6.0"]
 ;                 [org.clojure/core.logic "0.8.1"]
 ;                 [net.mikera/core.matrix "0.22.0"]
 ;                 [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
 ;                 [simple-plotter "0.1.2"]
                  [cascalog "2.0.0"]
+                 [clojure-csv/clojure-csv "2.0.1"]
                  ]
 
   :profiles 
