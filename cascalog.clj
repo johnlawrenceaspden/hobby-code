@@ -159,26 +159,80 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
  (cities ?line)
  (cities-parser ?line :> ?city ?state))
 
+;; RESULTS
+;; -----------------------
+;; New York	NY
+;; Chicago	IL
+;; Los Angeles	CA
+;; San Francisco	CA
+;; Seattle	WA
+;; -----------------------
+
+;; compare...
+
+(map cities-parser cities) 
+; (("New York" "NY") ("Chicago" "IL") ("Los Angeles" "CA") ("San Francisco" "CA") ("Seattle" "WA"))
+
+(?<- (stdout) [?city ?state]
+     (cities ?line)
+     (cities-parser ?line :> ?city ?state)
+     (= ?state "CA"))
+
+;; RESULTS
+;; -----------------------
+;; Los Angeles	CA
+;; San Francisco	CA
+;; -----------------------
+
+;; compare...
+(filter (fn[[a b]](= b "CA")) 
+        (map cities-parser cities))
+; (("Los Angeles" "CA") ("San Francisco" "CA"))
+
+;; or the 'functional for' forms
+(for [c cities] (cities-parser c)) ;-> (("New York" "NY") ("Chicago" "IL") ("Los Angeles" "CA") ("San Francisco" "CA") ("Seattle" "WA"))
+(for [[a b] (for [c cities] (cities-parser c)) :when (= b "CA")] [a b]) ;-> (["Los Angeles" "CA"] ["San Francisco" "CA"])
+
+
+
+
+
+
+
+
+
 
 ;; [org.clojure/data.json "0.2.5"]
 (require '[clojure.data.json :as json])
 
 (def buildings [" {\"name\":\"Chrysler Building\",\"city\":\"New York\"}",
-                 "{\"name\":\"Empire State Building\",\"city\":\"New York\"}"])
-                 {\"name\":\"John Hancock Center\",\"city\":\"Chicago\"}
-                 {\"name\":\"Walt Disney Concert Hall\",\"city\":\"Los Angeles\"}
-                 {\"name\":\"Transamerica Pyramid\",\"city\":\"San Francisco\"}
-                 {\"name\":\"Space Needle\",\"city\":\"Seattle\"}")
+                 "{\"name\":\"Empire State Building\",\"city\":\"New York\"}",
+                 "{\"name\":\"John Hancock Center\",\"city\":\"Chicago\"}",
+                 "{\"name\":\"Walt Disney Concert Hall\",\"city\":\"Los Angeles\"}",
+                 "{\"name\":\"Transamerica Pyramid\",\"city\":\"San Francisco\"}",
+                 "{\"name\":\"Space Needle\",\"city\":\"Seattle\"}"])
 
 
 
 
-(json/read-str buildings) ; {"name" "Chrysler Building", "city" "New York"}
+(map json/read-str buildings) ;-> ({"name" "Chrysler Building", "city" "New York"} {"name" "Empire State Building", "city" "New York"} {"name" "John Hancock Center", "city" "Chicago"} {"name" "Walt Disney Concert Hall", "city" "Los Angeles"} {"name" "Transamerica Pyramid", "city" "San Francisco"} {"name" "Space Needle", "city" "Seattle"})
 
 (defn buildings-parser[line] (map (json/read-str line) ["name" "city"]))
 
-(buildings-parser buildings)
+(map buildings-parser buildings) ;-> (("Chrysler Building" "New York") ("Empire State Building" "New York") ("John Hancock Center" "Chicago") ("Walt Disney Concert Hall" "Los Angeles") ("Transamerica Pyramid" "San Francisco") ("Space Needle" "Seattle"))
 
 (?<- (stdout) [?name ?city]
      (buildings ?line)
      (buildings-parser ?line :> ?name ?city))
+
+;; RESULTS
+;; -----------------------
+;; Chrysler Building	New York
+;; Empire State Building	New York
+;; John Hancock Center	Chicago
+;; Walt Disney Concert Hall	Los Angeles
+;; Transamerica Pyramid	San Francisco
+;; Space Needle	Seattle
+;; -----------------------
+
+
