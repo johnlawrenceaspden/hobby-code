@@ -236,3 +236,34 @@ age ;-> [["alice" 28] ["bob" 33] ["chris" 40] ["david" 25] ["emily" 25] ["george
 ;; -----------------------
 
 
+;; Now the famous join
+
+(?<- (stdout) [?name ?city ?state]
+     (buildings ?building_line)
+     (buildings-parser ?building_line :> ?name ?city)
+     (cities ?city_line)
+     (cities-parser ?city_line :> ?city ?state))
+
+
+;; RESULTS
+;; -----------------------
+;; John Hancock Center	Chicago	IL
+;; Walt Disney Concert Hall	Los Angeles	CA
+;; Chrysler Building	New York	NY
+;; Empire State Building	New York	NY
+;; Transamerica Pyramid	San Francisco	CA
+;; Space Needle	Seattle	WA
+;; -----------------------
+
+;; That's a bit spooky. How did it know what to do?
+
+(map buildings-parser buildings) ; (("Chrysler Building" "New York") ("Empire State Building" "New York") ("John Hancock Center" "Chicago") ("Walt Disney Concert Hall" "Los Angeles") ("Transamerica Pyramid" "San Francisco") ("Space Needle" "Seattle"))
+(map cities-parser cities) ; (("New York" "NY") ("Chicago" "IL") ("Los Angeles" "CA") ("San Francisco" "CA") ("Seattle" "WA")) 
+
+;; To do this in clojure I'd have to make a hash-map of cities to states
+(def city-to-state (into {} (map (fn[[a b]][a b]) (map cities-parser cities))))
+
+city-to-state ; {"New York" "NY", "Chicago" "IL", "Los Angeles" "CA", "San Francisco" "CA", "Seattle" "WA"}
+
+(for [[a b] (map buildings-parser buildings)] [a b (city-to-state b)])
+; (["Chrysler Building" "New York" "NY"] ["Empire State Building" "New York" "NY"] ["John Hancock Center" "Chicago" "IL"] ["Walt Disney Concert Hall" "Los Angeles" "CA"] ["Transamerica Pyramid" "San Francisco" "CA"] ["Space Needle" "Seattle" "WA"])
