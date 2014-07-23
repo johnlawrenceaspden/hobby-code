@@ -124,6 +124,22 @@ export -f doc
 #}
 #add similar entries for commonly used graphical programs
 
+function e #open emacs in background and disown it, or if already running use emacsclient
+{
+ echo "emacs function backgrounds and disowns emacs, or calls client if server already running; see .bashrc";
+ FLUFFY="$@";
+ echo "trying to open:" $FLUFFY;
+ # test for existence of emacs server socket for user id 1000
+ if [ -e /tmp/emacs1000/server ]; then 
+     echo "using emacsclient"
+     emacsclient -n $FLUFFY; 
+ else 
+     echo "starting emacs: make tea..."
+     emacs  --geometry 10x10 --fullscreen --no-splash $FLUFFY & disown ;
+ fi;
+}
+
+
 
 
 function fnd
@@ -345,7 +361,7 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 
 alias sbsx='source ~/.bashrc && set -x'
 alias ll='ls -alrt'
-alias e='emacsclient -n'
+#alias e='emacsclient -n'
 alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 # alias cdhc='pushd ~/hobby-code'
