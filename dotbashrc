@@ -4,7 +4,7 @@
 # for examples
 
 # If not running interactively, don't do anything
-# commented this out because it sods everything up, but is probably important on debian, so don't copy it back to 
+# commented this out because it sods everything up, but is probably important on debian, so don't copy it back to
 # home machines!
 #[ -z "$PS1" ] && return
 
@@ -34,12 +34,12 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -130,10 +130,10 @@ function e #open emacs in background and disown it, or if already running use em
  FLUFFY="$@";
  echo "trying to open:" $FLUFFY;
  # test for existence of emacs server socket for user id 1000
- if [ -e /tmp/emacs1000/server ]; then 
+ if [ -e /tmp/emacs1000/server ]; then
      echo "using emacsclient"
-     emacsclient -n $FLUFFY; 
- else 
+     emacsclient -n $FLUFFY;
+ else
      echo "starting emacs: make tea..."
      emacs  --geometry 10x10 --fullscreen --no-splash $FLUFFY & disown ;
  fi;
@@ -148,8 +148,8 @@ function fnd
     command find . -iname "$1"
 }
 
-function fndg 
-{  
+function fndg
+{
     echo example: 'fndg \*.c void'
     command find . -name "$1" -type f -print0 | xargs -0 -e grep --color -nH -e "$2"
 }
@@ -190,7 +190,7 @@ function mktags
 # # solarflare productivity aliases
 
 # # this one is for running continuous sims. The killer window will destroy all processes on anvil
-# # shortly after the screensaver activates, so that you don't leave expensive sims running over lunch 
+# # shortly after the screensaver activates, so that you don't leave expensive sims running over lunch
 # alias anvilicious="gnome-terminal --geometry=110x40+1200+10 --profile anvil \
 # --tab --title=Desktop --profile default \
 # --tab --title=anvil \
@@ -202,7 +202,7 @@ function mktags
 # --tab --title=cosim2 \
 # --tab --title=killer -e '/home/jla/hobby-code/screensaveridle.pl'"
 
-# # usual configuration for running jlahacks, with simulator, uart, hwlog, and verdi windows, plus a back up sim 
+# # usual configuration for running jlahacks, with simulator, uart, hwlog, and verdi windows, plus a back up sim
 # alias anvilsims="gnome-terminal --geometry=88x40+1200+10 --profile anvil \
 # --tab --title=sim1 \
 # --tab --title=uart1  \
@@ -277,7 +277,7 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 #     I=$1
 #     EXT=$2
 #     BACKUPDIR="$HOME/esnapshots/${V}esnap_${I}_${EXT}"
-#     if [ -d ${BACKUPDIR} ] ; then 
+#     if [ -d ${BACKUPDIR} ] ; then
 #       echo "collision!"
 #     else
 #       mkdir -p ${BACKUPDIR}
@@ -289,7 +289,7 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 # {
 #     reset
 #     clear
-#     date 
+#     date
 
 #     TMPFILE="$(mktemp)"
 #     ls -al /projects/huntington_A0/Work/jla | tee --append "${TMPFILE}"
@@ -310,12 +310,12 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 #     COMMAND="time $HOME/myco/chip_test/src/tools/cosim/esnap "
 
 #     # standard configuration for jlahacks
-#     if   [ "$RUN_VARIANT" == 'hacks' ] ; then 
+#     if   [ "$RUN_VARIANT" == 'hacks' ] ; then
 #         COMMAND="$COMMAND --farmi-lite --mccmdline hacks"
-#     elif   [ "$RUN_VARIANT" == 'hackswithfsdb' ] ; then 
+#     elif   [ "$RUN_VARIANT" == 'hackswithfsdb' ] ; then
 #         COMMAND="$COMMAND --farmi-lite --simv-args 'FSDB=1' --mccmdline hackswithfsdb"
 #     # various combinations of speedups for snapper trivial
-#     elif   [ "$RUN_VARIANT" == 'vanilla' ] ; then 
+#     elif   [ "$RUN_VARIANT" == 'vanilla' ] ; then
 #         COMMAND="$COMMAND --farmi-lite --dutcfg min"
 #     elif [ "$RUN_VARIANT" == 'lean' ] ; then
 #         COMMAND="$COMMAND --farmi-lite --dutcfg min --lean "
@@ -341,7 +341,7 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 #     esnap_return_value=$?
 #     echo "return value " $esnap_return_value
 
-#     INFOFILE="/local/scratch/esnap_${COSIM_IDENTITY}/jlainfo" 
+#     INFOFILE="/local/scratch/esnap_${COSIM_IDENTITY}/jlainfo"
 #     echo "writing status info from start of run (${TMPFILE}) into scratch directory as ${INFOFILE}"
 #     cp "${TMPFILE}" "${INFOFILE}"
 
@@ -375,7 +375,7 @@ alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 # alias remake='ssh -X anvil "make -j -C ~/myco/firmwaresrc world"'
 # alias build_from_clean='ssh -X anvil "make -C ~/myco/firmwaresrc clean world"'
 
-# function hgfw { hgtk --repository ~/myco/firmwaresrc log & disown ; } 
+# function hgfw { hgtk --repository ~/myco/firmwaresrc log & disown ; }
 
 # end of stuff added for solarflare
 
@@ -387,19 +387,19 @@ alias ack='ack-grep --text'
 export PATH="/usr/local/heroku/bin:$PATH"
 
 
-function vcstatuses 
+function vcstatuses
 {
     for i in ~/hobby-code ~/data ~/iqtest ; do
-        echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master ; 
+        echo "--" && echo "$i" && echo "--" && cd "$i" && git status && git log origin/master..master ;
     done ;
     # i=~/iqtest
     # echo "--" && echo "$i" && echo "--" && cd "$i" && git status &&
     # echo "-------log vs origin/master-----------" &&
-    # git log origin/master..master && 
+    # git log origin/master..master &&
     # echo "-------log vs heroku/master-----------" &&
-    # git log heroku/master..master; 
+    # git log heroku/master..master;
 
-    # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ; 
+    # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ;
     # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
 }
 
@@ -427,4 +427,3 @@ alias igg="cd ~/iqtest && git gui"
 alias cljmkclasspath='cd ~/hobby-code && lein classpath > LEIN_CLASSPATH && cd -'
 alias cljnoport='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -classpath $LEIN_CLASSPATH clojure.main'
 alias clj='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -server -Xmx800M -classpath $LEIN_CLASSPATH clojure.main -e "( do (require '\''clojure.tools.nrepl.server) (clojure.tools.nrepl.server/start-server :bind \"127.0.0.1\" :port 4001))"'
-
