@@ -127,10 +127,12 @@ export -f doc
 function e #open emacs in background and disown it, or if already running use emacsclient
 {
  echo "emacs function backgrounds and disowns emacs, or calls client if server already running; see .bashrc";
- FLUFFY="$@";
- echo "trying to open:" $FLUFFY;
- # test for existence of emacs server socket for user id 1000
- if [ -e /tmp/emacs1000/server ]; then
+ local FLUFFY="$@";
+ local SERVERSOCKET=/tmp/emacs${UID}/server ;
+ echo "trying to open: " $FLUFFY 
+ echo " checking: " $SERVERSOCKET "for emacs server " ;
+ # test for existence of emacs server socket
+ if [ -e $SERVERSOCKET ]; then
      echo "using emacsclient"
      emacsclient -n $FLUFFY;
  else
