@@ -21,7 +21,6 @@
    '(ac-nrepl ; 0.18         installed  auto-complete sources for Clojure using nrepl completions
      ack-and-a-half ; 1.2.0        installed  Yet another front-end for ack
      auto-complete ;; 1.4          installed  Auto Completion for GNU Emacs
-     clojure-cheatsheet ;; 20130819.... installed  The Clojure Cheatsheet in Emacs [github]
      clojure-mode ;; 2.1.0        installed  Major mode for Clojure code
      ess ;; 5.14         installed  Edit and interact with statistical programs like R, S-Plus, SAS, Stata and JAGS
      nrepl      ;; 0.1.8        installed  Client for Clojure nREPL
@@ -799,20 +798,20 @@
 ;;   :repl-options {:nrepl-middleware
 ;;                  [inspector.middleware/wrap-inspect]}}}
 
-(load-file "~/nrepl-inspect/nrepl-inspect.el")
-(define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
+;; (load-file "~/nrepl-inspect/nrepl-inspect.el")
+;; (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
 
 
 ;; Sadly all the stuff with ritz seems to be well and truly broken, 
 ;; but one day...
 
-(require 'nrepl-ritz)
+;; (require 'nrepl-ritz)
 
-;; Ritz middleware
-(define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-(define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-(define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
-(define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+;; ;; Ritz middleware
+;; (define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; (define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
 
 
 ;; Ack and a half
