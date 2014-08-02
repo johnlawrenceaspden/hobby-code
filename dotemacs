@@ -18,16 +18,17 @@
      (or (package-installed-p package)
          (if (y-or-n-p (format "Package %s is missing. Install it? " package)) 
              (package-install package))))
-   '(ac-nrepl ; 0.18         installed  auto-complete sources for Clojure using nrepl completions
+   '(
      ack-and-a-half ; 1.2.0        installed  Yet another front-end for ack
      auto-complete ;; 1.4          installed  Auto Completion for GNU Emacs
      clojure-mode ;; 2.1.0        installed  Major mode for Clojure code
-     ess ;; 5.14         installed  Edit and interact with statistical programs like R, S-Plus, SAS, Stata and JAGS
+     ;; ess ;; 5.14         installed  Edit and interact with statistical programs like R, S-Plus, SAS, Stata and JAGS
      nrepl      ;; 0.1.8        installed  Client for Clojure nREPL
-     nrepl-ritz ;; 0.6.0        installed  nrepl extensions for ritz
-     rainbow-delimiters ;; 1.3.4        installed  Highlight nested parens, brackets, braces a different color at each depth.
+     ;; nrepl-ritz ;; 0.6.0        installed  nrepl extensions for ritz
+     ;; rainbow-delimiters ;; 1.3.4        installed  Highlight nested parens, brackets, braces a different color at each depth.
      undo-tree ;;0.6.3        installed  Treat undo history as a tree
-     sml-mode ;; 6.4
+     ;;sml-mode ;; 6.4
+     ;; ac-nrepl ; 0.18         installed  auto-complete sources for Clojure using nrepl completions
      )))
 
 
@@ -662,7 +663,7 @@
     (hs-minor-mode t)))
 
 ;; undo-tree-mode can be got through the package manager
-(require 'undo-tree) 
+(require 'undo-tree)
 
 (global-undo-tree-mode)
 
@@ -758,7 +759,7 @@
                 (remove-if-not 'buffer-file-name (buffer-list)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
-(require 'rainbow-delimiters)
+;;(require 'rainbow-delimiters)
 
 (require 'nrepl)
  
@@ -779,12 +780,12 @@
 (add-hook 'nrepl-mode-hook 'subword-mode)
  
 ;; ;; Auto completion for NREPL
-(require 'ac-nrepl)
+;; (require 'ac-nrepl)
 
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'nrepl-mode))
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'nrepl-mode))
 
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
 
 ;; Object inspector
 
