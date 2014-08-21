@@ -383,7 +383,7 @@ alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 # I always forget that ack is called ack-grep on debian, and that it doesn't search all
 # text files by default. Therefore:
-alias ack='ack-grep --text'
+# alias ack='ack-grep --text'
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
