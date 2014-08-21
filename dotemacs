@@ -673,6 +673,11 @@
   (interactive)
   (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
 
+;; If inferior octave mode is hanging without giving a prompt, try making a .octaverc prompt with the prompt emacs' octave mode is expecting
+;; cat >~/.octaverc
+;; PS1(">> ")
+
+
 ;; use octave mode for .m files rather than objective-c which is the default in emacs
 (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
 
