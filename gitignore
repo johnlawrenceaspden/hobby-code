@@ -2,3 +2,6 @@ LEIN_CLASSPATH
 .lein-repl-history
 .nrepl-port
 *.pyc
+octave-workspace
+matlab_workspace.mat
+.~
