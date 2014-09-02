@@ -25,3 +25,6 @@ mv ~/gitignore ~/old.gitignore
 ln -s ~/hobby-code/gitignore ~/gitignore
 
 mkdir -p ~/emacs.d/tmp
+
+mkdir -p ~/bin
+ln -s ~/hobby-code/e.bash ~/bin/e.bash
