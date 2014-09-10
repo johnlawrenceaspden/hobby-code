@@ -426,3 +426,8 @@ alias clj='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSP
 
 alias e='~/bin/e.bash'
 alias eds='e ~/data/stuff.org'
+
+#getting a bit paranoid about hibernate and suspend. Copy the suspend log file to home directory for easy diffing with the new version if it breaks
+alias hib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sudo pm-hibernate'
+alias sus='sudo cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sudo pm-suspend'
+
