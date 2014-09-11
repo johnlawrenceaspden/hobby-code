@@ -436,3 +436,5 @@ alias sus='sudo cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-comm
 alias cdlr='cd ~/lapsim/RLS4/'
 alias cdcl='cd ~/cycling/lapsim'
 
+# tell vexing programs to do their stupid paging through something that doesn't annoy me
+export PAGER=/bin/cat
