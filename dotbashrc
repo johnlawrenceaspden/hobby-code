@@ -432,3 +432,7 @@ alias eds='e ~/data/stuff.org'
 alias hib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sudo pm-hibernate && xmodmap ~/.xmodmaprc'
 alias sus='sudo cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sudo pm-suspend && xmodmap ~/.xmodmaprc'
 
+# aliases for quick cding
+alias cdlr='cd ~/lapsim/RLS4/'
+alias cdcl='cd ~/cycling/lapsim'
+
