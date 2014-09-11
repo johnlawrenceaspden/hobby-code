@@ -427,7 +427,8 @@ alias clj='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSP
 alias e='~/bin/e.bash'
 alias eds='e ~/data/stuff.org'
 
-#getting a bit paranoid about hibernate and suspend. Copy the suspend log file to home directory for easy diffing with the new version if it breaks
-alias hib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sudo pm-hibernate'
-alias sus='sudo cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sudo pm-suspend'
+# getting a bit paranoid about hibernate and suspend. Copy the suspend log file to home directory for easy diffing with the new version if it breaks
+# also we lose xmodmap settings on hibernate and suspend so with any luck this should restore them
+alias hib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sudo pm-hibernate && xmodmap ~/.xmodmaprc'
+alias sus='sudo cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sudo pm-suspend && xmodmap ~/.xmodmaprc'
 
