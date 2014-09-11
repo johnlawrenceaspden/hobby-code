@@ -438,3 +438,5 @@ alias cdcl='cd ~/cycling/lapsim'
 
 # tell vexing programs to do their stupid paging through something that doesn't annoy me
 export PAGER=/bin/cat
+# but man is alright as it is
+export MANPAGER=less
