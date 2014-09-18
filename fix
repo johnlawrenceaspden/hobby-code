@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# two different ways of remapping caps lock to be control
+setxkbmap -option ctrl:nocaps
+xmodmap ~/.xmodmaprc
+
+if [[ 'dell-mini' == $HOSTNAME ]] ; then
+    # dell mini has weird touchpad where the buttons are part of the sensitive surface. cut them off.
+    synclient AreaBottomEdge=4000
+elif [[ 'dell-3537' == $HOSTNAME ]]; then
+    echo 'no special fix defined for' $HOSTNAME
+elif [[ 'dell-mini-2' == $HOSTNAME ]]; then
+    echo 'no special fix defined for' $HOSTNAME
+else
+    echo 'unknown box' $HOSTNAME
+fi
+
+# scale graphics tablet surface to cover largish monitor
+xinput set-int-prop "Wacom Bamboo Connect Pen stylus" "Wacom Tablet Area" 32 0 00 23175 8600
+
+# if workrave is not running then add it
+pgrep workrave
+if [[ $? != 0 ]] ; then
+    workrave &
+fi
