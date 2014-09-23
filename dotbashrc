@@ -440,3 +440,9 @@ alias cdcl='cd ~/cycling/lapsim'
 export PAGER=/bin/cat
 # but man is alright as it is
 export MANPAGER=less
+
+# reset everything nicely in various settings
+alias eng='~/.screenlayout/engineering.sh && fix'
+alias ide='~/.screenlayout/ideaspace.sh && fix'
+alias net='~/.screenlayout/netbookalone.sh && fix'
+
