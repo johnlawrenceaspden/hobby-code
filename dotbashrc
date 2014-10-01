@@ -449,3 +449,6 @@ alias eng='~/.screenlayout/engineering.sh && fix'
 alias ide='~/.screenlayout/ideaspace.sh && fix'
 alias net='~/.screenlayout/netbookalone.sh && fix'
 
+# relies on apt-get install cdargs to provide bash directory bookmarking
+# creates ca,cv,cb
+source /usr/share/doc/cdargs/examples/cdargs-bash.sh
