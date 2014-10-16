@@ -446,7 +446,7 @@ export MANPAGER=less
 
 # reset everything nicely in various settings
 alias eng='~/.screenlayout/engineering.sh && fix'
-alias ide='~/.screenlayout/ideaspace.sh && fix'
+alias ide='~/.screenlayout/ideaspace-big-dell.sh && fix'
 alias net='~/.screenlayout/netbookalone.sh && fix'
 
 # relies on apt-get install cdargs to provide bash directory bookmarking
