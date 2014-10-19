@@ -1,0 +1,53 @@
+# List of skills extracted from My CV
+# Should write a human-assisted sorting algorithm for this
+
+AVR
+Algorithm Design
+Assembler
+Automata
+C
+8051
+Clojure
+Embedded
+Fortran
+Git
+Comms
+MATLAB/Octave
+Java
+Linux
+Machine Learning
+Data Mining
+Mathematica
+Mega128
+Modelling
+Thinking
+OCaml
+Scheme
+Python
+R
+SIMD/Vector Processor
+Signal Processing
+Speech Recognition
+Research
+Structured Analysis & Design
+UNIX
+Codecs
+cryptography
+graphs
+lisp
+make
+metaprogramming
+public speaking.
+small world network analysis
+verilog
+teaching
+maths
+physics
+Finite Element Analysis
+Probabilistic Graphical Models
+maxima
+IPSEC
+Protocols
+SWIG
+UI Design
+C++
