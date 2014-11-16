@@ -462,3 +462,5 @@ export PATH="/usr/local/heroku/bin:$PATH"
 /usr/bin/setxkbmap -option "ctrl:nocaps"
 
 function mtd { mv "$@" ~/Desktop ; }
+
+export LD_LIBRARY_PATH=~/holstuff/polyml/lib
