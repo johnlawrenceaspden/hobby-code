@@ -1,6 +1,10 @@
 #!/usr/bin/julia
 
-# Our next task is to read in all the training images and make them into a big matrix
+# Our next task is to read in all the training images and make them
+# into a big matrix.
+
+# The code on the kaggle website doesn't seem to work for me, but after
+# a bit of hunting around, I came up with this little program
 
 using DataFrames
 using Images # lots of warnings, but it's ok
@@ -18,10 +22,10 @@ no_of_images=size(labels)[1]
 
 @printf("reading %s images\n", no_of_images)
 
+# All the images have been resized to 20x20 in the trainResized directory
 imageSize=20*20
 
-
-# The code on the kaggle website doesn't seem to work for me, but after a bit of hunting around, this is how to get the desired effect on the first image:
+# So let's try and get the desired effect on the first image
 image="$(imagedirectory)1.Bmp"
 img=imread(image)
 # turn our colour image into a greyscale image
@@ -32,14 +36,16 @@ img_floats=reinterpret(Float32,float32(img_gs))
 img_vec=reshape(img_floats,1,imageSize)
 
 # After all that, I feel the need to check I haven't buggered it up
+# Theres a julia package for looking at images
 Pkg.add("ImageView")
 require("ImageView")
 # Should pop up a little grey 'n'
 ImageView.view(grayim(reshape(img_vec,20,20)))
 
-# So now we want to use that process to convert all the images into
-# one big array of image vectors
-#Create a gigantic array to put the images in
+# Now we want to use that process to convert all the images into one
+# big array of image vectors
+
+# Create a gigantic array to put the images in
 x=zeros(no_of_images,imageSize)
 
 # We can iterate over a dataframe's columns by name (it takes a while!)
@@ -58,38 +64,9 @@ for (a,b) in enumerate(labels[:ID]);
     x[a,:]=img_vec
 end
 
+# and one final paranoid check
+ImageView.view(grayim(reshape(x[6200,:],20,20)))
+labels[6200,:]
 
 
-# The kaggle julia tutorial then tells us to do:
-## RGB Image with:
-##   data: 20x20 Array{RGB{Float32},2}
-##   properties:
-##     IMcs: sRGB
-##     spatialorder:  x y
-##     pixelspacing:  1 1
-
-## What did that just do?
-
-help(float32)
-## Base.float32(x)
-##    Convert a number or array to "Float32" data type
-
-# Not enormously the wiser now...
-
-# Our image is 2 dimensional
-
-#2
-
-# And 20x20
-
-#(20,20)
-
-# There's something funny going on here. This first image is a 20x20 colour bitmap
-# and yet the tutorial on the website has something about converting images to greyscale if ndims is 3. Our ndims is 2.
-
-# finally we want to convert our 20x20 image to a 1x400 vector
-imageSize=400
-flat=reshape(temp,1,imageSize)
-
-
-
+# So that's how to turn 6000 or so images into one big matrix.
