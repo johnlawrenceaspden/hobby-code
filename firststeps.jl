@@ -36,7 +36,7 @@ img_floats=reinterpret(Float32,float32(img_gs))
 img_vec=reshape(img_floats,1,imageSize)
 
 # After all that, I feel the need to check I haven't buggered it up
-# Theres a julia package for looking at images
+# There's a julia package for looking at images
 Pkg.add("ImageView")
 require("ImageView")
 # Should pop up a little grey 'n'
