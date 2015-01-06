@@ -1,59 +1,37 @@
 #!/usr/bin/julia
 
-# Our next task is to read in all the training images and make them
-# into a big matrix.
+# Right, let's see if we can actually get Julia to do a bit of Machine Learning:
 
-# The code on the kaggle website doesn't seem to work for me, but after
-# a bit of hunting around, I came up with this little program
+# Make sure we've got the necessary libraries installed
+Pkg.add("DataFrames")
+Pkg.add("Images")
+Pkg.add("ImageView")
+Pkg.add("DecisionTree")
 
-using DataFrames
-using Images # lots of warnings, but it's ok
+# And loaded
+require("DataFrames")
+require("Images")
+require("ImageView")
+require("DecisionTree")
 
-# Paths to our data files
+# Now let's load our training data
 labelsfile="./trainLabels.csv"
 imagedirectory="./trainResized/"
-
-@printf("Reading %s\n", labelsfile)
-labels=readtable(labelsfile)
-no_of_images=size(labels)[1]
-@printf("Read in %d labels from %s\n", no_of_images, labelsfile)
-@printf("Image %i is of an %s\n",labels[1,1],labels[1,2])
-
-
-@printf("reading %s images\n", no_of_images)
-
-# All the images have been resized to 20x20 in the trainResized directory
 imageSize=20*20
 
-# So let's try and get the desired effect on the first image
-image="$(imagedirectory)1.Bmp"
-img=imread(image)
-# turn our colour image into a greyscale image
-img_gs=convert(Image{Gray},img)
-# turn the specialized image format into an array of floats
-img_floats=reinterpret(Float32,float32(img_gs))
-# turn the 20x20 array into a 1x400 vector
-img_vec=reshape(img_floats,1,imageSize)
+# load the ground truth labels
+labels=DataFrames.readtable(labelsfile)
+no_of_images=size(labels)[1]
+@printf("Read in %d labels from %s\n", no_of_images, labelsfile)
 
-# After all that, I feel the need to check I haven't buggered it up
-# There's a julia package for looking at images
-Pkg.add("ImageView")
-require("ImageView")
-# Should pop up a little grey 'n'
-ImageView.view(grayim(reshape(img_vec,20,20)))
-
-# Now we want to use that process to convert all the images into one
-# big array of image vectors
-
-# Create a gigantic array to put the images in
-x=zeros(no_of_images,imageSize)
-
-# We can iterate over a dataframe's columns by name (it takes a while!)
+# Create a gigantic array of training images
+# This is hella slow. I was promised speed!
+train=zeros(no_of_images,imageSize)
 for (a,b) in enumerate(labels[:ID]);
     image="$(imagedirectory)$(b).Bmp"
-    img=imread(image)
+    img=Images.imread(image)
     assert(size(img)==(20,20)) # paranoia
-    img_gs=convert(Image{Gray},img)
+    img_gs=convert(Images.Image{Images.Gray},img)
     assert(size(img_gs)==(20,20))
     img_floats=reinterpret(Float32,float32(img_gs))
     assert(size(img_floats)==(20,20))
@@ -61,12 +39,69 @@ for (a,b) in enumerate(labels[:ID]);
     assert(size(img_vec)==(1,400))
 
     @printf("%s %s\n",a,image)
-    x[a,:]=img_vec
+    train[a,:]=img_vec
 end
 
-# and one final paranoid check
-ImageView.view(grayim(reshape(x[6200,:],20,20)))
-labels[6200,:]
+# We now need to make the ground truth labels
+#
+# We can make little functions
+funct=(x -> int(x[1]))
+funct("A") # 65
+# And map them over things
+nearlywhatwewant=map(funct, labels[:Class])
+# Unfortunately this doesn't appear to be good enough
+# This is a DataArray, whatever that means, and we want an Array, whatever that is
+# And this seems to do the conversion, although God knows why:
+trainlabels=int(nearlywhatwewant)
+
+# Let's just check that we're still sane
+char(trainlabels[20]) # should be a k
+ImageView.view(Images.grayim(reshape(train[20,:],20,20))) # should be a picture of a k
 
 
-# So that's how to turn 6000 or so images into one big matrix.
+
+
+# All this preparation having been done, we can now feed the data into
+# a random-forest making function:
+sherwood=DecisionTree.build_forest(trainlabels,train,20,50,1.0) #again, bloody ages
+
+## Ensemble of Decision Trees
+## Trees:      50
+## Avg Leaves: 2208.14
+## Avg Depth:  19.3
+
+# Now, how well does this forest do on the data on which it was trained?
+
+shouldbegood=DecisionTree.apply_forest(sherwood, train)
+
+# Looks like it only got one wrong
+wrong=find(shouldbegood-trainlabels) # 3055
+
+@printf("Testing a Random Forest on the data used to train it: errors=%s", size(wrong)[1])
+
+char(shouldbegood[3055]) #E
+char(trainlabels[3055])  #1
+
+# Apparently this 1 looks more like an E
+
+#Sure looks like a 1 to me!
+ImageView.view(Images.grayim(reshape(train[3055,:],20,20)))
+
+# But you can't fault the classifier on the other 6282 images.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
