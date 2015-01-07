@@ -75,7 +75,7 @@ sherwood=DecisionTree.build_forest(trainlabels,train,20,50,1.0) #again, bloody a
 shouldbegood=DecisionTree.apply_forest(sherwood, train)
 
 # Looks like it only got one wrong
-wrong=find(shouldbegood-trainlabels) # 3055
+wrong=find(shouldbegood.!=trainlabels) # 3055
 
 @printf("Testing a Random Forest on the data used to train it: errors=%s", size(wrong)[1])
 
