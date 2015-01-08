@@ -14,41 +14,42 @@ require("Images")
 require("ImageView")
 require("DecisionTree")
 
-# Where the data is
+# Where the data is (Kaggle provide two zip files that unpack into these directories)
 trainlabelsfile="./trainLabels.csv"
 trainimagedirectory="./trainResized/"
 
 testlabelsfile="./sampleSubmission.csv"
 testimagedirectory="./testResized/"
 
+# All the resized images are 20x20
 imageSize=20*20
 
-
+# Get the data sets and turn them into an index of file numbers and a
+# large array of image data where each image is reduced to a greyscale
+# 1x400 vector. This is hella slow. I was promised speed!
 function readimages(csvfile, imagedirectory)
+
+    #read the csv file
     labels=DataFrames.readtable(csvfile)
     no_of_images=size(labels)[1]
     @printf("Read in %d labels from %s\n", no_of_images, csvfile)
-    # Create a gigantic array of training images
-    # This is hella slow. I was promised speed!
+
+    # read the images, grey them, flatten them, and put them in an array
     x=zeros(no_of_images,imageSize)
     for (a,b) in enumerate(labels[:ID]);
         image="$(imagedirectory)$(b).Bmp"
         img=Images.imread(image)
-        assert(size(img)==(20,20)) # paranoia
         img_gs=convert(Images.Image{Images.Gray},img)
-        assert(size(img_gs)==(20,20))
         img_floats=reinterpret(Float32,float32(img_gs))
-        assert(size(img_floats)==(20,20))
         img_vec=reshape(img_floats,1,imageSize)
-        assert(size(img_vec)==(1,400))
         @printf("%s %s\n",a,image)
         x[a,:]=img_vec
     end
+    
     return labels,x
 end;
 
 trainlabels,trainimages=readimages(trainlabelsfile, trainimagedirectory)
-testlabels,testimages=readimages(testlabelsfile, testimagedirectory)
 
 # Our classifier can't deal with non-numeric class labels
 # So to use it we convert the ground truth labels like "A" into numbers like 65
@@ -70,26 +71,23 @@ sherwood=DecisionTree.build_forest(trainlabelsbodge,trainimages,20,50,1.0) #agai
 
 # Now, how well does this forest do on the data on which it was trained?
 
+@printf("Training Random Forest\n")
 shouldbegoodbodge=DecisionTree.apply_forest(sherwood, trainimages)
 
 shouldbegood=map((x->string(char(x))),shouldbegoodbodge)
 
 
-# Looks like it only got one wrong
+# On its training data, it only got one wrong
 wrong=find(shouldbegood.!=trainlabels[:Class]) # 3055
 
-@printf("Testing a Random Forest on the data used to train it: errors=%s", size(wrong)[1])
-
-shouldbegood[3055] #E
-trainlabels[3055,:Class] #"1"
-
-# Apparently this 1 looks more like an E, even to a classifier that's explicitly been told it's a 1
-ImageView.view(Images.grayim(reshape(trainimages[3055,:],20,20)))
-
-# But you can't fault its memory on the other 6282 images.
+@printf("Testing a Random Forest on the data used to train it: errors=%s\n", size(wrong)[1])
 
 # We can also try it on the test data
 
+@printf("Reading in the test images\n")
+testlabels,testimages=readimages(testlabelsfile, testimagedirectory)
+
+@printf("Classifying the test images\n")
 doesitworkbodge=DecisionTree.apply_forest(sherwood, testimages)
 doesitwork=map((x->string(char(x))),doesitworkbodge)
 
