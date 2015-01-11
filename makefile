@@ -1,5 +1,7 @@
-run: jerry
-	./jerry
+PROGRAM=linkedlist
 
-jerry: jerry.c
-	gcc jerry.c -o jerry
+run: $(PROGRAM)
+	./$(PROGRAM)
+
+$(PROGRAM): $(PROGRAM).c
+	gcc $(PROGRAM).c -o $(PROGRAM)
