@@ -4,4 +4,4 @@ run: $(PROGRAM)
 	./$(PROGRAM)
 
 $(PROGRAM): $(PROGRAM).c
-	gcc $(PROGRAM).c -o $(PROGRAM)
+	gcc --std=gnu99 $(PROGRAM).c -o $(PROGRAM)
