@@ -14,7 +14,7 @@
 
 (defvar my-packages '(clojure-mode
                       cider
-                      auto-complete
+		      company
                       undo-tree))
 
 (dolist (p my-packages)
