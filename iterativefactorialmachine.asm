@@ -48,7 +48,7 @@ _start:
         int 0x80                ; make system call
 
         ;; set up problem
-        mov [n], dword 12
+        mov [n], dword 10
 
 init:
         ;; (assign product 1)
@@ -80,34 +80,42 @@ done:
         mov eax,[product]
         mov [n],eax
 
-        
+;-------------------------------------------
 
-printn:
-                                ;mov eax,[n]
+        mov r9,0
         mov eax,[n]
 
-printloop:      
-        mov edx, 0
-        mov ebx, 10
+count:  
+        mov ebx,10
+        mov edx,0
         div ebx
-        add edx,0x30
-        mov [msg], edx
+        push rdx
+        inc r9
 
-        push rax
+        cmp eax,0
+        jnz count
         
+show:
+        pop rdx
+        add edx,0x30
+        mov [msg],edx
+
+        push r9
         mov eax,write            ; system call number 4 (write)
         mov ebx,stdout           ; file descriptor (stdout)
         mov ecx,msg              ; pointer to buffer
-        mov edx,1              ; length of buffer
+        mov edx,1                ; length of buffer
         int 0x80                 ; make system call
+        pop r9
 
-        pop rax
-        cmp eax,0
-        jnz printloop
+        dec r9
+        cmp r9,0
+        jnz show
+
     
         
 exit:   
-        mov ebx,[n]           ; return code
+        mov ebx,0           ; return code
         mov eax,sys_exit       ; system call number 1 (exit)
         int 0x80               ; make system call
         
