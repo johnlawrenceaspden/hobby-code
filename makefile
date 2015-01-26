@@ -1,7 +1,7 @@
-PROGRAM=gcdmachine
+PROGRAM=iterativefactorialmachine
 
 run: $(PROGRAM)
-	./$(PROGRAM)
+	./$(PROGRAM) ; echo "---->" $$?
 
 $(PROGRAM).o: $(PROGRAM).asm
 	nasm -f elf64 -g $(PROGRAM).asm
