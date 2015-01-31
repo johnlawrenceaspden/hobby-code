@@ -51,7 +51,7 @@
         (= op 'inc) (inc a)))
   
 
-(defn step [pc state controller]
+(defn step [{:keys [pc state controller]}]
   (if (>= pc (count controller)) :halt ;; if the program counter goes off the end, stop
       (let [npc (inc pc)                 ;; increment the program counter
             instruction (controller pc)] ;; look up the next instruction
@@ -62,14 +62,17 @@
           ;; assignment
           (= (first instruction) 'assign) 
           (let [var (second instruction)
-                arg (nth instruction 2)]
-            (cond (number? arg) 
-                  [npc (assoc state var arg ) controller]
-                  (symbol? arg)
-                  [npc (assoc state var (state arg) ) controller]
-                  :else
-                  (let [[op val1 val2] arg]
-                    [npc (assoc state var (operation op (state val1) (state val2))) controller])))
+                arg (nth instruction 2)
+                val (cond
+                      ;; immediate values
+                      (or (number? arg) (keyword? arg)) arg
+                      ;; registers
+                      (symbol? arg) (state arg) 
+                      ;; operations on registers
+                      :else
+                      (let [[op val1 val2] arg]
+                        (operation op (state val1) (state val2))))]
+            [npc (assoc state var val ) controller])
           ;; goto
           (= (first instruction) 'goto)
           [(.indexOf controller (second instruction)) state controller]
@@ -77,26 +80,29 @@
           (= (first instruction) 'branch)
           (let [[op val1 val2] (second instruction)
                 label (nth instruction 2)]
-            (cond (= op '>) (if (operation op (state val1) (state val2))
+            (if (operation op (state val1) (state val2))
                               [(.indexOf controller label) state controller]
-                              [npc state controller])))))))
+                              [npc state controller]))))))
 
 
 (list 
  ;; labels and gotos
- (= (step 0 {} '[:begin (goto :begin)])
+ (= (step {:pc 0  :state {} :controller '[:begin (goto :begin)]})
     '[1 {} [:begin (goto :begin)]]) ; true ; true ; true
- (= (step 1 {} '[:begin (goto :begin)]) '[0 {} [:begin (goto :begin)]]) ; true ; true ; true
+ (= (step {:pc 1  :state {} :controller '[:begin (goto :begin)]})
+    '[0 {} [:begin (goto :begin)]])
  ;; assignment
- (= (step 0 {} '[(assign val 10)])
+ (= (step {:pc 0 :state {} :controller '[(assign val 10)]})
     '[1 {val 10} [(assign val 10)]]) ; true ; true ; true
- (= (step 0 '{doom 1} '[(assign val doom)])
-    '[1 {val 1, doom 1} [(assign val doom)]]) ; true ; true
- (= (step 0 '{a 3 b 7} '[(assign val (* a b))])
+ (= (step {:pc 0 :state '{} :controller '[(assign val :keyword)]})
+    '[1 {val :keyword} [(assign val :keyword)]]) ; true ; true
+ (= (step {:pc 0 :state '{doom 1} :controller '[(assign val doom)]})
+    '[1 {val 1, doom 1} [(assign val doom)]])
+ (= (step {:pc 0 :state '{a 3 b 7} :controller '[(assign val (* a b))]})
     '[1 {val 21, a 3, b 7} [(assign val (* a b))]]) ; true ; true
  ;; branch
- (= (step 1 '{a 1 b 2} '[:begin (branch (> a b) :begin)]) '[2 {a 1, b 2} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
- (= (step 1 '{a 2 b 1} '[:begin (branch (> a b) :begin)]) '[0 {a 2, b 1} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
+ (= (step {:pc 1 :state '{a 1 b 2} :controller '[:begin (branch (> a b) :begin)]}) '[2 {a 1, b 2} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
+ (= (step {:pc 1 :state '{a 2 b 1} :controller '[:begin (branch (> a b) :begin)]}) '[0 {a 2, b 1} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
 )
 
 
@@ -117,10 +123,32 @@
    (assign n product)])                   ;8
 
 
+(def state
+  '{n 0})
 
 
+(def controller
+  '[:begin
+    (assign continue :done)
+    :loop
+    (branch (= 1 (fetch n)) :base)
+    (save continue)
+    (save n)
+    (assign n (dec (fetch n)))
+    (assign continue :aft)
+    (goto :loop)
+    :aft
+    (restore n)
+    (restore continue)
+    (assign value (* (fetch n) (fetch value)))
+    (goto (fetch continue))
+    :base
+    (assign value (fetch n))
+    (goto (fetch continue))
+    :done])
 
-
+(step {:pc 0 :state state :controller controller}) ; [1 {n 0} [:begin (assign continue :done) :loop (branch (= 1 (fetch n)) :base) (save continue) (save n) (assign n (dec (fetch n))) (assign continue :aft) (goto :loop) :aft (restore n) (restore continue) (assign value (* (fetch n) (fetch value))) (goto (fetch continue)) :base (assign value (fetch n)) (goto (fetch continue)) :done]]
+(apply step (step 0 state controller))
 
 
 
