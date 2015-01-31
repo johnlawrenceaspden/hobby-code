@@ -12,11 +12,11 @@
 
  
 ;; In the data path we need
-;; registers val and n
-;; a way of putting the value of n into val
+;; registers value and n
+;; a way of putting the value of n into value
 ;; a way of telling if n is 1
 ;; a way of decrementing n
-;; a way of multiplying n and val and putting the result into n
+;; a way of multiplying n and value and putting the result into n
 
 ;; And we need a stack, let us say that it is twenty registers
 ;; There needs to be a way of putting n onto the stack
@@ -24,24 +24,101 @@
 ;; And we need a place to note states of the state machine,
 ;; This continue register needs to be able to store two states AFT and DONE
 
-BEGIN
-(assign continue done)
-LOOP
-(branch (= 1 (fetch n)) base)
+:begin
+(assign continue :done)
+:loop
+(branch (= 1 (fetch n)) :base)
 (save continue)
 (save n)
 (assign n (dec (fetch n)))
-(assign continue 'AFT)
-(goto LOOP)
-AFT
+(assign continue :aft)
+(goto :loop)
+:aft
 (restore n)
 (restore continue)
 (assign value (* (fetch n) (fetch value)))
 (goto (fetch continue))
-BASE
+:base
 (assign value (fetch n))
 (goto (fetch continue))
-DONE
+:done
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn step [pc state controller]
+  (if (>= pc (count controller)) :halt ;; if the program counter goes off the end, stop
+      (let [npc (inc pc)
+            instruction (controller pc)] ;; look up the next instruction
+        (cond
+          (keyword? instruction) ;; jump over labels
+          [npc state controller]
+          (= (first instruction) 'assign) 
+          (let [var (second instruction)
+                arg (nth instruction 2)]
+            (cond (number? arg) 
+                  [npc (assoc state var arg ) controller]
+                  (symbol? arg)
+                  [npc (assoc state var (state arg) ) controller]
+                  (list arg)
+                  (let [[op val1 val2] arg]
+                    (cond (= op '*)
+                          [npc
+                           (assoc state var (* (state val1) (state val2)) )
+                           controller]
+                          (= op 'inc)
+                          [npc
+                           (assoc state var (inc (state val1)) )
+                           controller]))))
+          (= (first instruction) 'goto)
+          [(.indexOf controller (second instruction)) state controller]
+          (= (first instruction) 'branch)
+          (let [[op val1 val2] (second instruction)
+                label (nth instruction 2)]
+            (cond (= op '>) (if (> (state val1) (state val2))
+                              [(.indexOf controller label) state controller]
+                              [npc state controller])))))))
+
+
+(list 
+ ;; labels and gotos
+ (= (step 0 {} '[:begin (goto :begin)])
+    '[1 {} [:begin (goto :begin)]]) ; true ; true ; true
+ (= (step 1 {} '[:begin (goto :begin)]) '[0 {} [:begin (goto :begin)]]) ; true ; true ; true
+ ;; assignment
+ (= (step 0 {} '[(assign val 10)])
+    '[1 {val 10} [(assign val 10)]]) ; true ; true ; true
+ (= (step 0 '{doom 1} '[(assign val doom)])
+    '[1 {val 1, doom 1} [(assign val doom)]]) ; true ; true
+ (= (step 0 '{a 3 b 7} '[(assign val (* a b))])
+    '[1 {val 21, a 3, b 7} [(assign val (* a b))]]) ; true ; true
+ ;; branch
+ (= (step 1 '{a 1 b 2} '[:begin (branch (> a b) :begin)]) '[2 {a 1, b 2} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
+ (= (step 1 '{a 2 b 1} '[:begin (branch (> a b) :begin)]) '[0 {a 2, b 1} [:begin (branch (> a b) :begin)]]) ; true ; true ; true
+)
+
+
+(def state
+  '{n       0
+    product 0
+    counter 0})
+
+(def controller
+  '[(assign product 1)                    ;0
+   (assign counter 1)                     ;1
+   :loop                                  ;2
+   (branch (> counter n) :done)           ;3
+   (assign product (* counter product))   ;4
+   (assign counter (inc counter))         ;5
+   (goto :loop)                           ;6
+   :done                                  ;7 
+   (assign n product)])                   ;8
+
+
+
+
+
+
+
 
 
  

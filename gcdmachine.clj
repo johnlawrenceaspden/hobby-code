@@ -1,3 +1,10 @@
+;; Chapter 5 of Structure and Interpretation of Computer Programs
+;; Computing with Register Machines
+
+;; A machine for computing the greatest common divisor of two numbers
+
+;; This little program computes the greatest common divisor of a and b
+
 (def gcd
   (fn[a b]
     (if (= b 0)
@@ -6,10 +13,77 @@
 
 (gcd 100 30) ; 10
 
-; 100 30
-; 30 10
-; 10 0
-; 10
+;; Let's examine in detail how it works
+
+(def ^:dynamic gcd
+  (fn[a b]
+    (if (= b 0)
+      a
+      (gcd b (mod a b)))))
+
+(require 'clojure.tools.trace)
+
+(clojure.tools.trace/dotrace [gcd] (gcd 100 30))
+
+;; TRACE t3435: (gcd 100 30)
+;; TRACE t3436: | (gcd 30 10)
+;; TRACE t3437: | | (gcd 10 0)
+;; TRACE t3437: | | => 10
+;; TRACE t3436: | => 10
+;; TRACE t3435: => 10
+
+;; Or, to summarize:
+
+;; 100 30
+;; 30 10
+;; 10 0
+;; 10
+
+;; We want to imagine a machine which can perform this computation.
+
+;; We'll imagine it has two registers, a and b
+
+; a <- 100
+; b <- 30
+
+;; And the first thing we need to check is whether b is zero or not.
+;; So we'll need a piece of zero-checking hardware too
+
+; =? b 0
+
+;; In this case, it's not, so we go on to the next instruction (gcd b (mod a b)),
+;; which takes a bit of decoding, but essentially says:
+
+;; compute the remainder of a divided by b  (we'll need another register to keep it in, let's call that t)
+
+; t <- a mod b
+
+;; put the value now in b into a
+
+; b <- a
+
+;; put the value computed above into a
+
+; a <- t
+
+;; In summary,
+
+;; We're going need three registers a,b,t which can hold values
+;; A thing to tell whether the value in b is zero
+;; A device which can compute the remainder of the value in a divided by b
+;; And some switches which can cause values in registers, and the
+;; output of the device, to flow into other registers
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;; Two registers a and b, and a temporary register t
