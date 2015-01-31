@@ -45,13 +45,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn operation [op a b]
+  (cond (= op '*) (* a b)
+        (= op '>) (> a b)
+        (= op 'inc) (inc a)))
+  
+
 (defn step [pc state controller]
   (if (>= pc (count controller)) :halt ;; if the program counter goes off the end, stop
-      (let [npc (inc pc)
+      (let [npc (inc pc)                 ;; increment the program counter
             instruction (controller pc)] ;; look up the next instruction
         (cond
-          (keyword? instruction) ;; jump over labels
+          ;; jump over labels
+          (keyword? instruction) 
           [npc state controller]
+          ;; assignment
           (= (first instruction) 'assign) 
           (let [var (second instruction)
                 arg (nth instruction 2)]
@@ -59,22 +67,17 @@
                   [npc (assoc state var arg ) controller]
                   (symbol? arg)
                   [npc (assoc state var (state arg) ) controller]
-                  (list arg)
+                  :else
                   (let [[op val1 val2] arg]
-                    (cond (= op '*)
-                          [npc
-                           (assoc state var (* (state val1) (state val2)) )
-                           controller]
-                          (= op 'inc)
-                          [npc
-                           (assoc state var (inc (state val1)) )
-                           controller]))))
+                    [npc (assoc state var (operation op (state val1) (state val2))) controller])))
+          ;; goto
           (= (first instruction) 'goto)
           [(.indexOf controller (second instruction)) state controller]
+          ;; branch
           (= (first instruction) 'branch)
           (let [[op val1 val2] (second instruction)
                 label (nth instruction 2)]
-            (cond (= op '>) (if (> (state val1) (state val2))
+            (cond (= op '>) (if (operation op (state val1) (state val2))
                               [(.indexOf controller label) state controller]
                               [npc state controller])))))))
 
