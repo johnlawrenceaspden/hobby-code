@@ -134,20 +134,20 @@
   '[:begin
     (assign continue :done)
     :loop
-    (branch (= 0 (fetch n)) :base)
+    (branch (= 0 n) :base)
     (save continue)
     (save n)
-    (assign n (dec (fetch n)))
+    (assign n (dec n))
     (assign continue :aft)
     (goto :loop)
     :aft
     (restore n)
     (restore continue)
-    (assign value (* (fetch n) (fetch value)))
-    (goto (fetch continue))
+    (assign value (* n value))
+    (goto continue)
     :base
-    (assign value (fetch n))
-    (goto (fetch continue))
+    (assign value n)
+    (goto continue)
     :done])
 
 
@@ -156,5 +156,5 @@
 (def rfrun (take (inc (count (take-while #(number? (:pc %)) rfmseq))) rfmseq))
 
 (defn annotate [machine] (assoc machine :nexti (#(get (:controller %) (:pc %)(:pc %)) machine)))
-(clojure.pprint/print-table [:pc :nexti :state :stack ] (take 10 (map annotate rfrun)))
+(clojure.pprint/print-table [:pc :nexti :state :stack ] (take 10 (map annotate rfmseq)))
 
