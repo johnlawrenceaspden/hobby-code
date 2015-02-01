@@ -2,11 +2,14 @@
 
 ;; Which operations will we grant to our register machine?
 (defn operation [[op aa bb] state]
+  (print "op" op aa bb state "op")
   (let [ a (if (symbol? aa) (state aa) aa)
          b (if (symbol? bb) (state bb) bb)]
     (cond (= op '*) (* a b)
           (= op '>) (> a b)
-          (= op 'inc) (inc a))))
+          (= op 'inc) (inc a)
+          (= op '=) (= a b)
+          :else :undefined)))
 
 (defn ev [arg state]
   (cond
@@ -58,6 +61,8 @@
 (def branchprogram '[(branch (> a b) :a>b) :a<=b :a>b])
 (def branchmachine    (assoc basemachine :state '{a 2 b 1} :controller branchprogram))
 (def nobranchmachine  (assoc basemachine :state '{a 1 b 2} :controller branchprogram))
+(def zerobranchmachine    {:state '{n 0}, :pc 0, :controller '[(branch (= 0 n) :zero) :nonzero :zero]})
+(def nonzerobranchmachine {:state '{n 1}, :pc 0, :controller '[(branch (= 0 n) :zero) :nonzero :zero]})
 (def savemachine    (assoc basemachine :state '{n 1} :controller '[(save n)]))
 (def restoremachine (assoc basemachine :stack '(1) :controller '[(restore n)]))
 (def oopsrestoremachine (assoc basemachine :stack '() :controller '[(restore n)]))
@@ -71,10 +76,7 @@
       [a b])))
 
 
-
-
-
-(defn mtest[]
+ (defn mtest[]
   (list
    ;; halting
    (check= (step basemachine) (assoc basemachine :pc :halt))
@@ -94,11 +96,14 @@
    ;; branch
    (check= (step nobranchmachine)  (assoc nobranchmachine :pc 1))
    (check= (step branchmachine)    (assoc branchmachine :pc 2))
+   (check= (step zerobranchmachine) (assoc zerobranchmachine :pc 2))
+   (check= (step nonzerobranchmachine) (assoc nonzerobranchmachine :pc 1))
    ;; stack
    (check= (step savemachine)    (assoc savemachine :stack '(1) :pc 1))
    (check= (step restoremachine) (assoc restoremachine :state '{n 1} :stack '() :pc 1))
    (check= (step oopsrestoremachine) (assoc oopsrestoremachine :pc :underflow))
    (check= (step (step (step (step swapmachine)))) (assoc swapmachine :pc 4 :state '{b :keyword a "string"}))
+   
    ))
 
 (def iterative-factorial
@@ -129,7 +134,7 @@
   '[:begin
     (assign continue :done)
     :loop
-    (branch (= 1 (fetch n)) :base)
+    (branch (= 0 (fetch n)) :base)
     (save continue)
     (save n)
     (assign n (dec (fetch n)))
@@ -150,6 +155,6 @@
 (def rfmseq (take 1000 (iterate step rfm)))
 (def rfrun (take (inc (count (take-while #(number? (:pc %)) rfmseq))) rfmseq))
 
-(map :pc rfrun) ; (0 1 2 3 4 :error)
+(defn annotate [machine] (assoc machine :nexti (#(get (:controller %) (:pc %)(:pc %)) machine)))
+(clojure.pprint/print-table [:pc :nexti :state :stack ] (take 10 (map annotate rfrun)))
 
-(clojure.pprint/print-table [:pc :state] rfrun)
