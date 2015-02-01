@@ -1,60 +1,17 @@
-;; A register machine for factorial
+;; Register Machine Simulator
 
-(defn fact [n]
-  (if (= n 1)
-    1
-    (* n (fact (- n 1)))))
-
-(fact 10) ; 3628800
-
-;; We can't get away with just data paths and a finite-state controller for factorial
-;; We also need a stack
-
- 
-;; In the data path we need
-;; registers value and n
-;; a way of putting the value of n into value
-;; a way of telling if n is 1
-;; a way of decrementing n
-;; a way of multiplying n and value and putting the result into n
-
-;; And we need a stack, let us say that it is twenty registers
-;; There needs to be a way of putting n onto the stack
-
-;; And we need a place to note states of the state machine,
-;; This continue register needs to be able to store two states AFT and DONE
-
-:begin
-(assign continue :done)
-:loop
-(branch (= 1 (fetch n)) :base)
-(save continue)
-(save n)
-(assign n (dec (fetch n)))
-(assign continue :aft)
-(goto :loop)
-:aft
-(restore n)
-(restore continue)
-(assign value (* (fetch n) (fetch value)))
-(goto (fetch continue))
-:base
-(assign value (fetch n))
-(goto (fetch continue))
-:done
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; Which operations will we grant to our register machine 
 (defn operation [op a b]
   (cond (= op '*) (* a b)
         (= op '>) (> a b)
         (= op 'inc) (inc a)))
-  
 
+;; 
 (defn step [{:keys [pc state controller] :as machine}]
   (print pc)
-  (if (keyword? pc) machine
-      (if (>= pc (count controller)) (assoc machine :pc :halt) ;; if the program counter goes off the end, just cycle
+  ;; if the program counter is not a number, do nothing
+  (if (not (number? pc)) machine 
+      (if (>= pc (count controller)) (assoc machine :pc :halt) ;; if the program counter goes off the end, stop
           (let [npc (inc pc)                 ;; increment the program counter
                 instruction (controller pc)] ;; look up the next instruction
             (cond
