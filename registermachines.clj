@@ -2,12 +2,12 @@
 
 ;; Which operations will we grant to our register machine?
 (defn operation [[op aa bb] state]
-  (print "op" op aa bb state "op")
   (let [ a (if (symbol? aa) (state aa) aa)
          b (if (symbol? bb) (state bb) bb)]
     (cond (= op '*) (* a b)
           (= op '>) (> a b)
           (= op 'inc) (inc a)
+          (= op 'dec) (dec a)
           (= op '=) (= a b)
           :else :undefined)))
 
@@ -38,7 +38,7 @@
                                          val (ev arg state) ]
                                      (assoc machine :pc npc :state (assoc state var val)))
                      
-                           goto    (assoc machine :pc (.indexOf controller s1))
+                           goto    (assoc machine :pc (.indexOf controller (if (symbol? s1) (state s1) s1)))
                            branch  (let [ test s1 label s2]
                                       (if (operation test state)
                                         (assoc machine :pc (.indexOf controller label))
@@ -67,6 +67,7 @@
 (def restoremachine (assoc basemachine :stack '(1) :controller '[(restore n)]))
 (def oopsrestoremachine (assoc basemachine :stack '() :controller '[(restore n)]))
 (def swapmachine (assoc basemachine :state '{a :keyword b "string"} :controller '[(save a)(save b)(restore a)(restore b)]))
+(def gotocontinuemachine (assoc basemachine :controller '[:begin (assign continue :begin) (goto continue) :continue]))
 
 (require 'clojure.data)
 (defn check= [m1 m2]
@@ -87,6 +88,7 @@
    ;; labels and gotos
    (check= (step loopmachine) (assoc loopmachine :pc 1))
    (check= (step (step loopmachine)) loopmachine)
+   (check= (step (step (step gotocontinuemachine))) (assoc gotocontinuemachine :state '{continue :begin}))
    ;; assignment
    (check= (step assignmachine) (assoc assignmachine :state '{val 10} :pc 1))
    (check= (step assignkeywordmachine) (assoc assignkeywordmachine :state '{val :keyword} :pc 1))
@@ -146,15 +148,20 @@
     (assign value (* n value))
     (goto continue)
     :base
-    (assign value n)
+    (assign value 1)
     (goto continue)
     :done])
 
 
-(def rfm {:state '{n 0} :pc 0 :controller recursive-factorial})
+(defn annotate [machine] (assoc machine :nexti (#(get (:controller %) (:pc %)(:pc %)) machine)))
+
+(def rfm {:state '{n 20} :pc 0 :controller recursive-factorial})
 (def rfmseq (take 1000 (iterate step rfm)))
 (def rfrun (take (inc (count (take-while #(number? (:pc %)) rfmseq))) rfmseq))
 
-(defn annotate [machine] (assoc machine :nexti (#(get (:controller %) (:pc %)(:pc %)) machine)))
-(clojure.pprint/print-table [:pc :nexti :state :stack ] (take 10 (map annotate rfmseq)))
 
+(clojure.pprint/print-table [:pc :nexti :state :stack ] (map annotate rfrun))
+
+;; There appears to be a bug here in print-table
+(clojure.pprint/print-table (list {:a 1  :b 2 :c '()}))
+(clojure.pprint/pprint {:a 1  :b 2 :c '()})
