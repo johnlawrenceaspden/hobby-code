@@ -1,15 +1,19 @@
 ;; Register Machine Simulator
 
 ;; Which operations will we grant to our register machine?
-(defn operation [op a b]
-  (cond (= op '*) (* a b)
-        (= op '>) (> a b)
-        (= op 'inc) (inc a)))
+(defn operation [[op aa bb] state]
+  (let [ a (if (symbol? aa) (state aa) aa)
+         b (if (symbol? bb) (state bb) bb)]
+         
+    (cond (= op '*) (* a b)
+          (= op '>) (> a b)
+          (= op 'inc) (inc a))))
 
 ;; Take a map representing the state of a machine,
 ;; e.g. {:pc 2 :state {n 1} :controller [:begin (goto :begin)]}
 ;; do the right thing to create the successor state
-
+(operation op (state val1) (state val2))
+(operation op (state val1) (state val2))
 
 (do
   (defn step [{:keys [pc state controller] :as machine}]
@@ -22,22 +26,19 @@
                    (if (keyword? instruction) (assoc machine :pc npc)
                        (let [[opcode s1 s2] instruction]
                          (case opcode
-                           assign (let [ arg s2
+                           assign (let [ var s1 arg s2
                                          val (cond
                                                ;; immediate values
                                                (or (number? arg) (keyword? arg)) arg
                                                ;; registers
                                                (symbol? arg) (state arg) 
                                                ;; operations on registers
-                                               :else
-                                               (let [[op val1 val2] arg]
-                                                 (operation op (state val1) (state val2))))]
-                                     (assoc machine :pc npc :state (assoc state s1 val)))
+                                               :else (operation arg state))]
+                                     (assoc machine :pc npc :state (assoc state var val)))
                      
-                           goto (assoc machine :pc (.indexOf controller s1))
-                           branch  (let [[op val1 val2] s1
-                                          label s2]
-                                      (if (operation op (state val1) (state val2))
+                           goto    (assoc machine :pc (.indexOf controller s1))
+                           branch  (let [ test s1 label s2]
+                                      (if (operation test state)
                                         (assoc machine :pc (.indexOf controller label))
                                         (assoc machine :pc npc)))
                            (assoc machine :pc :error)))))))
@@ -48,6 +49,10 @@
 (def errmachine (assoc basemachine :controller '[(failzor)]))
 (def loopmachine (assoc basemachine :controller '[:begin (goto :begin)]))
 (def assignmachine (assoc basemachine :controller '[(assign val 10)]))
+(def branchprogram '[(branch (> a b) :a>b) :a<=b :a>b])
+(def branchmachine {:pc 0 :state '{a 2 b 1} :controller branchprogram })
+(def nobranchmachine  {:pc 0 :state '{a 1 b 2} :controller branchprogram})
+
 
 (defn mtest[]
   (list
@@ -72,8 +77,8 @@
    (= (step {:pc 0 :state '{a 3 b 7} :controller '[(assign val (* a b))]})
       '{:pc 1, :state {val 21, a 3, b 7}, :controller [(assign val (* a b))]})
    ;; branch
-   (= (step {:pc 1 :state '{a 1 b 2} :controller '[:begin (branch (> a b) :begin)]}) '{:pc 2, :state {a 1, b 2}, :controller [:begin (branch (> a b) :begin)]})
-   (= (step {:pc 1 :state '{a 2 b 1} :controller '[:begin (branch (> a b) :begin)]}) '{:pc 0, :state {a 2, b 1}, :controller [:begin (branch (> a b) :begin)]})))
+   (= (step nobranchmachine)  (assoc nobranchmachine :pc 1))
+   (= (step branchmachine)    (assoc branchmachine :pc 2))))
 
 (def iterative-factorial
   '[(assign product 1)                     ;0
