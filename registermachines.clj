@@ -1,49 +1,47 @@
 ;; Register Machine Simulator
 
-;; Which operations will we grant to our register machine 
+;; Which operations will we grant to our register machine?
 (defn operation [op a b]
   (cond (= op '*) (* a b)
         (= op '>) (> a b)
         (= op 'inc) (inc a)))
 
-;; 
-(defn step [{:keys [pc state controller] :as machine}]
-  (print pc)
-  ;; if the program counter is not a number, do nothing
-  (if (not (number? pc)) machine 
-      (if (>= pc (count controller)) (assoc machine :pc :halt) ;; if the program counter goes off the end, stop
-          (let [npc (inc pc)                 ;; increment the program counter
-                instruction (controller pc)] ;; look up the next instruction
-            (cond
-              ;; jump over labels
-              (keyword? instruction) 
-              (assoc machine :pc npc)
-              ;; assignment
-              (= (first instruction) 'assign) 
-              (let [var (second instruction)
-                    arg (nth instruction 2)
-                    val (cond
-                          ;; immediate values
-                          (or (number? arg) (keyword? arg)) arg
-                          ;; registers
-                          (symbol? arg) (state arg) 
-                          ;; operations on registers
-                          :else
-                          (let [[op val1 val2] arg]
-                            (operation op (state val1) (state val2))))]
-                (assoc machine :pc npc :state (assoc state var val )))
-              ;; goto
-              (= (first instruction) 'goto)
-              {:pc (.indexOf controller (second instruction)) :state state :controller controller}
-              ;; branch
-              (= (first instruction) 'branch)
-              (let [[op val1 val2] (second instruction)
-                    label (nth instruction 2)]
-                (if (operation op (state val1) (state val2))
-                  (assoc machine :pc (.indexOf controller label))
-                  (assoc machine :pc npc)))
-              :else
-              (assoc machine :pc :error))))))
+;; Take a map representing the state of a machine,
+;; e.g. {:pc 2 :state {n 1} :controller [:begin (goto :begin)]}
+;; do the right thing to create the successor state
+
+
+(do
+  (defn step [{:keys [pc state controller] :as machine}]
+    (print pc)
+    ;; if the program counter is not a number, do nothing
+    (cond (not (number? pc)) machine 
+          (>= pc (count controller)) (assoc machine :pc :halt) ;; if the program counter goes off the end, stop
+          :else  (let [npc (inc pc)                 ;; increment the program counter
+                       instruction (controller pc)] ;; look up the next instruction
+                   (if (keyword? instruction) (assoc machine :pc npc)
+                       (let [[opcode s1 s2] instruction]
+                         (case opcode
+                           assign (let [ arg s2
+                                         val (cond
+                                               ;; immediate values
+                                               (or (number? arg) (keyword? arg)) arg
+                                               ;; registers
+                                               (symbol? arg) (state arg) 
+                                               ;; operations on registers
+                                               :else
+                                               (let [[op val1 val2] arg]
+                                                 (operation op (state val1) (state val2))))]
+                                     (assoc machine :pc npc :state (assoc state s1 val)))
+                     
+                           goto (assoc machine :pc (.indexOf controller s1))
+                           branch  (let [[op val1 val2] s1
+                                          label s2]
+                                      (if (operation op (state val1) (state val2))
+                                        (assoc machine :pc (.indexOf controller label))
+                                        (assoc machine :pc npc)))
+                           (assoc machine :pc :error)))))))
+  (mtest))
 
 
 (def basemachine {:pc 0  :state {} :controller '[]})
