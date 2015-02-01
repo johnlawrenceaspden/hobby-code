@@ -4,17 +4,22 @@
 (defn operation [[op aa bb] state]
   (let [ a (if (symbol? aa) (state aa) aa)
          b (if (symbol? bb) (state bb) bb)]
-         
     (cond (= op '*) (* a b)
           (= op '>) (> a b)
           (= op 'inc) (inc a))))
 
+(defn ev [arg state]
+  (cond
+    ;; an immediate value
+    (or (number? arg) (keyword? arg)) arg
+    ;; a register name
+    (symbol? arg) (state arg) 
+    ;; an operation
+    :else (operation arg state)))
+
 ;; Take a map representing the state of a machine,
 ;; e.g. {:pc 2 :state {n 1} :controller [:begin (goto :begin)]}
 ;; do the right thing to create the successor state
-(operation op (state val1) (state val2))
-(operation op (state val1) (state val2))
-
 (do
   (defn step [{:keys [pc state controller] :as machine}]
     (print pc)
@@ -27,13 +32,7 @@
                        (let [[opcode s1 s2] instruction]
                          (case opcode
                            assign (let [ var s1 arg s2
-                                         val (cond
-                                               ;; immediate values
-                                               (or (number? arg) (keyword? arg)) arg
-                                               ;; registers
-                                               (symbol? arg) (state arg) 
-                                               ;; operations on registers
-                                               :else (operation arg state))]
+                                         val (ev arg state) ]
                                      (assoc machine :pc npc :state (assoc state var val)))
                      
                            goto    (assoc machine :pc (.indexOf controller s1))
@@ -45,14 +44,17 @@
   (mtest))
 
 
-(def basemachine {:pc 0  :state {} :controller '[]})
+(def basemachine {:pc 0  :state {} :controller '[] :dummy "hello"})
 (def errmachine (assoc basemachine :controller '[(failzor)]))
 (def loopmachine (assoc basemachine :controller '[:begin (goto :begin)]))
-(def assignmachine (assoc basemachine :controller '[(assign val 10)]))
+(def assignimmediatemachine  (assoc basemachine :controller '[(assign val 10)]))
+(def assignkeywordmachine    (assoc basemachine :controller '[(assign val :keyword)]))
+(def assignregistermachine1   (assoc basemachine :controller '[(assign val doom)]))
+(def assignregistermachine2   (assoc basemachine :controller '[(assign val doom)] :state '{doom 1 val 2}))
+(def assignoperationmachine   (assoc basemachine :controller '[(assign a (* a b))] :state '{a 3 b 5}))
 (def branchprogram '[(branch (> a b) :a>b) :a<=b :a>b])
-(def branchmachine {:pc 0 :state '{a 2 b 1} :controller branchprogram })
-(def nobranchmachine  {:pc 0 :state '{a 1 b 2} :controller branchprogram})
-
+(def branchmachine    (assoc basemachine :state '{a 2 b 1} :controller branchprogram))
+(def nobranchmachine  (assoc basemachine :state '{a 1 b 2} :controller branchprogram))
 
 (defn mtest[]
   (list
@@ -66,16 +68,11 @@
    (= (step loopmachine) (assoc loopmachine :pc 1))
    (= (step (step loopmachine)) loopmachine)
    ;; assignment
-   (= (step assignmachine)
-      (assoc assignmachine
-             :state '{val 10}
-             :pc 1))
-   (= (step {:pc 0 :state '{} :controller '[(assign val :keyword)]})
-      {:pc 1, :state '{val :keyword}, :controller '[(assign val :keyword)]})
-   (= (step {:pc 0 :state '{doom 1} :controller '[(assign val doom)]})
-      '{:pc 1, :state {val 1, doom 1}, :controller [(assign val doom)]})
-   (= (step {:pc 0 :state '{a 3 b 7} :controller '[(assign val (* a b))]})
-      '{:pc 1, :state {val 21, a 3, b 7}, :controller [(assign val (* a b))]})
+   (= (step assignmachine) (assoc assignmachine :state '{val 10} :pc 1))
+   (= (step assignkeywordmachine) (assoc assignkeywordmachine :state '{val :keyword} :pc 1))
+   (= (step assignregistermachine1) (assoc assignregistermachine1 :state '{val nil} :pc 1))
+   (= (step assignregistermachine2) (assoc assignregistermachine2 :state '{val 1 doom 1} :pc 1))
+   (= (step assignoperationmachine) (assoc assignoperationmachine :state '{a 15 b 5} :pc 1))
    ;; branch
    (= (step nobranchmachine)  (assoc nobranchmachine :pc 1))
    (= (step branchmachine)    (assoc branchmachine :pc 2))))
