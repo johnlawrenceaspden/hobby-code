@@ -5,7 +5,14 @@
   (let [ a (if (symbol? aa) (state aa) aa)
          b (if (symbol? bb) (state bb) bb)]
     (cond (= op '*) (* a b)
+          (= op '+) (+ a b)
+          (= op '-) (- a b)
+          (= op '/) (quot a b)
+          (= op 'mod) (mod a b)
           (= op '>) (> a b)
+          (= op '>=) (>= a b)
+          (= op '<) (< a b)
+          (= op '<=) (<= a b)
           (= op 'inc) (inc a)
           (= op 'dec) (dec a)
           (= op '=) (= a b)
@@ -137,13 +144,13 @@
 (clojure.pprint/print-table (list {:c '()}))
 (clojure.pprint/pprint { :c '()})
 
-(defn annotated-run [machine]
+(defn annotated-run [maxiter machine]
   (let [m machine
-        mseq (take 1000 (iterate step m))
+        mseq (take maxiter (iterate step m))
         mrun (take (inc (count (take-while #(number? (:pc %)) mseq))) mseq)]
     (map annotate mrun)))
 
-(def ifrun (annotated-run (make-machine iterative-factorial-program 'n 0)))
+(def ifrun (annotated-run 100 (make-machine iterative-factorial-program 'n 0)))
 
 
 (clojure.pprint/print-table [:pc :state :nexti :stack ] ifrun)
@@ -180,7 +187,7 @@
     :done])
 
 
-(def rfrun (annotated-run (make-machine recursive-factorial-program 'n 0)))
+(def rfrun (annotated-run 1000 (make-machine recursive-factorial-program 'n 0)))
 (clojure.pprint/print-table [:pc :state :nexti :stack ] rfrun)
 
 ;; |   :pc |                  :nexti |                         :state | :stack |
@@ -197,7 +204,7 @@
 ;; | :halt |                   :halt | {continue :done, value 1, n 0} |        |
 
 (clojure.pprint/print-table [:pc :state :nexti :stack ]
-                            (annotated-run (make-machine recursive-factorial-program 'n 3)))
+                            (annotated-run 1000 (make-machine recursive-factorial-program 'n 3)))
 
 ;; |   :pc |                         :state |                     :nexti |                  :stack |
 ;; |-------+--------------------------------+----------------------------+-------------------------|
@@ -270,11 +277,98 @@
     (goto continue)
     :done])
 
+(defn fib[n]
+  (if (< n 2) n
+      (+ (fib (- n 1))
+         (fib (- n 2)))))
+
+(map fib (range 10)) ; (0 1 1 2 3 5 8 13 21 34)
+
+;; to fib(n):
+;; is n < 2?
+;; if not
+;; return n
+;; else
+;; n1=n-1
+;; n2=n-2
+;; sum = call fib(n1)
+;; sum += call fib(n2)
+;; return sum
+
+;; call fib(3)
+
+
 (def recursive-fibonacci-program
   '[:begin
-    (goto :begin)
-    :done])
+    (assign continue :done)
+    (goto :fib)
+    ;; answer now in value
+    :done
+    (goto :end)
+    :fib ;; n contains parameter
+    (branch (>= n 2) :recurse-fib)
+    (assign value n)
+    (goto continue)
+    :recurse-fib
+    (save continue)
+    (save n)
+    (assign n (- n 1))
+    (assign continue :after-fib-1)
+    (goto :fib)
+    ;; answer now in value
+    :after-fib-1
+    (restore n)
+    (restore continue)
+    (assign sum value)
+    (save continue)
+    (save n)
+    (save sum)
+    (assign n (- n 2))
+    (assign continue :after-fib-2)
+    (goto :fib)
+    :after-fib-2
+    (restore sum)
+    (restore n)
+    (restore continue)
+    (assign sum (+ sum value))
+    (assign value sum)
+    (goto continue)
+    :end
+    ])
 
-(clojure.pprint/print-table [:pc :state :nexti :stack ]
-                            (annotated-run (make-machine recursive-fibonacci-program 'n 1)))
+(clojure.pprint/print-table
+ [:pc  :stack :state :nexti ]
+ (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 6)))
+
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 0))) ; 12
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 1))) ; 12
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 2))) ; 41
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 3))) ; 70
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 4))) ; 128
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 5))) ; 215
+(count (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 6))) ; 360
+
+(- 41  12 12)   ; 17
+(- 70  41 12)   ; 17
+(- 128 70 41)   ; 17
+(- 215 128 70)  ; 17
+(- 360 215 128) ; 17
+
+(defn fibtime [n]
+  (if (< n 2) 12
+      (+ 17 (fibtime (- n 1)) (fibtime (- n 2)))))
+
+(map fib (range 10)) ; (1 1 2 3 5 8 13 21 34)     ; (0 1 1 2 3 5 8 13 21 34)
+(map fibtime (range 10)) ; (12 41 70 128 215 360 592 969 1578) ; (12 12 41 70 128 215 360 592 969 1578)
+
+(map / 
+     (map fib (range 10)) 
+     (map fibtime (range 10))) ; (0 1/12 1/41 1/35 3/128 1/43 1/45 13/592 7/323 17/789)
+
+(map float
+     (map / 
+          (map fib (range 10)) 
+          (map fibtime (range 10)))) ; (0.0 0.083333336 0.024390243 0.028571429 0.0234375 0.023255814 0.022222223 0.02195946 0.021671826 0.021546261)
+
+
 
