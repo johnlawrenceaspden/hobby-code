@@ -5,7 +5,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/tools.trace "0.7.5"]
                  [simple-plotter "0.1.2"]
-                 [nz.ac.waikato.cms.weka/weka-stable "3.6.12"]]
+                 [nz.ac.waikato.cms.weka/weka-stable "3.6.12"]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
   :plugins [[cider/cider-nrepl "0.8.2"]]
   :global-vars {*print-length* 100})
 
