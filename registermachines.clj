@@ -150,10 +150,8 @@
         mrun (take (inc (count (take-while #(number? (:pc %)) mseq))) mseq)]
     (map annotate mrun)))
 
-(def ifrun (annotated-run 100 (make-machine iterative-factorial-program 'n 0)))
-
-
-(clojure.pprint/print-table [:pc :state :nexti :stack ] ifrun)
+(clojure.pprint/print-table [:pc :state :nexti :stack ]
+                            (annotated-run 100 (make-machine iterative-factorial-program 'n 0)))
 ;; |   :pc |                       :nexti |                      :state | :stack |
 ;; |-------+------------------------------+-----------------------------+--------|
 ;; |     0 |           (assign product 1) |                       {n 0} |        |
@@ -187,8 +185,8 @@
     :done])
 
 
-(def rfrun (annotated-run 1000 (make-machine recursive-factorial-program 'n 0)))
-(clojure.pprint/print-table [:pc :state :nexti :stack ] rfrun)
+(clojure.pprint/print-table [:pc :state :nexti :stack ]
+                            (annotated-run 1000 (make-machine recursive-factorial-program 'n 0)))
 
 ;; |   :pc |                  :nexti |                         :state | :stack |
 ;; |-------+-------------------------+--------------------------------+--------|
@@ -284,20 +282,21 @@
 
 (map fib (range 10)) ; (0 1 1 2 3 5 8 13 21 34)
 
+;; A pseudocody version
 ;; to fib(n):
-;; is n < 2?
-;; if not
-;; return n
-;; else
-;; n1=n-1
-;; n2=n-2
-;; sum = call fib(n1)
-;; sum += call fib(n2)
-;; return sum
+;;   is n < 2?
+;;   if not
+;;   return n
+;;   else
+;;   n1=n-1
+;;   n2=n-2
+;;   sum = call fib(n1)
+;;   sum += call fib(n2)
+;;   return sum
 
 ;; call fib(3)
 
-
+;; Now in made-up assembler
 (def recursive-fibonacci-program
   '[:begin
     (assign continue :done)
@@ -371,4 +370,66 @@
           (map fibtime (range 10)))) ; (0.0 0.083333336 0.024390243 0.028571429 0.0234375 0.023255814 0.022222223 0.02195946 0.021671826 0.021546261)
 
 
+(def run6 (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 6)))
 
+;; profiling
+(defn profile [run]
+  (let [program ((first run) :controller)
+        lf (frequencies (map :pc run))]  
+    (doseq [i (range (count program))]
+      (println (format "%6d" (lf i)) (recursive-fibonacci-program i) ))))
+
+(profile run6)
+
+;; Now in made-up assembler
+(def tweaked-fibonacci-program
+  '[:begin
+    (assign continue :done)
+    (goto :fib)
+    ;; answer now in value
+    :done
+    (goto :end)
+    :fib ;; n contains parameter
+    (branch (>= n 2) :recurse-fib)
+    (assign value n)
+    (goto continue)
+    :recurse-fib
+    (save continue)
+    (save n)
+    (assign n (- n 1))
+    (assign continue :after-fib-1)
+    (goto :fib)
+    ;; answer now in value
+    :after-fib-1
+    (restore n)
+    (save n)
+    (assign sum value)
+    (save sum)
+
+    ; by reordering, we can make these three instructions adjacent, and see that we can remove two of them
+    ;(restore continue)
+    ;(save continue)
+    (assign continue :after-fib-2)
+
+    (assign n (- n 2))
+
+    (goto :fib)
+    :after-fib-2
+    (restore sum)
+    (restore n)
+    (restore continue)
+    (assign sum (+ sum value))
+    (assign value sum)
+    (goto continue)
+    :end
+    ])
+
+(let [r6 (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 6))]
+  [(count r6), ('value (:state (last run6)))]) ; [360 8]
+
+(let [r6 (annotated-run 1000 (make-machine tweaked-fibonacci-program 'n 6))]
+  [(count r6), ('value (:state (last run6)))]) ; [336 8]
+
+
+(apply max (map count (map :stack (annotated-run 1000 (make-machine tweaked-fibonacci-program 'n 6))))) ; 11
+(apply max (map count (map :stack (annotated-run 1000 (make-machine recursive-fibonacci-program 'n 6))))) ; 11
