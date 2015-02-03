@@ -1,4 +1,4 @@
-PROGRAM=iterativefactorialmachine
+PROGRAM=recursivefactorialmachine
 
 run: $(PROGRAM)
 	./$(PROGRAM) ; echo "---->" $$?
