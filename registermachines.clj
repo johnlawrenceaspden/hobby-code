@@ -164,6 +164,20 @@
 ;; | :halt |                        :halt | {n 1, product 1, counter 1} |        |
 
 
+(defn factorial[n]
+  (if (< n 2) 1 (* n (factorial (dec n)))))
+
+(map factorial (range 22))
+;; (1 1 2 6 24 120 720 5040 40320 362880
+;; 3628800 39916800 479001600 6227020800 87178291200
+;; 1307674368000 20922789888000 355687428096000 6402373705728000 121645100408832000
+;; 2432902008176640000)
+
+;; 20 factorial fills a 
+(format "%X" 2432902008176640000) ; "21 C3 67 7C 82 B4 00 00" 
+;; 21 factorial needs 66 bits
+(clojure.pprint/cl-format nil "~X" 51090942171709440000) ; "2 c5 07 7d 36 b8 c4 00 00"
+
 (def recursive-factorial-program
   '[:begin
     (assign continue :done)
