@@ -638,6 +638,10 @@
           (delq (current-buffer) 
                 (remove-if-not 'buffer-file-name (buffer-list)))))
 
+
+
+(global-set-key (kbd "C-x ;") 'comment-region)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
 ;;(require 'rainbow-delimiters)
 
