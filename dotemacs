@@ -642,6 +642,12 @@
 
 (global-set-key (kbd "C-x ;") 'comment-region)
 
+;; stop the speedbar jumping around
+(require 'speedbar)
+(speedbar-disable-update)
+
+(custom-set-variables '(speedbar-show-unknown-files t))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
 ;;(require 'rainbow-delimiters)
 
