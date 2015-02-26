@@ -28,7 +28,6 @@
 ;; then we can require as normal
 (setq package-enable-at-startup nil)
 
-
 ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 (require 'color-theme)
 (color-theme-initialize)
@@ -653,6 +652,65 @@
 (speedbar-disable-update)
 
 (custom-set-variables '(speedbar-show-unknown-files t))
+
+
+
+;; Here is some code from http://pastebin.com/VeERJJHs
+;; that disables emacs obnoxious habit of splitting my windows for me
+;; And makes it so that the default split is horizontal rather than vertical
+
+(setq pop-up-windows nil)
+ 
+(defun my-display-buffer-function (buf not-this-window)
+  (if (and (not pop-up-frames)
+           (one-window-p)
+           (or not-this-window
+               (not (eq (window-buffer (selected-window)) buf)))
+           (> (frame-width) 162))
+      (split-window-horizontally))
+  ;; Note: Some modules sets `pop-up-windows' to t before calling
+  ;; `display-buffer' -- Why, oh, why!
+  (let ((display-buffer-function nil)
+        (pop-up-windows nil))
+    (display-buffer buf not-this-window)))
+ 
+(setq display-buffer-function 'my-display-buffer-function)
+       
+(defun split-window-prefer-side-by-side (&optional window)
+  (let ((split-height-threshold (and (< (window-width window)
+                                        split-width-threshold)
+                                     split-height-threshold)))
+    (split-window-sensibly window)))
+ 
+(setq split-window-preferred-function 'split-window-prefer-side-by-side)
+
+;; End of window splitting code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
 ;;(require 'rainbow-delimiters)
