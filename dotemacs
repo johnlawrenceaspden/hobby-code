@@ -558,6 +558,9 @@
 
 (setq auto-mode-alist (cons '("\\.ocaml$" . tuareg-mode) auto-mode-alist))
 
+;; README.md files are github-flavoured-markdown, so use gfm-mode rather than markdown-mode
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
 
 (defun delete-buffer ()
   (interactive)
