@@ -383,7 +383,7 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 function vcstatuses
 {
-    for i in ~/hobby-code ~/data ~/iqtest ~/cycling ~/webstatemachine ~/xmlsnip ; do
+    for i in ~/hobby-code ~/data ~/iqtest ~/cycling ~/cctool ~/xmlsnip ; do
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/master..master ;
     done ;
     # i=~/iqtest
@@ -399,17 +399,17 @@ function vcstatuses
 
 function gitguiall
 {
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/webstatemachine ~/xmlsnip; do cd $i && git gui ; done
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/xmlsnip; do cd $i && git gui ; done
 }
 
 function gitpushall
 {
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/webstatemachine ~/xmlsnip; do cd $i && git push ; done
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/xmlsnip; do cd $i && git push ; done
 }
 
 function gitpullall
 {
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/webstatemachine ~/xmlsnip; do cd $i && git pull ; done
+    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/xmlsnip; do cd $i && git pull ; done
     cd ~/iqtest ; git remote update ;
 }
 
@@ -418,7 +418,7 @@ alias dgg="cd ~/data && git gui"
 alias hgg="cd ~/hobby-code && git gui"
 alias igg="cd ~/iqtest && git gui"
 alias cgg="cd ~/cycling && git gui"
-alias wgg="cd ~/webstatemachine && git gui"
+alias wgg="cd ~/cctool && git gui"
 alias xgg="cd ~/xmlsnip && git gui"
 
 
