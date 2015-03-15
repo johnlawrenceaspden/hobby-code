@@ -160,11 +160,9 @@ alias unisondesktop2externaldrive='unison /home/john/Desktop/unison /mnt/wdexter
 
 alias sw='cd ~/hobby-code && mvn -f pom.xml clojure:swank'
 alias ssw='cd ~/hobby-code && mvn -f simple.pom.xml clojure:swank'
-alias cgg='cd ~/hobby-code/ && git pull origin master && git gui'
+
 alias lsrt='ls -al --color=auto --reverse --sort=time'
 alias go='gnome-open'
-
-alias digbysocks='curl -v http://172.16.1.1:8000 -d agree=1 -d redirurl=http://www.google.com -d accept=Continue && ssh -D 9999 ssh.aspden.com'
 
 function mktags
 {
@@ -355,8 +353,7 @@ alias hgcleandryrun='hg status --ignored --unknown | awk  "( \$1 == \"?\" ) || (
 # alias fsim4='onerunsimtorulethemall jla4  hackswithfsdb'
 
 alias sbsx='source ~/.bashrc && set -x'
-alias ll='ls -alrt'
-#alias e='emacsclient -n'
+
 alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 # alias cdhc='pushd ~/hobby-code'
