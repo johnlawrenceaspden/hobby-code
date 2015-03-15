@@ -422,11 +422,11 @@ function gitpullall
 }
 
 
-alias dgg="cd ~/data && git gui"
-alias hgg="cd ~/hobby-code && git gui"
-alias igg="cd ~/iqtest && git gui"
-alias cgg="cd ~/cycling && git gui"
-alias wgg="cd ~/cctool && git gui"
+alias dgg="cd ~/data && git gui &"
+alias hgg="cd ~/hobby-code && git gui &"
+alias igg="cd ~/iqtest && git gui &"
+alias cgg="cd ~/cycling && git gui &"
+alias wgg="cd ~/cctool && git gui &"
 
 alias cljmkclasspath='cd ~/hobby-code && lein classpath > LEIN_CLASSPATH && cd -'
 alias cljnoport='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -classpath $LEIN_CLASSPATH clojure.main'
