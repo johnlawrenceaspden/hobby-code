@@ -383,6 +383,7 @@ export PATH="/usr/local/heroku/bin:$PATH"
 
 function vcstatuses
 {
+    pushd ~  #preserve current directory
     for i in ~/hobby-code ~/data ~/iqtest ~/cycling ~/cctool ; do
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/master..master ;
     done ;
@@ -395,22 +396,29 @@ function vcstatuses
 
     # echo ~/hobby-code && cd ~/hobby-code/ && git status && git log origin/master..master ;
     # echo ~/Desktop/solarflare && cd ~/Desktop/solarflare && hg status && hg outgoing ;
+    popd #restore current directory
 }
 
 function gitguiall
 {
+    pushd ~
     for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ; do cd $i && git gui ; done
+    popd
 }
 
 function gitpushall
 {
+    pushd ~
     for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ; do cd $i && git push ; done
+    popd
 }
 
 function gitpullall
 {
+    pushd ~
     for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ; do cd $i && git pull ; done
     cd ~/iqtest ; git remote update ;
+    popd
 }
 
 
