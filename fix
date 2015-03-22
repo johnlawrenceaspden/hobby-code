@@ -9,6 +9,8 @@ if [[ 'dell-mini' == $HOSTNAME ]] ; then
     synclient AreaBottomEdge=4000
 elif [[ 'dell-3537' == $HOSTNAME ]]; then
     echo 'no special fix defined for' $HOSTNAME
+elif [[ 'dell-3521' == $HOSTNAME ]]; then
+    echo 'no special fix defined for' $HOSTNAME
 elif [[ 'dell-mini-2' == $HOSTNAME ]]; then
     echo 'no special fix defined for' $HOSTNAME
 else
