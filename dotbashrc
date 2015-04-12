@@ -469,4 +469,7 @@ export PATH="/usr/local/heroku/bin:$PATH"
 function mtd { mv "$@" ~/Desktop ; }
 
 export LD_LIBRARY_PATH=~/holstuff/polyml/lib
+
+
 alias sai='sudo apt-get install'
+alias uptimes='grep "Apr" /var/log/syslog | cut -d\  -f1,2,3 | cut -d: -f1,2 | uniq'
