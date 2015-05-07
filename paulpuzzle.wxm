@@ -2,8 +2,37 @@
 /* [ Created with wxMaxima version 13.04.2 ] */
 
 /* [wxMaxima: input   start ] */
-eqn1: 'diff(x(t),t)*(0-y(t))='diff(y(t),t)*(t-x(t));
+sol: rk([cos(atan2(y,(t-x))),-sin(atan2(y,(t-x)))],[x,y],[0,2],[t,0,20,0.001])$
 /* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:makelist([p[2]-p[1]],p,sol)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a[length(a)];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d ([discrete,makelist([p[1],p[3]],p,sol)], [xlabel,"t"],[ylabel,"y"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d ([discrete,makelist([p[1],p[2]],p,sol)], [xlabel,"t"],[ylabel,"x"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d ([discrete,makelist([p[2],p[3]],p,sol)], [xlabel,"x"],[ylabel,"y"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d ([discrete,makelist([p[1],p[2]-p[1]],p,sol)], [xlabel,"t"],[ylabel,"x-t"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eqn1: 'diff(x(t),t)='diff(y(t),t);
+/* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: input   start ] */
 eqn2: ('diff(x(t),t))^2+('diff(y(t),t))^2=1;
