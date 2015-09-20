@@ -1,0 +1,122 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.2 ] */
+
+/* [wxMaxima: title   start ]
+Game Theory
+
+
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+4,2 5,1
+6,0 3,3
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(4*p*q+5*p*(1-q)+6*(1-p)*q+3*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(2*p*q+1*p*(1-q)+0*(1-p)*q+3*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([a=0, b=0], [p,q]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+x,2 0,0
+0,0 2,2
+(how does equilibrium change with x)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(x*p*q+0*p*(1-q)+0*(1-p)*q+2*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(2*p*q+0*p*(1-q)+0*(1-p)*q+2*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([a=0, b=0], [p,q]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+2,2 4,6
+6,4 3,3
+(two jobseekers)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(2*p*q+4*p*(1-q)+6*(1-p)*q+3*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(2*p*q+6*p*(1-q)+4*(1-p)*q+3*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([a=0, b=0], [p,q]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+2,9 5,4
+5,4 2,9
+(king and pirate)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(2*p*q+5*p*(1-q)+5*(1-p)*q+2*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(9*p*q+4*p*(1-q)+4*(1-p)*q+9*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve([a=0, b=0], [p,q]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
