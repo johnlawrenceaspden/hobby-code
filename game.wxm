@@ -118,5 +118,33 @@ b:ratsimp(diff(qprof,q,1));
 solve([a=0, b=0], [p,q]);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+.58,.42 .95,.05
+.93,.07 .70,.30
+(kicker and goalie)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(.58*p*q+.95*p*(1-q)+.93*(1-p)*q+.70*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(.42*p*q+.05*p*(1-q)+.07*(1-p)*q+.30*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(solve([a=0, b=0], [p,q]));
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
