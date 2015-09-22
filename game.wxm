@@ -146,5 +146,66 @@ b:ratsimp(diff(qprof,q,1));
 float(solve([a=0, b=0], [p,q]));
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: subsect start ]
+Nash equilibrium
+p is player 1, q is player 2
+3,2 0,0
+0,0 2,3
+(battle of the sexes)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(3*p*q+.0*p*(1-q)+0*(1-p)*q+2*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(2*p*q+0*p*(1-q)+.0*(1-p)*q+3*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(solve([a=0, b=0], [p,q]));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Nash Equilibrium
+p is player 1, q is player 2
+A11,B11 A12,B12
+A21,B21 A22,B22
+(general case)
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+a11:3$ b11:2$   a12:0 $ b12:0 $
+a21:0$ b21:0$   a22:2 $ b22:3 $
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+pprof:expand(a11*p*q+a12*p*(1-q)+a21*(1-p)*q+a22*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+qprof:expand(b11*p*q+b12*p*(1-q)+b21*(1-p)*q+b22*(1-p)*(1-q));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+a:ratsimp(diff(pprof,p,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:ratsimp(diff(qprof,q,1));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(solve([a=0, b=0], [p,q]));
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
