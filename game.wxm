@@ -34,6 +34,19 @@ b:ratsimp(diff(qprof,q,1));
 solve([a=0, b=0], [p,q]);
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: comment start ]
+We can also solve it just by saying 'what must q be to make p indifferent between his two moves'
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+p1payoff:4*q+5*(1-q);
+p2payoff:6*q+3*(1-q);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(p1payoff=p2payoff,q);
+/* [wxMaxima: input   end   ] */
+
 /* [wxMaxima: subsect start ]
 Nash equilibrium
 p is player 1, q is player 2
@@ -183,7 +196,7 @@ A21,B21 A22,B22
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
-a11:3$ b11:2$   a12:0 $ b12:0 $
+a11:3$ b11:2$   a12:1 $ b12:1 $
 a21:0$ b21:0$   a22:2 $ b22:3 $
 /* [wxMaxima: input   end   ] */
 

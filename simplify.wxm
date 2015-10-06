@@ -1,0 +1,25 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.2 ] */
+
+/* [wxMaxima: title   start ]
+Simplifying
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+http://stackoverflow.com/questions/32719729/how-do-i-simplify-an-easy-equation?noredirect=1#comment53283106_32719729
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+a:4*q+5*(1-q)=6*q+3*(1-q);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(lhs(a)-rhs(a)=0);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
