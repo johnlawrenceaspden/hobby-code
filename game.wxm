@@ -220,5 +220,17 @@ b:ratsimp(diff(qprof,q,1));
 float(solve([a=0, b=0], [p,q]));
 /* [wxMaxima: input   end   ] */
 
+/* [wxMaxima: input   start ] */
+a:5*(1+p+p^2+p^3+p^4+p^5+p^6);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+b:6+3*(p+p^2+p^3+p^4+p^5+p^6);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d([a,b,a-b], [p,0,1])$
+/* [wxMaxima: input   end   ] */
+
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
