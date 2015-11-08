@@ -1,5 +1,19 @@
 #lang racket
 
+(define (factorial n)
+  (if (< n 2) 1
+      (* n (factorial (- n 1)))))
+
+
+
+(define (ifact n)
+    (define (ifact-h count total)
+      (if (= n count) (* count total)
+          (ifact-h (+ n 1) (* count total))))
+  (ifact-h 1 1))
+
+
+
 (define (memoize f)
   (let ((table (make-hash)))
     (lambda args
@@ -13,20 +27,24 @@
                  (lambda ()
                    (apply f args))))))
 
+(define (fib n)
+  (if (< n 2) n
+      (+ (fib (- n 1)) (fib (- n 2)))))
 
-
-(define fib 
-  (memoize
-    (lambda (n)
+(define mfib 
+   (memoize (lambda (n)
       (if (< n 1) 1
-        (+ (fib (- n 1)) (fib (- n 2)))))))
+        (+ (mfib (- n 1)) (mfib (- n 2)))))))
 
-;;(define fib 
-;;  (lambda (n)
-;;    (if (< n 1) 1
-;;      (+ (fib (- n 1)) (fib (- n 2))))))
 
-;;(define (fib n)
-;;  (if (< n 1) 1
-;;      (+ (fib (- n 1)) (fib (- n 2)))))
 
+(define (fact-odd n)
+  (if (= 0 (remainder (factorial n) 2)) "even" "odd"))
+
+
+
+
+;(time (even? (ifact 5000)))
+;(time (even? (factorial 5000)))
+;(time (even? (ifact 10000)))
+;(time (even? (factorial 10000)))
