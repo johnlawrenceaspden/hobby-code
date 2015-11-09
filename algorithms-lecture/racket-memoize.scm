@@ -5,14 +5,14 @@
       (* n (factorial (- n 1)))))
 
 
+(define (ifact-h n total)
+  (if (= n 0) total
+      (ifact-h (- n 1) (* n total))))
 
-(define (ifact n)
-    (define (ifact-h count total)
-      (if (= n count) (* count total)
-          (ifact-h (+ n 1) (* count total))))
-  (ifact-h 1 1))
+(define (ifact n) (ifact-h n 1))
 
-
+(ifact 10)
+(factorial 10)
 
 (define (memoize f)
   (let ((table (make-hash)))
