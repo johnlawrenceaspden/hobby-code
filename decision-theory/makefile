@@ -1,5 +1,9 @@
 
 
+newcomb-edt:newcomb-edt.py
+	python3 newcomb-edt.py
+
+
 program: newcomb.py
 	python3 newcomb.py
 
