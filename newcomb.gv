@@ -1,8 +1,8 @@
 // dot <newcomb.gv -Tpng >newcomb.png
 // eog newcomb.png
 
-// interactive svg for development!
-// dot <newcomb.gv -Tsvg >newcomb.svg && eog newcomb.svg &
+// interactive svg for development using neato instead of dot
+// neato <newcomb.gv -Tsvg >newcomb.svg && eog newcomb.svg &
 
 digraph newcomb {
         algorithm [shape=ellipse];
@@ -25,6 +25,23 @@ digraph newcomb {
                         <TR><TD>1-p</TD><TD>onebox</TD></TR>
                     </TABLE>>];
 
+
+        omega->omegatable [dir=none]
+
+        omegatable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
+                        <TR><TD>onebox</TD><TD>fill</TD></TR>
+                        <TR><TD>twobox</TD><TD>empty</TD></TR>
+                    </TABLE>>];
+
+
+        utility->utilitytable [dir=none]
+
+        utilitytable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
+                        <TR><TD>onebox</TD><TD>fill</TD><TD>1000000</TD></TR>
+                        <TR><TD>onebox</TD><TD>empty</TD><TD>0</TD></TR>
+                        <TR><TD>twobox</TD><TD>fill</TD><TD>1001000</TD></TR>
+                        <TR><TD>twobox</TD><TD>empty</TD><TD>1000</TD></TR>
+                    </TABLE>>];
 
 
         label = "\n\nNewcomb's problem"
