@@ -5,17 +5,27 @@
 // dot <newcomb.gv -Tsvg >newcomb.svg && eog newcomb.svg &
 
 digraph newcomb {
-        node [shape=ellipse]; algorithm;
-        node [shape=box]; output;
-        node [shape=diamond]; action;
-        node [shape=ellipse]; omega;
-        node [shape=diamond,style=filled,color=lightgrey, label="$"] utility;
+        algorithm [shape=ellipse];
+        output [shape=box];
+        action [shape=diamond];
+        omega [shape=ellipse] ;
+        utility [shape=diamond,style=filled,color=lightgrey, label="$"];
+
 
         algorithm -> output [label="logical implication"];
         output -> action;
         output -> omega;
         action -> utility;
         omega -> utility;
+
+        output->outputtable [dir=none]
+
+        outputtable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
+                        <TR><TD>p</TD><TD>twobox</TD></TR>
+                        <TR><TD>1-p</TD><TD>onebox</TD></TR>
+                    </TABLE>>];
+
+
 
         label = "\n\nNewcomb's problem"
         fontsize=20;
