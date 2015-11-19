@@ -1,22 +1,22 @@
-graph newcomb {
+digraph newcomb {
 	node [shape=box]; course; institute; student;
 	node [shape=ellipse]; {node [label="name"] name0; name1; name2;}
 		code; grade; number;
 	node [shape=diamond,style=filled,color=lightgrey]; "C-I"; "S-C"; "S-I";
 
-	name0 -- course;
-	code -- course;
-	course -- "C-I" [label="n",len=1.00];
-	"C-I" -- institute [label="1",len=1.00];
-	institute -- name1;
-	institute -- "S-I" [label="1",len=1.00];
-	"S-I" -- student [label="n",len=1.00];
-	student -- grade;
-	student -- name2;
-	student -- number;
-	student -- "S-C" [label="m",len=1.00];
-	"S-C" -- course [label="n",len=1.00];
+	name0 -> course;
+	code -> course;
+	course -> "C-I" [label="n",len=1.00];
+	"C-I" -> institute [label="1",len=1.00];
+	institute -> name1;
+	institute -> "S-I" [label="1",len=1.00];
+	"S-I" -> student [label="n",len=1.00];
+	student -> grade;
+	student -> name2;
+	student -> number;
+	student -> "S-C" [label="m",len=1.00];
+	"S-C" -> course [label="n",len=1.00];
 
-	label = "\n\nNewcomb's problem\ndrawn by NEATO\nneato <newcomb.gv -Tpng >newcomb.png && eog newcomb.png &";
+	label = "\n\nNewcomb's problem\n\nneato <newcomb.gv -Tpng >newcomb.png && eog newcomb.png &";
 	fontsize=20;
 }
