@@ -4,7 +4,12 @@
 // interactive svg for development using neato instead of dot
 // neato <newcomb.gv -Tsvg >newcomb.svg && eog newcomb.svg &
 
+// actions are square, events are circles, payoffs are diamonds,
+// arrows are solid for causal, dotted for known
+
 digraph newcomb {
+        overlap=false;
+
         algorithm [shape=ellipse];
         output [shape=box];
         action [shape=diamond];
@@ -12,7 +17,7 @@ digraph newcomb {
         utility [shape=diamond,style=filled,color=lightgrey, label="$"];
 
 
-        algorithm -> output [label="logical implication"];
+        algorithm -> output [arrowhead=dot, style=dashed];
         output -> action;
         output -> omega;
         action -> utility;
