@@ -18,11 +18,27 @@ digraph newcomb {
         action -> utility;
         omega -> utility;
 
+        algorithm->algorithmtable [dir=none]
+
+        algorithmtable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
+                        <TR><TD>p</TD><TD>twobox</TD></TR>
+                        <TR><TD>1-p</TD><TD>onebox</TD></TR>
+                    </TABLE>>];
+
         output->outputtable [dir=none]
 
         outputtable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
-                        <TR><TD>p</TD><TD>twobox</TD></TR>
-                        <TR><TD>1-p</TD><TD>onebox</TD></TR>
+                        <TR><TD>twobox</TD><TD>twobox</TD></TR>
+                        <TR><TD>onebox</TD><TD>onebox</TD></TR>
+                    </TABLE>>];
+
+
+
+        action->actiontable [dir=none]
+
+        actiontable [ shape=box,style=filled,color=lightgrey, label=<<TABLE>
+                        <TR><TD>twobox</TD><TD>twobox</TD></TR>
+                        <TR><TD>onebox</TD><TD>onebox</TD></TR>
                     </TABLE>>];
 
 
