@@ -12,8 +12,25 @@
 ;; One person sits at the computer, one person helps them, the rest tell them what to do
 ;; Every time they achieve something significant, rotate audience->copilot->pilot->audience
 ;; Notes on back of hand: 
-(define crib 
-  '( 2 3 + (+ 2 3) lambda define square < #t #f if abs Heron average improve make-improver error good-enough good-enough-guess iterative-improve ))
+(define crib '( 2 3 + (+ 2 3) * define lambda square pythag < #t #f if absolute-value average improve-guess make-improve-guess error good-enough? good-enough-guess))
+;; Notes on back of hand: 
+(define scheme-crib  '( 2 3 + (+ 2 3) * define lambda (square x) (pythag x y) < #t #f if (absolute-value x)))
+(define heron-crib   '( "explain-algorithm (/ 9 3)-> 3" 
+                        (average a b) 
+                        (improve-guess x) 
+                        (make-improve-guess n) 
+                        (error x) 
+                        (good-enough? x) 
+                        (good-enough-guess x)))
+(define general-crib '( iterative-improve ))
+(define cute-crib    '( (square x) 
+                        (abs x) 
+                        (make-improve-guess n) 
+                        (make-good-enough? n tolerance) 
+                        (iterative-improve guess improve good-enough?)
+                        (make-square-root guess tolerance)
+                        engineer-sqrt (make-square-root 1.0 0.00000000001)
+                        cautious-engineer-sqrt (make-square-root 1 1/100000000000000000000000000000000000000000000)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Introduction to the Lambda Calculus
@@ -168,10 +185,10 @@ forty-four
 ;; and the shortest path theory of reflection of light, and did some theatre stuff, 
 ;; and he was like Professor of War at the big library in Alexandria.
 
-;; You get the impression that if Alexandria had lasted just a little bit longer, 
+;; You get the impression that if the Alexandrian scene had lasted just a little bit longer, 
 ;; the whole industrial revolution would have kicked off right there, and the Romans would have walked on the moon in about AD400.
 
-;; And we'd all be immortal, and live amongst the stars. So you should take the fall of the Roman Empire *very* personally.
+;; And we'd all be immortal, and live amongst the stars. So you should take the burning of the Library at Alexandria *very* personally.
 
 ;; And one of his things was a way of finding the square roots of numbers, 
 ;; which is so good that it was how people found square roots right up until the invention of the computer.
