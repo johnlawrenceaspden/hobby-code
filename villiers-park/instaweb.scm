@@ -1,5 +1,6 @@
 #lang web-server/insta
-  (define (start request)
+(define (start request)
+  (response/xexpr
    '(html
      (head (title "My Blog"))
-     (body (h1 "Under constction"))))
+     (body (h1 "Under construction")))))
