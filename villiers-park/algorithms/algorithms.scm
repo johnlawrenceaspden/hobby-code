@@ -258,54 +258,121 @@
 ;; Now let's look at what is thought to be the worst example in computer science:
 
 ;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their own symbol, like the factorials do, although 
-;; there are plenty of cranks who will tell you that they are everywhere in Nature whooo. 
+;; there are plenty of cranks who will tell you that they are everywhere in Nature whooooo. 
 
-;; If you ever hear anyone talking about the mysterious wonder of the fibonnacci numbers, run.
+;; If you ever hear anyone talking about the mysterious omnipresent wonder of the fibonacci numbers, run.
 
-;; FIB(0)
+;; However like all really simple ideas, they do come up from time to time, in for instance 
+;; poetry, binary strings, idealized bees, rabbit counting, flowers, algorithms, data structures and so on.
+
+;; A mathematician might define the fibonacci numbers thus:
+
+;; FIB(0) = 1
+;; FIB(1) = 1
+;; FIB(n) = FIB(n-1) + FIB(n-2)
+
+;; And we, in our innocence, translate this recursive definition into this recursive function:
 
 (define (fib n)
-  (if (< n 2) n
+  (if (< n 2) 1
       (+ (fib (- n 1)) (fib (- n 2)))))
-
-(fib 0)
-0
 
 (fib 1)
 1
+;; 1 step
+
+(fib 1)
+1
+;; 1 step
 
 (fib 2)
 (+ (fib 1) (fib 0))
 (+ 1 (fib 0))
-(+ 1 0)
-1
+(+ 1 1)
+2
+;; 4 steps  ( 2 + 1 + 1 )
 
 
 (fib 3)
 (+ (fib 2) (fib 1))
 (+ (+ (fib 1) (fib 0)) (fib 1))
 (+ (+ 1 (fib 0)) (fib 1))
-(+ (+ 1 0) (fib 1))
-(+ 1 (fib 1))
-(+ 1 1)
-2
+(+ (+ 1 1) (fib 1))
+(+ 2 (fib 1))
+(+ 2 1)
+3
+;; 7 steps ( 3 + 2 + 2 )
 
 (fib 4)
 (+ (fib 3) (fib 2))
 (+ (+ (fib 2) (fib 1)) (fib 2))
 (+ (+ (+ (fib 1) (fib 0)) (fib 1)) (fib 2))
 (+ (+ (+ 1 (fib 0)) (fib 1)) (fib 2))
-(+ (+ (+ 1 0) (fib 1)) (fib 2))
-(+ (+ (+ 1 0) 1) (fib 2))
-(+ (+ 1 1) (fib 2))
-(+ 2 (fib 2))
-(+ 2 (+ (fib 1) (fib 0)))
-(+ 2 (+ 1 (fib 0)))
-(+ 2 (+ 1 0))
-(+ 2 1)
-3
+(+ (+ (+ 1 1) (fib 1)) (fib 2))
+(+ (+ (+ 1 1) 1) (fib 2))
+(+ (+ 2 1) (fib 2))
+(+ 3 (fib 2))
+(+ 3 (+ (fib 1) (fib 0)))
+(+ 3 (+ 1 (fib 0)))
+(+ 3 (+ 1 1))
+(+ 3 2)
+5
+;; 13 steps ( 5 + 4 + 4)
 
+(map fib (range 30))
 
+;; You might notice that the larger fibs take a while to compute.
+
+;; Why is that?
+
+;; Let's see if we can draw the call graph.
+
+;; [Draw the call graph, show that the fringe has (fib n) elements, and that there are (- (fib n) 1) interior nodes]
+;; [Notice that the every interior node represents a split step and a combine step, and every fringe node represents an evaluate-to-one step]
+
+;; This is called a tree recursion, and it is exponential in time, and linear in space.
+
+;; Now this example is pretty. I like it very much, which is why I have put it third on my list of 'classic algorithms'
+
+;; Why do I call it 'proverbially the worst example in computer science?'
+
+;; It's because it teaches you four lessons, and they're all wrong!
+
+;; Lesson I : Fibonacci Numbers are hard to compute...
+
+;; Here I am computing them by hand
+1
+1
+(+ 1 1) ;-> 2
+(+ 2 1) ;-> 3
+(+ 3 2) ;-> 5
+(+ 5 3) ;-> 8
+(+ 8 5) ;-> 13
+(+ 13 8) ;-> 21
+
+;; .. and so on and so forth. Now I am not at all sure that I am going to be able to get to (fib 40) before the computer can, 
+;; but I am damned sure that I am going to get to (fib 60) before it does.
+
+;; Think about that for a minute. 
+
+;; I am going to take 60 additions to get to (fib 60)
+;; The computer is going to take two and a half TRILLION steps to get there.
+
+;; Now if you can calculate something faster than your computer can, you are doing something very wrong.
+;; And if fact I can write an iteration that calculates them just like I was doing above. It looks like this:
+
+(define (fib-iter a b n)
+  (if (> n 0) (fib-iter b (+ a b) (- n 1)) a))
+
+(define (ifib n) (fib-iter 1 1 n))
+
+;; Hundred Thousandth Fibonacci Number anyone?
+(ifib 100000)
+
+;; Take a moment to reflect that this enormous number (times 3 minus 2) is the number of steps that the tree-recursion 
+;; algorithm above would take to calculate (fib 100000)
+
+   
 
 
 (define (memoize f)
