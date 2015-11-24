@@ -127,6 +127,17 @@
 
 ;; We call this a linear recursion.
 
+;; Here's the shape of a  linear recursion. It's a triangle in space and time.
+
+;-
+;---
+;-----
+;-------
+;-----
+;---
+;-
+
+
 ;; Generally, we ignore the details about whether it's n steps, or 7*n steps, because how many steps it is depends 
 ;; on how you count them, and how long each step takes depends what sort of computer the program is running on.
 
@@ -145,6 +156,10 @@
 
 ;; Notice that if we stop our process in the middle, we'll need to write down quite a lot of stuff to be able to restart it from the point where it left off.
 
+;; We can draw what's called a call graph of the process, which shows us how the data flows
+'((factorial 7) --> (factorial 6) --> (factorial 5) --> (factorial 4) --> (factorial 3) --> (factorial 2) --> (factorial 1) --> (factorial 0))
+'( 5040         <-- 720           <-- 120           <-- 24            <-- 6             <-- 2             <--  1            <--  1          )
+
 (display "=========================================================================================\n")
 
 ;; Now, if we look in the middle of the factorial process, we'll find that 
@@ -155,26 +170,26 @@
 
 ;; So taking that as inspiration, here's a different way of computing the same function:
 
-(define (factorial n) (fact-iter n 1))
+(define (fact n) (fact-iter n 1))
 
 (define (fact-iter n total)
   (if (= n 0) total
       (fact-iter (- n 1) (* n total))))
 
-(factorial 3)
+(fact 3)
 
 ;; We get the same answers, but what does the computation look like now?
 
-(factorial 3)
+(fact 3)
 (fact-iter 3 1)
 (fact-iter 2 3)
 (fact-iter 1 6)
 (fact-iter 0 6)
 6
 
-;; What would (factorial 30) look like now?
+;; What would (fact 30) look like now?
 
-(factorial 30)
+(fact 30)
 (fact-iter 30 1)
 (fact-iter 29 30)
 (fact-iter 28 870)
@@ -201,6 +216,36 @@
 ;; Notice that in both cases, the programs are 'recursive' in the sense that the procedures call themselves.
 
 ;; What makes the difference is the shape that the programs make as they run.
+
+
+;; Here's the shape of a linear iteration
+;--
+;--
+;--
+;--
+;--
+;--
+;--
+
+
+;; In a lot of languages, iteration has a privileged place, and it gets its own iteration construct, 
+;; which might be a for/next loop, or loop/exit/end, or do/while, or while/do.
+
+;; In some languages, that's the only sort of program you can write! 
+
+;; Notice that we had to do some work to turn our linear recursion into a linear iteration, and it's not quite so obvious 
+;; that the second program is correct and bug free.
+
+;; There's a general pattern here. Some ideas are more natural to express recursively, and some are more natural to express iteratively.
+
+;; If your language forces you to use iterations only, then it forces you to do some of the work that the computer should do for you.
+
+
+
+
+;; We can also draw what's called a call graph of the iterative process, which shows us how the data flows
+'((fact 7) --> (fact 6) --> (fact 5) --> (fact 4) --> (fact 3) --> (fact 2) --> (fact 1) --> (fact 0))
+'( 5040   <-- 720     <-- 120     <-- 24      <-- 6       <-- 2       <--  1      <--  1      )
 
 
 
