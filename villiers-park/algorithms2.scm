@@ -167,3 +167,35 @@
 
 
 
+(defn gcd [a b] (print a b "-> ") (cond (= a 0) b (= b 0) a (< a b) (recur a (rem b a)) :else (recur (rem a b) b)))
+
+(define (fib n)
+  (if (< n 2) n
+      (+ (fib (- n 1)) (fib (- n 2)))))
+
+
+(define (memoize f)
+  (let ((table (make-hash)))
+    (lambda args
+      ;; Look up the arguments.
+      ;; If they're present, just give back the stored result.
+      ;; If they're not present, calculate and store the result.
+      ;; Note that the calculation will not be expensive as long
+      ;; as f uses this memoized version for its recursive call,
+      ;; which is the natural way to write it!
+      (dict-ref! table args
+                 (lambda ()
+                   (apply f args))))))
+
+
+(define mfib 
+   (memoize (lambda (n)
+      (if (< n 1) 1
+        (+ (mfib (- n 1)) (mfib (- n 2)))))))
+
+
+(define (A x y)
+  (cond ((= y 0) 0)
+        ((= x 0) (* 2 y))
+        ((= y 1) 2)
+        (else (A (- x 1) (A x (- y 1))))))
