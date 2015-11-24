@@ -1,18 +1,24 @@
 ;; An Introduction to Algorithms: Shape, Space and Time
 
+;; Written for PLT DrRacket, version 6.1, using the language R5RS, the Revised Revised Revised Revised Revised Report on Scheme.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Firstly, I want to say that this talk is full of lies.
-;; Adults have been lying to you all your life, and it's time that you learned to spot when they're lying.
-;; So I'm going to be very impressed and pleased if you can catch me out in any of my lies. That's a skill that's worth having if you remember nothing else from this talk.
+;; Adults have been lying to you all your life, and it's past time that you learned to spot when they're lying.
+;; So I'm going to be very impressed and pleased if you can catch me out in any of my lies. 
+;; That's a skill that's worth having if you remember nothing else from this talk.
 
 ;; Zebras are Blue
 
-;; Isn't anyone going to pull me up on that? I mean, I've just told you that I'm going to lie to you, and I've just told you that I want you to catch me out when you think I'm lying, and I've just told you a very obvious lie.
+;; Isn't anyone going to pull me up on that? 
+;; I mean, I've just told you that I'm going to lie to you, and
+;; I've just told you that I want you to catch me out when you think I'm lying, and 
+;; I've just told you a very obvious lie.
+
 ;; Surely someone is brave enough call me on it?
 ;; You don't have to be rude about it, or even particularly accusatory.
 ;; You can put your hand up politely, and you can say :
-;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that zebras were black and white. Where am I going wrong here?".
+;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that some zebras are black and white. Where am I going wrong here?".
 
 ;; OK, Zebras are a kind of space fish, which is blue, and they live on the Moon.
 
@@ -25,7 +31,9 @@
 
 ;; A program is a recipe for a process, and today I want to talk about the shapes of the processes that programs create as they run.
 
-;; I'm going to give you some little programs, and you're going to be the computer and execute them.
+;; I'm going to give you some little programs, and you're going to play the role of the computer and execute them.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; First of all, let's think about factorials.
 
@@ -45,17 +53,18 @@
 ;; So the number of ways you can arrange 3 things is 3 times the number of ways you can arrange 2 things. 
 ;; And the number of ways you can arrange 2 things is 2 times the number of ways you can arrange 1 thing.
 ;; And the number of ways you can arrange 1 thing is 1.
+;; ( Which is 1 times the number of ways you can arrange no things, which is also 1 )
 
 ;; This number is called the factorial, and it comes up so often that it has its own bit of notation in maths.  
 ;; We usually write 3! for 3 factorial.
 
-;; 1! = 1
+;; 0! = 1
 ;; n! = n * (n-1)!
 
 ;; We can take this mathematical definition and turn it directly into a program
 
 (define (factorial n)
-  (if (= n 1) 1
+  (if (= n 0) 1
       (* n (factorial (- n 1)))))
 
 (factorial 3)
@@ -75,6 +84,7 @@
 (* 3 2)
 6
 
+
 ;; 12 steps
 
 ;; Now let's get rid of the book-keeping in the middle, where we do the function call and the subtraction and the if, which is 
@@ -87,7 +97,7 @@
 (* 3 2)
 6
 
-;; 6 steps
+;; 6 steps, because we're counting steps differently now
 
 ;; Notice how the program grows, and then when you get to (factorial 1) it bounces and starts to shrink until we're back to 1 number, which is the answer.
 
@@ -122,7 +132,8 @@
 
 ;; So we tend to think that if the time taken is 15*n, then the 15 is sort of a fiddly detail and the n is the important bit!
 
-;; Normally that's ok, because the difference between 15 milliseconds and 1 millisecond is not important, and neither is the difference between a million years and 15 million years.
+;; Normally that's ok, because the difference between 15 milliseconds and 1 millisecond is not important, and 
+;; neither is the difference between a million years and 15 million years.
 
 ;; We say that we need O(n) time, and O(n) space.
 
@@ -130,11 +141,19 @@
 ;; At that point you do need to start caring about constant factors. But that's surprisingly rare.
 
 ;; At any rate, with an O(n) algorithm, our problem is surprisingly tractable, and we can find quite large factorials.
+(factorial 1000)
 
-;; =========================================================================================
+;; Notice that if we stop our process in the middle, we'll need to write down quite a lot of stuff to be able to restart it from the point where it left off.
 
+(display "=========================================================================================\n")
 
-;; Here's a different way of computing the same function
+;; Now, if we look in the middle of the factorial process, we'll find that 
+
+(factorial 7)
+;; is equal to:
+(* 7 6 5 4 3 2 1)
+
+;; So taking that as inspiration, here's a different way of computing the same function:
 
 (define (factorial n) (fact-iter n 1))
 
@@ -144,7 +163,7 @@
 
 (factorial 3)
 
-;; We get the same answers, what does the computation look like?
+;; We get the same answers, but what does the computation look like now?
 
 (factorial 3)
 (fact-iter 3 1)
@@ -167,7 +186,10 @@
 265252859812191058636308480000000
 
 ;; We're no longer using up a lot of space storing the computations we intend to do.
-;; At every step, we need only store two numbers, our counter, and our total
+;; At every step, we need only store two numbers, our counter, and our total. 
+;; So it will be much easier to stop and start our computation in the middle, we only have to write down e.g.
+(fact-iter 26 657720)
+;; and that will carry on where we left off
 
 ;; This pattern is called a linear iteration, and it's still O(n) in time, but it's O(1) in space.
 
@@ -183,6 +205,7 @@
 
 
 
+(break)
 
 
 
