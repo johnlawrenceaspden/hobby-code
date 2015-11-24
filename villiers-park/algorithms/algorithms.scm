@@ -1,6 +1,8 @@
 ;; An Introduction to Algorithms: Shape, Space and Time
 
-;; Written for PLT DrRacket, version 6.1, using the language R5RS, the Revised Revised Revised Revised Revised Report on Scheme.
+#lang racket
+
+;; Written for PLT DrRacket
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Firstly, I want to say that this talk is full of lies.
@@ -244,23 +246,66 @@
 
 
 ;; We can also draw what's called a call graph of the iterative process, which shows us how the data flows
-'((fact 7) --> (fact 6) --> (fact 5) --> (fact 4) --> (fact 3) --> (fact 2) --> (fact 1) --> (fact 0))
-'( 5040   <-- 720     <-- 120     <-- 24      <-- 6       <-- 2       <--  1      <--  1      )
+'((fact 7) --> (fact-iter 7 1) --> (fact-iter 6 7) --> (fact-iter 5 42) --> (fact-iter 4 210) --> (fact-iter 3 840) --> (fact-iter 2 1680) --> (fact-iter 1 3360) --> (fact-iter 0 3360) --> 3360)
 
+;; Notice that the shape is kind of different and kind of the same. 
+           
+;; The data flows along the chain, but at the end it falls off the end, it doesn't come back, and
+;; no more work is done on it once it reaches the end of the chain.
 
+(display "=========================================================================================\n")
 
+;; Now let's look at what is thought to be the worst example in computer science:
 
-(break)
+;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their own symbol, like the factorials do, although 
+;; there are plenty of cranks who will tell you that they are everywhere in Nature whooo. 
 
+;; If you ever hear anyone talking about the mysterious wonder of the fibonnacci numbers, run.
 
-
-
-
-(defn gcd [a b] (print a b "-> ") (cond (= a 0) b (= b 0) a (< a b) (recur a (rem b a)) :else (recur (rem a b) b)))
+;; FIB(0)
 
 (define (fib n)
   (if (< n 2) n
       (+ (fib (- n 1)) (fib (- n 2)))))
+
+(fib 0)
+0
+
+(fib 1)
+1
+
+(fib 2)
+(+ (fib 1) (fib 0))
+(+ 1 (fib 0))
+(+ 1 0)
+1
+
+
+(fib 3)
+(+ (fib 2) (fib 1))
+(+ (+ (fib 1) (fib 0)) (fib 1))
+(+ (+ 1 (fib 0)) (fib 1))
+(+ (+ 1 0) (fib 1))
+(+ 1 (fib 1))
+(+ 1 1)
+2
+
+(fib 4)
+(+ (fib 3) (fib 2))
+(+ (+ (fib 2) (fib 1)) (fib 2))
+(+ (+ (+ (fib 1) (fib 0)) (fib 1)) (fib 2))
+(+ (+ (+ 1 (fib 0)) (fib 1)) (fib 2))
+(+ (+ (+ 1 0) (fib 1)) (fib 2))
+(+ (+ (+ 1 0) 1) (fib 2))
+(+ (+ 1 1) (fib 2))
+(+ 2 (fib 2))
+(+ 2 (+ (fib 1) (fib 0)))
+(+ 2 (+ 1 (fib 0)))
+(+ 2 (+ 1 0))
+(+ 2 1)
+3
+
+
 
 
 (define (memoize f)
@@ -281,6 +326,18 @@
    (memoize (lambda (n)
       (if (< n 1) 1
         (+ (mfib (- n 1)) (mfib (- n 2)))))))
+
+(/ 1 0)
+
+
+(define (gcd a b)
+  (print a b "-> ") 
+  (cond ((= a 0) b)
+        ((= b 0) a )
+        ((< a b) (gcd a (remainder b a)))
+        (else    (gcd (remainder a b) b))))
+
+
 
 
 (define (A x y)
