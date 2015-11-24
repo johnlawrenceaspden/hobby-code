@@ -1,8 +1,29 @@
-;; Algorithms
+;; An Introduction to Algorithms: Shape, Space and Time
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Firstly, I want to say that this talk is full of lies.
+;; Adults have been lying to you all your life, and it's time that you learned to spot when they're lying.
+;; So I'm going to be very impressed and pleased if you can catch me out in any of my lies. That's a skill that's worth having if you remember nothing else from this talk.
+
+;; Zebras are Blue
+
+;; Isn't anyone going to pull me up on that? I mean, I've just told you that I'm going to lie to you, and I've just told you that I want you to catch me out when you think I'm lying, and I've just told you a very obvious lie.
+;; Surely someone is brave enough call me on it?
+;; You don't have to be rude about it, or even particularly accusatory.
+;; You can put your hand up politely, and you can say :
+;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that zebras were black and white. Where am I going wrong here?".
+
+;; OK, Zebras are a kind of space fish, which is blue, and they live on the Moon.
+
+;; Good. At least one person here is brave enough to tell the Emperor when he's not wearing any clothes, at least once the Emperor has said it's ok.
+;; But anyway, I'm going to stick in lots more lies in this talk, but they won't be as obvious. I'm going to see how many I can sneak past you.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; We've written some programs in Scheme.
 
-;; Today I want to talk about the processes that programs create as they run.
+;; A program is a recipe for a process, and today I want to talk about the shapes of the processes that programs create as they run.
 
 ;; I'm going to give you some little programs, and you're going to be the computer and execute them.
 
