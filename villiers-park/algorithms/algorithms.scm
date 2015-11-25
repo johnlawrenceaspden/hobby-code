@@ -1,8 +1,11 @@
 ;; An Introduction to Algorithms: Shape, Space and Time
 
-#lang racket
+;; A talk to be given at Villiers Park on 26/11/2015
 
-;; Written for PLT DrRacket
+;; Written for PLT DrRacket, version 6.1, and this time using the racket language, just so we can memoize later on
+#lang racket
+;; Again using the dojo format, where two people from the audience do all the typing, the audience does the programming 
+;; and I try to limit myself to asking leading questions.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Firstly, I want to say that this talk is full of lies.
@@ -20,7 +23,7 @@
 ;; Surely someone is brave enough call me on it?
 ;; You don't have to be rude about it, or even particularly accusatory.
 ;; You can put your hand up politely, and you can say :
-;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that some zebras are black and white. Where am I going wrong here?".
+;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that some zebras are black and white. Is that a myth?".
 
 ;; OK, Zebras are a kind of space fish, which is blue, and they live on the Moon.
 
@@ -34,6 +37,48 @@
 ;; A program is a recipe for a process, and today I want to talk about the shapes of the processes that programs create as they run.
 
 ;; I'm going to give you some little programs, and you're going to play the role of the computer and execute them.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; First off, I want to talk about 'the substitution model', which is a way of understanding what a computation is. 
+;; You could build a computer to work this way if you liked. I have done.
+
+;; So the other day I showed you how to make a function to square things
+(lambda (x) (* x x))
+;; And I told you how to name it
+'(define square (lambda (x) (* x x)))
+;; But we can do both things at once:
+'(define (square x) (* x x))
+;; Now this is called 'syntactic sugar'. And what happens is that the evaluator, when it sees an expression where the thing it's supposed to name is a list like (square x)
+;; quietly rewrites it to be (define square (lambda (x) ). 
+
+;; A very famous man once said that "syntactic sugar leads to cancer of the semicolon".
+;; And there's very little in Scheme, but we do have this one bit, 
+;; because Alonzo Church himself wouldn't have used lambdas if he'd had to write out l-a-m-b-d-a all the time,
+;; which makes programs a little easier to read at the cost of hiding what's going on.
+
+;; Today, I think it will make it easier to reason about what we're going to reason about if we use this shorthand
+
+;; So suppose we've got this function
+(define (square x) (* x x))
+;; And this function
+(define (pythag x y) (+ (square x) (square y)))
+
+;; And we type
+(pythag 3 4) 
+;; into the evaluator, what happens?
+
+;; Well, in a substitution model computer, this:
+(pythag 3 4)
+(+ (square 3) (square 4))
+(+ (* 3 3) (square 4))
+(+ (* 3 3) (square 4))
+(+ 9 (square 4))
+(+ 9 (* 4 4))
+(+ 9 16)
+(+ 9 16)
+25
+;; And let's call that 8 steps of evaluation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
