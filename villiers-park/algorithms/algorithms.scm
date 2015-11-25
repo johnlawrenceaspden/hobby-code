@@ -366,49 +366,148 @@
 
 (define (ifib n) (fib-iter 1 1 n))
 
-;; Hundred Thousandth Fibonacci Number anyone?
-(ifib 100000)
+;; Ten Thousandth Fibonacci Number anyone?
+(ifib 10000)
 
 ;; Take a moment to reflect that this enormous number (times 3 minus 2) is the number of steps that the tree-recursion 
-;; algorithm above would take to calculate (fib 100000)
+;; algorithm above would take to calculate (fib 10000)
 
-   
+;; Lession II
 
+;; Recursion is BAD!
 
+;; Some algorithms are naturally recursive, writing them as iterations can always be done, but it is often a pain.
+;; See Lesson III
+
+;; Lesson III
+
+;; Tree Recursion is BAD!
+
+;; Trees are everywhere. 
+;; Obviously, there are actual trees (the larch, the oak,...)
+;; But your body is a tree of bones
+;; And the internet is a tree of links
+;; And your computer network is a tree of wires
+;; And a recipe is a tree of cookery tasks
+;; And a to-do list is a tree of things to do
+;; And computer programs are trees of functions. 
+;; This is really obvious in Scheme, but there aren't many computer languages where it isn't just as true. 
+;; And even fewer that you'd actually use for any purpose. The only exception I can think of is programming directly in machine code. 
+;; And even then, you wouldn't do that. You'd use assembler languages. And even assemblers build little trees as they run.
+
+;; If you try to write programs about trees without using tree recursion, well, it can be done. But it is very hard.
+;; And if you try to write programs not about trees, that doesn't leave a huge number of programs. Most of which have already been written.
+
+;; Lesson IV
+
+;; Tree Recursion is a BAD way of computing the Fibonacci Numbers!
+;; OK, I will admit that there is sort of a case for saying that this is true.
+
+;; But actually it's not terrible. The problem with the program above is not actually the fact that each function call results in needing to make two more function calls.
+
+;; It is that the program is doing the same thing over and over and over again.
+
+;; There are two solutions to this:
+
+;; One is called dynamic programming, where you look very carefully at what information you need to calculate and in what order and you arrange your computation
+;; In the fibonacci case, dynamic programming is very easy to do, and I have used it above to turn the fib function into the ifib function, which is an iteration.
+;; Dynamic Programming is an ancient and honourable technique of algorithm design, but it often requires careful thought and intricate design. 
+;; Which is all very excellent and satisfying, until it breaks and you have to start looking for bugs.
+
+;; And the other way is called memoization, which is when you get the function itself to remember the computations it has already done,
+;; and if you ask the function to compute something it has already computed, then it just looks it up, instead of recalculating.
+
+;; Memoization is one of those 'classic patterns' that you can use over and over again. 
+
+;; Here is the function that memoizes things. It's not very complex, even though it's got some lambdas in it.
 (define (memoize f)
   (let ((table (make-hash)))
-    (lambda args
-      ;; Look up the arguments.
-      ;; If they're present, just give back the stored result.
-      ;; If they're not present, calculate and store the result.
-      ;; Note that the calculation will not be expensive as long
-      ;; as f uses this memoized version for its recursive call,
-      ;; which is the natural way to write it!
-      (dict-ref! table args
-                 (lambda ()
-                   (apply f args))))))
+    (lambda args 
+      (dict-ref! table args (lambda () (apply f args))))))
+;; It takes a function, and it gives back another function that remembers when it's done something before.
 
-
+;; And here's mfib, which is the tree recursion from earlier, with the extra word memoize in it.
 (define mfib 
    (memoize (lambda (n)
       (if (< n 1) 1
         (+ (mfib (- n 1)) (mfib (- n 2)))))))
 
-(/ 1 0)
+;; Here's that ten-thousandth fibonacci number again:
+(mfib 10000)
 
+
+
+(display "=========================================================================================\n")
+;; OK, there is no way that we are going to have got this far in an hour, but here are some more algorithms that you might want to think about:
+
+;; Euclid's algorithm (how many steps does (gcd (fib 30) (fib 31)) take?)
 
 (define (gcd a b)
-  (print a b "-> ") 
+  (printf "gcd(~a,~a)\n" a b)
   (cond ((= a 0) b)
         ((= b 0) a )
         ((< a b) (gcd a (remainder b a)))
         (else    (gcd (remainder a b) b))))
 
+(gcd (fib 30) (fib 31))
 
+(display "=========================================================================================\n")
 
+;; Ackerman's function (what's the largest pair x,y where (A x y) and the process that computes it are even remotely comprehensible to the human mind?
 
 (define (A x y)
   (cond ((= y 0) 0)
         ((= x 0) (* 2 y))
         ((= y 1) 2)
         (else (A (- x 1) (A x (- y 1))))))
+
+(display "=========================================================================================\n")
+
+;; The Strict Egyptian Fractions Algorithm
+
+;; For reasons unknown, and doubtless completely weird, the Ancient Egyptians, although happy to manipulate fractions, 
+;; didn't like fractions which didn't have one on the top, and didn't like to repeat themselves either:
+
+;; The sanest argument I've ever heard for why this might have been involves pizzas
+
+;; Imagine 12 people are trying to share 13 pizzas
+
+;; Everyone should end up with 13/12 pizzas, which is not enormously easy to arrange, but suppose instead of 13/12 you had a rule that you had to split 
+;; fractions up into distinct unit fractions, e.g.:
+
+;; 13/12 = 1/2 + 1/3 + 1/4
+
+;; You'd easily be able to see that you could make 12 half-pizzas, and 12 1/3 pizzas, and 12 1/4 pizzas, which is easy.
+
+;; As far as I know, there isn't any archaeological evidence for pizza in ancient Egypt, but some might turn up any day.
+
+;; Anyway the Strict Egyptian Fraction algorithm goes like this (notice that 1/n = 1/(n+1) + 1/n(n+1) ):
+
+3/2 ;; <- bad, it's got a 3 on the top
+(+ 1/2 1/2 1/2) ;; still bad, three things the same
+
+;; notice that 1/2 = 1/3 + 1/6
+
+(+ 1/2 1/2 1/3 1/6) ;; better, only two things the same, do that again!
+
+(+ 1/2 1/3 1/3 1/6 1/6)  ;; arrgh, it's getting worse
+
+;; notice that 1/3 = 1/4 + 1/12
+
+(+ 1/2 1/3 1/4 1/6 1/6 1/12 ) ;; looking good, but still too many 1/6s
+
+;; notice that 1/6 = 1/7  + 1/42
+
+(+ 1/2 1/3 1/4 1/6 1/7 1/12 1/42) ;; done. 
+
+;; That is how the Ancient Egyptians would have expressed the idea of three halves, 
+;; which probably explains why I don't know the names of any ancient Egyptian mathematicians.
+
+;; Now, the Strict Egyptian Fractions Algorithm, is, as far as I know, only interesting in the sense of "it sometimes takes an enormously long time to stop".
+
+;; And so my final question for you is:  
+
+;; Will it always finish no matter what number you start it with, or is there a case where it just goes on forever, 
+;; getting worse and worse and worse?
+
+
