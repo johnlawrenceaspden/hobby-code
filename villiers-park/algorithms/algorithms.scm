@@ -316,11 +316,12 @@
 ;; FIB(1) = 1
 ;; FIB(n) = FIB(n-1) + FIB(n-2)
 
-;; And we, in our innocence, translate this recursive definition into this recursive function:
+;; And we, in our innocence, would translate this recursive definition into this recursive function:
 
 (define (fib n)
   (if (< n 2) 1
-      (+ (fib (- n 1)) (fib (- n 2)))))
+      (+ (fib (- n 1)) 
+         (fib (- n 2)))))
 
 (fib 1)
 1
@@ -407,9 +408,21 @@
 ;; And if fact I can write an iteration that calculates them just like I was doing above. It looks like this:
 
 (define (fib-iter a b n)
-  (if (> n 0) (fib-iter b (+ a b) (- n 1)) a))
+  (if (> n 0) 
+      (fib-iter b (+ a b) (- n 1))
+      a))
 
 (define (ifib n) (fib-iter 1 1 n))
+
+(ifib 4)
+(fib-iter 1 1 4)
+(fib-iter 1 2 3)
+(fib-iter 2 3 2)
+(fib-iter 3 5 1)
+(fib-iter 5 8 0)
+5
+
+
 
 ;; Ten Thousandth Fibonacci Number anyone?
 (ifib 10000)
@@ -422,7 +435,17 @@
 ;; Recursion is BAD!
 
 ;; Some algorithms are naturally recursive, writing them as iterations can always be done, but it is often a pain.
-;; See Lesson III
+;; One nice example is the merge sort algorithm
+
+;; A child couldn't sleep, so her mother told a story about a little frog,
+;;  who couldn't sleep, so the frog's mother told a story about a little bear,
+;;     who couldn't sleep, so bear's mother told a story about a little weasel
+;;       ...who fell asleep.
+;;     ...and the little bear fell asleep;
+;;  ...and the little frog fell asleep;
+;; ...and the child fell asleep. 
+
+;; Also see Lesson III
 
 ;; Lesson III
 
