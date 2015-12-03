@@ -1,6 +1,8 @@
 ;; An Introduction to Algorithms: Shape, Space and Time
 
-;; A talk to be given at Villiers Park on 26/11/2015
+;; A talk given twice at Villiers Park on 26/11/2015, to two very bright groups of teenagers. 
+
+;; In both cases we got through to the memoization of fib, one time in just over one hour, one time in an hour and a half.
 
 ;; Written for PLT DrRacket, version 6.1, and this time using the racket language, just so we can memoize later on
 #lang racket
@@ -50,12 +52,12 @@
 ;; But we can do both things at once:
 '(define (square x) (* x x))
 ;; Now this is called 'syntactic sugar'. And what happens is that the evaluator, when it sees an expression where the thing it's supposed to name is a list like (square x)
-;; quietly rewrites it to be (define square (lambda (x) ). 
+;; quietly rewrites it to be (define square (lambda (x) (* x x) ). 
 
 ;; A very famous man once said that "syntactic sugar leads to cancer of the semicolon".
 ;; And there's very little in Scheme, but we do have this one bit, 
 ;; because Alonzo Church himself wouldn't have used lambdas if he'd had to write out l-a-m-b-d-a all the time,
-;; which makes programs a little easier to read at the cost of hiding what's going on.
+;; and this bit of sugar makes programs a little easier to read and write at the cost of hiding what's going on.
 
 ;; Today, I think it will make it easier to reason about what we're going to reason about if we use this shorthand
 
@@ -148,13 +150,14 @@
 
 ;; Notice how the program grows, and then when you get to (factorial 1) it bounces and starts to shrink until we're back to 1 number, which is the answer.
 
-;; It's like it spends the first half its time planning a calculation, and the second half working it out.
+;; It's like it spends the first half of its time planning a calculation, and the second half working it out.
 
 ;; Suppose we wanted (factorial 30), what would that look like?
 
 ;; (factorial 30)
 ;; ....
 ;; ....
+;; (* 30 (* 29 (* 28 (* 27 (* .......                           (* 3 (factorial 2)))))))
 ;; (* 30 (* 29 (* 28 (* 27 (* .......                           (* 3 (* 2 (factorial 1))))))))
 ;; (* 30 (* 29 (* 28 (* 27 (* .......                           (* 3 (* 2 1)))))))
 ;; (* 30 (* 29 (* 28 (* 27 (* .......                           (* 3 2))))))
