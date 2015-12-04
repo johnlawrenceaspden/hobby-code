@@ -99,3 +99,29 @@ coins ; (:H :H :T :T :T :H :T :T :T :H :H :T :H :H :H :T :H :T :T :H :T :T :H :T
  [(:red :red :green) 71]
  [(:red :green) 135]
  [(:green) 300])
+
+
+;; Can look at this as a Markov Chain and ask about the waiting times
+
+(use 'clojure.core.matrix)
+
+(def A [[1 0 0 0 1 0 0 0]
+        [1 0 0 0 1 0 0 0]
+        [0 1 0 0 0 1 0 0]
+        [0 1 0 0 0 1 0 0]
+        [0 0 1 0 0 0 1 0]
+        [0 0 1 0 0 0 1 0]
+        [0 0 0 1 0 0 0 1]
+        [0 0 0 1 0 0 0 1]])
+
+(clojure.core.matrix/mmul A A)
+
+(clojure.core.matrix/mmul A A A)
+
+(use 'clojure.core.matrix.linear)
+
+(set-current-implementation :clatrix)
+
+(clojure.core.matrix.linear/svd A)
+
+(pprint (clojure.core.matrix.linear/eigen A))
