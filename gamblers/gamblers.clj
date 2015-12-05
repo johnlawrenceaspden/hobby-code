@@ -125,3 +125,33 @@ coins ; (:H :H :T :T :T :H :T :T :T :H :H :T :H :H :H :T :H :T :T :H :T :T :H :T
 (clojure.core.matrix.linear/svd A)
 
 (pprint (clojure.core.matrix.linear/eigen A))
+
+
+
+(def run '(- :green - - - - - - :red :red :red :green - - - - - - - - - - - - - - - :green))
+(1 :green 9 8 7 6 5 4 3    2    1    :green 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 :green)
+
+(+
+ (reduce + (range 0 2))
+ (reduce + (range 0 10)) 
+ (reduce + (range 0 16))) ; 166
+
+(* 1/2 (+ 1 15) 15)
+
+(def green-waits (map first (partition 2 (map count (partition-by #(= % :green)  run)))))
+
+green-waits ; (1 9 15)
+
+(map (fn[x] (reduce + (range 0 (inc x)))) green-waits) ; (1 45 120)
+
+(reduce + (map (fn[x] (reduce + (range 0 (inc x)))) green-waits))
+
+(defn running-average [sq]
+  (map #(apply / %)
+       (drop 1
+             (reductions
+              (fn [[sum count] x] [(+ sum x) (inc count)])
+              [0 0]
+              sq))))
+
+(running-average '(1. 0 9 8 7 6 5 4 3 2 1 0 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0))
