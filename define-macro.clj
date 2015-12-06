@@ -2,7 +2,8 @@
 
 (def a (* 4 5)) ;-> #'user/a
 
-;; I'd rather the repl told me that I'd just assigned the value 20 to something rather than that I'd just assigned something to user/a
+;; I'd rather the repl told me that I'd just assigned the value 20 to
+;; something rather than that I'd just assigned something to user/a
 
 a ;-> 20
 
@@ -16,12 +17,12 @@ a ;-> 20
 
 ;; I'd also like to be able to say, in a scheme-like manner
 
-(define (square x) (* x x))
+'(define (square x) (* x x))
 
 ;; meaning
 (defn square [x] (* x x)) ; #'user/square
 
-;; So I can modify that macro:
+;; So I can modify my define macro so:
 
 (defmacro define [var expr]
   (cond (symbol? var)  `(let [tmp# ~expr] (def ~var tmp#) tmp#)
@@ -44,3 +45,5 @@ a ;-> 20
 (random-error) ;-> -0.4037254523155406
 
 (define bell (/ (reduce + (repeatedly 10 random-error)) 10)) ;-> 0.015416035491431623
+
+;; I'm sure someone will let me know if it's broken.
