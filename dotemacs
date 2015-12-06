@@ -77,15 +77,13 @@
 
 ;; There's also 'filling', which is when hard newlines get inserted in the file.
 
-;; Here is a  piece of text. Which is  perhaps a little longer than  it needs to
-;; be. If  you press M-q on it  then emacs will insert  hard newlines throughout
-;; the  paragraph.   The  place  where   these  newlines  get  inserted  is  the
-;; fill-column, which  is usually set around  70. Emacs is careful  not to break
-;; words when filling. If you  find yourself pressing M-q to reformat paragraphs
-;; often, then you want auto-fill-mode.
+;; Here is a piece of text. Which is perhaps a little longer than it needs to be. If you press M-q
+;; on it then emacs will insert hard newlines throughout the paragraph.  The place where these
+;; newlines get inserted is the fill-column, which is usually set around 70. Emacs is careful not to
+;; break words when filling. If you find yourself pressing M-q to reformat paragraphs often, then
+;; you want auto-fill-mode.
 
-;; You can get the fill mode to right-justify text too, using C-u M-q instead of
-;; just M-q.
+;; You can get the fill mode to right-justify text too, using C-u M-q instead of just M-q.
 
 
 ;; ;; no line wrapping 
@@ -100,7 +98,7 @@
 ;; ;; But for code
 ;; (setq truncate-lines t)
 ;; (setq word-wrap nil)
-;; (setq fill-column 80)
+;; (setq fill-column 100)
 
 ;; Someone on Stack Overflow suggested:
 ;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
@@ -117,13 +115,15 @@
   "text mode wrapping, wrap without splitting words in the manner of notepad"
   (interactive)
   (setq truncate-lines nil
-        word-wrap t))
+        word-wrap t)
+  (setq fill-column 100))
 
 (defun wrap-as-code()
   "programming mode wrapping, just let lines run off the end"
   (interactive)
   (setq truncate-lines t
-        word-wrap nil))
+        word-wrap nil)
+  (setq fill-column 100))
 
 
 
