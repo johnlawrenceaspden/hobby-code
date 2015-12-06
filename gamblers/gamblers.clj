@@ -1,22 +1,82 @@
+;; My friend Mike was trying to tell me something incomprehensible about the gambler's fallacy.
 
-;Manually starting an nrepl server
-;(require 'cider.nrepl)
-;(require 'clojure.tools.nrepl.server)
-;(clojure.tools.nrepl.server/start-server :port 7888 :handler cider.nrepl/cider-nrepl-handler)
+;; In fact his bait was 'Did you know the gambler's fallacy actually turns out to be true?'
 
-(defn coin [] (rand-nth [:H :T]))
+;; As I understand it, the gambler's fallacy is the common belief that
+;; when tossing coins, rolling dice, or playing fruit machines,
+;; a run of bad luck will make good luck more likely.
 
-(coin)
-(def coins (take 10000 (iterate (fn[x](coin)) (coin))))
+;; It seems to be related to the belief in a 'just world', where
+;; people deserve what happens to them, and good and bad luck are
+;; spread out evenly. Every cloud has a silver lining, and so on:
+
+;; Mike said, first of all, that HHHH is as likely as HHHT.
+
+;; This is clearly true if you toss four coins in order, but let's check:
+
+(defn coin [] (rand-nth [:H :T])) ; #'user/coin
+
+(coin) ; :T
+(coin) ; :H
+
+(defn four-tosses []
+  [(coin)(coin)(coin)(coin)])
+
+(four-tosses) ; [:T :H :T :H]
+
+(def fours (repeatedly four-tosses))
+
+fours ; ([:T :T :H :T] [:H :T :H :T] [:H :H :T :T] [:T :H :T :T] [:T :H :T :T] [:T :H :H :T] [:H :T :T :T] [:H :T :T :H] [:H :H :H :H] [:H :T :H :T] [:H :H :T :T] [:T :H :H :T] [:H :T :H :T] [:H :H :H :T] [:T :T :T :T] [:T :T :T :H] [:T :T :T :H] [:T :T :H :H] [:T :T :T :H] [:T :T :H :H] [:T :H :H :T] [:H :H :T :T] [:T :T :H :H] [:T :T :T :H] [:H :H :T :H] [:T :T :H :H] [:H :H :T :H] [:T :T :H :H] [:T :H :H :T] [:H :T :T :T] [:T :T :T :T] [:H :H :H :T] [:T :T :H :T] [:T :T :T :H] [:T :T :H :T] [:H :T :H :T] [:T :H :T :H] [:H :H :T :H] [:H :T :T :T] [:H :T :T :T] [:H :T :T :H] [:H :H :T :H] [:T :T :H :H] [:T :T :H :T] [:T :H :H :T] [:T :H :T :H] [:H :H :T :T] [:H :T :T :T] [:T :H :T :T] [:T :H :H :H] [:T :T :H :H] [:T :T :H :H] [:H :T :T :T] [:H :T :H :T] [:H :H :H :H] [:H :T :T :H] [:T :T :H :T] [:H :T :H :T] [:T :H :H :H] [:T :H :T :H] [:T :T :H :T] [:T :H :T :H] [:T :H :T :H] [:T :H :H :H] [:T :T :H :H] [:H :T :H :H] [:H :T :H :H] [:H :H :T :H] [:T :T :T :H] [:T :H :T :T] [:H :H :T :T] [:T :H :H :T] [:T :H :T :H] [:T :T :H :T] [:T :T :H :H] [:H :H :H :T] [:H :T :T :T] [:H :H :H :T] [:H :T :H :T] [:T :T :T :H] [:H :H :H :T] [:H :T :H :H] [:T :H :T :H] [:T :T :H :T] [:H :H :T :H] [:T :T :T :T] [:H :T :T :T] [:T :T :T :T] [:H :H :T :T] [:T :H :T :T] [:T :H :T :H] [:T :H :T :T] [:T :T :T :H] [:H :T :T :T] [:T :H :T :H] [:H :H :T :T] [:T :T :H :T] [:H :T :H :H] [:H :T :T :T] [:H :T :H :T] ...)
+
+;; I don't like having to name something and then execute the name, so a quick macro to avoid having to do (def var 3) and then var immediately afterwards.
+(defmacro define [a b] `(let [val# ~b] (def ~a val#) val#))
+
+(define fours (repeatedly four-tosses)) ; ([:T :H :T :T] [:H :H :H :T] [:H :H :T :H] [:T :T :T :H] [:T :T :H :H] [:H :H :H :T] [:H :H :T :H] [:T :H :H :T] [:T :T :T :H] [:H :H :H :T] [:T :T :H :H] [:T :T :H :H] [:T :H :H :T] [:T :H :H :T] [:T :H :H :T] [:T :T :T :H] [:H :T :T :T] [:H :H :H :T] [:T :T :H :T] [:T :H :T :H] [:T :T :H :T] [:T :T :T :T] [:H :T :H :H] [:T :H :H :T] [:T :H :H :T] [:T :H :H :H] [:T :H :H :H] [:T :T :H :H] [:T :H :T :T] [:H :H :H :H] [:T :T :H :T] [:H :T :H :H] [:T :H :H :H] [:T :H :H :H] [:T :T :H :T] [:T :T :H :H] [:H :T :T :H] [:H :H :H :H] [:H :H :H :T] [:T :H :H :T] [:T :T :H :H] [:H :H :T :T] [:T :T :H :T] [:T :T :H :T] [:H :T :H :T] [:H :H :H :H] [:H :H :T :T] [:T :H :T :T] [:H :T :T :T] [:H :H :H :H] [:H :H :H :T] [:T :H :T :T] [:T :H :T :H] [:H :T :T :H] [:T :H :T :H] [:H :T :T :T] [:H :T :T :T] [:T :T :H :T] [:T :H :T :H] [:H :T :T :T] [:T :H :T :H] [:T :T :H :H] [:T :H :H :H] [:H :T :H :T] [:T :T :H :T] [:T :T :H :T] [:T :T :H :H] [:T :T :T :H] [:H :T :H :H] [:H :H :H :H] [:H :H :H :H] [:T :T :T :H] [:H :T :T :H] [:T :T :H :H] [:H :H :H :H] [:T :T :T :H] [:T :H :T :T] [:T :T :H :T] [:H :T :T :H] [:T :H :T :T] [:T :H :H :H] [:T :H :H :T] [:H :H :H :H] [:H :T :H :T] [:T :H :T :H] [:T :T :T :H] [:H :H :T :H] [:T :H :H :H] [:H :T :H :H] [:H :T :H :H] [:H :T :T :T] [:H :H :T :T] [:H :H :H :T] [:H :H :H :H] [:T :H :T :H] [:H :T :T :T] [:H :H :T :H] [:H :T :H :T] [:T :T :T :H] [:H :H :H :T] ...)
+
+
+
+(def four-frequencies (frequencies (take 1000 fours)))
+
+four-frequencies ; {[:H :T :H :T] 69, [:T :H :T :T] 70, [:H :H :H :H] 52, [:T :H :T :H] 68, [:H :H :T :H] 58, [:H :H :T :T] 67, [:T :T :H :T] 61, [:T :H :H :T] 61, [:H :T :T :T] 60, [:T :T :T :T] 60, [:H :T :H :H] 62, [:H :T :T :H] 70, [:T :T :T :H] 68, [:H :H :H :T] 50, [:T :H :H :H] 47, [:T :T :H :H] 77}
+
+(map four-frequencies (list [:H :H :H :T] [:H :H :H :H])) ; (50 52)
+;; That looks about right!
+
+;; If we try it a million times, we see that it's as close as damn it
+(map
+ (frequencies (take 1000000 fours))
+ [[:H :H :H :T]
+  [:H :H :H :H]]) ; (62282 62369)
+
+;; This is not a surprising result, in fact if it hadn't looked true my first thought would be a bug, and my second that the random number generator wasn't very random.
+
+
+;; But then Mike said: and that's just as true if you take a long sequence of coin tosses and choose four consecutive ones:
+
+(def coins (take 10000 (repeatedly coin))) 
 
 (def setsoffour (partition 4 1 coins))
 
 (def freqs (frequencies setsoffour))
 
-(freqs '(:T :T :T :T)) ; 43
-(freqs '(:H :H :H :H)) ; 47
+(freqs [:H :H :H :H]) ; 618
+(freqs [:H :H :H :T]) ; 618
 
-(freqs '(:H :H :H :T)) ; 61
+;; Indeed, as Mike pointed out, if that wasn't true then if you saw three heads, you'd know something about what was coming up
+;; next, which is the gambler's fallacy belief
+
+;; And yet at this point I have a strong intuition that runs of three heads are less likely than runs of four heads.
+
+;; A man who trusts his intuition on a question of probability is an idiot. Let's look:
+
+(def runs (partition-by #(= % :T) coins))
+
+runs ; ((:H) (:T) (:H :H :H) (:T :T) (:H :H :H :H :H :H) (:T) (:H :H) (:T) (:H) (:T) (:H :H) (:T :T) (:H) (:T :T :T :T) (:H :H) (:T :T) (:H :H :H) (:T) (:H :H) (:T :T :T :T) (:H) (:T :T :T :T) (:H :H) (:T :T) (:H) (:T) (:H) (:T :T) (:H) (:T) (:H) (:T) (:H) (:T :T :T) (:H) (:T :T :T :T :T :T) (:H :H) (:T) (:H) (:T :T) (:H) (:T :T) (:H) (:T) (:H) (:T :T :T :T :T :T :T :T :T :T :T) (:H) (:T :T :T :T) (:H :H) (:T) (:H :H :H :H :H :H) (:T) (:H) (:T) (:H :H) (:T) (:H :H) (:T :T :T) (:H :H :H) (:T) (:H) (:T) (:H :H :H :H) (:T :T :T :T :T :T) (:H :H :H) (:T) (:H :H) (:T) (:H :H) (:T :T :T :T) (:H :H) (:T :T) (:H) (:T :T) (:H :H :H :H) (:T) (:H) (:T) (:H) (:T :T :T :T) (:H :H :H) (:T) (:H) (:T) (:H) (:T) (:H) (:T :T :T :T) (:H) (:T :T) (:H) (:T) (:H :H) (:T :T) (:H) (:T) (:H) (:T :T) (:H :H :H :H) (:T :T) ...)
+
+(let [a 5] (def var a) a)
+
+
+
 
 (defn busfn[x]
   (cond (= x '(:H :H :H :H)) :red
