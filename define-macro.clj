@@ -47,3 +47,8 @@ a ;-> 20
 (define bell (/ (reduce + (repeatedly 10 random-error)) 10)) ;-> 0.015416035491431623
 
 ;; I'm sure someone will let me know if it's broken.
+
+;; This is a bit sub-optimal:
+(define square (fn[x] (* x x))) ; #function[user/eval8586$tmp--8558--auto----8587]
+
+;; Any suggestions for improvements?
