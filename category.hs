@@ -1,8 +1,23 @@
--- https://wiki.haskell.org/Emacs/Inferior_Haskell_processes
 -- http://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/
 
--- (require inf-haskell)
--- C-c C-l to load ghci in another window and then let you interact
+-- First get haskell itself working
+-- $ sudo apt-get install ghc rlwrap
+-- $ rlwrap ghci
+-- Prelude> 2*3
+-- Prelude> reverse "dlrow olleh"
+-- Prelude> product [1 .. 5]
+-- Prelude> product [1 .. 5]
+-- Prelude> readFile "/home/john/.profile"
+-- Prelude> do line <- getLine; putStrLn line
+
+-- And now you can load this file
+-- Prelude> :load category.hs
+-- *Main> ident 3
+
+-- Getting things to work with emacs is a bit of a movable feast as always.
+-- This page used to be right, but isn't now
+-- https://wiki.haskell.org/Emacs/Inferior_Haskell_processes
+
 
 -- Chapter One: Category, the essence of composition
 
@@ -29,3 +44,5 @@ foo = (ident square) 3
 
 s1t20 :: Integer
 s1t20 = foldr (+) 0 [1..20]
+
+
