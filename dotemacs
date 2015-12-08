@@ -1,4 +1,4 @@
-;; -*- mode: lisp-interaction; -*-
+; -*- mode: lisp-interaction; -*-
 
 (require 'package)
 
@@ -100,16 +100,6 @@
 ;; (setq word-wrap nil)
 ;; (setq fill-column 100)
 
-;; Someone on Stack Overflow suggested:
-;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
-(add-hook 'text-mode-hook (lambda ()
-    (setq truncate-lines nil
-          word-wrap t)))
-
-(add-hook 'prog-mode-hook (lambda ()
-    (setq truncate-lines t
-          word-wrap nil)))
-
 ;; Here are some explicit functions to do that
 (defun wrap-as-text()
   "text mode wrapping, wrap without splitting words in the manner of notepad"
@@ -124,6 +114,12 @@
   (setq truncate-lines t
         word-wrap nil)
   (setq fill-column 100))
+
+;; Someone on Stack Overflow suggested:
+;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
+(add-hook 'text-mode-hook (lambda () (wrap-as-text)))
+
+(add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
 
 
 
