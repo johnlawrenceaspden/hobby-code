@@ -224,6 +224,8 @@
 '((factorial 7) --> (factorial 6) --> (factorial 5) --> (factorial 4) --> (factorial 3) --> (factorial 2) --> (factorial 1) --> (factorial 0))
 '( 5040         <-- 720           <-- 120           <-- 24            <-- 6             <-- 2             <--  1            <--  1          )
 
+;; [ factorial.svg ]
+
 (display "=========================================================================================\n")
 
 ;; Now, if we look in the middle of the factorial process, we'll find that 
@@ -272,10 +274,12 @@
 
 ;; This pattern is called a linear iteration, and it's still O(n) in time, but it's O(1) in space.
 
-;; With an algorithm like this, it may take a long time to do the computation, but we don't really have to worry about running out of memory.
+;; With an algorithm like this, it may take a long time to do the computation, but we don't really 
+;; have to worry about running out of memory.
 
-;; With the first process, we might set off a calculation that we expect to take hours, and come back later to 
-;; find that the whole thing had failed because the computer had run out of space to store its computation.
+;; With the first process, we might set off a calculation that we expect to take hours, and come back
+;; later to find that the whole thing had failed because the computer had run out of space to store 
+;; the computation.
 
 ;; Notice that in both cases, the programs are 'recursive' in the sense that the procedures call themselves.
 
