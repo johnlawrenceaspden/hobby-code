@@ -2,7 +2,7 @@ digraph G {
 
 rankdir=LR
 
-call    [label=""]
+call      [label=""]
 fact7     [label="(fact 7)"]
 factiter7 [label="(fact-iter 7 1)"]    
 factiter6 [label="(fact-iter 6 7)"]    
@@ -13,7 +13,7 @@ factiter2 [label="(fact-iter 2 1680)"]
 factiter1 [label="(fact-iter 1 3360)"] 
 factiter0 [label="(fact-iter 0 3360)"] 
 
-call->fact7           [label="7"]
+call->fact7            [label="7"]
 fact7->factiter7       [label="7 1"]    
 factiter7->factiter6   [label="6 7"]    
 factiter6->factiter5   [label="5 42"]   
@@ -22,6 +22,6 @@ factiter4->factiter3   [label="3 840"]
 factiter3->factiter2   [label="2 1680"] 
 factiter2->factiter1   [label="1 3360"] 
 factiter1->factiter0   [label="0 3360"] 
-factiter0->call      [label="3360"]               
+factiter0->call        [label="3360"]               
 
 }
