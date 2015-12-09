@@ -318,6 +318,8 @@
 ;; We can also draw what's called a call graph of the iterative process, which shows us how the data flows
 '((fact 7) --> (fact-iter 7 1) --> (fact-iter 6 7) --> (fact-iter 5 42) --> (fact-iter 4 210) --> (fact-iter 3 840) --> (fact-iter 2 1680) --> (fact-iter 1 3360) --> (fact-iter 0 3360) --> 3360)
 
+;; [ fact-iter.svg ]
+
 ;; Notice that the shape is kind of different and kind of the same. 
            
 ;; The data flows along the chain, but at the end it falls off the end, it doesn't come back, and
@@ -327,10 +329,12 @@
 
 ;; Now let's look at what is thought to be the worst example in computer science:
 
-;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their own symbol, like the factorials do, although 
-;; there are plenty of cranks who will tell you that they are everywhere in Nature whooooo. 
+;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their
+;; own symbol, like the factorials do, although there are plenty of cranks who will tell you that 
+;; they are everywhere in Nature whooooo. 
 
-;; If you ever hear anyone talking about the mysterious omnipresent wonder of the fibonacci numbers, run.
+;; If you ever hear anyone talking about the mysterious omnipresent wonder of the fibonacci 
+;; numbers, run.
 
 ;; However like all really simple ideas, they do come up from time to time, in for instance 
 ;; poetry, binary strings, idealized bees, rabbit counting, flowers, algorithms, data structures and so on.
@@ -341,7 +345,7 @@
 ;; FIB(1) = 1
 ;; FIB(n) = FIB(n-1) + FIB(n-2)
 
-;; And we, in our innocence, would translate this recursive definition into this recursive function:
+;; And we, in our innocence, might then translate this recursive definition into this recursive function:
 
 (define (fib n)
   (if (< n 2) 1
@@ -361,7 +365,7 @@
 (+ 1 (fib 0))
 (+ 1 1)
 2
-;; 4 steps  ( 2 + 1 + 1 )
+;; 4 steps  ( 1 + 2 + 1 )
 
 
 (fib 3)
@@ -372,7 +376,7 @@
 (+ 2 (fib 1))
 (+ 2 1)
 3
-;; 7 steps ( 3 + 2 + 2 )
+;; 7 steps ( 2 + 3 + 2 )
 
 (fib 4)
 (+ (fib 3) (fib 2))
@@ -388,7 +392,7 @@
 (+ 3 (+ 1 1))
 (+ 3 2)
 5
-;; 13 steps ( 5 + 4 + 4)
+;; 13 steps ( 4 + 5 + 4)
 
 (map fib (range 30))
 
@@ -398,8 +402,10 @@
 
 ;; Let's see if we can draw the call graph.
 
-;; [Draw the call graph, show that the fringe has (fib n) elements, and that there are (- (fib n) 1) interior nodes]
-;; [Notice that the every interior node represents a split step and a combine step, and every fringe node represents an evaluate-to-one step]
+;; [Draw the call graph]
+;; [ show that the fringe has (fib n) elements, and that there are (- (fib n) 1) interior nodes]
+;; [Notice that the every interior node represents a split step and a combine step, and 
+;;       every fringe node represents an evaluate-to-one step]
 
 ;; This is called a tree recursion, and it is exponential in time, and linear in space.
 
