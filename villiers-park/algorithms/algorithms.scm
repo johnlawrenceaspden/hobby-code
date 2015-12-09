@@ -301,12 +301,16 @@
 
 ;; In some languages, that's the only sort of program you can write! 
 
-;; Notice that we had to do some work to turn our linear recursion into a linear iteration, and it's not quite so obvious 
-;; that the second program is correct and bug free.
+;; Notice that we had to do some work to turn our linear recursion into a linear iteration, and it's 
+;; not quite so obvious that the second program is correct and bug free.
 
-;; There's a general pattern here. Some ideas are more natural to express recursively, and some are more natural to express iteratively.
+;; There's a general pattern here. Some ideas are more natural to express recursively, and some are 
+;; more natural to express iteratively.
 
-;; If your language forces you to use iterations only, then it forces you to do some of the work that the computer should do for you.
+;; If your language forces you to use iterations only, then it forces you to do some of the work 
+;; that the computer should do for you.
+
+;; But often, if you can express your idea as an iteration, you'll generate a nicer process. 
 
 
 

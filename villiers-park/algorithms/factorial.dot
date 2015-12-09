@@ -1,5 +1,7 @@
 digraph G {
         rankdir=LR
+
+        call [label=""]
         factorial7 [label="(factorial 7)"]
         factorial6 [label="(factorial 6)"]
         factorial5 [label="(factorial 5)"]
@@ -9,15 +11,16 @@ digraph G {
         factorial1 [label="(factorial 1)"]
         factorial0 [label="(factorial 0)"]
 
-        factorial7->factorial6
-        factorial6->factorial5
-        factorial5->factorial4
-        factorial4->factorial3
-        factorial3->factorial2
-        factorial2->factorial1
-        factorial1->factorial0
-
-        
+        call->factorial7       [label="7"]
+        factorial7->factorial6 [label="6"]
+        factorial6->factorial5 [label="5"]
+        factorial5->factorial4 [label="4"]
+        factorial4->factorial3 [label="3"]
+        factorial3->factorial2 [label="2"]
+        factorial2->factorial1 [label="1"]
+        factorial1->factorial0 [label="0"]
+ 
+        factorial7->call       [label="5040"]
         factorial6->factorial7 [label="720"]
         factorial5->factorial6 [label="120"]
         factorial4->factorial5 [label="24"]
