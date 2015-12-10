@@ -1,0 +1,27 @@
+digraph G {
+
+rankdir=LR
+
+call      [label=""]
+fact7     [label="fact"]
+factiter7 [label="fact-iter"]    
+factiter6 [label="fact-iter"]    
+factiter5 [label="fact-iter"]   
+factiter4 [label="fact-iter"]  
+factiter3 [label="fact-iter"]  
+factiter2 [label="fact-iter"] 
+factiter1 [label="fact-iter"] 
+factiter0 [label="fact-iter"] 
+
+call->fact7            [label="7"]
+fact7->factiter7       [label="7 1"]    
+factiter7->factiter6   [label="6 7"]    
+factiter6->factiter5   [label="5 42"]   
+factiter5->factiter4   [label="4 210"]  
+factiter4->factiter3   [label="3 840"]  
+factiter3->factiter2   [label="2 1680"] 
+factiter2->factiter1   [label="1 3360"] 
+factiter1->factiter0   [label="0 3360"] 
+factiter0->call        [label="3360"]               
+
+}

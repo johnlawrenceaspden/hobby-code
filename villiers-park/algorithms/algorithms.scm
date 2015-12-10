@@ -5,7 +5,7 @@
 ;; In both cases we got through to the memoization of fib, one time in just over one hour, one time in an hour and a half.
 
 ;; Written for PLT DrRacket, version 6.1, and this time using the racket language, just so we can memoize later on
-#lang racket
+
 ;; Again using the dojo format, where two people from the audience do all the typing, the audience does the programming 
 ;; and I try to limit myself to asking leading questions.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -25,25 +25,31 @@
 ;; Surely someone is brave enough call me on it?
 ;; You don't have to be rude about it, or even particularly accusatory.
 ;; You can put your hand up politely, and you can say :
-;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that some zebras are black and white. Is that a myth?".
+;; "Excuse me, I'm probably wrong here, but I think I remember reading somewhere that some zebras 
+;; are black and white. Is that a myth?".
 
 ;; OK, Zebras are a kind of space fish, which is blue, and they live on the Moon.
 
-;; Good. At least one person here is brave enough to tell the Emperor when he's not wearing any clothes, at least once the Emperor has said it's ok.
-;; But anyway, I'm going to stick in lots more lies in this talk, but they won't be as obvious. I'm going to see how many I can sneak past you.
+;; Good. At least one person here is brave enough to tell the Emperor when he's not wearing any
+;; clothes, at least once the Emperor has said it's ok. But anyway, I'm going to stick in lots more 
+;; lies in this talk, but they won't be as obvious. I'm going to see how many I can sneak past you.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; We've written some programs in Scheme.
 
-;; A program is a recipe for a process, and today I want to talk about the shapes of the processes that programs create as they run.
+;; A program is a recipe for a process, and today I want to talk about the shapes of the processes
+;; that programs create as they run.
 
-;; I'm going to give you some little programs, and you're going to play the role of the computer and execute them.
+;; I'm going to give you some little programs, and you're going to play the role of 
+;; the computer and execute them.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; First off, I want to talk about 'the substitution model', which is a way of understanding what a computation is. 
-;; You could build a computer to work this way if you liked. I have done.
+#lang racket
+
+;; First off, I want to talk about 'the substitution model', which is a way of understanding what a 
+;; computation is. You could build a computer to work this way if you liked. I have done.
 
 ;; So the other day I showed you how to make a function to square things
 (lambda (x) (* x x))
@@ -51,15 +57,18 @@
 '(define square (lambda (x) (* x x)))
 ;; But we can do both things at once:
 '(define (square x) (* x x))
-;; Now this is called 'syntactic sugar'. And what happens is that the evaluator, when it sees an expression where the thing it's supposed to name is a list like (square x)
+;; Now this is called 'syntactic sugar'. And what happens is that the evaluator, when it sees an 
+;; expression where the thing it's supposed to name is a list like (square x)
 ;; quietly rewrites it to be (define square (lambda (x) (* x x) ). 
 
 ;; A very famous man once said that "syntactic sugar leads to cancer of the semicolon".
 ;; And there's very little in Scheme, but we do have this one bit, 
-;; because Alonzo Church himself wouldn't have used lambdas if he'd had to write out l-a-m-b-d-a all the time,
-;; and this bit of sugar makes programs a little easier to read and write at the cost of hiding what's going on.
+;; because Alonzo Church himself wouldn't have used lambdas if he'd had to write out l-a-m-b-d-a all
+;; the time, and this bit of sugar makes programs a little easier to read and write at the cost of 
+;; hiding what's going on.
 
-;; Today, I think it will make it easier to reason about what we're going to reason about if we use this shorthand
+;; Today, I think it will make it easier to reason about what we're going to reason about if we
+;; use this shorthand
 
 ;; So suppose we've got this function
 (define (square x) (* x x))
@@ -74,15 +83,14 @@
 (pythag 3 4)
 (+ (square 3) (square 4))
 (+ (* 3 3) (square 4))
-(+ (* 3 3) (square 4))
 (+ 9 (square 4))
 (+ 9 (* 4 4))
 (+ 9 16)
 (+ 9 16)
 25
-;; And let's call that 8 steps of evaluation
+;; And let's call that seven steps of evaluation
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; First of all, let's think about factorials.
 
@@ -104,9 +112,10 @@
 ;; And the number of ways you can arrange 1 thing is 1.
 ;; ( Which is 1 times the number of ways you can arrange no things, which is also 1 )
 
-;; This number is called the factorial, and it comes up so often that it has its own bit of notation in maths.  
+;; This number is called the factorial, and it comes up so often that it has its own bit of notation.  
 ;; We usually write 3! for 3 factorial.
 
+;; A mathematician might write:
 ;; 0! = 1
 ;; n! = n * (n-1)!
 
@@ -121,11 +130,11 @@
 ;; Now suppose you're the computer, how do you execute that program?
 
 (factorial 3)
-(if (= 3 1) 1 (* 3 (factorial (- 3 1))))
+(if (= 3 0) 1 (* 3 (factorial (- 3 1))))
 (if #f 1 (* 3 (factorial (- 3 1))))
 (* 3 (factorial (- 3 1)))
 (* 3 (factorial 2))
-(* 3 (if (= 2 1) 1 (* 2 (factorial (- 2 1)))))
+(* 3 (if (= 2 0) 1 (* 2 (factorial (- 2 1)))))
 (* 3 (if #f 1 (* 2 (factorial (- 2 1)))))
 (* 3 (* 2 (factorial (- 2 1))))
 (* 3 (* 2 (factorial 1)))
@@ -134,10 +143,10 @@
 6
 
 
-;; 12 steps
+;; 11 steps
 
-;; Now let's get rid of the book-keeping in the middle, where we do the function call and the subtraction and the if, which is 
-;; the same every time, and just keep the interesting bits.
+;; Now let's get rid of the book-keeping in the middle, where we do the function call and the 
+;; subtraction and the if, which is the same every time, and just keep the interesting bits.
 
 (factorial 3)
 (* 3 (factorial 2))
@@ -146,11 +155,13 @@
 (* 3 2)
 6
 
-;; 6 steps, because we're counting steps differently now
+;; 5 steps, because we're counting steps differently now
 
-;; Notice how the program grows, and then when you get to (factorial 1) it bounces and starts to shrink until we're back to 1 number, which is the answer.
+;; Notice how the program grows, and then when you get to (factorial 1) it bounces and starts to 
+;; shrink until we're back to 1 number, which is the answer.
 
-;; It's like it spends the first half of its time planning a calculation, and the second half working it out.
+;; It's like it spends the first half of its time planning a calculation, 
+;; and the second half working it out.
 
 ;; Suppose we wanted (factorial 30), what would that look like?
 
@@ -172,8 +183,9 @@
 
 ;; What about (factorial 300)?
 
-;; A big number, that, but it only takes 100 times longer to compute it than it did (factorial 3), and in the middle, we need to store a big long string
-;; of computations waiting to be done, but it's only 100 times longer than the string of stuff for (factorial 3)
+;; A big number, that, but it only takes 100 times longer to compute it than it did (factorial 3),
+;; and in the middle, we need to store a big long string of computations waiting to be done, but 
+;; it's only 100 times longer than the string of stuff for (factorial 3)
 
 ;; We call this a linear recursion.
 
@@ -188,13 +200,15 @@
 ;-
 
 
-;; Generally, we ignore the details about whether it's n steps, or 7*n steps, because how many steps it is depends 
-;; on how you count them, and how long each step takes depends what sort of computer the program is running on.
+;; Generally, we ignore the details about whether it's n steps, or 7*n steps, because how many steps
+;; it is depends on how you count them, and how long each step takes depends what sort of computer
+;; the program is running on.
 
-;; So we tend to think that if the time taken is 15*n, then the 15 is sort of a fiddly detail and the n is the important bit!
+;; So we tend to think that if the time taken is 15*n, then the 15 is sort of a fiddly detail and 
+;; the n is the important bit!
 
-;; Normally that's ok, because the difference between 15 milliseconds and 1 millisecond is not important, and 
-;; neither is the difference between a million years and 15 million years.
+;; Normally that's ok, because the difference between 15 milliseconds and 1 millisecond is not 
+;; important, and neither is the difference between a million years and 15 million years.
 
 ;; We say that we need O(n) time, and O(n) space.
 
@@ -209,6 +223,8 @@
 ;; We can draw what's called a call graph of the process, which shows us how the data flows
 '((factorial 7) --> (factorial 6) --> (factorial 5) --> (factorial 4) --> (factorial 3) --> (factorial 2) --> (factorial 1) --> (factorial 0))
 '( 5040         <-- 720           <-- 120           <-- 24            <-- 6             <-- 2             <--  1            <--  1          )
+
+;; [ factorial.svg ]
 
 (display "=========================================================================================\n")
 
@@ -258,10 +274,12 @@
 
 ;; This pattern is called a linear iteration, and it's still O(n) in time, but it's O(1) in space.
 
-;; With an algorithm like this, it may take a long time to do the computation, but we don't really have to worry about running out of memory.
+;; With an algorithm like this, it may take a long time to do the computation, but we don't really 
+;; have to worry about running out of memory.
 
-;; With the first process, we might set off a calculation that we expect to take hours, and come back later to 
-;; find that the whole thing had failed because the computer had run out of space to store its computation.
+;; With the first process, we might set off a calculation that we expect to take hours, and come back
+;; later to find that the whole thing had failed because the computer had run out of space to store 
+;; the computation.
 
 ;; Notice that in both cases, the programs are 'recursive' in the sense that the procedures call themselves.
 
@@ -283,18 +301,24 @@
 
 ;; In some languages, that's the only sort of program you can write! 
 
-;; Notice that we had to do some work to turn our linear recursion into a linear iteration, and it's not quite so obvious 
-;; that the second program is correct and bug free.
+;; Notice that we had to do some work to turn our linear recursion into a linear iteration, and it's 
+;; not quite so obvious that the second program is correct and bug free.
 
-;; There's a general pattern here. Some ideas are more natural to express recursively, and some are more natural to express iteratively.
+;; There's a general pattern here. Some ideas are more natural to express recursively, and some are 
+;; more natural to express iteratively.
 
-;; If your language forces you to use iterations only, then it forces you to do some of the work that the computer should do for you.
+;; If your language forces you to use iterations only, then it forces you to do some of the work 
+;; that the computer should do for you.
+
+;; But often, if you can express your idea as an iteration, you'll generate a nicer process. 
 
 
 
 
 ;; We can also draw what's called a call graph of the iterative process, which shows us how the data flows
 '((fact 7) --> (fact-iter 7 1) --> (fact-iter 6 7) --> (fact-iter 5 42) --> (fact-iter 4 210) --> (fact-iter 3 840) --> (fact-iter 2 1680) --> (fact-iter 1 3360) --> (fact-iter 0 3360) --> 3360)
+
+;; [ fact-iter.svg ]
 
 ;; Notice that the shape is kind of different and kind of the same. 
            
@@ -305,10 +329,12 @@
 
 ;; Now let's look at what is thought to be the worst example in computer science:
 
-;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their own symbol, like the factorials do, although 
-;; there are plenty of cranks who will tell you that they are everywhere in Nature whooooo. 
+;; The Fibonacci Numbers are defined recursively, and they're not important enough to have their
+;; own symbol, like the factorials do, although there are plenty of cranks who will tell you that 
+;; they are everywhere in Nature whooooo. 
 
-;; If you ever hear anyone talking about the mysterious omnipresent wonder of the fibonacci numbers, run.
+;; If you ever hear anyone talking about the mysterious omnipresent wonder of the fibonacci 
+;; numbers, run.
 
 ;; However like all really simple ideas, they do come up from time to time, in for instance 
 ;; poetry, binary strings, idealized bees, rabbit counting, flowers, algorithms, data structures and so on.
@@ -319,7 +345,7 @@
 ;; FIB(1) = 1
 ;; FIB(n) = FIB(n-1) + FIB(n-2)
 
-;; And we, in our innocence, would translate this recursive definition into this recursive function:
+;; And we, in our innocence, might then translate this recursive definition into this recursive function:
 
 (define (fib n)
   (if (< n 2) 1
@@ -339,7 +365,7 @@
 (+ 1 (fib 0))
 (+ 1 1)
 2
-;; 4 steps  ( 2 + 1 + 1 )
+;; 4 steps  ( 1 + 2 + 1 )
 
 
 (fib 3)
@@ -350,7 +376,7 @@
 (+ 2 (fib 1))
 (+ 2 1)
 3
-;; 7 steps ( 3 + 2 + 2 )
+;; 7 steps ( 2 + 3 + 2 )
 
 (fib 4)
 (+ (fib 3) (fib 2))
@@ -366,7 +392,7 @@
 (+ 3 (+ 1 1))
 (+ 3 2)
 5
-;; 13 steps ( 5 + 4 + 4)
+;; 13 steps ( 4 + 5 + 4)
 
 (map fib (range 30))
 
@@ -376,8 +402,10 @@
 
 ;; Let's see if we can draw the call graph.
 
-;; [Draw the call graph, show that the fringe has (fib n) elements, and that there are (- (fib n) 1) interior nodes]
-;; [Notice that the every interior node represents a split step and a combine step, and every fringe node represents an evaluate-to-one step]
+;; [Draw the call graph]
+;; [ show that the fringe has (fib n) elements, and that there are (- (fib n) 1) interior nodes]
+;; [Notice that the every interior node represents a split step and a combine step, and 
+;;       every fringe node represents an evaluate-to-one step]
 
 ;; This is called a tree recursion, and it is exponential in time, and linear in space.
 
