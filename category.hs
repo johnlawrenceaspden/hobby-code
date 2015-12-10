@@ -56,22 +56,26 @@ s1t20 = foldr (+) 0 [1..20]
 -- Chapter 4: Kleisli Categories
 
 type Writer a = (a,String)
-(>=>) :: (a -> Writer b) -> (b -> Writer c) -> (a -> Writer c)
 
+-- Composition of two arrows is like function composition but with extra structure
+(>=>) :: (a -> Writer b) -> (b -> Writer c) -> (a -> Writer c)
 m1 >=> m2 = \x ->
   let (y,s1) = m1 x
       (z,s2) = m2 y
   in (z, s1 ++ s2)
 
+-- Identity arrow
 return :: a -> Writer a
 return x = (x,"")
 
+-- And here are two arrows (morphisms) 
 upCase :: String -> Writer String
 upCase s = (map toUpper s, "upcase ")
 
 toWords :: String -> Writer [String]
 toWords s = (words s, "toWords ")
 
+-- And another arrow defined as their composition
 process :: String -> Writer [String]
 process = upCase >=> toWords
 
@@ -79,15 +83,16 @@ process = upCase >=> toWords
 
 
 -- tracing fibs
+-- Integer is the general type, Int is the machine numbers?
 -- Want to say something like:
 --((tfib >=> tfib >=> tplus) (n-1) (n-2),"fib")
-fib :: Int -> Int
+fib :: Integer -> Integer
 fib n = if (n<2) then n else fib (n-1) + fib (n-2)
 
-tplus :: Int -> Int ->Writer Int
+tplus :: Integer -> Integer ->Writer Integer
 tplus x y = (x+y,"tplus ")
 
-tfib :: Int -> Writer Int
+tfib :: Integer -> Writer Integer
 tfib n = if (n<2) then (n,"fib01 ") else
   let (f1,s1) = tfib (n-1)
       (f2,s2) = tfib (n-2)
