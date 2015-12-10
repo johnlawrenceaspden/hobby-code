@@ -99,6 +99,39 @@ tfib n = if (n<2) then (n,"fib01 ") else
       (ans,s3) = tplus f1 f2
   in (ans,s1++s2++s3++"tfib ")
 
+-- Attempt at the Safe Inverse/Safe sqrt exercise
+
+-- Bartosz, the category theory bit of this is lovely, but the haskell bit is hard.
+-- I keep getting confused by the syntax, and I can't make it work.
+
+-- My best shot is:
+
+type CanFail a = (Value a | Fail)
+
+safe-inv :: Real -> CanFail Real
+safe-inv x = if (x=0) Fail else Value (1/x)
+
+safe-sqrt :: Real -> CanFail Real
+safe-sqrt x = if x<0 Fail else Value (sqrt x)
+
+>=> : (a -> CanFail b) -> (b -> CanFail c) -> (a -> CanFail c)
+>=> f g = \x -> (let a1 = (f x) in (if (a1=Fail) then Fail else (g a1)))
+
+-- But it won't compile. "parse error on input `|'". What's my misconception?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
