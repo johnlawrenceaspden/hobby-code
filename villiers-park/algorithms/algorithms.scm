@@ -511,7 +511,23 @@
 (display "=========================================================================================\n")
 ;; OK, there is no way that we are going to have got this far in an hour, but here are some more algorithms that you might want to think about:
 
+
+
+;; Whether he's trying to work out the largest type of square carpet
+;; tiles he can get away with when covering a complicated floor, or
+;; simply needs to reduce a vulgar fraction to its lowest form, There
+;; comes a time in the life of every man when he must find the
+;; greatest common divisor of two large integers.
+
+;; Euclid shows us a better way
+
+;; Life is the art of deriving great general principles from the
+;; careful study of one well-understood simple example. At least that's
+;; the way it works in mathematics.
+
 ;; Euclid's algorithm (how many steps does (gcd (fib 30) (fib 31)) take?)
+
+
 
 (define (gcd a b)
   (printf "gcd(~a,~a)\n" a b)
