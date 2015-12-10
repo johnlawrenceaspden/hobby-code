@@ -76,3 +76,35 @@ process :: String -> Writer [String]
 process = upCase >=> toWords
 
 
+
+
+-- tracing fibs
+-- Want to say something like:
+--((tfib >=> tfib >=> tplus) (n-1) (n-2),"fib")
+fib :: Int -> Int
+fib n = if (n<2) then n else fib (n-1) + fib (n-2)
+
+tplus :: Int -> Int ->Writer Int
+tplus x y = (x+y,"tplus ")
+
+tfib :: Int -> Writer Int
+tfib n = if (n<2) then (n,"fib01 ") else
+  let (f1,s1) = tfib (n-1)
+      (f2,s2) = tfib (n-2)
+      (ans,s3) = tplus f1 f2
+  in (ans,s1++s2++s3++"tfib ")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
