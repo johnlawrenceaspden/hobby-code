@@ -106,18 +106,23 @@ tfib n = if (n<2) then (n,"fib01 ") else
 
 -- My best shot is:
 
-type CanFail a = (Value a | Fail)
+data CanFail a = Value a | Fail deriving (Show)
 
-safe-inv :: Real -> CanFail Real
-safe-inv x = if (x=0) Fail else Value (1/x)
+safeInv :: Double -> CanFail Double
+safeInv x = if (x==0) then Fail else Value (1/x)
 
-safe-sqrt :: Real -> CanFail Real
-safe-sqrt x = if x<0 Fail else Value (sqrt x)
+safeSqrt :: Double -> CanFail Double
+safeSqrt x = if x<0 then Fail else Value (sqrt x)
 
->=> : (a -> CanFail b) -> (b -> CanFail c) -> (a -> CanFail c)
->=> f g = \x -> (let a1 = (f x) in (if (a1=Fail) then Fail else (g a1)))
+(>==>) :: (a -> CanFail b) -> (b -> CanFail c) -> (a -> CanFail c)
+--(>==>) f g = \x -> (let a1 = (f x) in (if (a1==Fail) then Fail else (g a1)))
+(>==>) f g = \x ->
+           (let a1 = (f x) in
+            (case a1 of Fail-> Fail
+                        Value x ->(g x)))
 
--- But it won't compile. "parse error on input `|'". What's my misconception?
+gloriousvictory=map (safeInv >==> safeSqrt) [4,3,2,1,0,-1,-2]
+
 
 
 
