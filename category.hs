@@ -116,14 +116,14 @@ safeSqrt x = if x<0 then Fail else Value (sqrt x)
 
 (>==>) :: (a -> CanFail b) -> (b -> CanFail c) -> (a -> CanFail c)
 --(>==>) f g = \x -> (let a1 = (f x) in (if (a1==Fail) then Fail else (g a1)))
-(>==>) f g = \x ->
-           (let a1 = (f x) in
-            (case a1 of Fail-> Fail
-                        Value x ->(g x)))
+(>==>) f g = \x -> (let a1 = (f x) in
+                     (case a1 of Fail    -> Fail
+                                 Value x -> (g x)))
 
 gloriousvictory=map (safeInv >==> safeSqrt) [4,3,2,1,0,-1,-2]
 
-
+rah = do
+       print gloriousvictory
 
 
 
