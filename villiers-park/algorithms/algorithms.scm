@@ -407,9 +407,12 @@
 ;; [Notice that the every interior node represents a split step and a combine step, and 
 ;;       every fringe node represents an evaluate-to-one step]
 
+;; [insert fib.svg]
+
 ;; This is called a tree recursion, and it is exponential in time, and linear in space.
 
-;; Now this example is pretty. I like it very much, which is why I have put it third on my list of 'classic algorithms'
+;; Now this example is pretty. I like it very much, which is why I have put it third on 
+;; my list of 'classic algorithms'
 
 ;; Why do I call it 'proverbially the worst example in computer science?'
 
@@ -427,8 +430,8 @@
 (+ 8 5) ;-> 13
 (+ 13 8) ;-> 21
 
-;; .. and so on and so forth. Now I am not at all sure that I am going to be able to get to (fib 40) before the computer can, 
-;; but I am damned sure that I am going to get to (fib 60) before it does.
+;; .. and so on and so forth. Now I am not at all sure that I am going to be able to get to (fib 40)
+;; before the computer can, but I am damned sure that I am going to get to (fib 60) before it does.
 
 ;; Think about that for a minute. 
 
@@ -436,7 +439,9 @@
 ;; The computer is going to take two and a half TRILLION steps to get there.
 
 ;; Now if you can calculate something faster than your computer can, you are doing something very wrong.
-;; And if fact I can write an iteration that calculates them just like I was doing above. It looks like this:
+;; And if fact I can write an iteration that calculates them just like I was doing above. 
+
+;; It looks like this:
 
 (define (fib-iter a b n)
   (if (> n 0) 
@@ -452,8 +457,6 @@
 (fib-iter 3 5 1)
 (fib-iter 5 8 0)
 5
-
-
 
 ;; Ten Thousandth Fibonacci Number anyone?
 (ifib 10000)
