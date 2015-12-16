@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # two different ways of remapping caps lock to be control
+echo "remapping ctrl to be caps lock"
 setxkbmap -option ctrl:nocaps
 xmodmap ~/.xmodmaprc
 
@@ -18,9 +19,11 @@ else
 fi
 
 # scale graphics tablet surface to cover largish monitor
+echo "scaling graphics tablet"
 xinput set-int-prop "Wacom Bamboo Connect Pen stylus" "Wacom Tablet Area" 32 0 00 23175 8600
 
 # if workrave is not running then add it
+echo "starting workrave"
 pgrep workrave
 if [[ $? != 0 ]] ; then
     workrave &
