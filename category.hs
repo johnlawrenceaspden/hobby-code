@@ -99,12 +99,7 @@ tfib n = if (n<2) then (n,"fib01 ") else
       (ans,s3) = tplus f1 f2
   in (ans,s1++s2++s3++"tfib ")
 
--- Attempt at the Safe Inverse/Safe sqrt exercise
-
--- Bartosz, the category theory bit of this is lovely, but the haskell bit is hard.
--- I keep getting confused by the syntax, and I can't make it work.
-
--- My best shot is:
+-- Safe Inverse/Safe sqrt exercise
 
 data CanFail a = Value a | Fail deriving (Show)
 
@@ -126,8 +121,12 @@ rah = do
        print gloriousvictory
 
 
+-- Chapter 5: Products and CoProducts
+first :: (a,b)-> a
+first (x,y) = x
 
-
+second :: (a,b)-> b
+second (x,y) = y
 
 
 
