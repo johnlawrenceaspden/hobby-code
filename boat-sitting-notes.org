@@ -13,6 +13,8 @@ or just ask anyone on a boat nearby!
 Keep Fire In / Internal temperature above 0
 Keep Batteries Charged above 12.2volts/50%. 
 Top up water/empty sewage if necessary. (Should last around two weeks if you're careful)
+Please don't let dogs on boat, I am allergic and will blame you for every sniffle for the next five years if I find dog hairs.
+
 
 * Major Threats
 ** Fire
@@ -27,7 +29,7 @@ Close all vents tight to reduce amount of air going in, and SUMMON FIRE BRIGADE.
 Various detectors throughout boat. Fire shouldn't make CO unless banked very low. 
 Levels below 30 ppm are not dangerous. But in high concentrations it's deadly, invisible and doesn't smell of anything.
 All you will feel is sleepy, and when you wake up you will be dead.
-Do not ignore carbon monoxide detector alerts! ( I have never had one in four years )
+Do not ignore carbon monoxide detector alerts! ( I have had only one in five years, and it was because the chimney had blocked and the boat was filling with deadly gas )
 ** Gas Explosion
 Boat Gas (propane) is very dangerous, heavier than air, so it builds up in bilges. 
 If the bilges are full of gas then you're aboard a floating bomb.
@@ -48,9 +50,8 @@ Make sure the sandpaper side of the gangplank is upwards, and put a towel under 
 ** Crashing
 Hull is solid. You'd have to work quite hard to damage it. But...
 Boat weighs 26tons. Even moving very slowly it will crush arms and legs between it and the bank. Hitting a plastic cruiser will shatter it.
-Don't move it in strong stream or wind. Go slow and careful. When turning round, do a three point turn with as many points as necessary. Turn very gently and don't let it hit either bank as can break things inside.
-If the stream is strong, you'll get washed downriver a long way while turning, so take a look what's downstream before you start.
-I got wedged across the bridge supports in Ely once
+Don't move her in strong stream or wind. Go slow and careful. When turning round, do a three point turn with as many points as necessary. Turn very gently and don't let her hit either bank as this can break things inside.
+If the stream is strong, you'll get washed downriver a long way while turning, so take a look what's downstream before you start. I got wedged across the bridge supports in Ely once
 ** Stern Gland
 Remember to retighten grease injector every time prop has turned. Leaking stern gland and clogged pump/dead battery can sink boat.
 
