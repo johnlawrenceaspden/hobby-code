@@ -454,6 +454,8 @@ export MANPAGER=less
 alias eng='~/.screenlayout/engineering.sh && fix'
 alias ide='~/.screenlayout/ideaspace-big-dell.sh && fix'
 alias net='~/.screenlayout/netbookalone.sh && fix'
+alias kem='~/.screenlayout/kemurilondonoffice.sh && fix'
+
 
 # relies on apt-get install cdargs to provide bash directory bookmarking
 # creates ca,cv,cb: ca adds the current directory, cv=cb cds to bookmark with completion, in case of complexity edit ~/.cdargs
