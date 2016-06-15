@@ -440,6 +440,8 @@ alias rts='~/data/timesheet.py'
 alias hib='echo are you sure?'
 alias simonsayshib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sync && sudo pm-hibernate && xmodmap ~/.xmodmaprc'
 alias sus='cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sync && sudo pm-suspend && xmodmap ~/.xmodmaprc'
+alias postmortem='diff /var/log/pm-suspend.log ~/pm-suspend.log >suspenddiff ; xxdiff successfulsuspenddiff suspenddiff'
+
 
 # aliases for quick cding
 alias cdlr='cd ~/lapsim/RLS4/'
