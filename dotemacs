@@ -293,8 +293,6 @@
 
 
 
-
-
 ;; this one takes .clj.html to blogger in clipboard
 (fset 'clj-html-to-blogger-copy
    [?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-n ?\C-n ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?. ?c ?l ?o ?j ?u ?r ?e ?- ?\C-s ?/ ?h ?e ?a ?d ?\C-a ?\C-k ?\C-k ?\C-k ?\C-k ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?  ?c ?l ?a ?s ?s ?= ?\" ?c ?l ?o ?j ?u ?r ?e ?- ?b ?o ?o ?\C-? ?d ?y ?\" ?\C-n ?\M-> ?\C-p ?\C-p ?\C-k ?\C-k ?\C-k ?\C-k ?\C-x ?h ?\M-w])
@@ -865,5 +863,10 @@
 ;; (add-to-list 'iswitchb-buffer-ignore "*Completions")
 ;; (add-to-list 'iswitchb-buffer-ignore "*ftp ")
 ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
+
+
+(add-hook 'cider-repl-mode-hook
+                    (lambda ()
+                      (local-set-key (kbd "C-x M-o") 'cider-repl-clear-buffer)))
 
 
