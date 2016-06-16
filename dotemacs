@@ -865,8 +865,3 @@
 ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
 
 
-(add-hook 'cider-repl-mode-hook
-                    (lambda ()
-                      (local-set-key (kbd "C-x M-o") 'cider-repl-clear-buffer)))
-
-
