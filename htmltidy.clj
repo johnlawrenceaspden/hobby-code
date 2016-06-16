@@ -221,3 +221,34 @@
 ;;     <td>beta</td>
 ;;   </tr>
 ;; </table>
+
+
+;; Stolen from the fabulous Nakkaya
+;; http://nakkaya.com/2010/03/27/pretty-printing-xml-with-clojure/
+
+(defn ppxml [xml]
+  (let [in (javax.xml.transform.stream.StreamSource.
+            (java.io.StringReader. xml))
+        writer (java.io.StringWriter.)
+        out (javax.xml.transform.stream.StreamResult. writer)
+        transformer (.newTransformer 
+                     (javax.xml.transform.TransformerFactory/newInstance))]
+    (.setOutputProperty transformer 
+                        javax.xml.transform.OutputKeys/INDENT "yes")
+    (.setOutputProperty transformer 
+                        "{http://xml.apache.org/xslt}indent-amount" "2")
+    (.setOutputProperty transformer 
+                        javax.xml.transform.OutputKeys/METHOD "xml")
+    (.transform transformer in out)
+    (-> out .getWriter .toString)))
+
+
+
+(print (ppxml "<made />"))
+
+(print (ppxml "<root><child>aaa</child><child/></root>"))
+
+(print (ppxml (hc/html [:table {:class "table"}
+                          [:thead {:class "head"}[:td "alpha"][:td "beta"]]
+                          [:tr  {:class "row"}  [:td "alpha"] [:td "beta"]]
+                          [:tr  {:class "row"}  [:td "alpha"] [:td "beta"]]])))
