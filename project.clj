@@ -22,3 +22,7 @@
 ;;  :coordinates '[[hiccup "1.0.5"]]
 ;;  :repositories {"clojars" "http://clojars.org/repo" })
 
+;; (cemerick.pomegranate/add-dependencies 
+;;  :coordinates '[[org.clojure/test.check "0.9.0"]]
+;;  :repositories (merge cemerick.pomegranate.aether/maven-central
+;;                       {"clojars" "http://clojars.org/repo"}))
