@@ -865,3 +865,5 @@
 ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
 
 
+(add-hook 'cider-repl-mode-hook #'eldoc-mode)
+(setq cider-repl-display-in-current-window t)
