@@ -11,6 +11,9 @@
                       {"clojars" "http://clojars.org/repo"}))
 
 (require 'ring.middleware.stacktrace)
+(require 'ring.middleware.params)
+(require 'ring.middleware.keyword-params)
+(require 'ring.middleware.nested-params)
 (require 'ring.adapter.jetty)
 (require '[cemerick.friend :as friend])
 (require '[cemerick.friend.credentials :as creds])
@@ -49,6 +52,9 @@
       (friend/authenticate {:credential-fn (partial creds/bcrypt-credential-fn users)
                             :workflows [(workflows/interactive-form)]})
       (ring.middleware.stacktrace/wrap-stacktrace)
+      (ring.middleware.params/wrap-params)
+      (ring.middleware.keyword-params/wrap-keyword-params)
+      (ring.middleware.nested-params/wrap-nested-params)
 
       ;(wrap-spy "what the web server sees" false)
       ))
