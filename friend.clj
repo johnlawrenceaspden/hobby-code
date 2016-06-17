@@ -84,11 +84,32 @@
      :headers {"Content-Type""text/html"}
      :body (str  "<h1>Page Two</h1>")})
 
+(defn login [request]
+    {:status 200
+     :headers {"Content-Type""text/html"}
+     :body (str  "<h1>Login</h1>")})
+
 
 (defn handler [request]
   (case (request :uri)
-    "/page1" (page1 request)
+    "/page1" (friend/authorize #{::user} (page1 request))
     "/page2" (page2 request)
+    "/login" (login request)
     (page2 request)))
 
 
+
+;; Below here is messing about
+;; requests can be made programmatically, of course
+(app {}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
+(app {:uri "/page2"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page2\",\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
+(app {:uri "/page1"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page1\",\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page One</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page One&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
+
+(users "root") ; {:username "root", :password "$2a$10$La6g7yBmLLZbKZ/a29j/Uumf2mpFdhimrncK1FS/bP/uqkLMSG89y", :roles #{:user/admin}}
+(users "jane") ; {:username "jane", :password "$2a$10$H/b/UF1KLSGTI/dcolGOyOPZXSSyL5RKJD1OkhezKDfhMnBBaJTNO", :roles #{:user/user}}
+
+(creds/hash-bcrypt "user-password")  ; "$2a$10$zsuc3oNkVA1/a8dIwFSVQeFq73GC7st2bstx1oDsMa3MMr8.SVEjS"
+(creds/hash-bcrypt "admin-password") ; "$2a$10$jFdt4qKN1G2L2wv.HjkO.OR3y5ekcjovRHCS2ZVeOFYYv6RsgJ8Ky"
+
+(app {:uri "/login?username=jane&password=user-password"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/login?username=jane&password=user-password\",\n :params {},\n :form-params {},\n :query-params {},\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
+(app {:uri "/page1?username=jane&password=user-password"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page1?username=jane&password=user-password\",\n :params {},\n :form-params {},\n :query-params {},\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
