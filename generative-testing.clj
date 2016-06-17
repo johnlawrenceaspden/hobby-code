@@ -17,10 +17,11 @@
 
 ;; We got generators
 
+;; This one makes natural numbers
 gen/nat ; #clojure.test.check.generators.Generator{:gen #function[clojure.test.check.generators/gen-fmap/fn--10834]}
 
 ;; they cannot be called
-;; (gen/nat)
+;; (gen/nat) ;; error
 
 ;; but they can be sampled
 (gen/generate gen/nat) ; 26
@@ -29,17 +30,17 @@ gen/nat ; #clojure.test.check.generators.Generator{:gen #function[clojure.test.c
 ;; as many times as you like
 (gen/sample gen/boolean 10) ; (false false false true true true false false false false)
 
-;; gen/vector is a function 
+;; gen/vector is a function, not a generator 
 gen/vector ; #function[clojure.test.check.generators/vector]
 
-;; which can be used to build generators
+;; but it can be used to build generators
 (gen/vector gen/boolean) ; #clojure.test.check.generators.Generator{:gen #function[clojure.test.check.generators/gen-bind/fn--10845]}
 
+;; here we make vectors of booleans, of arbitrary length
 (gen/sample (gen/vector gen/boolean)) ; ([] [] [true true] [true false true] [] [true true false false false] [true true false false true] [false true] [true true true] [false true true false false true true true true])
 
-(gen/sample (gen/vector gen/boolean) 3) ; ([] [false] [true])
-
-(gen/sample (gen/vector gen/boolean 3) 4) ; ([false true false] [true true false] [false true false] [false true false]) 
+;; here are some of length 3
+(gen/sample (gen/vector gen/boolean 3)) ; ([true true true] [true true true] [true true true] [false true false] [true true true] [true false false] [false false false] [true true false] [false true true] [true true true])
 
 ;; and there are many generators and ways of combining them
 (gen/sample
@@ -63,7 +64,7 @@ gen/vector ; #function[clojure.test.check.generators/vector]
 (tc/quick-check 100 sort-idempotent-prop)
 ;; {:result true, :num-tests 100, :seed 1466100813479}
 
-;; Another property is that the list should be sorted
+;; Another property of sort is that the list should be sorted
 (def prop-sorted
    (prop/for-all [v (gen/not-empty (gen/vector gen/int))]
      (let [s (sort v)]
@@ -89,36 +90,60 @@ gen/vector ; #function[clojure.test.check.generators/vector]
 ;; But that quick check has managed to reduce that to a smaller test case
 (apply < (sort [-3 -3])) ; false
 
-;; Allowing us to see what's wrong
-(def prop-sorted
+;; And even better, our tests are repeatable!
+(tc/quick-check 1 prop-sorted :seed 1466100766430) ; {:result true, :num-tests 1, :seed 1466100766430}
+
+;; just kidding!
+(tc/quick-check 6 prop-sorted :seed 1466100766430) ; {:result false, :seed 1466100766430, :failing-size 5, :num-tests 6, :fail [[-3 -3 -1 -3]], :shrunk {:total-nodes-visited 9, :depth 2, :result false, :smallest [[-3 -3]]}}
+
+;; We're a Test Driven Development Shop here:
+
+(def sort (comp distinct clojure.core/sort))
+
+;; victory
+(tc/quick-check 6 prop-sorted :seed 1466100766430)
+
+;; but a true klingon subjects his code to the strictest QA procedures, which it invariably triumphantly passes.
+(tc/quick-check 1000 prop-sorted) ; {:result true, :num-tests 1000, :seed 1466163332094}
+
+;; The test-monkeys cotton on
+(def prop-not-thrown-any-away
    (prop/for-all [v (gen/not-empty (gen/vector gen/int))]
      (let [s (sort v)]
-       (apply <= s))))
+       (= (count s)(count v)))))
 
-;; Our new property survives extensive trials
-(tc/quick-check 10000 prop-sorted) ; {:result true, :num-tests 10000, :seed 1466100962412}
+(tc/quick-check 1000 prop-not-thrown-any-away)
+;; {:result false,
+;;  :seed 1466163668636,
+;;  :failing-size 3,
+;;  :num-tests 4,
+;;  :fail [[0 2 2]],
+;;  :shrunk
+;;  {:total-nodes-visited 7, :depth 1, :result false, :smallest [[2 2]]}}
 
+;; arse
 
+(def sort (comp range count))
 
+(tc/quick-check 1000 sort-idempotent-prop) ; {:result true, :num-tests 1000, :seed 1466163856476}
+(tc/quick-check 1000 prop-not-thrown-any-away) ; {:result true, :num-tests 1000, :seed 1466163857441}
+(tc/quick-check 1000 prop-sorted) ; {:result true, :num-tests 1000, :seed 1466163858255}
 
+;; Now, we are become death.
 
+;; So, how to make sure that our tests are run?
 
-;; Alternatively, if we try to assert that the first element of a sorted vector is always smaller
-;; than the last element
-(def prop-sorted-first-less-than-last
-   (prop/for-all [v (gen/not-empty (gen/vector gen/int))]
-     (let [s (sort v)]
-       (< (first s) (last s)))))
+(use 'clojure.test)
 
-(tc/quick-check 3 prop-sorted-first-less-than-last)
+(run-all-tests) ; {:test 0, :pass 0, :fail 0, :error 0, :type :summary}
 
+(deftest test-test-f
+  (is false))
 
+(deftest test-test-t
+  (is true))
 
-
-
-
-
-
+(run-all-tests) ; {:test 3, :pass 1, :fail 2, :error 0, :type :summary}
 
 
 
