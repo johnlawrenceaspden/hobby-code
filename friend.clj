@@ -1,6 +1,7 @@
 ;;  Friend: Authentication in a Ring App
 
-(def dependencies '[[ring/ring "1.5.0"]])
+(def dependencies '[[ring/ring "1.5.0"]
+                    [com.cemerick/friend "0.2.3"]])
 
 ;; dependency gibberish
 (require 'cemerick.pomegranate)
@@ -11,6 +12,9 @@
 
 (require 'ring.middleware.stacktrace)
 (require 'ring.adapter.jetty)
+(require '[cemerick.friend :as friend])
+(require '[cemerick.friend.credentials :as creds])
+(require '[cemerick.friend.workflows :as workflows])
 
 
 ;; Some infrastructure
@@ -37,12 +41,16 @@
 
 (declare handler)
 (declare app)
+(declare users)
 
 (def app
   (-> #'handler
       (wrap-spy "what the handler sees" true)
+      (friend/authenticate {:credential-fn (partial creds/bcrypt-credential-fn users)
+                            :workflows [(workflows/interactive-form)]})
       (ring.middleware.stacktrace/wrap-stacktrace)
-      (wrap-spy "what the web server sees" false)
+
+      ;(wrap-spy "what the web server sees" false)
       ))
 
 
@@ -50,6 +58,15 @@
 
 
 ;; Here's the actual app
+
+(def users {"root" {:username "root"
+                    :password (creds/hash-bcrypt "admin_password")
+                    :roles #{::admin}}
+            "jane" {:username "jane"
+                    :password (creds/hash-bcrypt "user_password")
+                    :roles #{::user}}})
+
+
 
 (defn page1 [request]
     {:status 200
@@ -67,8 +84,5 @@
     "/page1" (page1 request)
     "/page2" (page2 request)
     (page2 request)))
-)
-
-
 
 
