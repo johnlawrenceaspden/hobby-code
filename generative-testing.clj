@@ -171,8 +171,8 @@ gen/vector ; #function[clojure.test.check.generators/vector]
 
 (gen/sample (gen'/string-from-regex #"ab*(c|d)")) ; ("ac" "abc" "abc" "abd" "abbbc" "abbd" "abbbbbbc" "abbbbbd" "abbbbc" "abbc")
 
-
-
+;; Some interesting details here
+;; http://zotskolf.nl/2014/11/10/testcheckbasics.html
 
 
 
