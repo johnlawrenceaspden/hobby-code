@@ -28,19 +28,21 @@
 
 (defn wrap-spy [handler spyname include-body]
   (fn [request]
-    (let [incoming (with-out-str
-                     (println "-------------------------------")
-                     (println spyname ":\n Incoming Request:")
+    (let [request (dissoc request :headers :ssl-client-cert :protocol :remote-addr :server-port :content-length :content-type :character-encoding :body :scheme :server-name)
+          incoming (with-out-str
+                     ;;(println "-------------------------------")
+                     (println spyname "")
                      (clojure.pprint/pprint request))]
       (println incoming)
       (let [response (handler request)]
         (let [outgoing (with-out-str 
-                         (println spyname ":\n Outgoing Response Map:")
+                         (println spyname "")
                          (clojure.pprint/pprint (if include-body response
                                                   (assoc response :body "#<?>")))
-                         (println "-------------------------------"))]
+                         ;;(println "-------------------------------")
+                         )]
           (println outgoing)
-          (update-in response  [:body] (fn[x] (str (html-escape incoming) x  (html-escape outgoing)))))))))
+          (update-in response  [:body] (fn[x] (str (html-escape incoming) "\n\n" x "\n\n" (html-escape outgoing)))))))))
 
 (declare handler)
 (declare app)
@@ -49,14 +51,12 @@
 (def app
   (-> #'handler
       (wrap-spy "what the handler sees" true)
-      (friend/authenticate {:credential-fn (partial creds/bcrypt-credential-fn users)
-                            :workflows [(workflows/interactive-form)]})
       (ring.middleware.stacktrace/wrap-stacktrace)
       (ring.middleware.params/wrap-params)
       (ring.middleware.keyword-params/wrap-keyword-params)
       (ring.middleware.nested-params/wrap-nested-params)
 
-      ;(wrap-spy "what the web server sees" false)
+      (wrap-spy "what the web server sees" false)
       ))
 
 
@@ -65,12 +65,6 @@
 
 ;; Here's the actual app
 
-(def users {"root" {:username "root"
-                    :password (creds/hash-bcrypt "admin_password")
-                    :roles #{::admin}}
-            "jane" {:username "jane"
-                    :password (creds/hash-bcrypt "user_password")
-                    :roles #{::user}}})
 
 
 
@@ -89,27 +83,17 @@
      :headers {"Content-Type""text/html"}
      :body (str  "<h1>Login</h1>")})
 
+(defn not-found [request]
+    {:status 404
+     :headers {"Content-Type""text/html"}
+     :body (str  "<h1>404 ERROR</h1>")})
+
 
 (defn handler [request]
   (case (request :uri)
-    "/page1" (friend/authorize #{::user} (page1 request))
+    "/page1" (page1 request)
     "/page2" (page2 request)
     "/login" (login request)
-    (page2 request)))
+    (not-found request)))
 
 
-
-;; Below here is messing about
-;; requests can be made programmatically, of course
-(app {}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
-(app {:uri "/page2"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page2\",\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
-(app {:uri "/page1"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page1\",\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page One</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page One&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
-
-(users "root") ; {:username "root", :password "$2a$10$La6g7yBmLLZbKZ/a29j/Uumf2mpFdhimrncK1FS/bP/uqkLMSG89y", :roles #{:user/admin}}
-(users "jane") ; {:username "jane", :password "$2a$10$H/b/UF1KLSGTI/dcolGOyOPZXSSyL5RKJD1OkhezKDfhMnBBaJTNO", :roles #{:user/user}}
-
-(creds/hash-bcrypt "user-password")  ; "$2a$10$zsuc3oNkVA1/a8dIwFSVQeFq73GC7st2bstx1oDsMa3MMr8.SVEjS"
-(creds/hash-bcrypt "admin-password") ; "$2a$10$jFdt4qKN1G2L2wv.HjkO.OR3y5ekcjovRHCS2ZVeOFYYv6RsgJ8Ky"
-
-(app {:uri "/login?username=jane&password=user-password"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/login?username=jane&password=user-password\",\n :params {},\n :form-params {},\n :query-params {},\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
-(app {:uri "/page1?username=jane&password=user-password"}) ; {:status 200, :headers {"Content-Type" "text/html"}, :body "<pre>-------------------------------\nwhat the handler sees :\n Incoming Request:\n{:uri \"/page1?username=jane&password=user-password\",\n :params {},\n :form-params {},\n :query-params {},\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/partial/fn--4759],\n  :workflows\n  [#function[cemerick.friend.workflows/interactive-form/fn--12166]]}}\n</pre><h1>Page Two</h1><pre>what the handler sees :\n Outgoing Response Map:\n{:status 200,\n :headers {\"Content-Type\" \"text/html\"},\n :body \"&lt;h1&gt;Page Two&lt;/h1&gt;\"}\n-------------------------------\n</pre>"}
