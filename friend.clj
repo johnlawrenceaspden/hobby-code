@@ -204,7 +204,8 @@ save-request ; #atom[{:uri "/page1", :params {}, :form-params {}, :query-params 
 ;; I have no idea how this fucking thing is supposed to work
 ;; perhaps this will help
 https://adambard.com/blog/easy-auth-with-friend/
-
+;; or maybe this
+https://github.com/ddellacosta/friend-interactive-form-tutorial
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Below here is messing about
