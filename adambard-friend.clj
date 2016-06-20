@@ -114,3 +114,44 @@
 
 ;; Once you are logged in
 ;; http://localhost:8080/authorized -> Hello authorized
+
+(app {:uri "/"})
+(app {:uri "/authorized"})
+(app {:uri "/authorized" :query-string "speak=friend"})
+
+
+
+(app {:headers
+      {"accept" "*/*",
+       "host" "localhost:8080",
+       "user-agent" "curl/7.38.0",
+       "cookie" "ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c"},
+      :uri "/authorized",
+      :query-string nil,
+      :request-method :get}) ; {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "<pre>what the web server sees \n{:headers\n {\"accept\" \"*/*\",\n  \"host\" \"localhost:8080\",\n  \"user-agent\" \"curl/7.38.0\",\n  \"cookie\" \"ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\"},\n :uri \"/authorized\",\n :query-string nil,\n :request-method :get}\n</pre>\n\n<pre>what the friend sees \n{:cookies\n {\"ring-session\" {:value \"b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\"}},\n :params {},\n :headers\n {\"accept\" \"*/*\",\n  \"host\" \"localhost:8080\",\n  \"user-agent\" \"curl/7.38.0\",\n  \"cookie\" \"ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\"},\n :form-params {},\n :session/key \"b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\",\n :query-params {},\n :uri \"/authorized\",\n :query-string nil,\n :request-method :get,\n :session\n {:cemerick.friend/identity\n  {:authentications\n   {\"friend\" {:identity \"friend\", :roles #{:user/user}}},\n   :current \"friend\"}}}\n</pre>\n\n<pre>what the handler sees \n{:cookies\n {\"ring-session\" {:value \"b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\"}},\n :params {},\n :headers\n {\"accept\" \"*/*\",\n  \"host\" \"localhost:8080\",\n  \"user-agent\" \"curl/7.38.0\",\n  \"cookie\" \"ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\"},\n :form-params {},\n :session/key \"b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c\",\n :query-params {},\n :uri \"/authorized\",\n :query-string nil,\n :cemerick.friend/auth-config\n {:default-landing-uri \"/\",\n  :login-uri \"/login\",\n  :credential-fn #function[clojure.core/constantly/fn--4614],\n  :workflows [#function[user/fun-workflow]]},\n :request-method :get,\n :session\n {:cemerick.friend/identity\n  {:authentications\n   {\"friend\" {:identity \"friend\", :roles #{:user/user}}},\n   :current \"friend\"}}}\n</pre>\n\nHello authorized\n\n<pre>what the handler sees \n{:status 200,\n :headers {\"Content-Type\" \"text/html; charset=utf-8\"},\n :body \"Hello authorized\"}\n</pre>\n\n<pre>what the friend sees \n{:status 200,\n :headers {\"Content-Type\" \"text/html; charset=utf-8\"},\n :body \"#&lt;?&gt;\"}\n</pre>\n\n<pre>what the web server sees \n{:status 200,\n :headers {\"Content-Type\" \"text/html; charset=utf-8\"},\n :body \"#&lt;?&gt;\"}\n</pre>"}
+
+
+(dissoc (app {:headers
+              {"accept" "*/*",
+               "host" "localhost:8080",
+               "user-agent" "curl/7.38.0",
+               "cookie" "ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c"},
+              :uri "/authorized",
+              :query-string nil,
+              :request-method :get}) :body) ; {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}}
+
+(dissoc (app {:headers
+              {"cookie" "ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c"},
+              :uri "/authorized",
+              :query-string nil,
+              :request-method :get}) :body) ; {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}}
+
+(dissoc (app {:headers
+              {"cookie" "ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c"},
+              :uri "/authorized",
+              :request-method :get}) :body) ; {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}}
+
+
+(app {:headers
+      {"cookie" "ring-session=b6abc512-5f76-4bf9-a257-6ce1b8dc7d0c"},
+      :uri "/authorized"})
