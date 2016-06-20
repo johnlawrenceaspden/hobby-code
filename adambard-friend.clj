@@ -29,7 +29,6 @@
   (GET "/authorized" [] (friend/authorize #{::user} "Hello authorized"))
   (friend/logout (POST "/logout" [] "logging out")))
 
-
 ;; if there's a speak=friend parameter, then authorize, otherwise nil
 (defn fun-workflow [req]
   (let [speak (get-in req [:params :speak])]
@@ -49,7 +48,7 @@
 (defonce server (ring.adapter.jetty/run-jetty #'app {:port 8080 :join? false}))
 
 
-;; C-c C-k to load the file in emacs/cider, (-main) to run it, -main does not return
+;; C-c C-k to load the file in emacs/cider
 
 ;; $ curl -sv http://localhost:8080/ -> hello everyone, and a form
 
