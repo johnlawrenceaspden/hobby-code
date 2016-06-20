@@ -14,6 +14,7 @@
 (require 'ring.middleware.params)
 (require 'ring.middleware.keyword-params)
 (require 'ring.middleware.nested-params)
+(require 'ring.middleware.session)
 (require 'ring.adapter.jetty)
 
 ;; Some infrastructure
@@ -34,7 +35,7 @@
         (let [outgoing (with-out-str 
                          (println spyname "")
                          (clojure.pprint/pprint (if include-body response
-                                                  (assoc response :body "#<?>")))
+                                                    (assoc response :body "#<?>")))
                          ;;(println "-------------------------------")
                          )]
           (println outgoing)
@@ -64,24 +65,24 @@
 
 
 (defn page1 [request]
-    {:status 200
-     :headers {"Content-Type""text/html"}
-     :body (str  "<h1>Page One</h1>")})
+  {:status 200
+   :headers {"Content-Type""text/html"}
+   :body (str  "<h1>Page One</h1>")})
 
 (defn page2 [request]
-    {:status 200
-     :headers {"Content-Type""text/html"}
-     :body (str  "<h1>Page Two</h1>")})
+  {:status 200
+   :headers {"Content-Type""text/html"}
+   :body (str  "<h1>Page Two</h1>")})
 
 (defn login [request]
-    {:status 200
-     :headers {"Content-Type""text/html"}
-     :body (str  "<h1>Login</h1>")})
+  {:status 200
+   :headers {"Content-Type""text/html"}
+   :body (str  "<h1>Login</h1>")})
 
 (defn not-found [request]
-    {:status 404
-     :headers {"Content-Type""text/html"}
-     :body (str  "<h1>404 ERROR</h1>")})
+  {:status 404
+   :headers {"Content-Type""text/html"}
+   :body (str  "<h1>404 ERROR</h1>")})
 
 
 (defn handler [request]
@@ -120,6 +121,7 @@
 (summary (app {:uri "/page1"})) ; [200 ("<h1>Page One</h1>")]
 (summary (app {:uri "/page2"})) ; [200 ("<h1>Page Two</h1>")]
 
+;; Now let's ask friend to protect page 1 from anyone who's not a user
 (defn handler [request]
   (case (request :uri)
     "/page1" (friend/authorize #{::user} (page1 request))
@@ -130,7 +132,7 @@
 (summary (app {:uri "/page1"})) ; [500 ("<h1>clojure.lang.ExceptionInfo</h1>")]
 (summary (app {:uri "/page2"})) ; [200 ("<h1>Page Two</h1>")]
 
-
+;; Error code 500 is http for 'Internal Server Error' 
 ;; So it looks as though friend throws an exception inside the handler if you try to access
 ;; a page which is protected.
 
@@ -160,9 +162,9 @@ save-request ; #atom[{:uri "/page1", :params {}, :form-params {}, :query-params 
 
 ;; this seems to be the important bit
 (ex-data (try
-    (handler {:uri "/page1", :params {}, :form-params {}, :query-params {}})
-    (catch Exception e
-      e)))
+           (handler {:uri "/page1", :params {}, :form-params {}, :query-params {}})
+           (catch Exception e
+             e)))
 
 ;; {:object
 ;;  {:cemerick.friend/type :unauthorized,
@@ -177,12 +179,13 @@ save-request ; #atom[{:uri "/page1", :params {}, :form-params {}, :query-params 
 
 
 
+;; Presumably friend's authenticate middleware is supposed to catch
+;; these exceptions?
 (def app
   (-> #'handler
       (wrap-spy "what the handler sees" true)
       (ring.middleware.stacktrace/wrap-stacktrace)
-      (friend/authenticate {:credential-fn (partial creds/bcrypt-credential-fn users)
-                            :workflows [(workflows/interactive-form)]})
+      (friend/authenticate {})
       (ring.middleware.params/wrap-params)
       (ring.middleware.keyword-params/wrap-keyword-params)
       (ring.middleware.nested-params/wrap-nested-params)
@@ -190,15 +193,55 @@ save-request ; #atom[{:uri "/page1", :params {}, :form-params {}, :query-params 
       (wrap-spy "what the web server sees" false)
       ))
 
+;; the authenticate middleware adds this key to the request map
+;; :cemerick.friend/auth-config
+;;  {:default-landing-uri "/",
+;;   :login-uri "/login",
+;;   :credential-fn #function[clojure.core/constantly/fn--4614],
+;;   :workflows []}}
 
+;;But we're still getting exceptions
+(summary (app {:uri "/page1"})) ; [500 ("<h1>clojure.lang.ExceptionInfo</h1>")]
 
 (summary (app {})) ; [404 ("<h1>404 ERROR</h1>")]
 (summary (app {:uri "/"})) ; [404 ("<h1>404 ERROR</h1>")]
-(summary (app {:uri "/page1"})) ; [200 ("<h1>Page One</h1>")]
 (summary (app {:uri "/page2"})) ; [200 ("<h1>Page Two</h1>")]
 (summary (app {:uri "/page3"})) ; [404 ("<h1>404 ERROR</h1>")]
 (summary (app {:uri "/login"})) ; [200 ("<h1>Login</h1>")]
 (summary (app {:uri "/login" :request-method :post :params {"username" "jane", "password" "user-password"}}))
+
+;; I have no idea how this fucking thing is supposed to work
+;; perhaps this will help
+;; https://adambard.com/blog/easy-auth-with-friend/
+
+(defn fun-workflow [req]
+  (let [speak (get-in req [:params :speak])]
+    (when (= speak "friend")
+      (workflows/make-auth {:identity "friend" :roles #{::user}}))))
+
+(def app
+  (-> #'handler
+      (wrap-spy "what the handler sees" true)
+      (ring.middleware.stacktrace/wrap-stacktrace)
+      
+      (friend/authenticate {:workflows [fun-workflow]})
+      (ring.middleware.keyword-params/wrap-keyword-params)
+      (ring.middleware.nested-params/wrap-nested-params)
+      (ring.middleware.params/wrap-params)
+      (ring.middleware.session/wrap-session)
+
+      (wrap-spy "what the web server sees" false)
+      ))
+
+;; so if we don't provide the ?speak=friend parameter
+(summary (app {:uri "/page1"})) ; [500 ("<h1>clojure.lang.ExceptionInfo</h1>")]
+;; we get the same exception 
+
+;; but if we do, then we get a 303
+(summary (app {:uri "/page1" :params {"speak" "friend"}})) ; [303 nil]
+
+(summary (app {:uri "/page2" :params {"speak" "friend"}})) ; [303 nil]
+
 
 
 ;; I have no idea how this fucking thing is supposed to work
