@@ -38,7 +38,7 @@
 
 
 (def app
-  (-> app-routes 
+  (-> #'app-routes 
       (friend/authenticate {:workflows [fun-workflow]})
       (wrap-keyword-params)
       (wrap-params)
@@ -46,8 +46,8 @@
       ))
 
 
-(defn -main []
-  (run-jetty #'app {:port 8080}))
+(defonce server (ring.adapter.jetty/run-jetty #'app {:port 8080 :join? false}))
+
 
 ;; C-c C-k to load the file in emacs/cider, (-main) to run it, -main does not return
 
@@ -61,6 +61,16 @@
 
 ;; $ curl -sv http://localhost:8080/authorized?speak=friend -> 303 See Other to /, also sets ring session cookie
 
+
+;; I'm not at all sure what's going on here:
+
+;; rm cookie
+;; curl -sv http://localhost:8080/authorized -b cookie -c cookie  -> 302 Found to /login
+;; curl -sv http://localhost:8080/login?speak=friend -b cookie -c cookie -> 303 See Other to /authorized
+;; curl -sv http://localhost:8080/authorized -b cookie -c cookie ->200 Hello authorized
+
+;; It looks as though something remembers where you want to go if you get redirected to /login
+;; and so even though that page doesn't exist, the request with speak=friend results in a redirection to /authorized
 
 
 
