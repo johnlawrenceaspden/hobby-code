@@ -29,7 +29,7 @@
 
 (defn wrap-spy [handler spyname include-body]
   (fn [request]
-    (let [stripped-request (dissoc request :headers :ssl-client-cert :protocol :remote-addr :server-port :content-length :content-type :character-encoding :body :scheme :server-name)
+    (let [stripped-request (dissoc request :ssl-client-cert :protocol :remote-addr :server-port :content-length :content-type :character-encoding :body :scheme :server-name)
           incoming (with-out-str
                      ;;(println "-------------------------------")
                      (println spyname "")
