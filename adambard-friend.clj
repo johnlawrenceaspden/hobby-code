@@ -22,6 +22,31 @@
           '[ring.adapter.jetty :refer [run-jetty]])
 
 
+
+;; spymiddleware
+(defn html-escape [string] 
+  (str "<pre>" (clojure.string/escape string {\< "&lt;", \> "&gt;"}) "</pre>"))
+
+(defn wrap-spy [handler spyname include-body]
+  (fn [request]
+    (let [stripped-request (dissoc request :headers :ssl-client-cert :protocol :remote-addr :server-port :content-length :content-type :character-encoding :body :scheme :server-name)
+          incoming (with-out-str
+                     ;;(println "-------------------------------")
+                     (println spyname "")
+                     (clojure.pprint/pprint stripped-request))]
+      (println incoming)
+      (let [response (handler request)]
+        (let [outgoing (with-out-str 
+                         (println spyname "")
+                         (clojure.pprint/pprint (if include-body response
+                                                    (assoc response :body "#<?>")))
+                         ;;(println "-------------------------------")
+                         )]
+          (println outgoing)
+          (update-in response  [:body] (fn[x] (str (html-escape incoming) "\n\n" x "\n\n" (html-escape outgoing))))
+          )))))
+
+
 ;; A friend app
 
 (defroutes app-routes
@@ -37,11 +62,13 @@
 
 
 (def app
-  (-> #'app-routes 
+  (-> #'app-routes
+      (wrap-spy "what the handler sees" true)
       (friend/authenticate {:workflows [fun-workflow]})
       (wrap-keyword-params)
       (wrap-params)
       (wrap-session)
+      (wrap-spy "what the web server sees" false)
       ))
 
 
