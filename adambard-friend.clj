@@ -65,6 +65,7 @@
   (-> #'app-routes
       (wrap-spy "what the handler sees" true)
       (friend/authenticate {:workflows [fun-workflow]})
+      (wrap-spy "what the friend sees" false)
       (wrap-keyword-params)
       (wrap-params)
       (wrap-session)
