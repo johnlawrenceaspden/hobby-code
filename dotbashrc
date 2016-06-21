@@ -381,9 +381,12 @@ export PATH="/usr/local/heroku/bin:$PATH"
 function vcstatuses
 {
     pushd ~  #preserve current directory
-    for i in ~/hobby-code ~/data ~/iqtest ~/cycling ~/cctool ~/silverline-sensor-server; do
+    for i in ~/hobby-code ~/data ~/iqtest ~/cycling ~/cctool ; do
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/master..master ;
     done ;
+    i=~/silverline-sensor-server
+    echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/john-patch..john-patch ;
+    
     # i=~/iqtest
     # echo "--" && echo "$i" && echo "--" && cd "$i" && git status &&
     # echo "-------log vs origin/master-----------" &&
