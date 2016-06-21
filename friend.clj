@@ -249,6 +249,8 @@ save-request ; #atom[{:uri "/page1", :params {}, :form-params {}, :query-params 
 https://adambard.com/blog/easy-auth-with-friend/
 ;; or maybe this
 https://github.com/ddellacosta/friend-interactive-form-tutorial
+;; this is a good explanation of how friend works, by someone wresting it into submission
+https://sritchie.github.io/2014/01/17/api-authentication-with-liberator-and-friend/
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Below here is messing about
