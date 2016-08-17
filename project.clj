@@ -2,7 +2,9 @@
   :description ""
   :license ""
   :url ""
-  :plugins [[cider/cider-nrepl "0.12.0"]]
+  :plugins [[cider/cider-nrepl "0.12.0"]
+            [lein-ancient "0.6.8"] ;; lein ancient to find updated dependencies
+            ] 
   :global-vars {*print-length* 100 *print-level* 100}
   
   :dependencies [[org.clojure/clojure "1.8.0"]
