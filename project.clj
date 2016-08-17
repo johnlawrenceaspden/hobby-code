@@ -8,7 +8,7 @@
   :global-vars {*print-length* 100 *print-level* 100}
   
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/tools.trace "0.7.5"]
+                 [org.clojure/tools.trace "0.7.9"]
                  [com.cemerick/pomegranate "0.3.1"]
 ;;                 [simple-plotter "0.1.2"]
                  ])
