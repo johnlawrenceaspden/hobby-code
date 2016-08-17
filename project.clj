@@ -10,6 +10,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.trace "0.7.9"]
                  [com.cemerick/pomegranate "0.3.1"]
+                 
+                 [com.stuartsierra/component "0.3.1"]
 ;;                 [simple-plotter "0.1.2"]
                  ])
 
