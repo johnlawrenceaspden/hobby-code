@@ -1,7 +1,11 @@
 ## install required R packages
 ## sudo apt install r-cran-ggplot2 r-cran-scales r-cran-dplyr r-cran-randomforest
+## mice and ggthemes need to be installed by hand
+## > install.packages('ggthemes', dep = TRUE)
+## unavailable errors are likely due to using a bad mirror, try the CA1 mirror
+
 ## turn off infuriating underscore thing in ESS
-## (ess-toggle-underscore nil)
+## (ess-toggle-underscore nil) 
 
 library('ggplot2')
 library('ggthemes')
@@ -11,8 +15,8 @@ library('mice')
 library('randomForest')
 
 
-train <- read.csv('train.csv')
-test  <- read.csv('test.csv')
+train <- read.csv('train.csv', stringsAsFactors = F)
+test  <- read.csv('test.csv', stringsAsFactors = F)
 
 full <- bind_rows(train, test)
 
@@ -39,7 +43,11 @@ full$Fsize <- full$SibSp + full$Parch + 1
 ## Create a family variable
 full$Family <- paste(full$Surname, full$Fsize, sep='_')
 
-ggplot(full[1:891,], aes(x = Fsize, fill = factor(Survived)))+geom_bar(stat='count', position='dodge')+scale_x_continuous(breaks=c(1:11))+labs(x = 'Family Size')
+ggplot(full[1:891,], aes(x = Fsize, fill = factor(Survived)))+
+    geom_bar(stat='count', position='dodge')+
+    scale_x_continuous(breaks=c(1:11))+
+    labs(x = 'Family Size')+
+    theme_few()
 
 ## Discretize family size
 full$FsizeD[full$Fsize == 1] <- 'singleton'
