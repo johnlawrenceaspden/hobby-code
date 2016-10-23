@@ -881,3 +881,5 @@
   (ANY 2)
   (context 2))
 
+;; turn off ESS's wretched perversion of the underscore key
+(ess-toggle-underscore nil) 
