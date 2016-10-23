@@ -40,6 +40,7 @@ full$Parch <-factor(full$Parch)
 processed_train <- full[1:train_size,]
 processed_test  <- full[(train_size+1):(train_size+test_size),]
 
+## choose a random seed to make things repeatable
 set.seed(754)
 
 summary(processed_train)
