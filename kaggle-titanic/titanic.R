@@ -1,7 +1,14 @@
+## Megan Risdal's kaggle tutorial on the titanic dataset
+## https://www.kaggle.com/mrisdal/titanic/exploring-survival-on-the-titanic/notebook
+
 ## install required R packages
 ## sudo apt install r-cran-ggplot2 r-cran-scales r-cran-dplyr r-cran-randomforest
-## mice and ggthemes need to be installed by hand
+## mice and VIM and ggthemes need to be installed by hand
 ## > install.packages('ggthemes', dep = TRUE)
+## > install.packages('mice', dep=TRUE)
+## > install.packages('VIM', dep=TRUE)
+
+
 ## unavailable errors are likely due to using a bad mirror, try the CA1 mirror
 
 ## turn off infuriating underscore thing in ESS
@@ -13,12 +20,63 @@ library('scales')
 library('dplyr')
 library('mice')
 library('randomForest')
+library('VIM')
 
 
+## read in training and test data
 train <- read.csv('train.csv', stringsAsFactors = F)
 test  <- read.csv('test.csv', stringsAsFactors = F)
+train_size <- nrow(train)
+test_size <- nrow(test)
 
+## bind them and process them together, then split apart again
 full <- bind_rows(train, test)
+full$Sex <-factor(full$Sex)
+full$Pclass <-factor(full$Pclass)
+full$Survived <-factor(full$Survived)
+full$Embarked <-factor(full$Embarked)
+full$SibSp <-factor(full$SibSp)
+full$Parch <-factor(full$Parch)
+processed_train <- full[1:train_size,]
+processed_test  <- full[(train_size+1):(train_size+test_size),]
+
+set.seed(754)
+
+summary(processed_train)
+rf_model <- randomForest(Survived ~ Sex + Fare + Pclass + Embarked + SibSp + Parch,  data=processed_train)
+rf_model
+plot(rf_model)
+legend('topright', colnames(rf_model$err.rate), col=1:3, fill=1:3)
+
+importance    <- importance(rf_model)
+varImportance <- data.frame(Variables = row.names(importance), 
+                            Importance = round(importance[ ,'MeanDecreaseGini'],2))
+rankImportance <- varImportance %>%
+  mutate(Rank = paste0('#',dense_rank(desc(Importance))))
+ggplot(rankImportance, aes(x = reorder(Variables, Importance), 
+    y = Importance, fill = Importance)) +
+  geom_bar(stat='identity') + 
+  geom_text(aes(x = Variables, y = 0.5, label = Rank),
+    hjust=0, vjust=0.55, size = 4, colour = 'red') +
+  labs(x = 'Variables') +
+  coord_flip() + 
+  theme_few()
+
+
+
+
+
+
+
+
+
+rf_model <- randomForest(factor(Survived) ~ PassengerId + Pclass + Name + Sex + Age + SibSp + Parch + Ticket + Fare + Cabin + Embarked, data=train)
+
+processed_train_stripped <-subset(processed_train,select=-Age:-Ticket)
+md.pattern(processed_train_stripped)
+
+
+
 
 full$Title <- gsub('(.*, )|(\\..*)','',full$Name)
 
@@ -79,4 +137,16 @@ ggplot(embark_fare, aes(x=Embarked, y=Fare, fill=factor(Pclass))) +
 ## Since their fare was $80 for 1st class, they most likely embarked from 'C'
 
 full$Embarked[c(62,830)] <- 'C'
+
+
+
+
+
+
+
+######################################################
+n = c(2, 3, NA) 
+s = c("aa", "bb", "cc") 
+b = c(TRUE, FALSE, TRUE) 
+df = data.frame(n, s, b)       # df is a data frame
 
