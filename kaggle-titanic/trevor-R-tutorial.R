@@ -150,3 +150,43 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 write.csv(submit, file = "femalesandundertens.csv", row.names = FALSE)
 
 ## scores 0.77033
+
+
+train$Fare2 <- '30+'
+train$Fare2[train$Fare < 30 & train$Fare >= 20] <- '20-30'
+train$Fare2[train$Fare < 20 & train$Fare >= 10] <- '10-20'
+train$Fare2[train$Fare < 10] <- '<10'
+
+aggregate(Survived ~ Child + Sex + Pclass + Fare2, data=train, FUN=function(x){sum(x)/length(x)})
+
+aggregate(Survived ~ Child + Sex + Pclass, data=train, FUN=function(x){sum(x)/length(x)})
+
+aggregate(Survived ~ Sex + Pclass + Fare2, data=train, FUN=function(x){sum(x)/length(x)})
+
+
+
+test <- read.csv("test.csv", stringsAsFactors=FALSE)
+
+test$Child[test$Age < 10] <- 1
+test$Survived <- 0
+test$Survived[test$Sex=='female'] <- 1
+test$Survived[test$Pclass==3 & test$Fare >=20] <- 0
+test$Survived[test$Child==1] <- 1
+
+submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
+
+write.csv(submit, file = "femalesbutnothighpayingthirdclassandundertens.csv", row.names = FALSE)
+
+## scores 0.77990, which is the same as ignoring children!
+
+test <- read.csv("test.csv", stringsAsFactors=FALSE)
+
+test$Child[test$Age < 10] <- 1
+test$Survived <- 0
+test$Survived[test$Sex=='female'] <- 1
+test$Survived[test$Child==1] <- 1
+test$Survived[test$Pclass==3 & test$Fare >=20] <- 0
+
+submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
+
+write.csv(submit, file = "femalesandundertensbutnothighpayingthirdclass.csv", row.names = FALSE)
