@@ -177,7 +177,7 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 
 write.csv(submit, file = "femalesbutnothighpayingthirdclassandundertens.csv", row.names = FALSE)
 
-## scores 0.77990, which is the same as ignoring children!
+## scores 0.77990, which is the same as ignoring children! 2847 on leaderboard
 
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
 
@@ -190,3 +190,8 @@ test$Survived[test$Pclass==3 & test$Fare >=20] <- 0
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 
 write.csv(submit, file = "femalesandundertensbutnothighpayingthirdclass.csv", row.names = FALSE)
+## Wow! 0.79426, moves me from 2847 to 1407 on leaderboard
+## Something is killing high paying third class passengers including women and children.
+## Perhaps they were trapped somehow?
+
+
