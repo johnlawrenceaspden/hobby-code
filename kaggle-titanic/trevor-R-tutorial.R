@@ -111,12 +111,16 @@ prop.table(table(train$Predict==train$Survived))
 ## The performance on the training set is: 0.78675
 
 
-
+## As everyone knows, "Women and Children First" 
 
 
 summary(train$Age)
    ## Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
    ## 0.42   20.12   28.00   29.70   38.00   80.00     177 
+hist(train$Age)
+
+  
+
 
 train$Child <- 0
 train$Child[train$Age < 10]<-1
@@ -228,3 +232,24 @@ install.packages('rattle', dep=TRUE)
 
 install.packages('rpart.plot')
 install.packages('RColorBrewer')
+
+
+
+
+
+
+
+
+
+
+###################################################
+## Notes
+
+## There is something funny going on with children
+## It looks like if you've a fractional age then you're certain to live
+## Perhaps the exact ages of babies were only recorded afterwards
+library(ggplot2)
+library(ggthemes)
+
+fluff=train[train$Age<2 & !is.na(train$Age),]
+ggplot(fluff, aes(x = Age, fill = factor(Survived)))+geom_bar(stat='count')+scale_x_continuous(breaks=c(1:18)) +theme_few()
