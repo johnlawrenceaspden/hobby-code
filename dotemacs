@@ -882,7 +882,6 @@
   (context 2))
 
 ;; turn off ESS's wretched perversion of the underscore key
-;;(ess-toggle-underscore nil) 
 (add-hook 'ess-mode-hook
           (lambda () 
             (ess-toggle-underscore nil)))
