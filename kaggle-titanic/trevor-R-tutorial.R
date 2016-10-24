@@ -1,5 +1,7 @@
 ## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-1-booting-up/
 
+
+## if we read in the training file with read.csv, all strings will get read as factors
 train <- read.csv("train.csv")
 str(train)
 
@@ -17,28 +19,14 @@ str(train)
 ##  $ Cabin      : Factor w/ 148 levels "","A10","A14",..: 1 83 1 57 1 1 131 1 1 1 ...
 ##  $ Embarked   : Factor w/ 4 levels "","C","Q","S": 4 2 4 4 4 3 4 4 4 2 ...
 
+
+## better to turn this off and then factorize the categorical variables by hand
 train <- read.csv("train.csv", stringsAsFactors=FALSE)
-str(train)
-
-## 'data.frame':	891 obs. of  12 variables:
-##  $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
-##  $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
-##  $ Pclass     : int  3 1 3 1 3 3 1 3 3 2 ...
-##  $ Name       : chr  "Braund, Mr. Owen Harris" "Cumings, Mrs. John Bradley (Florence Briggs Thayer)" "Heikkinen, Miss. Laina" "Futrelle, Mrs. Jacques Heath (Lily May Peel)" ...
-##  $ Sex        : chr  "male" "female" "female" "female" ...
-##  $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
-##  $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
-##  $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
-##  $ Ticket     : chr  "A/5 21171" "PC 17599" "STON/O2. 3101282" "113803" ...
-##  $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
-##  $ Cabin      : chr  "" "C85" "" "C123" ...
-##  $ Embarked   : chr  "S" "C" "S" "S" ...
-
-train$Pclass=factor(train$Pclass)
+train$Pclass=factor(train$Pclass) # not clear whether this should be integer or factor
 train$Sex=factor(train$Sex)
 train$Embarked=factor(train$Embarked)
-
 str(train)
+
 ## 'data.frame':	891 obs. of  12 variables:
 ##  $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
@@ -54,25 +42,24 @@ str(train)
 ##  $ Embarked   : Factor w/ 4 levels "","C","Q","S": 4 2 4 4 4 3 4 4 4 2 ...
 
 
-
+# Of the 891 passengers in our training data, only 342 survived
 table(train$Survived)
 
 ## 0   1 
 ## 549 342 
 
+# Or 38% survived, 62% died
 prop.table(table(train$Survived))
 
 ## 0         1 
 ## 0.6161616 0.3838384 
 
+
+## So our first prediction is that everybody dies
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
-
-## predict that everybody dies
-
 test$Survived <- rep(0,418)
 
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
-
 write.csv(submit, file = "theyallperish.csv", row.names = FALSE)
 
 ## Submission of theyallperish.csv to Kaggle yields a score of 0.62679
@@ -195,3 +182,40 @@ write.csv(submit, file = "femalesandundertensbutnothighpayingthirdclass.csv", ro
 ## Perhaps they were trapped somehow?
 
 
+## Part 3, decision trees
+## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-3-decision-trees/
+
+
+train <- read.csv("train.csv", stringsAsFactors=FALSE)
+train$Pclass=factor(train$Pclass)
+train$Sex=factor(train$Sex)
+train$Embarked=factor(train$Embarked)
+str(train)
+
+ ## $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
+ ## $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
+ ## $ Pclass     : Factor w/ 3 levels "1","2","3": 3 1 3 1 3 3 1 3 3 2 ...
+ ## $ Name       : chr  "Braund, Mr. Owen Harris" "Cumings, Mrs. John Bradley (Florence Briggs Thayer)" "Heikkinen, Miss. Laina" "Futrelle, Mrs. Jacques Heath (Lily May Peel)" ...
+ ## $ Sex        : Factor w/ 2 levels "female","male": 2 1 1 1 2 2 2 2 1 1 ...
+ ## $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
+ ## $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
+ ## $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
+ ## $ Ticket     : chr  "A/5 21171" "PC 17599" "STON/O2. 3101282" "113803" ...
+ ## $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
+ ## $ Cabin      : chr  "" "C85" "" "C123" ...
+ ## $ Embarked   : Factor w/ 4 levels "","C","Q","S": 4 2 4 4 4 3 4 4 4 2 ...
+
+library(rpart)
+
+fit <- rpart(Survived ~ Sex, data=train, method="class")
+plot(fit)
+text(fit)
+
+## Can't get RGtk2, but there's a debian package for it
+## install.packages('RGtk2', dep=TRUE)
+## sudo apt install r-cran-rgtk2
+
+install.packages('rattle', dep=TRUE)
+
+install.packages('rpart.plot')
+install.packages('RColorBrewer')
