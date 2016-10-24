@@ -58,51 +58,60 @@ prop.table(table(train$Survived))
 ## So our first prediction is that everybody dies
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
 test$Survived <- rep(0,418)
-
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 write.csv(submit, file = "theyallperish.csv", row.names = FALSE)
 
 ## Submission of theyallperish.csv to Kaggle yields a score of 0.62679
-## very close to the 0.61616 performance on the test set
+## very close to the 0.61616 performance of this model on the test set
+
+
+
 
 ## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-2-the-gender-class-model/
 
+## In our training set there are 314 females and 577 males
 summary(train$Sex)
+## female   male 
+##    314    577 
 
+## Most of the men died, most of the women lived
 table(train$Sex, train$Survived)
-
 ##          0   1
 ## female  81 233
 ## male   468 109
 
+## 74% of the women, but only 18% of the men
 prop.table(table(train$Sex, train$Survived),1)        
-
 ##                0         1
 ## female 0.2579618 0.7420382
 ## male   0.8110919 0.1889081
 
+
+test <- read.csv("test.csv", stringsAsFactors=FALSE)
 test$Survived <- 0
 test$Survived[test$Sex=='female'] <- 1
+submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
+write.csv(submit, file = "gendermodel.csv", row.names = FALSE)
 
+## Taking account of sex increases our submission score to 0.76555
+
+## paranoid check
 prop.table(table(test$Sex, test$Survived),1)
 ##        0 1
 ## female 0 1
 ## male   1 0
 
 
-submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
-
-write.csv(submit, file = "gendermodel.csv", row.names = FALSE)
-
-## Submission score 0.76555
-## Performance on training set is: 0.78675
-
+## We can also work out our performance on the training set 
 train$Predict <- 0
 train$Predict[train$Sex=='female'] <- 1
-
 prop.table(table(train$Predict==train$Survived))
 ##     FALSE      TRUE 
 ## 0.2132435 0.7867565
+## The performance on the training set is: 0.78675
+
+
+
 
 
 summary(train$Age)
