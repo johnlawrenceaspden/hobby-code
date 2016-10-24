@@ -129,6 +129,7 @@ aggregate(Survived ~ Child + Sex, data=train, FUN=sum)
 aggregate(Survived ~ Child + Sex, data=train, FUN=length)
 
 aggregate(Survived ~ Child + Sex, data=train, FUN=function(x){sum(x)/length(x)})
+aggregate(Survived ~ Child + Sex + Pclass, data=train, FUN=function(x){sum(x)/length(x)})
 
 # Predict that females and under-tens make it
 train$Predict <- 0
@@ -138,17 +139,13 @@ prop.table(table(train$Predict==train$Survived))
 ##     FALSE      TRUE 
 ## 0.2065095 0.7934905 
 
-
+# Predict that females and under-tens make it
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
-
 test$Child[test$Age < 10] <- 1
 test$Survived <- 0
 test$Survived[test$Sex=='female' | test$Child==1] <- 1
-
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
-
 write.csv(submit, file = "femalesandundertens.csv", row.names = FALSE)
-
 ## scores 0.77033
 
 
