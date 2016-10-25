@@ -312,8 +312,10 @@ write.csv(submit, file = "decisiontreeagebinnednofare.csv", row.names = FALSE)
 ## Looked sensible (using embarkation Southhampton instead of high
 ## fare) but only managed 0.73206. Hmmm...
 
-
-
+## Hand-trimming the tree
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2, data=train, method="class", control=rpart.control(minsplit=5,cp=0.01))
+new.fit <- prp(fit,snip=TRUE)$obj
+fancyRpartPlot(new.fit)
 
 
 
