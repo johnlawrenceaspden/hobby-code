@@ -221,10 +221,9 @@ text(fit)
 ## Can't get RGtk2, but there's a debian package for it
 ## install.packages('RGtk2', dep=TRUE)
 ## sudo apt install r-cran-rgtk2
-
-install.packages('rattle')
-install.packages('rpart.plot')
-install.packages('RColorBrewer')
+## install.packages('rattle')
+## install.packages('rpart.plot')
+## install.packages('RColorBrewer')
 
 library(rattle)
 library(rpart.plot)
