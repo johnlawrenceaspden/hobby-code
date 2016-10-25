@@ -280,10 +280,11 @@ Prediction <- predict(fit, test, type = "class")
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 write.csv(submit, file = "decisiontreewithextrafeatures.csv", row.names = FALSE)
 
+# This is the best so far with a score of 0.79904
 
 nrow(test) ##418
-0.79426*nrow(test) ## 332.007
-## I.e. it will correctly predict the fate of 332 of the 418 passengers in test
+0.79904*nrow(test) ## 333.9987
+## I.e. it will correctly predict the fate of 334 of the 418 passengers in test
 
 
 ## Overfitting
