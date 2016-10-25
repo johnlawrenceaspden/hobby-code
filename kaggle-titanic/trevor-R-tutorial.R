@@ -249,6 +249,8 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
 write.csv(submit, file = "firstdecisiontree.csv", row.names = FALSE)
 ## scores 0.79426, which is the same as the best hand model above
 ## femalesandundertensbutnothighpayingthirdclass.csv
+0.79426*nrow(test) ## 332 correct predictions
+
 
 ## Try again with the child and Fare2 bins that were helpful previously
 train <- read.csv("train.csv", stringsAsFactors=FALSE)
@@ -296,13 +298,19 @@ Prediction <- predict(fit, test, type = "class")
 submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
 write.csv(submit, file = "overfit.csv", row.names = FALSE)
 
+## Overfitting collapses score to 0.73206, or 306 correct predictions
+0.73206*nrow(test)
 
 
+## Let's remove the Fare and Age variables from the classifier
+fit <- rpart(Survived ~ Sex + Pclass + SibSp + Parch + Embarked + Child + Fare2, data=train, method="class", control=rpart.control())
+fancyRpartPlot(fit)
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
+write.csv(submit, file = "decisiontreeagebinnednofare.csv", row.names = FALSE)
 
-
-
-
-
+## Looked sensible (using embarkation Southhampton instead of high
+## fare) but only managed 0.73206. Hmmm...
 
 
 
