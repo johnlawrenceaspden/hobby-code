@@ -149,6 +149,7 @@ write.csv(submit, file = "femalesandundertens.csv", row.names = FALSE)
 ## scores 0.77033
 
 
+## Now look at the fares paid, split into 4 bins <10,10-20,20-30,30+
 train$Fare2 <- '30+'
 train$Fare2[train$Fare < 30 & train$Fare >= 20] <- '20-30'
 train$Fare2[train$Fare < 20 & train$Fare >= 10] <- '10-20'
@@ -163,29 +164,25 @@ aggregate(Survived ~ Sex + Pclass + Fare2, data=train, FUN=function(x){sum(x)/le
 
 
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
-
 test$Child[test$Age < 10] <- 1
 test$Survived <- 0
 test$Survived[test$Sex=='female'] <- 1
 test$Survived[test$Pclass==3 & test$Fare >=20] <- 0
 test$Survived[test$Child==1] <- 1
-
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
-
 write.csv(submit, file = "femalesbutnothighpayingthirdclassandundertens.csv", row.names = FALSE)
 
 ## scores 0.77990, which is the same as ignoring children! 2847 on leaderboard
 
+## try it the other way round, say that female and children live but not if they're in
+## the fatal 3rd class and over £20
 test <- read.csv("test.csv", stringsAsFactors=FALSE)
-
 test$Child[test$Age < 10] <- 1
 test$Survived <- 0
 test$Survived[test$Sex=='female'] <- 1
 test$Survived[test$Child==1] <- 1
 test$Survived[test$Pclass==3 & test$Fare >=20] <- 0
-
 submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
-
 write.csv(submit, file = "femalesandundertensbutnothighpayingthirdclass.csv", row.names = FALSE)
 ## Wow! 0.79426, moves me from 2847 to 1407 on leaderboard
 ## Something is killing high paying third class passengers including women and children.
@@ -225,10 +222,92 @@ text(fit)
 ## install.packages('RGtk2', dep=TRUE)
 ## sudo apt install r-cran-rgtk2
 
-install.packages('rattle', dep=TRUE)
-
+install.packages('rattle')
 install.packages('rpart.plot')
 install.packages('RColorBrewer')
+
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+## With these loaded we can make fancy decision tree pictures
+fit <- rpart(Survived ~ Sex, data=train, method="class")
+fancyRpartPlot(fit)
+
+fit <- rpart(Survived ~ Sex + Pclass , data=train, method="class")
+fancyRpartPlot(fit)
+
+
+
+## Let's create a decision tree for all the variables we were given
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked, data=train, method="class")
+fancyRpartPlot(fit)
+
+test <- read.csv("test.csv", stringsAsFactors=FALSE)
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
+write.csv(submit, file = "firstdecisiontree.csv", row.names = FALSE)
+## scores 0.79426, which is the same as the best hand model above
+## femalesandundertensbutnothighpayingthirdclass.csv
+
+## Try again with the child and Fare2 bins that were helpful previously
+train <- read.csv("train.csv", stringsAsFactors=FALSE)
+train$Pclass=factor(train$Pclass)
+train$Sex=factor(train$Sex)
+train$Embarked=factor(train$Embarked)
+train$Child <- 0
+train$Child[train$Age < 10]<-1
+train$Fare2 <- '30+'
+train$Fare2[train$Fare < 30 & train$Fare >= 20] <- '20-30'
+train$Fare2[train$Fare < 20 & train$Fare >= 10] <- '10-20'
+train$Fare2[train$Fare < 10] <- '<10'
+
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2, data=train, method="class")
+fancyRpartPlot(fit)
+
+## Same factors and bins for test
+test <- read.csv("test.csv", stringsAsFactors=FALSE)
+test$Pclass=factor(test$Pclass)
+test$Sex=factor(test$Sex)
+test$Embarked=factor(test$Embarked)
+test$Child <- 0
+test$Child[test$Age < 10]<-1
+test$Fare2 <- '30+'
+test$Fare2[test$Fare < 30 & test$Fare >= 20] <- '20-30'
+test$Fare2[test$Fare < 20 & test$Fare >= 10] <- '10-20'
+test$Fare2[test$Fare < 10] <- '<10'
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+write.csv(submit, file = "decisiontreewithextrafeatures.csv", row.names = FALSE)
+
+
+nrow(test) ##418
+0.79426*nrow(test) ## 332.007
+## I.e. it will correctly predict the fate of 332 of the 418 passengers in test
+
+
+## Overfitting
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2, data=train, method="class", control=rpart.control(minsplit=2,cp=0))
+fancyRpartPlot(fit)
+## A very large tree indeed
+
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction)
+write.csv(submit, file = "overfit.csv", row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -250,3 +329,12 @@ library(ggthemes)
 
 fluff=train[train$Age<2 & !is.na(train$Age),]
 ggplot(fluff, aes(x = Age, fill = factor(Survived)))+geom_bar(stat='count')+scale_x_continuous(breaks=c(1:18)) +theme_few()
+
+## Some handy bins for the continuous variables
+train$Child <- 0
+train$Child[train$Age < 10]<-1
+
+train$Fare2 <- '30+'
+train$Fare2[train$Fare < 30 & train$Fare >= 20] <- '20-30'
+train$Fare2[train$Fare < 20 & train$Fare >= 10] <- '10-20'
+train$Fare2[train$Fare < 10] <- '<10'
