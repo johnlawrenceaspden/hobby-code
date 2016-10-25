@@ -7,7 +7,7 @@ library(rpart.plot)
 library(RColorBrewer)
 
 ## Try again with the child and Fare2 bins that were helpful previously
-train <- read.csv("train.csv", stringsAsFactors=FALSE)
+train <- read.csv("../train.csv", stringsAsFactors=FALSE)
 train$Pclass=factor(train$Pclass)
 train$Sex=factor(train$Sex)
 train$Embarked=factor(train$Embarked)
@@ -22,7 +22,7 @@ fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + C
 fancyRpartPlot(fit)
 
 ## Same factors and bins for test
-test <- read.csv("test.csv", stringsAsFactors=FALSE)
+test <- read.csv("../test.csv", stringsAsFactors=FALSE)
 test$Pclass=factor(test$Pclass)
 test$Sex=factor(test$Sex)
 test$Embarked=factor(test$Embarked)
