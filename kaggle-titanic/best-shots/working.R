@@ -40,6 +40,15 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 ## Make a total Family Size variable
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
+## Fill in missing age variables
+Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+                data=combi[!is.na(combi$Age),],
+                method="anova")
+
+fancyRpartPlot(Agefit)
+
+combi$Agefit<-combi$Age
+combi$Agefit[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
 
 
 combi$Pclass=factor(combi$Pclass)
@@ -56,6 +65,7 @@ test <- combi[892:1309,]
 ## Fit a Decision Tree using rpart
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
+## Filling in missing Age values hurts us
 fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
 fancyRpartPlot(fit)
 
@@ -65,7 +75,7 @@ write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
+fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Agefit + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
