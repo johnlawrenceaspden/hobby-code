@@ -207,6 +207,9 @@ write.csv(submit,file="ciforest.csv", row.names=FALSE)
 ## Changed it back and resubmitted, still didn't change score, so 1304 is probably in the
 ## private leaderboard data?
 
+## If we restrict the cforest fit to using FamilyID2 for a fairer comparison with the randomForest, then it scores 0.79904, or 334 correct predictions, so it's getting most (but not all) of its improvement from being able to use a factor with more levels.
+0.79904*nrow(test)
+
 
 
 
