@@ -56,6 +56,18 @@ table(combi$FamilyID)
 
 combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
 
+## Here we kill off the families with 4 members who only have 2 members, etc.
+## I think this is a terrible mistake. The others are in the private data kept secret by Kaggle, probably.
+famIDs <- data.frame(table(combi$FamilyID))
+
+famIDs <- famIDs[famIDs$Freq <= 2,]
+
+combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
+
+## It's crucial, I think, to turn this into a factor before splitting, so that the model can
+## be trained properly
+combi$FamilyID <- factor(combi$FamilyID)
+
 train <- combi[1:891,]
 test <- combi[892:1309,]
 
