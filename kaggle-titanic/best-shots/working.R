@@ -83,23 +83,22 @@ test <- combi[892:1309,]
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
 ## Filling in missing Age values hurts us
-fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
-fancyRpartPlot(fit)
+tree_fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
+fancyRpartPlot(tree_fit)
 
-Prediction <- predict(fit, test, type = "class")
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
+tree_Prediction <- predict(tree_fit, test, type = "class")
+tree_submit <- data.frame(PassengerId = test$PassengerId, Survived=tree_Prediction)
+write.csv(tree_submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title,
+forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
 
-varImpPlot(fit)
+varImpPlot(forest_fit)
 
-Prediction <- predict(fit,test)
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-
-write.csv(submit,file="working-randomforest.csv", row.names=FALSE)
+forest_Prediction <- predict(forest_fit,test)
+forest_submit <- data.frame(PassengerId = test$PassengerId, Survived=forest_Prediction)
+write.csv(forest_submit,file="working-randomforest.csv", row.names=FALSE)
