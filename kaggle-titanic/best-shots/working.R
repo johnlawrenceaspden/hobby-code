@@ -54,9 +54,9 @@ test <- combi[892:1309,]
 
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
-fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + Ticket, data=train, method="class")
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
 fancyRpartPlot(fit)
 
 Prediction <- predict(fit, test, type = "class")
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-write.csv(submit, file = "0.80383-decisiontreewithextrafeatures.csv", row.names = FALSE)
+write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
