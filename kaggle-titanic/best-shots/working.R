@@ -69,6 +69,7 @@ combi$Fare2_filled[combi$Fare_filled < 10] <- '<10'
 combi$Pclass=factor(combi$Pclass)
 combi$Sex=factor(combi$Sex)
 combi$Embarked=factor(combi$Embarked)
+combi$Embarked_filled=factor(combi$Embarked_filled)
 combi$Child <- as.factor(combi$Child)
 combi$Fare2 <- as.factor(combi$Fare2)
 combi$Title <- factor(combi$Title)
@@ -90,7 +91,7 @@ write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp,
+fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
