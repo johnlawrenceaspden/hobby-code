@@ -90,7 +90,7 @@ write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-fit <- randomForest(as.factor(Survived) ~ Sex + Pclass,
+fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
