@@ -191,6 +191,11 @@ write.csv(submit,file="ciforest.csv", row.names=FALSE)
 # 0.81340, or 340 out of 418
 0.81340*nrow(test)
 
+## Err, weirdly when I re-ran this it produced a different set of predictions.
+## Namely 1304 had originally been predicted as 1, and was changed to 0.
+## This didn't change the Kaggle score, which is still 0.81340. Waah.
+## Changed it back and resubmitted, still didn't change score, so 1304 is probably in the
+## private leaderboard data?
 
 
 
