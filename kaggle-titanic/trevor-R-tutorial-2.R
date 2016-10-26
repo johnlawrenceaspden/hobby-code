@@ -94,3 +94,81 @@ Prediction <- predict(fit, test, type = "class")
 
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 write.csv(submit, file = "featureengineeringanddecisiontree.csv", row.names = FALSE)
+
+# Scores 0.79426, or 332 correct predictions
+0.79426*nrow(test)
+
+
+## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-5-random-forests/
+
+# random sampling with replacement
+sample(1:10, replace = TRUE)
+
+summary(combi$Age)
+
+Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+                data=combi[!is.na(combi$Age),],
+                method="anova")
+
+fancyRpartPlot(Agefit)
+
+combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+
+summary(combi$Age)
+hist(combi$Age)
+
+summary(combi)
+
+summary(combi$Embarked)
+
+which(combi$Embarked=='')
+combi$Embarked[c(62,830)] = 'S'
+
+summary(combi$Embarked)
+str(combi$Embarked)
+
+combi$Embarked <- factor(combi$Embarked)
+
+summary(combi$Embarked)
+str(combi$Embarked)
+
+summary(combi$Fare)
+
+which(is.na(combi$Fare))
+
+combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
+
+## reduce family factor since random forests can't deal with more than 32 levels
+
+combi$FamilyID2 <- combi$FamilyID
+combi$FamilyID2 <- as.character(combi$FamilyID2)
+combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
+combi$FamilyID2 <- factor(combi$FamilyID2)
+
+str(combi$FamilyID2)
+
+## install.packages('randomForest')
+## sudo apt install r-cran-randomforest
+library(randomForest)
+
+train <- combi[1:891,]
+test <- combi[892:1309,]
+
+
+set.seed(415)
+
+fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID2,
+                    data=train,
+                    importance=TRUE,
+                    ntree=2000)
+                   
+
+varImpPlot(fit)
+
+Prediction <- predict(fit,test)
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+
+write.csv(submit,file="firstforest.csv", row.names=FALSE)
+
+
+
