@@ -26,7 +26,8 @@ combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]
 combi$Title <- sub(' ', '', combi$Title)
 
 ## combine Madame and Mademoiselle to Mlle 
-combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
+combi$Title[combi$Title == 'Mme'] <- 'Mrs'
+combi$Title[combi$Title == 'Mlle'] <- 'Miss'
 
 
 ## Male nobility to Sir
