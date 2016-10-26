@@ -188,6 +188,10 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 
 write.csv(submit,file="ciforest.csv", row.names=FALSE)
 
- 
+# 0.81340, or 340 out of 418
+0.81340*nrow(test)
+
+
+
 
 
