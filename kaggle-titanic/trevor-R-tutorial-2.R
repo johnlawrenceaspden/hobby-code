@@ -160,16 +160,16 @@ library(randomForest)
 train <- combi[1:891,]
 test <- combi[892:1309,]
 
+
+
+
+
 cat("ABOUT TO SEGFAULT\n")
-
-
 set.seed(415)
-
 fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID2,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
-                   
 cat("POST-SEGFAULT\n")
 
 varImpPlot(fit)
