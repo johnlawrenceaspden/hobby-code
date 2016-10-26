@@ -31,10 +31,10 @@ combi$Title[combi$Title == 'Mlle'] <- 'Miss'
 
 
 ## Male nobility to Sir
-combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
+combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
 
 ## Female Nobility to Lady
-combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
+combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
 combi$Title <- factor(combi$Title)
 
