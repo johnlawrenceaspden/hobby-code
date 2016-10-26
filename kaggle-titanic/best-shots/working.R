@@ -5,7 +5,7 @@ library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
 library(randomForest)
-
+library(party)
 
 train <- read.csv("../train.csv", stringsAsFactors=FALSE)
 test <- read.csv("../test.csv", stringsAsFactors=FALSE)
@@ -102,3 +102,17 @@ varImpPlot(forest_fit)
 forest_Prediction <- predict(forest_fit,test)
 forest_submit <- data.frame(PassengerId = test$PassengerId, Survived=forest_Prediction)
 write.csv(forest_submit,file="working-randomforest.csv", row.names=FALSE)
+
+
+## Trevor's best prediction was with party's cforests, using
+## Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID
+
+## Fit a forest of conditional inference trees using party
+set.seed(415)
+cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
+               data=train,
+               controls=cforest_unbiased(ntree=2000, mtry=3))
+
+cforest_Prediction <- predict(cforest_fit,test, OOB=TRUE,type="response")
+cforest_submit <- data.frame(PassengerId = test$PassengerId, Survived=cforest_Prediction)
+write.csv(cforest_submit,file="ciforest.csv", row.names=FALSE)
