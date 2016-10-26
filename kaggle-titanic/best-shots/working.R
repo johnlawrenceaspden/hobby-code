@@ -40,13 +40,13 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
 
-## changing various columns to factors doesn't seem to make any difference
-## combi$Pclass=factor(combi$Pclass)
-## combi$Sex=factor(combi$Sex)
-## combi$Embarked=factor(combi$Embarked)
-## combi$Child <- as.factor(combi$Child)
-## combi$Fare2 <- as.factor(combi$Fare2)
-## combi$Title <- factor(combi$Title)
+
+combi$Pclass=factor(combi$Pclass)
+combi$Sex=factor(combi$Sex)
+combi$Embarked=factor(combi$Embarked)
+combi$Child <- as.factor(combi$Child)
+combi$Fare2 <- as.factor(combi$Fare2)
+combi$Title <- factor(combi$Title)
 combi$Ticket <- factor(combi$Ticket)
 
 train <- combi[1:891,]
