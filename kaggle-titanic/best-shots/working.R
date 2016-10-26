@@ -4,6 +4,7 @@ library(rpart)
 library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
+library(randomForest)
 
 
 train <- read.csv("../train.csv", stringsAsFactors=FALSE)
@@ -52,6 +53,7 @@ combi$Ticket <- factor(combi$Ticket)
 train <- combi[1:891,]
 test <- combi[892:1309,]
 
+## Fit a Decision Tree using rpart
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
 fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
@@ -60,3 +62,17 @@ fancyRpartPlot(fit)
 Prediction <- predict(fit, test, type = "class")
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
+
+## Fit a Random Forest using randomForest
+set.seed(415)
+fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
+                    data=train,
+                    importance=TRUE,
+                    ntree=2000)
+
+varImpPlot(fit)
+
+Prediction <- predict(fit,test)
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+
+write.csv(submit,file="working-randomforest.csv", row.names=FALSE)
