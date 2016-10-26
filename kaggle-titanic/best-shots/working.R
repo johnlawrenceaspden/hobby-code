@@ -40,15 +40,30 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 ## Make a total Family Size variable
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
-## Fill in missing age variables
-Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
+## Fill in missing variables as in Trevor's tutorial, but making extra _filled variables
+Age_filled <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
                 data=combi[!is.na(combi$Age),],
                 method="anova")
 
-fancyRpartPlot(Agefit)
+fancyRpartPlot(Age_filled)
 
-combi$Agefit<-combi$Age
-combi$Agefit[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+combi$Age_filled<-combi$Age
+combi$Age_filled[is.na(combi$Age)] <- predict(Age_filled, combi[is.na(combi$Age),])
+
+
+which(combi$Embarked=='')
+combi$Embarked_filled<-combi$Embarked
+combi$Embarked_filled[c(62,830)] = 'S'
+
+which(is.na(combi$Fare))
+combi$Fare_filled <- combi$Fare
+combi$Fare_filled[1044] <- median(combi$Fare,na.rm=TRUE)
+
+## Bin the fares
+combi$Fare2_filled <- '30+'
+combi$Fare2_filled[combi$Fare_filled < 30 & combi$Fare_filled >= 20] <- '20-30'
+combi$Fare2_filled[combi$Fare_filled < 20 & combi$Fare_filled >= 10] <- '10-20'
+combi$Fare2_filled[combi$Fare_filled < 10] <- '<10'
 
 
 combi$Pclass=factor(combi$Pclass)
@@ -75,7 +90,7 @@ write.csv(submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Agefit + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
+fit <- randomForest(as.factor(Survived) ~ Sex + Pclass,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
