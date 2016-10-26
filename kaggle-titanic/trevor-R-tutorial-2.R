@@ -1,5 +1,9 @@
 #!/usr/bin/r
 
+## Irritatingly although this file runs perfectly when loaded into
+## EMACS with C-c C-l (Load File), it segfaults in the first random
+## forest calculation when run from the command line
+
 ## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-4-feature-engineering/
 library(rpart)
 library(rattle)
@@ -147,12 +151,16 @@ combi$FamilyID2 <- factor(combi$FamilyID2)
 
 str(combi$FamilyID2)
 
+
+
 ## install.packages('randomForest')
 ## sudo apt install r-cran-randomforest
 library(randomForest)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
+
+cat("ABOUT TO SEGFAULT\n")
 
 
 set.seed(415)
@@ -162,6 +170,7 @@ fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + F
                     importance=TRUE,
                     ntree=2000)
                    
+cat("POST-SEGFAULT\n")
 
 varImpPlot(fit)
 
@@ -172,6 +181,7 @@ write.csv(submit,file="firstforest.csv", row.names=FALSE)
 
 # 077512, or 324 correct predictions out of 418
 0.77512*nrow(test)
+
 
 ##install.packages('party')
 library(party)
