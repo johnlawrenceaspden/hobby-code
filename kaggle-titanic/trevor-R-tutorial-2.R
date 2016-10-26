@@ -170,5 +170,24 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 
 write.csv(submit,file="firstforest.csv", row.names=FALSE)
 
+# 077512, or 324 correct predictions out of 418
+0.77512*nrow(test)
+
+##install.packages('party')
+library(party)
+
+
+set.seed(415)
+
+fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
+               data=train,
+               controls=cforest_unbiased(ntree=2000, mtry=3))
+
+Prediction <- predict(fit,test, OOB=TRUE,type="response")
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+
+write.csv(submit,file="ciforest.csv", row.names=FALSE)
+
+ 
 
 
