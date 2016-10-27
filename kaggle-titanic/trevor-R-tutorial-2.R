@@ -15,6 +15,12 @@ combi<-rbind(train,test)
 # de-factorize the names 
 combi$Name <- as.character(combi$Name)
 
+
+######################################################################
+## Feature Engineering
+######################################################################
+
+
 # Pull out the title parts of the names for a separate variable
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 combi$Title <- sub(' ', '', combi$Title)
@@ -35,7 +41,6 @@ combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
 
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
-## I think this is a terrible mistake. The others are in the private data kept secret by Kaggle, probably.
 famIDs <- data.frame(table(combi$FamilyID))
 famIDs <- famIDs[famIDs$Freq <= 2,]
 combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
@@ -46,8 +51,13 @@ combi$FamilyID <- factor(combi$FamilyID)
 
 
 
+######################################################################
+## Filling in Missing Data
+######################################################################
 
-## Some data imputation that's necessary for the Random Forest algorithm
+## Some data imputation that's necessary for the standard Random Forest algorithm
+## But not for the cforest that we're actually using
+## removing this section drops us to 0.80861, not sure why
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
                 data=combi[!is.na(combi$Age),],
@@ -68,18 +78,14 @@ combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
 
 
-
-
+######################################################################
+## Split Data Into Test and Training Sets
+######################################################################
 
 write.csv(combi,file="combi.csv", row.names=FALSE)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
-
-
-
-
-
 
 
 ##install.packages('party')
