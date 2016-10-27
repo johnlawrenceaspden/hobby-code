@@ -86,6 +86,12 @@ combi$Fare2_filled[combi$Fare_filled < 30 & combi$Fare_filled >= 20] <- '20-30'
 combi$Fare2_filled[combi$Fare_filled < 20 & combi$Fare_filled >= 10] <- '10-20'
 combi$Fare2_filled[combi$Fare_filled < 10] <- '<10'
 
+# Reduce the number of factors in familyID since Random Forest can't deal with it
+combi$FamilyID2 <- combi$FamilyID
+combi$FamilyID2 <- as.character(combi$FamilyID2)
+combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
+
+
 ######################################################################
 ## Factorize and Split the Data Into Test and Training Sets
 ######################################################################
@@ -102,6 +108,7 @@ combi$Fare2_filled <- as.factor(combi$Fare2_filled)
 combi$Title <- factor(combi$Title)
 combi$Ticket <- factor(combi$Ticket)
 combi$FamilyID <- factor(combi$FamilyID)
+combi$FamilyID2 <- factor(combi$FamilyID2)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
@@ -125,12 +132,10 @@ tree_Prediction <- predict(tree_fit, test, type = "class")
 tree_submit <- data.frame(PassengerId = test$PassengerId, Survived=tree_Prediction)
 write.csv(tree_submit, file = "working-rpart.csv", row.names = FALSE)
 
-## scores 0.80303 335.6665? out of 418
-0.80303*nrow(test)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title + FamilyID,
+forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title + FamilyID2,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
