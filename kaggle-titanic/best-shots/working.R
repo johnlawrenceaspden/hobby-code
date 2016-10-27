@@ -115,4 +115,4 @@ cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch 
 
 cforest_Prediction <- predict(cforest_fit,test, OOB=TRUE,type="response")
 cforest_submit <- data.frame(PassengerId = test$PassengerId, Survived=cforest_Prediction)
-write.csv(cforest_submit,file="ciforest.csv", row.names=FALSE)
+write.csv(cforest_submit,file="working-ciforest.csv", row.names=FALSE)
