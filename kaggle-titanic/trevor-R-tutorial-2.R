@@ -110,7 +110,7 @@ library(party)
 
 set.seed(415)
 
-cat("FITTING\n")
+cat("FITTING (takes 1 minute 50 seconds)\n")
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
                data=train,
                controls=cforest_unbiased(ntree=2000, mtry=3))
