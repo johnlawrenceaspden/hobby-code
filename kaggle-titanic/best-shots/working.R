@@ -43,6 +43,11 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 ## Make a total Family Size variable
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
+## Get the Surnames out of the Names
+combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
+
+combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
+
 
 ######################################################################
 ## Missing Data Fiddling
@@ -89,6 +94,7 @@ combi$Fare2 <- as.factor(combi$Fare2)
 combi$Fare2_filled <- as.factor(combi$Fare2_filled)
 combi$Title <- factor(combi$Title)
 combi$Ticket <- factor(combi$Ticket)
+combi$FamilyID <- factor(combi$FamilyID)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
