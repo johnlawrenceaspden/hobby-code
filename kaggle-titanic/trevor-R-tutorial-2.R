@@ -10,8 +10,6 @@ library(RColorBrewer)
 train <- read.csv("train.csv")
 test <- read.csv("test.csv")
 
-train$Name[1]
-test$Name[1]
 
 # Create the missing Survived column in the test data
 test$Survived <- NA
@@ -23,31 +21,19 @@ combi<-rbind(train,test)
 # de-factorize the names 
 combi$Name <- as.character(combi$Name)
 
-combi$Name[1]
-
 strsplit(combi$Name[1], split='[,.]')[[1]][2]
 
 # Pull out the title parts of the names for a separate variable
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 combi$Title <- sub(' ', '', combi$Title)
 
-table(combi$Title)
-table(combi$Title,combi$Age)
 
 ## combine Madame and Mademoiselle to Mlle 
 combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
-
-## Male nobility to Sir
 combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
-
-## Female Nobility to Lady
 combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
 
-## Hmm, Don and Dona are Mr and Mrs or Sir and Lady?, and Jonkheer is a Dutch male noble,Mme and Mlle are Mrs and Miss, Ms is ?
-table(combi$Title)
 
-## Back to Factor
-combi$Title <- factor(combi$Title)
 
 
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
@@ -76,36 +62,14 @@ combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
 
 table(combi$FamilyID)
 
-## It's crucial, I think, to turn this into a factor before splitting, so that the model can
-## be trained properly
+## Back to Factor
+combi$Title <- factor(combi$Title)
 combi$FamilyID <- factor(combi$FamilyID)
 
-train <- combi[1:891,]
-test <- combi[892:1309,]
-
-fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
-               data=train, 
-               method="class")
-
-fancyRpartPlot(fit)
 
 
-Prediction <- predict(fit, test, type = "class")
 
-
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-write.csv(submit, file = "featureengineeringanddecisiontree.csv", row.names = FALSE)
-
-# Scores 0.79426, or 332 correct predictions
-0.79426*nrow(test)
-
-
-## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-5-random-forests/
-
-# random sampling with replacement
-sample(1:10, replace = TRUE)
-
-summary(combi$Age)
+## Some data imputation that's necessary for the Random Forest algorithm
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
                 data=combi[!is.na(combi$Age),],
@@ -115,33 +79,21 @@ fancyRpartPlot(Agefit)
 
 combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
 
-summary(combi$Age)
-hist(combi$Age)
-
-summary(combi)
-
-summary(combi$Embarked)
 
 which(combi$Embarked=='')
 combi$Embarked[c(62,830)] = 'S'
 
-summary(combi$Embarked)
-str(combi$Embarked)
-
 combi$Embarked <- factor(combi$Embarked)
-
-summary(combi$Embarked)
-str(combi$Embarked)
-
-summary(combi$Fare)
-
-which(is.na(combi$Fare))
 
 combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
 
 
 
+
+
+
+write.csv(combi,file="combi.csv", row.names=FALSE)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
