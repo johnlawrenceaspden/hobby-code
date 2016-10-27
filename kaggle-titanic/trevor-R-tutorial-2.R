@@ -27,9 +27,10 @@ combi$Title <- sub(' ', '', combi$Title)
 
 
 ## combine Madame and Mademoiselle to Mlle 
-combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
-combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
-combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
+combi$Title[combi$Title %in% c('Mme')] <- 'Mrs'
+combi$Title[combi$Title %in% c('Mlle')] <- 'Miss'
+combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
+combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
 
 
