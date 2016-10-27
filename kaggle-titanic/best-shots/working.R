@@ -111,7 +111,7 @@ test <- combi[892:1309,]
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
 ## Filling in missing Age values hurts us
-tree_fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
+tree_fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + FamilyID, data=train, method="class")
 fancyRpartPlot(tree_fit)
 
 tree_Prediction <- predict(tree_fit, test, type = "class")
@@ -141,7 +141,7 @@ write.csv(forest_submit,file="working-randomforest.csv", row.names=FALSE)
 
 ## Fit a forest of conditional inference trees using party
 set.seed(415)
-cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title,
+cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + FamilyID,
                data=train,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 
