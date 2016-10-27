@@ -1,8 +1,5 @@
 #!/usr/bin/r
 
-## Irritatingly although this file runs perfectly when loaded into
-## EMACS with C-c C-l (Load File), it segfaults in the first random
-## forest calculation when run from the command line
 
 ## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-4-feature-engineering/
 library(rpart)
@@ -142,14 +139,6 @@ which(is.na(combi$Fare))
 
 combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
-## reduce family factor since random forests can't deal with more than 32 levels
-
-combi$FamilyID2 <- combi$FamilyID
-combi$FamilyID2 <- as.character(combi$FamilyID2)
-combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
-combi$FamilyID2 <- factor(combi$FamilyID2)
-
-str(combi$FamilyID2)
 
 
 
@@ -169,10 +158,12 @@ library(party)
 
 set.seed(415)
 
+cat("FITTING\n")
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
                data=train,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 
+cat("PREDICTING\n")
 Prediction <- predict(fit,test, OOB=TRUE,type="response")
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 
