@@ -9,19 +9,11 @@ library(RColorBrewer)
 
 train <- read.csv("train.csv")
 test <- read.csv("test.csv")
-
-
-# Create the missing Survived column in the test data
 test$Survived <- NA
-
-# Combine the two sets into one set so we can do the same processing on each
-# and so that we get factors with the same levels in both sets
 combi<-rbind(train,test)
 
 # de-factorize the names 
 combi$Name <- as.character(combi$Name)
-
-strsplit(combi$Name[1], split='[,.]')[[1]][2]
 
 # Pull out the title parts of the names for a separate variable
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
@@ -35,32 +27,18 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- '
 
 
 
-
+## Create FamilyID from surname and family size, all less than two are 'Small'
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
-
 combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
-
-table(combi$Surname)
-
 combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
-
-table(combi$FamilyID)
-
 combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
 
-table(combi$FamilyID)
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
 ## I think this is a terrible mistake. The others are in the private data kept secret by Kaggle, probably.
 famIDs <- data.frame(table(combi$FamilyID))
-
-table(famIDs)
-
 famIDs <- famIDs[famIDs$Freq <= 2,]
-
 combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
-
-table(combi$FamilyID)
 
 ## Back to Factor
 combi$Title <- factor(combi$Title)
