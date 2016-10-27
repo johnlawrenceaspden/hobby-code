@@ -90,6 +90,9 @@ tree_Prediction <- predict(tree_fit, test, type = "class")
 tree_submit <- data.frame(PassengerId = test$PassengerId, Survived=tree_Prediction)
 write.csv(tree_submit, file = "working-rpart.csv", row.names = FALSE)
 
+## scores 0.80303 335.6665? out of 418
+0.80303*nrow(test)
+
 ## Fit a Random Forest using randomForest
 set.seed(415)
 forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title,
@@ -103,6 +106,7 @@ forest_Prediction <- predict(forest_fit,test)
 forest_submit <- data.frame(PassengerId = test$PassengerId, Survived=forest_Prediction)
 write.csv(forest_submit,file="working-randomforest.csv", row.names=FALSE)
 
+## scores 0.77990, 326 out of 418
 
 ## Trevor's best prediction was with party's cforests, using
 ## Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID
@@ -116,3 +120,5 @@ cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch 
 cforest_Prediction <- predict(cforest_fit,test, OOB=TRUE,type="response")
 cforest_submit <- data.frame(PassengerId = test$PassengerId, Survived=cforest_Prediction)
 write.csv(cforest_submit,file="working-ciforest.csv", row.names=FALSE)
+
+## scores 0.77512, 324 out of 418
