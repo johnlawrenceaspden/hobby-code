@@ -12,6 +12,10 @@ test <- read.csv("../test.csv", stringsAsFactors=FALSE)
 test$Survived <- NA
 combi<-rbind(train,test)
 
+######################################################################
+## Feature Engineering
+######################################################################
+
 ## Children are those under 10
 combi$Child <- 0
 combi$Child[combi$Age < 10]<-1
@@ -30,7 +34,6 @@ combi$Title <- sub(' ', '', combi$Title)
 combi$Title[combi$Title == 'Mme'] <- 'Mrs'
 combi$Title[combi$Title == 'Mlle'] <- 'Miss'
 
-
 ## Male nobility to Sir
 combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
 
@@ -39,6 +42,12 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
 ## Make a total Family Size variable
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
+
+
+######################################################################
+## Missing Data Fiddling
+######################################################################
+
 
 ## Fill in missing variables as in Trevor's tutorial, but making extra _filled variables
 Age_filled <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
@@ -65,6 +74,11 @@ combi$Fare2_filled[combi$Fare_filled < 30 & combi$Fare_filled >= 20] <- '20-30'
 combi$Fare2_filled[combi$Fare_filled < 20 & combi$Fare_filled >= 10] <- '10-20'
 combi$Fare2_filled[combi$Fare_filled < 10] <- '<10'
 
+######################################################################
+## Factorize and Split the Data Into Test and Training Sets
+######################################################################
+
+
 
 combi$Pclass=factor(combi$Pclass)
 combi$Sex=factor(combi$Sex)
@@ -78,6 +92,14 @@ combi$Ticket <- factor(combi$Ticket)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
+
+
+
+######################################################################
+## Model Fitting and Prediction
+######################################################################
+
+
 
 ## Fit a Decision Tree using rpart
 ## adding Family Size actually hurts us
