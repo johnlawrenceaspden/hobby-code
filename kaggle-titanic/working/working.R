@@ -48,6 +48,13 @@ combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[
 
 combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
 
+combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
+
+famIDs <- data.frame(table(combi$FamilyID))
+
+famIDs <- famIDs[famIDs$Freq <= 2,]
+
+combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
 
 ######################################################################
 ## Missing Data Fiddling
@@ -111,7 +118,7 @@ test <- combi[892:1309,]
 ## adding Family Size actually hurts us
 ## adding Ticket destroys it!
 ## Filling in missing Age values hurts us
-tree_fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + FamilyID, data=train, method="class")
+tree_fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + FamilySize + FamilyID, data=train, method="class")
 fancyRpartPlot(tree_fit)
 
 tree_Prediction <- predict(tree_fit, test, type = "class")
@@ -123,7 +130,7 @@ write.csv(tree_submit, file = "working-rpart.csv", row.names = FALSE)
 
 ## Fit a Random Forest using randomForest
 set.seed(415)
-forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title,
+forest_fit <- randomForest(as.factor(Survived) ~ Sex + Pclass + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Child + Fare2_filled + Title + FamilyID,
                     data=train,
                     importance=TRUE,
                     ntree=2000)
@@ -136,12 +143,14 @@ write.csv(forest_submit,file="working-randomforest.csv", row.names=FALSE)
 
 ## scores 0.77990, 326 out of 418
 
-## Trevor's best prediction was with party's cforests, using
-## Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID
+## Trevor's best prediction was with party's cforests, using set_seed(415) and 
+## as.factor(Survived) ~ Pclass + Sex + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Title + FamilySize + FamilyID
+
+## Trevor got 81340 but I get 80861 with this code
 
 ## Fit a forest of conditional inference trees using party
 set.seed(415)
-cforest_fit <- cforest(as.factor(Survived) ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title + FamilyID,
+cforest_fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age_filled + SibSp + Parch + Fare_filled + Embarked_filled + Title + FamilySize + FamilyID,
                data=train,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 
@@ -149,4 +158,4 @@ cforest_Prediction <- predict(cforest_fit,test, OOB=TRUE,type="response")
 cforest_submit <- data.frame(PassengerId = test$PassengerId, Survived=cforest_Prediction)
 write.csv(cforest_submit,file="working-ciforest.csv", row.names=FALSE)
 
-## scores 0.77512, 324 out of 418
+
