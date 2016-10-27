@@ -181,14 +181,6 @@ write.csv(submit,file="ciforest.csv", row.names=FALSE)
 # 0.81340, or 340 out of 418
 0.81340*nrow(test)
 
-## Err, weirdly when I re-ran this it produced a different set of predictions.
-## Namely 1304 had originally been predicted as 1, and was changed to 0.
-## This didn't change the Kaggle score, which is still 0.81340. Waah.
-## Changed it back and resubmitted, still didn't change score, so 1304 is probably in the
-## private leaderboard data?
-
-## If we restrict the cforest fit to using FamilyID2 for a fairer comparison with the randomForest, then it scores 0.79904, or 334 correct predictions, so it's getting most (but not all) of its improvement from being able to use a factor with more levels.
-0.79904*nrow(test)
 
 
 
