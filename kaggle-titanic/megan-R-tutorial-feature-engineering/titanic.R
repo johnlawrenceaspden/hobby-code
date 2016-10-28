@@ -248,7 +248,8 @@ solution <- data.frame(PassengerID = test$PassengerId, Survived = prediction)
 # Write the solution to file
 write.csv(solution, file = 'rf_mod_Solution.csv', row.names = F)
 
-
+# Solution scores 0.80383, for 336 out of 418 predictions
+nrow(test)*0.80383
 
 
 
