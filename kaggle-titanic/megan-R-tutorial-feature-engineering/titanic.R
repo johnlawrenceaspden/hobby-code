@@ -1,3 +1,5 @@
+#!/usr/bin/r
+
 ## Megan Risdal's kaggle tutorial on the titanic dataset
 ## https://www.kaggle.com/mrisdal/titanic/exploring-survival-on-the-titanic/notebook
 
@@ -26,8 +28,6 @@ library('VIM')
 ## read in training and test data
 train <- read.csv('../train.csv', stringsAsFactors = F)
 test  <- read.csv('../test.csv', stringsAsFactors = F)
-train_size <- nrow(train)
-test_size <- nrow(test)
 
 ## bind them and process them together, then split apart again
 full <- bind_rows(train, test)
@@ -39,15 +39,20 @@ full$Title <- gsub('(.*, )|(\\..*)', '', full$Name)
 # Show title counts by sex
 table(full$Sex, full$Title)
 
-# Titles with very low cell counts to be combined to "rare" level
-rare_title <- c('Dona', 'Lady', 'the Countess','Capt', 'Col', 'Don', 
-                'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer')
 
-# Also reassign mlle, ms, and mme accordingly
+# My title improvements reduce accuracy to 0.77990, boo!
 full$Title[full$Title == 'Mlle']        <- 'Miss' 
-full$Title[full$Title == 'Ms']          <- 'Miss'
+full$Title[full$Title == 'Ms']          <- 'Miss' 
 full$Title[full$Title == 'Mme']         <- 'Mrs' 
-full$Title[full$Title %in% rare_title]  <- 'Rare Title'
+full$Title[full$Title %in% c('Dona', 'Lady', 'the Countess')]  <- 'Lady'
+full$Title[full$Title %in% c('Capt', 'Col', 'Don', 'Major', 'Sir', 'Jonkheer')]  <- 'Lord'
+## Being a doctor doesn't seem to have made much difference
+full$Title[full$Title=='Dr' & full$Sex=='female'] <- 'Mrs'
+full$Title[full$Title=='Dr' & full$Sex=='male'] <- 'Mr'
+## But being a 'Rev' appears to have been fatal, so leave that
+
+mosaicplot(table(full$Title,full$Survived), main='Survival by Title', shade=TRUE)
+
 
 # Show title counts by sex again
 table(full$Sex, full$Title)
@@ -87,7 +92,20 @@ full$Cabin[1:28]
 strsplit(full$Cabin[2], NULL)[[1]]
 
 # Create a Deck variable. Get passenger deck A - F:
-full$Deck<-factor(sapply(full$Cabin, function(x) strsplit(x, NULL)[[1]][1]))
+full$Deck<-(sapply(full$Cabin, function(x) strsplit(x, NULL)[[1]][1]))
+full$Deck[is.na(full$Deck)]<-'Unknown'
+full$Deck<-as.factor(full$Deck)
+
+
+## Odd or even cabin numbers tell you which side of the ship you were on
+full$CabinNumber<-sapply(full$Cabin, function(x) as.integer(strsplit(x, '[ABCDEFGT]')[[1]][2]))
+
+full$Side<-'Unknown'
+full$Side[full$CabinNumber%%2==0] <-'Port'
+full$Side[full$CabinNumber%%2==1] <-'Starboard'
+
+full$Side<-as.factor(full$Side)
+
 
 
 ################################################################################
@@ -100,13 +118,15 @@ full[c(62, 830), 'Embarked']
 
 cat(paste('We will infer their values for **embarkment** based on present data that we can imagine may be relevant: **passenger class** and **fare**. We see that they paid<b> $', full[c(62, 830), 'Fare'][[1]][1], '</b>and<b> $', full[c(62, 830), 'Fare'][[1]][2], '</b>respectively and their classes are<b>', full[c(62, 830), 'Pclass'][[1]][1], '</b>and<b>', full[c(62, 830), 'Pclass'][[1]][2], '</b>. So from where did they embark?'))
 
-embark_fare <- full %>% filter(PassengerId != 62 & PassengerId != 830)
+## this bit won't run under littler, but works fine at the REPL or in EMACS
+## embark_fare <- full %>% filter(PassengerId != 62 & PassengerId != 830)
+## embark_fare2 <-  filter(full, PassengerId != 62 & PassengerId != 830)
 
-ggplot(embark_fare, aes(x=Embarked, y=Fare, fill=factor(Pclass))) +
-    geom_boxplot() +
-    geom_hline(aes(yintercept=80), colour='red', linetype='dashed', lwd=2)+
-    scale_y_continuous(labels=dollar_format())+
-    theme_few()
+## ggplot(embark_fare, aes(x=Embarked, y=Fare, fill=factor(Pclass))) +
+##      geom_boxplot() +
+##      geom_hline(aes(yintercept=80), colour='red', linetype='dashed', lwd=2)+
+##      scale_y_continuous(labels=dollar_format())+
+##      theme_few()
 
 ## Since their fare was $80 for 1st class, they most likely embarked from 'C'
 
@@ -205,7 +225,7 @@ set.seed(754)
 # Build the model (note: not all possible variables are used)
 rf_model <- randomForest(factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + 
                                             Fare + Embarked + Title + 
-                                            FsizeD + Child + Mother,
+                                            FsizeD + Child + Mother + Side + Deck,
                                             data = train)
 
 # Show model error
@@ -248,8 +268,8 @@ solution <- data.frame(PassengerID = test$PassengerId, Survived = prediction)
 # Write the solution to file
 write.csv(solution, file = 'rf_mod_Solution.csv', row.names = F)
 
-# Solution scores 0.80383, for 336 out of 418 predictions
-nrow(test)*0.80383
+# My various improvements have so broken this that it now scores 0.77512, for 324 out of 418 predictions, down from 0.80383 in its undamaged form
+nrow(test)*0.77512
 
 
 
