@@ -96,6 +96,8 @@ full$Deck<-(sapply(full$Cabin, function(x) strsplit(x, NULL)[[1]][1]))
 full$Deck[is.na(full$Deck)]<-'Unknown'
 full$Deck<-as.factor(full$Deck)
 
+mosaicplot(table(full$Deck,full$Survived), main='Side by Survival', shade=TRUE)
+
 
 ## Odd or even cabin numbers tell you which side of the ship you were on
 full$CabinNumber<-sapply(full$Cabin, function(x) as.integer(strsplit(x, '[ABCDEFGT]')[[1]][2]))
@@ -106,7 +108,12 @@ full$Side[full$CabinNumber%%2==1] <-'Starboard'
 
 full$Side<-as.factor(full$Side)
 
+mosaicplot(table(full$Side,full$Survived), main='Side by Survival', shade=TRUE)
 
+
+mosaicplot(table(full$Embarked,full$Survived), main='Embarked by Survival', shade=TRUE)
+
+mosaicplot(~ Deck + Survived , data = full, color = TRUE)
 
 ################################################################################
 ## Missingness
