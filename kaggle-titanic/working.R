@@ -72,7 +72,32 @@ famIDs <- data.frame(table(full$FamilyID))
 famIDs <- famIDs[famIDs$Freq <= 2,]
 full$FamilyID[full$FamilyID %in% famIDs$Var1] <- 'Small'
 
+## Let's also make a group identifier out of the ticket numbers
+full$Ticket <- as.character(full$Ticket)
+table(full$Ticket)
+
+groupIDs <- data.frame(table(full$Ticket))
+
+table(groupIDs$Freq)
+
+group1IDs <- groupIDs[groupIDs$Freq == 1,]
+group2IDs <- groupIDs[groupIDs$Freq == 2,]
+
+full$TicketGroup<-full$Ticket
+full$TicketGroup[full$Ticket %in% group1IDs$Var1] <- 'Singleton'
+full$TicketGroup[full$Ticket %in% group2IDs$Var1] <- 'Couple'
+
+
+mosaicplot(table(full$TicketGroup, full$Survived), main='Ticket Group by Survival', shade=TRUE)
+
+couples<-full[full$TicketGroup=='Couple',]
+mosaicplot(table(couples$Sex,couples$Survived))
+
+singles<-full[full$TicketGroup=='Singleton',]
+mosaicplot(table(singles$Sex,singles$Survived))
+
 ## Back to Factor
+full$TicketGroup <- factor(full$TicketGroup)
 full$Title <- factor(full$Title)
 full$FamilyID <- factor(full$FamilyID)
 full$Pclass <- factor(full$Pclass)
