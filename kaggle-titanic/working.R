@@ -34,20 +34,38 @@ full$Title <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][
 full$Title <- sub(' ', '', full$Title)
 
 
+table(full$Sex,full$Title)
+
 # Various rare and foreign titles seem like the should get aggregated
 full$Title[full$Title %in% c('Mme')] <- 'Mrs'
 full$Title[full$Title %in% c('Mlle')] <- 'Miss'
-full$Title[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
+full$Title[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer','Col')] <- 'Sir'
 full$Title[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
-
+table(full$Sex,full$Title)
 
 ## Create FamilyID from surname and family size, all less than two are 'Small'
+## This isn't right, for two parents and four children everyone ends up 6
+## but for grandfather, father, son, daughter  get 2,4,3,3
 full$FamilySize <- full$SibSp + full$Parch + 1
+
+
 full$Surname <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
 full$FamilyID <- paste(as.character(full$FamilySize), full$Surname, sep="")
+
 full$FamilyID[full$FamilySize <= 2] <- 'Small'
 
+## Hmm, looks like there are 7 Anderssons, parents and five children, on ticket 347082
+## They all died, but there are other Andersons all on separate tickets, who did much better
+## and yet are somehow also recorded as having 4 siblings and 2 parents, which
+## looks like a mistake in the data
+full[full$Surname=='Andersson',c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass")]
+## Notice that the doomed family have paid a high fare, because there were seven of them
+full[full$Surname=='Andersson' & full$Ticket=="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
+## Other Anderssons did much better, despite being in third class
+full[full$Surname=='Andersson' & full$Ticket!="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
+## Are they all singletons (did single women travel in 3rd class on the titanic?)
+## Or are they two couples, in which case why have they got different tickets?
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
 famIDs <- data.frame(table(full$FamilyID))
@@ -84,6 +102,20 @@ full$Embarked[c(62,830)] = 'S'
 full$Embarked <- factor(full$Embarked)
 
 full$Fare[1044] <- median(full$Fare,na.rm=TRUE)
+
+######################################################################
+## Data Plots
+######################################################################
+
+
+## Survival by Family Size
+ggplot(full[1:891,], aes(x = FamilySize, fill = factor(Survived))) +
+  geom_bar(stat='count', position='dodge') +
+  scale_x_continuous(breaks=c(1:11)) +
+  labs(x = 'Family Size') +
+  theme_few()
+
+
 
 
 
