@@ -1,20 +1,27 @@
 #!/usr/bin/r
 
+library('ggplot2') # visualization
+library('ggthemes') # visualization
+library('scales') # visualization
+library('dplyr') # data manipulation
+library('mice') # imputation
+library('randomForest') # classification algorithm
 
 library(rpart)
 library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
+library(party)
 
 # Read in the test and train files, and combine them into combi so that
 # feature engineering can be done identically on both sets of data
 train <- read.csv("train.csv")
 test <- read.csv("test.csv")
 test$Survived <- NA
-combi<-rbind(train,test)
+full<-rbind(train,test)
 
 # de-factorize the names 
-combi$Name <- as.character(combi$Name)
+full$Name <- as.character(full$Name)
 
 
 ######################################################################
@@ -23,34 +30,34 @@ combi$Name <- as.character(combi$Name)
 
 
 # Pull out the title parts of the names for a separate variable
-combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
-combi$Title <- sub(' ', '', combi$Title)
+full$Title <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
+full$Title <- sub(' ', '', full$Title)
 
 
 # Various rare and foreign titles seem like the should get aggregated
-combi$Title[combi$Title %in% c('Mme')] <- 'Mrs'
-combi$Title[combi$Title %in% c('Mlle')] <- 'Miss'
-combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
-combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
+full$Title[full$Title %in% c('Mme')] <- 'Mrs'
+full$Title[full$Title %in% c('Mlle')] <- 'Miss'
+full$Title[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
+full$Title[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
 
 
 ## Create FamilyID from surname and family size, all less than two are 'Small'
-combi$FamilySize <- combi$SibSp + combi$Parch + 1
-combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
-combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
-combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
+full$FamilySize <- full$SibSp + full$Parch + 1
+full$Surname <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
+full$FamilyID <- paste(as.character(full$FamilySize), full$Surname, sep="")
+full$FamilyID[full$FamilySize <= 2] <- 'Small'
 
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
-famIDs <- data.frame(table(combi$FamilyID))
+famIDs <- data.frame(table(full$FamilyID))
 famIDs <- famIDs[famIDs$Freq <= 2,]
-combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
+full$FamilyID[full$FamilyID %in% famIDs$Var1] <- 'Small'
 
 ## Back to Factor
-combi$Title <- factor(combi$Title)
-combi$FamilyID <- factor(combi$FamilyID)
-
+full$Title <- factor(full$Title)
+full$FamilyID <- factor(full$FamilyID)
+full$Pclass <- factor(full$Pclass)
 
 
 ######################################################################
@@ -62,20 +69,21 @@ combi$FamilyID <- factor(combi$FamilyID)
 ## removing this section drops us to 0.80861, not sure why
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
-                data=combi[!is.na(combi$Age),],
+                data=full[!is.na(full$Age),],
                 method="anova")
 
 fancyRpartPlot(Agefit)
 
-combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+full$Age_fitted <- full$Age
+full$Age_fitted[is.na(full$Age)] <- predict(Agefit, full[is.na(full$Age),])
 
 
-which(combi$Embarked=='')
-combi$Embarked[c(62,830)] = 'S'
+which(full$Embarked=='')
+full$Embarked[c(62,830)] = 'S'
 
-combi$Embarked <- factor(combi$Embarked)
+full$Embarked <- factor(full$Embarked)
 
-combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
+full$Fare[1044] <- median(full$Fare,na.rm=TRUE)
 
 
 
@@ -84,31 +92,32 @@ combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 ## Split Data Into Test and Training Sets
 ######################################################################
 
-write.csv(combi,file="combi.csv", row.names=FALSE)
+write.csv(full,file="full.csv", row.names=FALSE)
 
-train <- combi[1:891,]
-test <- combi[892:1309,]
-
-
-##install.packages('party')
-library(party)
+train <- full[1:891,]
+test <- full[892:1309,]
 
 
-set.seed(415)
+######################################################################
+## Fit model and make prediction
+######################################################################
 
-cat("FITTING (takes 1 minute 50 seconds)\n")
-fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
-               data=train,
-               controls=cforest_unbiased(ntree=2000, mtry=3))
 
-cat("PREDICTING\n")
-Prediction <- predict(fit,test, OOB=TRUE,type="response")
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+## set.seed(415)
 
-write.csv(submit,file="ciforest.csv", row.names=FALSE)
+## cat("FITTING (takes 1 minute 50 seconds)\n")
+## fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
+##                data=train,
+##                controls=cforest_unbiased(ntree=2000, mtry=3))
 
-# 0.81340, or 340 out of 418
-0.81340*nrow(test)
+## cat("PREDICTING\n")
+## Prediction <- predict(fit,test, OOB=TRUE,type="response")
+## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+
+## write.csv(submit,file="ciforest.csv", row.names=FALSE)
+
+## # 0.81340, or 340 out of 418
+## 0.81340*nrow(test)
 
 
 
