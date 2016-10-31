@@ -886,3 +886,7 @@
           (lambda () 
             (ess-toggle-underscore nil)
             (setq ess-fancy-comments nil)))
+
+;; do it twice because the fucking thing will not die
+(ess-toggle-underscore nil)
+(setq ess-fancy-comments nil)
