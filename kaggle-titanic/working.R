@@ -96,11 +96,6 @@ mosaicplot(table(couples$Sex,couples$Survived))
 singles<-full[full$TicketGroup=='Singleton',]
 mosaicplot(table(singles$Sex,singles$Survived))
 
-## Back to Factor
-full$TicketGroup <- factor(full$TicketGroup)
-full$Title <- factor(full$Title)
-full$FamilyID <- factor(full$FamilyID)
-full$Pclass <- factor(full$Pclass)
 
 
 ######################################################################
@@ -128,6 +123,25 @@ full$Embarked <- factor(full$Embarked)
 
 full$Fare[1044] <- median(full$Fare,na.rm=TRUE)
 
+
+
+## Children are those under 10
+full$Child <- 0
+full$Child[full$Age < 10]<-1
+
+## Bin the fares
+full$Fare2 <- '30+'
+full$Fare2[full$Fare < 30 & full$Fare >= 20] <- '20-30'
+full$Fare2[full$Fare < 20 & full$Fare >= 10] <- '10-20'
+full$Fare2[full$Fare < 10] <- '<10'
+
+## Back to Factor
+full$TicketGroup <- factor(full$TicketGroup)
+full$Title <- factor(full$Title)
+full$FamilyID <- factor(full$FamilyID)
+full$Pclass <- factor(full$Pclass)
+full$Survived <- factor(full$Survived)
+
 ######################################################################
 ## Data Plots
 ######################################################################
@@ -153,6 +167,41 @@ write.csv(full,file="full.csv", row.names=FALSE)
 
 train <- full[1:891,]
 test <- full[892:1309,]
+
+######################################################################
+## Fit model and make prediction
+######################################################################
+
+fit <- rpart(Survived ~ Sex + Pclass + Age + SibSp + Parch + Fare + Embarked + Child + Fare2 + Title, data=train, method="class")
+fancyRpartPlot(fit)
+
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+write.csv(submit, file = "decisiontree.csv", row.names = FALSE)
+
+
+
+######################################################################
+## Attempt to use caret
+######################################################################
+
+library(caret)
+
+rpartmodel = train( factor(Survived) ~ Sex + Pclass + Child + Fare2 + Title, method="rpart", data=train)
+rpartmodel
+fancyRpartPlot(rpartmodel$finalModel)
+predict(rpartmodel,test)
+
+
+
+ctree_model = train( factor(Survived) ~ Sex + Pclass + Child + Fare2 + Title, method="ctree", data=train)
+ctree_model
+plot(ctree_model$finalModel)
+predict(ctree_model,test)
+
+
+cforest_model = train( factor(Survived) ~ Sex + Pclass + Child + Fare2 + Title, method="cforest", data=train)
+cforest_model
 
 
 ######################################################################
