@@ -1,12 +1,13 @@
 #!/usr/bin/r
 
 
-## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-4-feature-engineering/
 library(rpart)
 library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
 
+# Read in the test and train files, and combine them into combi so that
+# feature engineering can be done identically on both sets of data
 train <- read.csv("train.csv")
 test <- read.csv("test.csv")
 test$Survived <- NA
@@ -26,7 +27,7 @@ combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]
 combi$Title <- sub(' ', '', combi$Title)
 
 
-## combine Madame and Mademoiselle to Mlle 
+# Various rare and foreign titles seem like the should get aggregated
 combi$Title[combi$Title %in% c('Mme')] <- 'Mrs'
 combi$Title[combi$Title %in% c('Mlle')] <- 'Miss'
 combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
