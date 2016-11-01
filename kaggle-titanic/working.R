@@ -155,9 +155,23 @@ ggplot(full[1:891,], aes(x = FamilySize, fill = factor(Survived))) +
   theme_few()
 
 
+######################################################################
+## Examine Processed Data
+######################################################################
 
 
 
+## Have a look at the processed data frame
+str(full)
+
+## Amelia has a nice function to visualize missing values
+require(Amelia)
+missmap(full)
+
+## Age vs Title boxplot
+boxplot(train$Age ~ train$Title)
+
+mosaicplot(train$Title ~ train$Survived, shade=F, color=T)
 
 ######################################################################
 ## Split Data Into Test and Training Sets
@@ -186,6 +200,19 @@ write.csv(submit, file = "decisiontree.csv", row.names = FALSE)
 ######################################################################
 
 library(caret)
+
+## 0.78 on just Title
+## 0.78 on Just Sex
+## 0.78 on Sex and Title
+rpartmodel = train( factor(Survived) ~ Sex + Fare2 + Pclass, method="rpart", data=train, control=fitControl)
+rpartmodel
+fancyRpartPlot(rpartmodel$finalModel)
+predict(rpartmodel,test)
+ggplot(rpartmodel)
+
+
+
+
 
 rpartmodel = train( factor(Survived) ~ Sex + Pclass + Child + Fare2 + Title, method="rpart", data=train)
 rpartmodel
