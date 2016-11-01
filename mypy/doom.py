@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
+# system-wide installation of mypy
 # $ sudo apt-get install python3 python3-pip
-# $ python3 -m pip install -U mypy-lang
+# $ sudo python3 -m pip install -U mypy-lang
+
+
 
 print("Hello\n")
 
