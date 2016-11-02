@@ -891,3 +891,6 @@
 (require 'ess-site)
 (ess-toggle-underscore nil)
 (setq ess-fancy-comments nil)
+
+;; this might be quicker but the whole thing is so fragile I daren't break it
+;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
