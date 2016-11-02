@@ -881,12 +881,13 @@
   (ANY 2)
   (context 2))
 
-;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
+;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
 (add-hook 'ess-mode-hook
           (lambda () 
-            (ess-toggle-underscore nil)
-            (setq ess-fancy-comments nil)))
+             (ess-toggle-underscore nil)
+             (setq ess-fancy-comments nil)))
 
 ;; do it twice because the fucking thing will not die
+(require 'ess-site)
 (ess-toggle-underscore nil)
 (setq ess-fancy-comments nil)
