@@ -36,13 +36,14 @@ full$Title <- sub(' ', '', full$Title)
 
 table(full$Sex,full$Title)
 
+full$BinnedTitle<-full$Title
 # Various rare and foreign titles seem like the should get aggregated
-full$Title[full$Title %in% c('Mme')] <- 'Mrs'
-full$Title[full$Title %in% c('Mlle')] <- 'Miss'
-full$Title[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer','Col')] <- 'Sir'
-full$Title[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
+full$BinnedTitle[full$Title %in% c('Mme')] <- 'Mrs'
+full$BinnedTitle[full$Title %in% c('Mlle')] <- 'Miss'
+full$BinnedTitle[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer','Col')] <- 'Sir'
+full$BinnedTitle[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
-table(full$Sex,full$Title)
+table(full$Sex,full$BinnedTitle)
 
 ## Create FamilyID from surname and family size, all less than two are 'Small'
 ## This isn't right, for two parents and four children everyone ends up 6
@@ -51,9 +52,9 @@ full$FamilySize <- full$SibSp + full$Parch + 1
 
 
 full$Surname <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
-full$FamilyID <- paste(as.character(full$FamilySize), full$Surname, sep="")
+full$FamilyID <- paste(as.character(full$FamilySize), full$Surname, full$Ticket, sep="-")
 
-full$FamilyID[full$FamilySize <= 2] <- 'Small'
+#full$FamilyID[full$FamilySize <= 2] <- 'Small'
 
 ## Hmm, looks like there are 7 Anderssons, parents and five children, on ticket 347082
 ## They all died, but there are other Andersons all on separate tickets, who did much better
@@ -69,6 +70,48 @@ full[full$Surname=='Andersson' & full$Ticket!="347082",c("Sex","SibSp","Parch","
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
 famIDs <- data.frame(table(full$FamilyID))
+
+famIDs[with(famIDs, order(Freq)),]
+
+bigfams=famIDs[famIDs$Freq>4,1]
+justthebigfams=full[full$FamilyID %in% bigfams,]
+
+mosaicplot(table(justthebigfams$FamilyID, justthebigfams$Survived))
+
+table(justthebigfams$FamilyID, justthebigfams$Survived)
+
+for (i in seq(length(bigfams))) {
+    a=full[full$FamilyID == as.character(bigfams[i]),]
+    print (a)
+    print(table(a$Sex))
+    print(table(a$Survived,a$Sex))
+}
+
+
+a=full[full$FamilyID == as.character(bigfams[6]),]
+a
+table(a$Survived,a$Sex)
+nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='female',])
+nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='male',])
+nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='male',])
+nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='female',])
+table(a$Survived,a$Sex)
+
+a=full[full$FamilyID == as.character(bigfams[3]),]
+a
+table(a$Survived,a$Sex)
+nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='female',])
+nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='male',])
+nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='male',])
+nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='female',])
+table(a$Survived,a$Sex)
+
+
+
+
+
+
+
 famIDs <- famIDs[famIDs$Freq <= 2,]
 full$FamilyID[full$FamilyID %in% famIDs$Var1] <- 'Small'
 
