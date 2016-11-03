@@ -28,7 +28,7 @@ full$Name <- as.character(full$Name)
 ## Feature Engineering
 ######################################################################
 
-
+           
 # Pull out the title parts of the names for a separate variable
 full$Title <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 full$Title <- sub(' ', '', full$Title)
@@ -37,13 +37,116 @@ full$Title <- sub(' ', '', full$Title)
 table(full$Sex,full$Title)
 
 full$BinnedTitle<-full$Title
-# Various rare and foreign titles seem like the should get aggregated
+# Various rare and foreign titles seem like they should get aggregated
 full$BinnedTitle[full$Title %in% c('Mme')] <- 'Mrs'
 full$BinnedTitle[full$Title %in% c('Mlle')] <- 'Miss'
 full$BinnedTitle[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer','Col')] <- 'Sir'
 full$BinnedTitle[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
-
 table(full$Sex,full$BinnedTitle)
+
+
+
+# Women and children first!
+
+# Now we'd like to work out who the children were
+# I think the Edwardians might not have considered a 16-year old male a 'child'.
+full$Child <- "Adult"
+full$Child[full$Age<12 & !is.na(full$Age)] <- "Child"
+full$Child[full$Title=='Master']<- "Child"
+
+# Survival rates for women and children don't seem that different
+full$WOC <- "AdultMale"
+full$WOC[full$Child=="Child"] <- "WOC"
+full$WOC[full$Sex=="female"] <- "WOC"
+
+# I suspect that if we don't know your age then that's bad, because of how the records were compiled
+full$AgeKnown <- "Yes"
+full$AgeKnown[is.na(full$Age)]<-"No"
+
+# Similarly babies with fractional ages seem to have survived uniformly, which must be a recording effect
+full$FractionalBaby<-"No"
+full$FractionalBaby[full$Age<1 & !is.na(full$Age)]<-"Yes"
+
+
+
+
+################################################################################################
+library(caret)
+
+full$Sex<-factor(full$Sex)
+full$Child<-factor(full$Child)
+full$Survived<-factor(full$Survived)
+
+
+training <- full[1:891,]
+testing <- full[892:1309,]
+
+
+## 0.78 on just Title
+## 0.78 on Just Sex
+## 0.78 on Sex and Title
+## 
+rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rf", data=training)
+rpartmodel
+fancyRpartPlot(rpartmodel$finalModel)
+rpartmodel$finalModel
+names(full)
+
+ggplot(rpartmodel)
+
+##################### To Submit One
+## Prediction=predict(rpartmodel,testing)
+## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+## write.csv(submit,file="caret.csv", row.names=FALSE)
+
+## This does the same thing with rpart directly, but you don't get cross validation accuracy
+## Or at least it's wrong. What is xval?
+rpm<-rpart(Survived ~ Sex + Child, data=training, method="class")
+rpm
+printcp(rpm)
+fancyRpartPlot(rpm)
+
+
+
+
+##############################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+table(full$Age<12, full$Survived, full$Sex)
+prop.table(table(full$Age<12, full$Survived, full$Sex),c(1,3))
+(table(full$Age<12, full$Survived, full$Sex))
+mosaicplot(table(full$Age<12, full$Survived, full$Sex))
+
+
+
+
+
+
 
 ## Create FamilyID from surname and family size, all less than two are 'Small'
 ## This isn't right, for two parents and four children everyone ends up 6
