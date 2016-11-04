@@ -12,6 +12,7 @@ library(rattle)
 library(rpart.plot)
 library(RColorBrewer)
 library(party)
+library(caret)
 
 # Read in the test and train files, and combine them into combi so that
 # feature engineering can be done identically on both sets of data
