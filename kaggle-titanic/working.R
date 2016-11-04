@@ -6,13 +6,12 @@ library('scales') # visualization
 library('dplyr') # data manipulation
 library('mice') # imputation
 library('randomForest') # classification algorithm
-
-library(rpart)
-library(rattle)
-library(rpart.plot)
-library(RColorBrewer)
-library(party)
-library(caret)
+library('rpart')
+library('rattle')
+library('rpart.plot')
+library('RColorBrewer')
+library('party')
+library('caret')
 
 # Read in the test and train files, and combine them into combi so that
 # feature engineering can be done identically on both sets of data
@@ -29,10 +28,12 @@ full$Name <- as.character(full$Name)
 ## Feature Engineering
 ######################################################################
 
-           
+          
 # Pull out the title parts of the names for a separate variable
 full$Title <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 full$Title <- sub(' ', '', full$Title)
+
+
 
 
 table(full$Sex,full$Title)
@@ -44,6 +45,10 @@ full$BinnedTitle[full$Title %in% c('Mlle')] <- 'Miss'
 full$BinnedTitle[full$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer','Col')] <- 'Sir'
 full$BinnedTitle[full$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 table(full$Sex,full$BinnedTitle)
+
+
+# Also Surnames
+full$Surname <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
 
 
 
@@ -69,115 +74,46 @@ full$FractionalBaby<-"No"
 full$FractionalBaby[full$Age<1 & !is.na(full$Age)]<-"Yes"
 
 
+## Try to identify families
 
-
-################################################################################################
-library(caret)
-
-full$Sex<-factor(full$Sex)
-full$Child<-factor(full$Child)
-full$Survived<-factor(full$Survived)
-
-
-training <- full[1:891,]
-testing <- full[892:1309,]
-
-
-## 0.78 on just Title
-## 0.78 on Just Sex
-## 0.78 on Sex and Title
-## 
-rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rf", data=training)
-rpartmodel
-fancyRpartPlot(rpartmodel$finalModel)
-rpartmodel$finalModel
-names(full)
-
-ggplot(rpartmodel)
-
-##################### To Submit One
-## Prediction=predict(rpartmodel,testing)
-## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-## write.csv(submit,file="caret.csv", row.names=FALSE)
-
-## This does the same thing with rpart directly, but you don't get cross validation accuracy
-## Or at least it's wrong. What is xval?
-rpm<-rpart(Survived ~ Sex + Child, data=training, method="class")
-rpm
-printcp(rpm)
-fancyRpartPlot(rpm)
-
-
-
-
-##############################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-table(full$Age<12, full$Survived, full$Sex)
-prop.table(table(full$Age<12, full$Survived, full$Sex),c(1,3))
-(table(full$Age<12, full$Survived, full$Sex))
-mosaicplot(table(full$Age<12, full$Survived, full$Sex))
-
-
-
-
-
-
-
-## Create FamilyID from surname and family size, all less than two are 'Small'
 ## This isn't right, for two parents and four children everyone ends up 6
 ## but for grandfather, father, son, daughter  get 2,4,3,3
-full$FamilySize <- full$SibSp + full$Parch + 1
+full$NoOfRelatives <- full$SibSp + full$Parch + 1
+
+## I think it's best to identify family groupings by ticket
+## Although sometimes families buy two or three consecutive tickets
+## So we could combine consecutive tickets where there's evidence that something's up?
+full$FamilyID <- full$Ticket
+
+gbt=group_by(full,FamilyID)
+
+summarize(gbt, count=n(), survived=sum(Survived==1), died=sum(Survived==0), unknown=sum(is.na(Survived)))
+
+group_summary<-summarize(gbt, count=n(),
+          wocsurv=sum(!is.na(Survived) & Survived==1 & WOC=="WOC"),
+          wocdied=sum(!is.na(Survived) & Survived==0 & WOC!="WOC"),
+          admsurv=sum(!is.na(Survived) & Survived==1 & WOC=="AdultMale"),
+          admdied=sum(!is.na(Survived) & Survived==0 & WOC!="AdultMale"),
+          admratio=(admsurv+1)/(admsurv+admdied+2),
+          wocratio=(wocsurv+1)/(wocsurv+wocdied+2),
+          unknown=sum(is.na(Survived)), total=wocsurv+wocdied+admsurv+admdied+unknown,
+          disc=total-count)
+
+large_group_summary <- filter(group_summary, count>3)
+
+plot(large_group_summary$admratio,large_group_summary$wocratio)
 
 
-full$Surname <- sapply(full$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
-full$FamilyID <- paste(as.character(full$FamilySize), full$Surname, full$Ticket, sep="-")
+full$admratio=
 
-#full$FamilyID[full$FamilySize <= 2] <- 'Small'
 
-## Hmm, looks like there are 7 Anderssons, parents and five children, on ticket 347082
-## They all died, but there are other Andersons all on separate tickets, who did much better
-## and yet are somehow also recorded as having 4 siblings and 2 parents, which
-## looks like a mistake in the data
-full[full$Surname=='Andersson',c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass")]
-## Notice that the doomed family have paid a high fare, because there were seven of them
-full[full$Surname=='Andersson' & full$Ticket=="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
-## Other Anderssons did much better, despite being in third class
-full[full$Surname=='Andersson' & full$Ticket!="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
-## Are they all singletons (did single women travel in 3rd class on the titanic?)
-## Or are they two couples, in which case why have they got different tickets?
 
-## Here we kill off the families with 4 members who only have 2 members, etc.
 famIDs <- data.frame(table(full$FamilyID))
 
 famIDs[with(famIDs, order(Freq)),]
 
 bigfams=famIDs[famIDs$Freq>4,1]
+
 justthebigfams=full[full$FamilyID %in% bigfams,]
 
 mosaicplot(table(justthebigfams$FamilyID, justthebigfams$Survived))
@@ -243,6 +179,48 @@ mosaicplot(table(couples$Sex,couples$Survived))
 singles<-full[full$TicketGroup=='Singleton',]
 mosaicplot(table(singles$Sex,singles$Survived))
 
+################################################################################################
+library(caret)
+
+full$Sex<-factor(full$Sex)
+full$Child<-factor(full$Child)
+full$Survived<-factor(full$Survived)
+
+
+training <- full[1:891,]
+testing <- full[892:1309,]
+
+
+## 0.78 on just Title
+## 0.78 on Just Sex
+## 0.78 on Sex and Title
+## 
+rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rf", data=training)
+rpartmodel
+fancyRpartPlot(rpartmodel$finalModel)
+rpartmodel$finalModel
+names(full)
+
+ggplot(rpartmodel)
+
+##################### To Submit One
+## Prediction=predict(rpartmodel,testing)
+## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+## write.csv(submit,file="caret.csv", row.names=FALSE)
+
+## This does the same thing with rpart directly, but you don't get cross validation accuracy
+## Or at least it's wrong. What is xval?
+rpm<-rpart(Survived ~ Sex + Child, data=training, method="class")
+rpm
+printcp(rpm)
+fancyRpartPlot(rpm)
+
+
+
+
+##############################################################################################
+
+
 
 
 ######################################################################
@@ -306,6 +284,40 @@ ggplot(full[1:891,], aes(x = FamilySize, fill = factor(Survived))) +
 ## Examine Processed Data
 ######################################################################
 
+## The Vander Plankes
+filter(full, Surname=='Vander Planke')
+## Appear to have been three siblings, and one wife, travelling on two separate tickets.
+## This should likely be one family group
+
+## The Richards appear inexplicable until you realise that 
+filter(full,Surname=='Richards')
+## they and the hockings are all one family (Except for Mr SJM Hocking, who's not related to them)
+filter(full,Surname=='Hocking')
+## So this family has ticket numbers 29104,29105,29106
+
+## The Lahtinens also look difficult
+filter(full,Surname=='Lahtinen')
+## But they are travelling with a sister Lylli Silven, who seems to
+## have been recorded as their daughter in this dataset
+filter(full,Ticket=='250652' | Ticket=='250651')
+
+## Hmm, looks like there are 7 Anderssons, parents and five children, on ticket 347082
+## They all died, but there are other Andersons all on separate tickets, who did much better
+## and yet are somehow also recorded as having 4 siblings and 2 parents, which
+## looks like a mistake in the data
+full[full$Surname=='Andersson',c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass")]
+## Notice that the doomed family have paid a high fare, because there were seven of them
+full[full$Surname=='Andersson' & full$Ticket=="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
+## Other Anderssons did much better, despite being in third class
+full[full$Surname=='Andersson' & full$Ticket!="347082",c("Sex","SibSp","Parch","Ticket","FamilyID","Survived","Pclass","Age","Fare")]
+## Are they all singletons (did single women travel in 3rd class on the titanic?)
+## Or are they two couples, in which case why have they got different tickets?
+
+# How does the sex-related survival ratio behave with age
+table(full$Age<12, full$Survived, full$Sex)
+prop.table(table(full$Age<12, full$Survived, full$Sex),c(1,3))
+(table(full$Age<12, full$Survived, full$Sex))
+mosaicplot(table(full$Age<12, full$Survived, full$Sex))
 
 
 ## Have a look at the processed data frame
