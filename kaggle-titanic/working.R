@@ -93,6 +93,8 @@ group_summary<-data.frame(summarize(gbt,
                          count=n(),
                          surv=sum(!is.na(Survived) & Survived==1),
                          died=sum(!is.na(Survived) & Survived==0),
+                         woc=sum(WOC=="WOC"),
+                         adm=sum(WOC=="AdultMale"),
                          wocsurv=sum(!is.na(Survived) & Survived==1 & WOC=="WOC"),
                          wocdied=sum(!is.na(Survived) & Survived==0 & WOC=="WOC"),
                          admsurv=sum(!is.na(Survived) & Survived==1 & WOC=="AdultMale"),
@@ -104,6 +106,17 @@ group_summary<-data.frame(summarize(gbt,
                          total=wocsurv+wocdied+admsurv+admdied+unknown,
                          disc=total-count))
 
+full$count<-NA
+full$woc<-NA
+full$adm<-NA
+for (i in 1:nrow(group_summary)){
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$count<-group_summary[i,c("count")]
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$woc<-group_summary[i,c("woc")]
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$adm<-group_summary[i,c("adm")]
+    }
+
+
+
 large_group_summary <- filter(group_summary, count>3)
 
 plot(large_group_summary$admratio,large_group_summary$wocratio)
@@ -113,31 +126,81 @@ full$ratio<-NA
 full$admratio<-NA
 full$wocratio<-NA
 full$count<-NA
-for (i in 1:nrow(group_summary)){
+for (i in 1:nrow(large_group_summary)){
     full[full$FamilyID==group_summary[i,c("FamilyID")],]$ratio<-group_summary[i,c("ratio")]
     full[full$FamilyID==group_summary[i,c("FamilyID")],]$wocratio<-group_summary[i,c("wocratio")]
     full[full$FamilyID==group_summary[i,c("FamilyID")],]$admratio<-group_summary[i,c("admratio")]
-    full[full$FamilyID==group_summary[i,c("FamilyID")],]$count<-group_summary[i,c("count")]
     }
 
+full$partytype<-paste(full$adm,full$woc,sep="-")
+table(full$partytype)
+
+table(full$partytype,full$Survived)
+
+full$femalesinparty<-(full$woc>0)
+
+# notice the resourceful chinese, who despite being a group of 8 males with no women in third class
+# escaped by hiding in the bottom of a collapsible lifeboat!
 
 ################################################################################################
-library(caret)
 
 full$Sex<-factor(full$Sex)
 full$Child<-factor(full$Child)
 full$Survived<-factor(full$Survived)
-
+full$partytype<-factor(full$partytype)
 
 training <- full[1:891,]
 testing <- full[892:1309,]
+
+rm(rpartmodel)
+rm(cm)
+rm(pred)
+rpartmodel = train( Survived ~ count+WOC+Pclass+femalesinparty+Embarked+BinnedTitle+AgeKnown+FractionalBaby, method="rpart", data=training)
+rpartmodel
+fancyRpartPlot(rpartmodel$finalModel)
+rpartmodel$finalModel
+pred=predict(rpartmodel,training)
+cm<-table(pred,training$Survived)
+cm
+(cm[1,1]+cm[2,2])/sum(cm)
+names(full)
+
+ggplot(rpartmodel)
+
+##################### To Submit One
+Prediction=predict(rpartmodel,testing)
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+write.csv(submit,file="caret.csv", row.names=FALSE)
+
+
+rm(rfmodel)
+rm(cm)
+rm(pred)
+rfmodel = train( Survived ~ count+WOC+Pclass+femalesinparty+Embarked+BinnedTitle+AgeKnown+FractionalBaby, method="rf", data=training)
+rfmodel
+
+pred=predict(rfmodel,training)
+cm<-table(pred,training$Survived)
+cm
+(cm[1,1]+cm[2,2])/sum(cm)
+
+names(full)
+ggplot(rfmodel)
+
+##################### To Submit One
+Prediction=predict(rfmodel,testing)
+submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+write.csv(submit,file="caret.csv", row.names=FALSE)
+
+
+
 
 
 ## 0.78 on just Title
 ## 0.78 on Just Sex
 ## 0.78 on Sex and Title
 ## 
-rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rf", data=training)
+rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rpart", data=training)
 rpartmodel
 fancyRpartPlot(rpartmodel$finalModel)
 rpartmodel$finalModel
@@ -145,10 +208,6 @@ names(full)
 
 ggplot(rpartmodel)
 
-##################### To Submit One
-## Prediction=predict(rpartmodel,testing)
-## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-## write.csv(submit,file="caret.csv", row.names=FALSE)
 
 ## This does the same thing with rpart directly, but you don't get cross validation accuracy
 ## Or at least it's wrong. What is xval?
