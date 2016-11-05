@@ -76,7 +76,7 @@ full$FractionalBaby[full$Age<1 & !is.na(full$Age)]<-"Yes"
 
 ## Try to identify families
 
-## This isn't right, for two parents and four children everyone ends up 6
+## Can't use this, for two parents and four children everyone ends up 6
 ## but for grandfather, father, son, daughter  get 2,4,3,3
 full$NoOfRelatives <- full$SibSp + full$Parch + 1
 
@@ -89,95 +89,37 @@ gbt=group_by(full,FamilyID)
 
 summarize(gbt, count=n(), survived=sum(Survived==1), died=sum(Survived==0), unknown=sum(is.na(Survived)))
 
-group_summary<-summarize(gbt, count=n(),
-          wocsurv=sum(!is.na(Survived) & Survived==1 & WOC=="WOC"),
-          wocdied=sum(!is.na(Survived) & Survived==0 & WOC!="WOC"),
-          admsurv=sum(!is.na(Survived) & Survived==1 & WOC=="AdultMale"),
-          admdied=sum(!is.na(Survived) & Survived==0 & WOC!="AdultMale"),
-          admratio=(admsurv+1)/(admsurv+admdied+2),
-          wocratio=(wocsurv+1)/(wocsurv+wocdied+2),
-          unknown=sum(is.na(Survived)), total=wocsurv+wocdied+admsurv+admdied+unknown,
-          disc=total-count)
+group_summary<-data.frame(summarize(gbt,
+                         count=n(),
+                         surv=sum(!is.na(Survived) & Survived==1),
+                         died=sum(!is.na(Survived) & Survived==0),
+                         wocsurv=sum(!is.na(Survived) & Survived==1 & WOC=="WOC"),
+                         wocdied=sum(!is.na(Survived) & Survived==0 & WOC=="WOC"),
+                         admsurv=sum(!is.na(Survived) & Survived==1 & WOC=="AdultMale"),
+                         admdied=sum(!is.na(Survived) & Survived==0 & WOC=="AdultMale"),
+                         ratio=(surv+1)/(surv+died+2),
+                         admratio=(admsurv+1)/(admsurv+admdied+2),
+                         wocratio=(wocsurv+1)/(wocsurv+wocdied+2),
+                         unknown=sum(is.na(Survived)),
+                         total=wocsurv+wocdied+admsurv+admdied+unknown,
+                         disc=total-count))
 
 large_group_summary <- filter(group_summary, count>3)
 
 plot(large_group_summary$admratio,large_group_summary$wocratio)
 
 
-full$admratio=
+full$ratio<-NA
+full$admratio<-NA
+full$wocratio<-NA
+full$count<-NA
+for (i in 1:nrow(group_summary)){
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$ratio<-group_summary[i,c("ratio")]
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$wocratio<-group_summary[i,c("wocratio")]
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$admratio<-group_summary[i,c("admratio")]
+    full[full$FamilyID==group_summary[i,c("FamilyID")],]$count<-group_summary[i,c("count")]
+    }
 
-
-
-famIDs <- data.frame(table(full$FamilyID))
-
-famIDs[with(famIDs, order(Freq)),]
-
-bigfams=famIDs[famIDs$Freq>4,1]
-
-justthebigfams=full[full$FamilyID %in% bigfams,]
-
-mosaicplot(table(justthebigfams$FamilyID, justthebigfams$Survived))
-
-table(justthebigfams$FamilyID, justthebigfams$Survived)
-
-for (i in seq(length(bigfams))) {
-    a=full[full$FamilyID == as.character(bigfams[i]),]
-    print (a)
-    print(table(a$Sex))
-    print(table(a$Survived,a$Sex))
-}
-
-
-a=full[full$FamilyID == as.character(bigfams[6]),]
-a
-table(a$Survived,a$Sex)
-nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='female',])
-nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='male',])
-nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='male',])
-nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='female',])
-table(a$Survived,a$Sex)
-
-a=full[full$FamilyID == as.character(bigfams[3]),]
-a
-table(a$Survived,a$Sex)
-nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='female',])
-nrow(a[!is.na(a$Survived) & a$Survived==1 & a$Sex=='male',])
-nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='male',])
-nrow(a[!is.na(a$Survived) & a$Survived==0 & a$Sex=='female',])
-table(a$Survived,a$Sex)
-
-
-
-
-
-
-
-famIDs <- famIDs[famIDs$Freq <= 2,]
-full$FamilyID[full$FamilyID %in% famIDs$Var1] <- 'Small'
-
-## Let's also make a group identifier out of the ticket numbers
-full$Ticket <- as.character(full$Ticket)
-table(full$Ticket)
-
-groupIDs <- data.frame(table(full$Ticket))
-
-table(groupIDs$Freq)
-
-group1IDs <- groupIDs[groupIDs$Freq == 1,]
-group2IDs <- groupIDs[groupIDs$Freq == 2,]
-
-full$TicketGroup<-full$Ticket
-full$TicketGroup[full$Ticket %in% group1IDs$Var1] <- 'Singleton'
-full$TicketGroup[full$Ticket %in% group2IDs$Var1] <- 'Couple'
-
-
-mosaicplot(table(full$TicketGroup, full$Survived), main='Ticket Group by Survival', shade=TRUE)
-
-couples<-full[full$TicketGroup=='Couple',]
-mosaicplot(table(couples$Sex,couples$Survived))
-
-singles<-full[full$TicketGroup=='Singleton',]
-mosaicplot(table(singles$Sex,singles$Survived))
 
 ################################################################################################
 library(caret)
@@ -219,6 +161,40 @@ fancyRpartPlot(rpm)
 
 
 ##############################################################################################
+
+
+
+
+
+
+
+famIDs <- famIDs[famIDs$Freq <= 2,]
+full$FamilyID[full$FamilyID %in% famIDs$Var1] <- 'Small'
+
+## Let's also make a group identifier out of the ticket numbers
+full$Ticket <- as.character(full$Ticket)
+table(full$Ticket)
+
+groupIDs <- data.frame(table(full$Ticket))
+
+table(groupIDs$Freq)
+
+group1IDs <- groupIDs[groupIDs$Freq == 1,]
+group2IDs <- groupIDs[groupIDs$Freq == 2,]
+
+full$TicketGroup<-full$Ticket
+full$TicketGroup[full$Ticket %in% group1IDs$Var1] <- 'Singleton'
+full$TicketGroup[full$Ticket %in% group2IDs$Var1] <- 'Couple'
+
+
+mosaicplot(table(full$TicketGroup, full$Survived), main='Ticket Group by Survival', shade=TRUE)
+
+couples<-full[full$TicketGroup=='Couple',]
+mosaicplot(table(couples$Sex,couples$Survived))
+
+singles<-full[full$TicketGroup=='Singleton',]
+mosaicplot(table(singles$Sex,singles$Survived))
+
 
 
 
@@ -283,6 +259,29 @@ ggplot(full[1:891,], aes(x = FamilySize, fill = factor(Survived))) +
 ######################################################################
 ## Examine Processed Data
 ######################################################################
+
+famIDs <- data.frame(table(full$FamilyID))
+
+famIDs[with(famIDs, order(Freq)),]
+
+bigfams=famIDs[famIDs$Freq>4,1]
+
+justthebigfams=full[full$FamilyID %in% bigfams,]
+
+mosaicplot(table(justthebigfams$FamilyID, justthebigfams$Survived))
+
+table(justthebigfams$FamilyID, justthebigfams$Survived)
+
+for (i in seq(length(bigfams))) {
+    a=full[full$FamilyID == as.character(bigfams[i]),]
+    print (a)
+    print(table(a$Sex))
+    print(table(a$Survived,a$Sex))
+}
+
+
+
+
 
 ## The Vander Plankes
 filter(full, Surname=='Vander Planke')
