@@ -100,6 +100,12 @@ cat("Calculating Confusion Matrix\n")
 trainingPrediction <- predict(fit,training, OOB=TRUE,type="response")
 table(training$Survived,trainingPrediction)
 
+# we're overpredicting death
+#   Prediction
+#      0   1
+#  0 515  34
+#  1  94 248
+
 # make real predictions
 cat("Predicting on Test Data\n")
 Prediction <- predict(fit,testing, OOB=TRUE,type="response")
