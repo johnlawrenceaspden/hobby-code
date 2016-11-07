@@ -113,7 +113,7 @@ print(confusionmatrix)
 
 # make real predictions
 cat("Predicting on Test Data\n")
-Prediction <- predict(fit,testing, OOB=TRUE,type="response")
+Prediction <- predict(fit,testing, OOB=TRUE)
 
 # write data
 submit <- data.frame(PassengerId = testing$PassengerId, Survived=Prediction)
