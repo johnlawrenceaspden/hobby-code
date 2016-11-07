@@ -101,6 +101,8 @@ trainingPrediction <- predict(fit, OOB=TRUE) #predict(fit,training ,OOB=TRUE) ig
 
 confusionmatrix<-table(training$Survived,trainingPrediction)
 print(confusionmatrix)
+print((confusionmatrix[1,1]+confusionmatrix[2,2])/sum(confusionmatrix))
+
 # we're overpredicting death
 
 ## trainingPrediction
