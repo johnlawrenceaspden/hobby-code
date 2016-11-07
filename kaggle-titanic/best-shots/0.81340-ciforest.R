@@ -98,7 +98,7 @@ print(end)
 # create confusion matrix
 cat("Calculating Confusion Matrix\n")
 trainingPrediction <- predict(fit,training, OOB=TRUE,type="response")
-table(training$Survived,training$Prediction)
+table(training$Survived,trainingPrediction)
 
 # make real predictions
 cat("Predicting on Test Data\n")
