@@ -128,7 +128,7 @@ library(party)
 
 start <- Sys.time ()
 print(start)
-cat("FITTING CIFOREST\n")
+cat("FITTING CIFOREST (takes ~ 4 minutes 20 seconds)\n")
 set.seed(415)
 
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
