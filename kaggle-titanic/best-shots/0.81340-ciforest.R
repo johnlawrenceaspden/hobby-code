@@ -36,6 +36,11 @@ combi$Title <- factor(combi$Title)
 ## Construct a Family Identifier
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
+
+#####################################################################
+# Family Identifier
+#####################################################################
+
 combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
 
 table(combi$FamilyID)
@@ -57,6 +62,13 @@ famIDs <- famIDs[famIDs$Freq <= 2,]
 combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
 
 table(combi$FamilyID)
+
+
+#####################################################################
+# Imputation of missing data
+#####################################################################
+
+
 
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
@@ -115,7 +127,7 @@ print((confusionmatrix[1,1]+confusionmatrix[2,2])/sum(confusionmatrix))
 
 # make real predictions
 cat("Predicting on Test Data\n")
-Prediction <- predict(fit,testing, OOB=TRUE)
+Prediction <- predict(fit,testing, OOB=TRUE) #need to put OOB here, but what is it doing?
 
 # write data
 submit <- data.frame(PassengerId = testing$PassengerId, Survived=Prediction)
