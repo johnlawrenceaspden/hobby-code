@@ -79,36 +79,6 @@ combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
 
 table(combi$FamilyID)
 
-## It's crucial, I think, to turn this into a factor before splitting, so that the model can
-## be trained properly
-combi$FamilyID <- factor(combi$FamilyID)
-
-train <- combi[1:891,]
-test <- combi[892:1309,]
-
-fit <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
-               data=train, 
-               method="class")
-
-fancyRpartPlot(fit)
-
-
-Prediction <- predict(fit, test, type = "class")
-
-
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-write.csv(submit, file = "featureengineeringanddecisiontree.csv", row.names = FALSE)
-
-# Scores 0.79426, or 332 correct predictions
-0.79426*nrow(test)
-
-
-## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-5-random-forests/
-
-# random sampling with replacement
-sample(1:10, replace = TRUE)
-
-summary(combi$Age)
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize,
                 data=combi[!is.na(combi$Age),],
@@ -142,51 +112,20 @@ which(is.na(combi$Fare))
 
 combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
-## reduce family factor since random forests can't deal with more than 32 levels
-
-combi$FamilyID2 <- combi$FamilyID
-combi$FamilyID2 <- as.character(combi$FamilyID2)
-combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
-combi$FamilyID2 <- factor(combi$FamilyID2)
-
-str(combi$FamilyID2)
 
 
 
-## install.packages('randomForest')
-## sudo apt install r-cran-randomforest
-library(randomForest)
 
 train <- combi[1:891,]
 test <- combi[892:1309,]
 
 
 
-
-
-## cat("ABOUT TO SEGFAULT\n")
-## set.seed(415)
-## fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID2,
-##                     data=train,
-##                     importance=TRUE,
-##                     ntree=2000)
-## cat("POST-SEGFAULT\n")
-
-## varImpPlot(fit)
-
-## Prediction <- predict(fit,test)
-## submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
-
-## write.csv(submit,file="firstforest.csv", row.names=FALSE)
-
-## # 077512, or 324 correct predictions out of 418
-## 0.77512*nrow(test)
-
-
 ##install.packages('party')
 library(party)
 
 start <- Sys.time ()
+print(start)
 cat("FITTING CIFOREST\n")
 set.seed(415)
 
@@ -194,24 +133,16 @@ fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare +
                data=train,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 cat("FIT COMPLETE\n")
-Sys.time () - start
+end=Sys.time () - start
+print(end)
 
 Prediction <- predict(fit,test, OOB=TRUE,type="response")
 submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
 
-write.csv(submit,file="ciforest.csv", row.names=FALSE)
+write.csv(submit,file="0.81340-ciforest.csv", row.names=FALSE)
 
 # 0.81340, or 340 out of 418
 0.81340*nrow(test)
-
-## Err, weirdly when I re-ran this it produced a different set of predictions.
-## Namely 1304 had originally been predicted as 1, and was changed to 0.
-## This didn't change the Kaggle score, which is still 0.81340. Waah.
-## Changed it back and resubmitted, still didn't change score, so 1304 is probably in the
-## private leaderboard data?
-
-## If we restrict the cforest fit to using FamilyID2 for a fairer comparison with the randomForest, then it scores 0.79904, or 334 correct predictions, so it's getting most (but not all) of its improvement from being able to use a factor with more levels.
-0.79904*nrow(test)
 
 
 
