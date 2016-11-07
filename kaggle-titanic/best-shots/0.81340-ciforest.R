@@ -1,41 +1,24 @@
 #!/usr/bin/r
 
-## Irritatingly although this file runs perfectly when loaded into
-## EMACS with C-c C-l (Load File), it segfaults in the first random
-## forest calculation when run from the command line
-
-## http://trevorstephens.com/kaggle-titanic-tutorial/r-part-4-feature-engineering/
 library(rpart)
-library(rattle)
 library(rpart.plot)
+library(rattle)
 library(RColorBrewer)
+library(party)
+
 
 train <- read.csv("../train.csv")
 test <- read.csv("../test.csv")
 
-train$Name[1]
-test$Name[1]
-
-# Create the missing Survived column in the test data
 test$Survived <- NA
-
-# Combine the two sets into one set so we can do the same processing on each
-# and so that we get factors with the same levels in both sets
 combi<-rbind(train,test)
 
 # de-factorize the names 
 combi$Name <- as.character(combi$Name)
 
-combi$Name[1]
-
-strsplit(combi$Name[1], split='[,.]')[[1]][2]
-
 # Pull out the title parts of the names for a separate variable
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 combi$Title <- sub(' ', '', combi$Title)
-
-table(combi$Title)
-table(combi$Title,combi$Age)
 
 ## combine Madame and Mademoiselle to Mlle 
 combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
@@ -86,31 +69,12 @@ Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + F
                 data=combi[!is.na(combi$Age),],
                 method="anova")
 
-fancyRpartPlot(Agefit)
-
 combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
 
-summary(combi$Age)
-hist(combi$Age)
 
-summary(combi)
-
-summary(combi$Embarked)
-
-which(combi$Embarked=='')
 combi$Embarked[c(62,830)] = 'S'
 
-summary(combi$Embarked)
-str(combi$Embarked)
-
 combi$Embarked <- factor(combi$Embarked)
-
-summary(combi$Embarked)
-str(combi$Embarked)
-
-summary(combi$Fare)
-
-which(is.na(combi$Fare))
 
 combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
@@ -123,8 +87,6 @@ test <- combi[892:1309,]
 
 
 
-##install.packages('party')
-library(party)
 
 start <- Sys.time ()
 print(start)
