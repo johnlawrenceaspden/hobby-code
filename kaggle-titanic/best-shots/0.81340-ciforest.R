@@ -65,6 +65,8 @@ table(combi$FamilyID)
 
 combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
 
+combi$FamilyID <- factor(combi$FamilyID)
+
 table(combi$FamilyID)
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
