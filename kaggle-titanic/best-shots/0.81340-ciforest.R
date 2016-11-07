@@ -20,17 +20,15 @@ combi$Name <- as.character(combi$Name)
 combi$Title <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][2]})
 combi$Title <- sub(' ', '', combi$Title)
 
-## combine Madame and Mademoiselle to Mlle 
-combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
+# Surnames too
+combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
 
-## Male nobility to Sir
-combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
 
-## Female Nobility to Lady
-combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess', 'Jonkheer')] <- 'Lady'
-
-## Hmm, Don and Dona are Mr and Mrs or Sir and Lady?, and Jonkheer is a Dutch male noble,Mme and Mlle are Mrs and Miss, Ms is ?
-table(combi$Title)
+# Merge Rare titles into closest equivalent
+combi$Title[combi$Title %in% c('Mme')] <- 'Mrs'
+combi$Title[combi$Title %in% c('Mlle')] <- 'Miss'
+combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir', 'Jonkheer')] <- 'Sir'
+combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 
 ## Back to Factor
 combi$Title <- factor(combi$Title)
@@ -38,7 +36,6 @@ combi$Title <- factor(combi$Title)
 
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
 
-combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
 
 table(combi$Surname)
 
