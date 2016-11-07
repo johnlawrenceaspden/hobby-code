@@ -73,11 +73,12 @@ combi$Embarked <- factor(combi$Embarked)
 combi$Fare[1044] <- median(combi$Fare,na.rm=TRUE)
 
 
+######################################################################
+## Fit Model and Make Predictions
+######################################################################
 
-
-
-train <- combi[1:891,]
-test <- combi[892:1309,]
+training <- combi[1:891,]
+testing <- combi[892:1309,]
 
 
 
@@ -88,19 +89,23 @@ cat("FITTING CIFOREST (takes ~ 4 minutes 20 seconds)\n")
 set.seed(415)
 
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
-               data=train,
+               data=training,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 cat("FIT COMPLETE\n")
 end=Sys.time () - start
 print(end)
 
-Prediction <- predict(fit,test, OOB=TRUE,type="response")
-submit <- data.frame(PassengerId = test$PassengerId, Survived=Prediction)
+# create confusion matrix
+trainingPrediction <- predict(fit,training, OOB=TRUE,type="response")
+table(training$Survived,training$Prediction)
+
+Prediction <- predict(fit,testing, OOB=TRUE,type="response")
+submit <- data.frame(PassengerId = testing$PassengerId, Survived=Prediction)
 
 write.csv(submit,file="0.81340-ciforest.csv", row.names=FALSE)
 
 # 0.81340, or 340 out of 418
-0.81340*nrow(test)
+0.81340*nrow(testing)
 
 
 
