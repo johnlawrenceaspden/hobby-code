@@ -96,12 +96,16 @@ end=Sys.time () - start
 print(end)
 
 # create confusion matrix
+cat("Calculating Confusion Matrix\n")
 trainingPrediction <- predict(fit,training, OOB=TRUE,type="response")
 table(training$Survived,training$Prediction)
 
+# make real predictions
+cat("Predicting on Test Data\n")
 Prediction <- predict(fit,testing, OOB=TRUE,type="response")
-submit <- data.frame(PassengerId = testing$PassengerId, Survived=Prediction)
 
+# write data
+submit <- data.frame(PassengerId = testing$PassengerId, Survived=Prediction)
 write.csv(submit,file="0.81340-ciforest.csv", row.names=FALSE)
 
 # 0.81340, or 340 out of 418
