@@ -33,11 +33,8 @@ combi$Title[combi$Title %in% c('Dona', 'Lady', 'the Countess')] <- 'Lady'
 ## Back to Factor
 combi$Title <- factor(combi$Title)
 
-
+## Construct a Family Identifier
 combi$FamilySize <- combi$SibSp + combi$Parch + 1
-
-
-table(combi$Surname)
 
 combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
 
@@ -68,8 +65,8 @@ Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + F
 
 combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
 
-
-combi$Embarked[c(62,830)] = 'S'
+# The two missing embarkees probably got on at Cherbourg, for reasons explained in the Megan tutorial
+combi$Embarked[c(62,830)] = 'C'
 
 combi$Embarked <- factor(combi$Embarked)
 
