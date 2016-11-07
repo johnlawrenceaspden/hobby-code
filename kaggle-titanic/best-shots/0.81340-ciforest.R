@@ -95,9 +95,9 @@ cat("FIT COMPLETE\n")
 end=Sys.time () - start
 print(end)
 
-# create confusion matrix
+# create confusion matrix (there is a subtle bug here, see https://github.com/topepo/caret/issues/351)
 cat("Calculating Confusion Matrix\n")
-trainingPrediction <- predict(fit,training, OOB=TRUE,type="response")
+trainingPrediction <- predict(fit, OOB=TRUE)
 table(training$Survived,trainingPrediction)
 
 # we're overpredicting death
