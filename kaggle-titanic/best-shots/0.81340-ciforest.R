@@ -97,14 +97,19 @@ print(end)
 
 # create confusion matrix (there is a subtle bug here, see https://github.com/topepo/caret/issues/351)
 cat("Calculating Confusion Matrix\n")
-trainingPrediction <- predict(fit, OOB=TRUE)
-table(training$Survived,trainingPrediction)
+trainingPrediction <- predict(fit, OOB=TRUE) #predict(fit,training ,OOB=TRUE) ignores OOB=TRUE!
 
+confusionmatrix<-table(training$Survived,trainingPrediction)
+print(confusionmatrix)
 # we're overpredicting death
-#   Prediction
-#      0   1
-#  0 515  34
-#  1  94 248
+
+## trainingPrediction
+##       0   1
+##   0 497  52
+##   1 103 239
+
+(497+239)/(497+52+103+239)
+#0.8260382 isn't too far away from the actual result on the kaggle submission, which is 0.81340
 
 # make real predictions
 cat("Predicting on Test Data\n")
