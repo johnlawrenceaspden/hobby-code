@@ -76,7 +76,8 @@ Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + F
                 data=combi[!is.na(combi$Age),],
                 method="anova")
 
-combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+combi$Age2<-combi$Age
+combi$Age2[is.na(combi$Age2)] <- predict(Agefit, combi[is.na(combi$Age),])
 
 # The two missing embarkees probably got on at Cherbourg, for reasons explained in the Megan tutorial
 combi$Embarked[c(62,830)] = 'C'
@@ -101,7 +102,7 @@ print(start)
 cat("FITTING CIFOREST (takes ~ 4 minutes 20 seconds)\n")
 set.seed(415) # changing random seed to 1 makes more survival predictions, slightly lowers confusion matrix accuracy, makes no difference in Kaggle submission
 
-fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
+fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age2 + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
                data=training,
                controls=cforest_unbiased(ntree=2000, mtry=3))
 cat("FIT COMPLETE\n")
