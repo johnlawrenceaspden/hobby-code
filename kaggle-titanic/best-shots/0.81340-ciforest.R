@@ -52,7 +52,8 @@ combi$FamilyID <- factor(combi$FamilyID)
 table(combi$FamilyID)
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
-## I think this is a terrible mistake. The others are in the private data kept secret by Kaggle, probably.
+## This is caused by the weird behaviour of the SibSp/Parch things with respect to
+## extended families
 famIDs <- data.frame(table(combi$FamilyID))
 
 table(famIDs)
@@ -98,7 +99,7 @@ testing <- combi[892:1309,]
 start <- Sys.time ()
 print(start)
 cat("FITTING CIFOREST (takes ~ 4 minutes 20 seconds)\n")
-set.seed(415)
+set.seed(415) # changing random seed to 1 makes more survival predictions, slightly lowers confusion matrix accuracy, makes no difference in Kaggle submission
 
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID,
                data=training,
