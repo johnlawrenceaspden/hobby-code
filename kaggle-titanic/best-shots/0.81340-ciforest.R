@@ -53,7 +53,8 @@ table(combi$FamilyID)
 
 ## Here we kill off the families with 4 members who only have 2 members, etc.
 ## This is caused by the weird behaviour of the SibSp/Parch things with respect to
-## extended families
+## extended families, consider e.g. the Christy and Jacobsohn families, or the behaviour of
+## a grandparent, parent and child (1,2,1)
 famIDs <- data.frame(table(combi$FamilyID))
 
 table(famIDs)
