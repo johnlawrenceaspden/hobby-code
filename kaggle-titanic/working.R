@@ -160,9 +160,9 @@ rpartmodel
 fancyRpartPlot(rpartmodel$finalModel)
 rpartmodel$finalModel
 pred=predict(rpartmodel,training)
-cm<-table(pred,training$Survived)
-cm
-(cm[1,1]+cm[2,2])/sum(cm)
+confusion_matrix<-table(pred,training$Survived)
+confusion_matrix
+(confusion_matrix[1,1]+confusion_matrix[2,2])/sum(confusion_matrix)
 names(full)
 
 ggplot(rpartmodel)
@@ -179,7 +179,7 @@ rm(pred)
 rfmodel = train( Survived ~ count+WOC+Pclass+femalesinparty+Embarked+BinnedTitle+AgeKnown+FractionalBaby, method="rf", data=training)
 rfmodel
 
-pred=predict(rfmodel,training)
+pred=predict(rfmodel,OOB=TRUE)
 cm<-table(pred,training$Survived)
 cm
 (cm[1,1]+cm[2,2])/sum(cm)
@@ -200,7 +200,7 @@ write.csv(submit,file="caret.csv", row.names=FALSE)
 ## 0.78 on Just Sex
 ## 0.78 on Sex and Title
 ## 
-rpartmodel = train( Survived ~ Pclass+Sex+Embarked+BinnedTitle+Child+WOC+AgeKnown+FractionalBaby, method="rpart", data=training)
+rpartmodel = train( Survived ~ count+WOC+Pclass+Embarked+BinnedTitle+AgeKnown+FractionalBaby, method="rpart", data=training)
 rpartmodel
 fancyRpartPlot(rpartmodel$finalModel)
 rpartmodel$finalModel
