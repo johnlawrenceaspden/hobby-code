@@ -481,3 +481,12 @@ export LD_LIBRARY_PATH=~/holstuff/polyml/lib
 
 alias sai='sudo apt-get install'
 alias uptimes='grep "Apr" /var/log/syslog | cut -d\  -f1,2,3 | cut -d: -f1,2 | uniq'
+
+
+
+### Solarflare 
+export PATH=${PATH}:~/chip_test/scripts
+alias sgg="cd ~/solarflare2 && git gui &"
+
+
+### END Solarflare
