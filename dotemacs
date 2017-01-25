@@ -441,6 +441,8 @@
 
 
 ;; googling code
+;; either M-x google-it
+;; or select something and M-x google-search-selection
 (add-to-list 'load-path "~/hobby-code")
 (require 'google-search)
 
@@ -470,15 +472,31 @@
   (let ((term (if (use-region-p)
                   (buffer-substring (region-beginning) (region-end))
                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-    (grep-find (concat "ack-grep --text --smart-case --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
+    (grep-find (concat "ack --smart-case --no-heading --no-color \"" (shell-quote-argument term)  "\" " directory))))
 
+
+(defun fgf()
+  (interactive)
+  (region-find-grep "~/firmwaresrc --ignore-dir=build"))
+
+(defun fgc()
+  (interactive)
+  (region-find-grep "~/chip_test --ignore-dir=build"))
+
+
+(defun fgh()
+  (interactive)
+  (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
+
+(defun fgq()
+  (interactive)
+  (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
 
 (defun fgi()
   (interactive)
   (region-find-grep "~/iqtest"))
 
-
-(defun fgh()
+(defun fghh()
   (interactive)
   (region-find-grep "~/hobby-code"))
 
