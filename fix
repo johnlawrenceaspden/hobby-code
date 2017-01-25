@@ -2,7 +2,7 @@
 
 # two different ways of remapping caps lock to be control
 echo "remapping ctrl to be caps lock"
-setxkbmap -option ctrl:nocaps
+setxkbmap -option ctrl:nocaps   # note that setxkbmap -option restores the original state
 xmodmap ~/.xmodmaprc
 
 if [[ 'dell-mini' == $HOSTNAME ]] ; then
