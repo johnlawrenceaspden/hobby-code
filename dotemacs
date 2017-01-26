@@ -912,3 +912,8 @@
 
 ;; ;; this might be quicker but the whole thing is so fragile I daren't break it
 ;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
+;; Get the inferior shell in which make commands run to load the aliases
+;; See http://stackoverflow.com/questions/10946219/emacs-compilation-mode-wont-see-bash-alias
+;; alternatively use bash -ic make-alias as the compile command
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
