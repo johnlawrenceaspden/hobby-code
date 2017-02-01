@@ -917,3 +917,5 @@
 ;; alternatively use bash -ic make-alias as the compile command
 (setq shell-file-name "bash")
 (setq shell-command-switch "-ic")
+
+
