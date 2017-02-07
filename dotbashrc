@@ -512,4 +512,8 @@ alias sfc-make-both='sfc-make-fw && sfc-make-chiptest'
 alias sfc-rebuild-both='sfc-rebuild-fw && sfc-rebuild-chiptest'
 alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
 
+
+alias ets='e ~/solarflare2/timesheet.py'
+alias rts=~/solarflare2/timesheet.py
+ 
 ### END Solarflare
