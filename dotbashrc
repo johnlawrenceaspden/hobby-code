@@ -495,15 +495,12 @@ alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/es
 FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
 
 alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
-alias sfc-rebuild-fw='ssh furnace make -j -B -C /home/jla/firmwaresrc '"${FWTARGETS}"
 alias sfc-clean-fw='ssh furnace make -C /home/jla/firmwaresrc clean'
 
 alias sfc-make-chiptest='ssh furnace make -j -C ~/chip_test/build/ul_rhel6_x86_64/ '
-alias sfc-rebuild-chiptest='ssh furnace make -j -B -C ~/chip_test/build/ul_rhel6_x86_64/ '
 alias sfc-clean-chiptest='ssh furnace make -C ~/chip_test/build/ul_rhel6_x86_64/ clean'
 
 alias sfc-make-both='sfc-make-fw && sfc-make-chiptest'
-alias sfc-rebuild-both='sfc-rebuild-fw && sfc-rebuild-chiptest'
 alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
 
 
