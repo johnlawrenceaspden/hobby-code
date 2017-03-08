@@ -663,7 +663,16 @@
 (require 'speedbar)
 (speedbar-disable-update)
 
-(custom-set-variables '(speedbar-show-unknown-files t))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(speedbar-show-unknown-files t)
+ '(verilog-auto-indent-on-newline nil)
+ '(verilog-auto-lineup (quote ignore))
+ '(verilog-auto-newline nil)
+ '(verilog-tab-always-indent nil))
 
 
 
