@@ -669,9 +669,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(speedbar-show-unknown-files t)
+ '(verilog-align-ifelse nil)
  '(verilog-auto-indent-on-newline nil)
- '(verilog-auto-lineup (quote ignore))
+ '(verilog-auto-lineup (quote all))
  '(verilog-auto-newline nil)
+ '(verilog-indent-begin-after-if nil)
+ '(verilog-indent-lists nil)
  '(verilog-tab-always-indent nil))
 
 
@@ -934,3 +937,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(sh-heredoc ((t (:foreground "firebrick")))))
+
+
+;; stop the crazy electric nonsense
+(eval-after-load 'verilog-mode
+    '(progn
+        ;; same for all the electric-verilog-* commands in                
+        ;; the mode's map (see verilog-mode.el)                      
+        (define-key verilog-mode-map (kbd ";") 'self-insert-command)
+        (define-key verilog-mode-map (kbd ":") 'self-insert-command)
+        (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
+        (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
+
