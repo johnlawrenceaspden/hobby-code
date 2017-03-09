@@ -662,20 +662,8 @@
 ;; stop the speedbar jumping around
 (require 'speedbar)
 (speedbar-disable-update)
+(setq speedbar-show-unknown-files t)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(speedbar-show-unknown-files t)
- '(verilog-align-ifelse nil)
- '(verilog-auto-indent-on-newline nil)
- '(verilog-auto-lineup (quote all))
- '(verilog-auto-newline nil)
- '(verilog-indent-begin-after-if nil)
- '(verilog-indent-lists nil)
- '(verilog-tab-always-indent nil))
 
 
 
@@ -939,7 +927,7 @@
  '(sh-heredoc ((t (:foreground "firebrick")))))
 
 
-;; stop the crazy electric nonsense
+;; render verilog mode usable by stopping all the crazy electric nonsense
 (eval-after-load 'verilog-mode
     '(progn
         ;; same for all the electric-verilog-* commands in                
@@ -949,3 +937,10 @@
         (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
         (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
 
+(setq verilog-align-ifelse nil)
+(setq verilog-auto-indent-on-newline nil)
+(setq verilog-auto-lineup (quote all))
+(setq verilog-auto-newline nil)
+(setq verilog-indent-begin-after-if nil)
+(setq verilog-indent-lists nil)
+(setq verilog-tab-always-indent nil)
