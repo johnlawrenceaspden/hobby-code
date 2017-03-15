@@ -489,14 +489,15 @@ export PATH=${PATH}:~/chip_test/scripts
 alias sgg="cd ~/solarflare2 && git gui &"
 
 alias sfc-run-hw='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --simv-args "FSDB=1" --farmi-lite --dutcfg min --runtime mcfw_cosim_eftest_medford2 ptm.ptm_test'
-alias sfc-run-cmodel='reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --franky --dutcfg min --runtime mcfw_octiron_eftest_medford2 +s ptm.ptm_test trivial s+'
+alias sfc-run-cmodel='reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --franky --dutcfg min --runtime mcfw_octiron_eftest_medford2 +p ptm.ptm_test trivial p+'
 alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
 alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
 
 #FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
 #alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
 
-alias sfc-make-fw='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist cosim_eftest_medford2'
+alias sfc-make-fw-cmodel='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'
+alias sfc-make-fw-cosim='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist cosim_eftest_medford2'
 alias sfc-clean-fw='ssh furnace make -C /home/jla/firmwaresrc clean'
 
 alias sfc-make-chiptest='ssh furnace make -j -C ~/chip_test/build/ul_rhel6_x86_64/ '
