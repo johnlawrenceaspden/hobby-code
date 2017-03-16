@@ -488,8 +488,10 @@ alias qemu='cd /projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu'
 export PATH=${PATH}:~/chip_test/scripts
 alias sgg="cd ~/solarflare2 && git gui &"
 
-alias sfc-run-hw='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --farmi-lite --dutcfg min --runtime mcfw_cosim_eftest_medford2 +p ptm.ptm_test:fsdb=1 trivial p+'
-alias sfc-run-cmodel='reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --franky --dutcfg min --runtime mcfw_octiron_eftest_medford2 +p ptm.ptm_test trivial p+'
+alias sfc-run-hw='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --farmi-lite --dutcfg min --runtime mcfw_cosim_eftest_medford2 trivial + ptm.agitator:fsdb=1'
+#alias sfc-run-hw='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --farmi-lite --dutcfg min --runtime mcfw_cosim_eftest_medford2 ptm.ptm_test:fsdb=1 trivial'
+alias sfc-run-cmodel='reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --franky --dutcfg min --runtime mcfw_octiron_eftest_medford2 trivial:packets=100 + ptm.agitator'
+alias sfc-run-cmodel2='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --qemu user --chip medford2 --franky --dutcfg min --runtime mcfw_octiron_eftest_medford2 ptm.ptm_test:update_count=100'
 alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
 alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
 
