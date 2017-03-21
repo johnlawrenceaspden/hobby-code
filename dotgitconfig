@@ -4,6 +4,6 @@
 [merge]
 	tool = xxdiff
 [push]
-	default = simple
+	default = tracking
 [core]
 	excludesfile = /home/john/gitignore
