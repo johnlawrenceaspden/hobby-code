@@ -498,7 +498,7 @@ alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/es
 #FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
 #alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
 
-alias sfc-make-fw-cmodel='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'
+alias sfc-make-fw-cmodel='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=all_pre_mbist octiron_eftest_medford2'
 alias sfc-make-fw-cosim='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist cosim_eftest_medford2'
 alias sfc-clean-fw='ssh furnace make -C /home/jla/firmwaresrc clean'
 
