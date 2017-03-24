@@ -516,3 +516,9 @@ alias rts=~/solarflare2/timesheet.py
 # for i in SSH_ASKPASS SSH_CLIENT SSH_CONNECTION  SSH_TTY ; do echo $i : ${!i} ; done
 
 ### END Solarflare
+
+# Mate aliases
+alias evince=atril
+alias nautilus=caja
+alias gedit=pluma
+alias eog=eom
