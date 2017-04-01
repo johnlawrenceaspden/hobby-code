@@ -510,6 +510,13 @@ alias sfc-run-cmodel-vdm3="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_med
 
 alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
 alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
+alias sfc-show-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log'
+alias sfc-show-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log'
+alias sfc-show-msgs-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log | grep -i msg -A 60 '
+alias sfc-show-msgs-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log | grep -i msg -A 60 '
+
+
+
 
 #FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
 #alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
