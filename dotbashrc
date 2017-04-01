@@ -488,8 +488,8 @@ alias qemu='cd /projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu'
 export PATH=${PATH}:~/chip_test/scripts
 alias sgg="cd ~/solarflare2 && git gui &"
 
-SFC_RUN_HW='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --farmi-lite --dutcfg min '
-SFC_RUN_CMODEL='reset && time timeout 10m /home/jla/chip_test/src/tools/cosim/esnap  --chip medford2 --franky --dutcfg min '
+    SFC_RUN_HW='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --farmi-lite --dutcfg min '
+SFC_RUN_CMODEL='reset && time timeout  10m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --franky     --dutcfg min '
 
 # add --qemu user after esnap to use a home-cooked version
 alias  sfc-run-hw-ptm="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest_medford2  trivial + ptm.agitator:fsdb=1^Z'
