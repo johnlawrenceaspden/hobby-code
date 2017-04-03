@@ -496,7 +496,7 @@ alias  sfc-run-hw-ptm="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest_medford2  triv
 alias sfc-run-hw-ptm2="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest_medford2  ptm.ptm_test:fsdb=1^Z'
 alias  sfc-run-hw-vdm="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.payload_send:count=20:fsdb=1^Z'
 alias sfc-run-hw-vdm2="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1:fsdb=1^Z'
-alias sfc-run-hw-vdm3="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.send_vdm^Z'
+alias sfc-run-hw-vdm3="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.send_vdm:fsdb=1^Z'
 
 # commands for failing to run the C model on medford (not2)
 # ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 handwavium_eftest_medford
