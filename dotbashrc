@@ -538,8 +538,12 @@ alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
 alias ets='e ~/solarflare2/timesheet.py'
 alias rts=~/solarflare2/timesheet.py
 
-# This is how you print out a list of variables and their names in bash
-# for i in SSH_ASKPASS SSH_CLIENT SSH_CONNECTION  SSH_TTY ; do echo $i : ${!i} ; done
+alias furnaces="mate-terminal --geometry=110x40+1200+10 --profile furnace \
+--window --title=furnace \
+--tab    --title=verdi \
+--tab    --title=hwlog \
+--tab    --title=uart \
+--tab    --title=host"
 
 ### END Solarflare
 
@@ -548,3 +552,6 @@ alias evince=atril
 alias nautilus=caja
 alias gedit=pluma
 alias eog=eom
+
+# This is how you print out a list of variables and their names in bash
+# for i in SSH_ASKPASS SSH_CLIENT SSH_CONNECTION  SSH_TTY ; do echo $i : ${!i} ; done
