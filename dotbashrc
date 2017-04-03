@@ -496,7 +496,7 @@ alias  sfc-run-hw-ptm="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest_medford2  triv
 alias sfc-run-hw-ptm2="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest_medford2  ptm.ptm_test:fsdb=1^Z'
 alias  sfc-run-hw-vdm="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.payload_send:count=20:fsdb=1^Z'
 alias sfc-run-hw-vdm2="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1:fsdb=1^Z'
-alias sfc-run-hw-vdm3="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 pcie_vdm.send_vdm:fsdb=1^Z'
+alias sfc-run-hw-vdm3="${SFC_RUN_HW}"'--runtime mcfw_cosim_eftest2_medford2 --qemu user pcie_vdm.send_vdm:fsdb=1^Z'
 
 # commands for failing to run the C model on medford (not2)
 # ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 handwavium_eftest_medford
@@ -506,7 +506,7 @@ alias  sfc-run-cmodel-ptm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medf
 alias sfc-run-cmodel-ptm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medford2  ptm.ptm_test:update_count=100^Z'
 alias  sfc-run-cmodel-vdm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.payload_send:count=20^Z'
 alias sfc-run-cmodel-vdm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1^Z'
-alias sfc-run-cmodel-vdm3="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.send_vdm^Z'
+alias sfc-run-cmodel-vdm3="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 --qemu user pcie_vdm.send_vdm^Z'
 
 alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
 alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
@@ -544,6 +544,13 @@ alias furnaces="mate-terminal --geometry=110x40+1200+10 --profile furnace \
 --tab    --title=hwlog \
 --tab    --title=uart \
 --tab    --title=host"
+
+alias anvils="mate-terminal --geometry=110x40+1200+10 --profile anvil \
+--window --title=anvil \
+--tab    --title=hwlog \
+--tab    --title=uart \
+--tab    --title=host"
+
 
 ### END Solarflare
 
