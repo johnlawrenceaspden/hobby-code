@@ -484,6 +484,7 @@ alias ct='cd ~/chip_test'
 alias hw='cd /projects/medford2/Work/jla/medford2'
 alias ej='cd /local/scratch/esnap_jla'
 alias qemu='cd /projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu'
+alias sc='cd ~/solar_capture'
 
 export PATH=${PATH}:~/chip_test/scripts
 alias sgg="cd ~/solarflare2 && git gui &"
