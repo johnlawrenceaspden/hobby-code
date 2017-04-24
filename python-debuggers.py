@@ -8,6 +8,10 @@
 # python -m pdb python-debuggers.py
 # type help for commands
 
+# PUDB
+# There's a nice curses-based debugger called pudb
+# python -m pudb ./python-debuggers.py
+
 # Emacs debugger M-x pdb
 # Run pdb (like this): python -m pdb /home/jla/hobby-code/python-debuggers.py
 # goto *gud-pdb* window 
