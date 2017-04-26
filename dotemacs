@@ -496,9 +496,14 @@
   (interactive)
   (region-find-grep "~/iqtest"))
 
-(defun fghh()
+(defun fghc()
   (interactive)
   (region-find-grep "~/hobby-code"))
+
+(defun fgs()
+  (interactive)
+  (region-find-grep "~/solar_capture --ignore-dir=build")) 
+
 
 
 ;; these variables are something to do with splitting.
