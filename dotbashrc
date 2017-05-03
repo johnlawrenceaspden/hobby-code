@@ -143,6 +143,13 @@ function fnd
     command find . -iname "$1"
 }
 
+function fndx
+{
+    echo find . -iname "$1" -not -path "*/build/*" -not -path "*/.hg/*"
+    command find . -iname "$1" -not -path "*/build/*" -not -path "*/.hg/*"
+}
+
+
 function fndg
 {
     echo example: 'fndg \*.c void'
