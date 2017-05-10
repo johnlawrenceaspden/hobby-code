@@ -55,6 +55,39 @@
 ;; disable overwrite mode, so that accidentally hitting the insert key asks for confirmation
 (put 'overwrite-mode 'disabled t)
 
+;; Put the full path of the file being edited in the titlebar
+(setq frame-title-format '("%b" (buffer-file-name ": %f")))
+
+;; Save the history of kills, and searches
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+(setq savehist-file "~/.emacs.d/tmp/savehist")
+(savehist-mode t)
+
+;; save a list of open files in ~/.emacs.desktop
+(desktop-save-mode t)
+
+;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
+(setq desktop-restore-eager 5)
+
+;; save a bunch of variables to the desktop file
+;; for lists specify the len of the maximal saved data also
+(setq desktop-globals-to-save
+      (append '((extended-command-history . 30)
+                (file-name-history        . 100)
+                (grep-history             . 30)
+                (compile-history          . 30)
+                (minibuffer-history       . 50)
+                (query-replace-history    . 60)
+                (read-expression-history  . 60)
+                (regexp-history           . 60)
+                (regexp-search-ring       . 20)
+                (search-ring              . 20)
+                (shell-command-history    . 50)
+                tags-file-name
+                register-alist)))
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -212,13 +245,6 @@
 
 
 
-;; ;; Put the full path of the file being edited in the titlebar
-;; (setq frame-title-format '("%b" (buffer-file-name ": %f")))
-
-;; ;; Save the history of kills, and searches
-;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-;; (setq savehist-file "~/.emacs.d/tmp/savehist")
-;; (savehist-mode t)
 
 ;; ;; disable bell function
 ;; (setq ring-bell-function 'ignore)
@@ -380,28 +406,6 @@
 
 
 
-;; ;; save a list of open files in ~/.emacs.desktop
-;; (desktop-save-mode t)
-
-;; ;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
-;; (setq desktop-restore-eager 5)
-
-;; ;; save a bunch of variables to the desktop file
-;; ;; for lists specify the len of the maximal saved data also
-;; (setq desktop-globals-to-save
-;;       (append '((extended-command-history . 30)
-;;                 (file-name-history        . 100)
-;;                 (grep-history             . 30)
-;;                 (compile-history          . 30)
-;;                 (minibuffer-history       . 50)
-;;                 (query-replace-history    . 60)
-;;                 (read-expression-history  . 60)
-;;                 (regexp-history           . 60)
-;;                 (regexp-search-ring       . 20)
-;;                 (search-ring              . 20)
-;;                 (shell-command-history    . 50)
-;;                 tags-file-name
-;;                 register-alist)))
 
 
 ;; (defun path-to-clipboard ()
