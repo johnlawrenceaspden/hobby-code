@@ -956,4 +956,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ggtags elpy realgud yaml-mode undo-tree company cider))))
+    (sr-speedbar ggtags elpy realgud yaml-mode undo-tree company cider))))
