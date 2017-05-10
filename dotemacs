@@ -1,959 +1,962 @@
-; -*- mode: lisp-interaction; -*-
+;; ; -*- mode: lisp-interaction; -*-
 
-(require 'package)
+;; (require 'package)
 
-(package-initialize)
+;; (package-initialize)
 
-(add-to-list 'package-archives
-	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+;; (add-to-list 'package-archives
+;; 	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
-;;(add-to-list 'package-archives
-;;             '("melpa" . "http://melpa.org/packages/") t)
+;; ;;(add-to-list 'package-archives
+;; ;;             '("melpa" . "http://melpa.org/packages/") t)
 
-;; uncomment this to update the package lists
-;; (package-refresh-contents)
+;; ;; uncomment this to update the package lists
+;; ;; (package-refresh-contents)
 
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
-(defvar my-packages '(clojure-mode
-                      cider
-		      company
-                      undo-tree))
+;; (defvar my-packages '(clojure-mode
+;;                       cider
+;; 		      company
+;;                       undo-tree))
 
-(dolist (p my-packages)
-  (unless (package-installed-p p)
-    (package-install p)))
+;; (dolist (p my-packages)
+;;   (unless (package-installed-p p)
+;;     (package-install p)))
 
-;; packages are normally enabled after this file has run, do it now instead
-;; then we can require as normal
-(setq package-enable-at-startup nil)
+;; ;; packages are normally enabled after this file has run, do it now instead
+;; ;; then we can require as normal
+;; (setq package-enable-at-startup nil)
 
-;;emacs color themes are in the package emacs-goodies-el on ubuntu
-(require 'color-theme)
-(color-theme-initialize)
-;;here are the ones I find usable
-;(color-theme-billw)
-(color-theme-gtk-ide)
-;(color-theme-katester)
-;(color-theme-midnight)
-;(color-theme-retro-green)
-;(color-theme-retro-orange)
-;(color-theme-scintilla)
+;; ;;emacs color themes are in the package emacs-goodies-el on ubuntu
+;; (require 'color-theme)
+;; (color-theme-initialize)
+;; ;;here are the ones I find usable
+;; ;(color-theme-billw)
+;; (color-theme-gtk-ide)
+;; ;(color-theme-katester)
+;; ;(color-theme-midnight)
+;; ;(color-theme-retro-green)
+;; ;(color-theme-retro-orange)
+;; ;(color-theme-scintilla)
 
-;; nice big letters. problem with this is it enlarges the window off the screen
-;; and hides the region at the bottom
-;; (set-face-attribute 'default nil :height 120)
+;; ;; nice big letters. problem with this is it enlarges the window off the screen
+;; ;; and hides the region at the bottom
+;; ;; (set-face-attribute 'default nil :height 120)
 
 
-;;lisp editing is better with flashing brackets
-(show-paren-mode)
+;; ;;lisp editing is better with flashing brackets
+;; (show-paren-mode)
 
-;; emacs insanely complicated line wrapping section
-;; when we wake up, we're in emac's default mode
+;; ;; emacs insanely complicated line wrapping section
+;; ;; when we wake up, we're in emac's default mode
 
-;; which is to say that there's no line wrapping or anything going on , and when we type outside of the window, all of the line gets displayed, but there are little arrows in the margins. The cursor works as expected (i.e. it moves the position on the screen, so C-p/up-arrow will move 1 space vertical but may stay on the same line number.
-;; In this default mode, resizing the window will cause the text to flow. 
+;; ;; which is to say that there's no line wrapping or anything going on , and when we type outside of the window, all of the line gets displayed, but there are little arrows in the margins. The cursor works as expected (i.e. it moves the position on the screen, so C-p/up-arrow will move 1 space vertical but may stay on the same line number.
+;; ;; In this default mode, resizing the window will cause the text to flow. 
 
-;; It's non-optimal for C code though, where you'd rather not have the lines wrapping round. 
-;; To do better, use (setq truncate-lines t), which means that each line in the file gets one line in the window, and if you go over the edge, too bad.
-;; You won't get a new line starting (either visually or in the file) unless you press RETURN explicitly.
-;; You can turn that off with (setq truncate-lines nil), which will get you back to 'see everything' mode
+;; ;; It's non-optimal for C code though, where you'd rather not have the lines wrapping round. 
+;; ;; To do better, use (setq truncate-lines t), which means that each line in the file gets one line in the window, and if you go over the edge, too bad.
+;; ;; You won't get a new line starting (either visually or in the file) unless you press RETURN explicitly.
+;; ;; You can turn that off with (setq truncate-lines nil), which will get you back to 'see everything' mode
 
-;; For writing text, neither mode is particularly neat, because the default will break words at the edge of the window, which is deeply annoying.
-;; For text use (setq word-wrap t), which causes the line breaks to happen at word boundaries.
+;; ;; For writing text, neither mode is particularly neat, because the default will break words at the edge of the window, which is deeply annoying.
+;; ;; For text use (setq word-wrap t), which causes the line breaks to happen at word boundaries.
 
-;; We could use (visual-line-mode), which redefines all the editing commands to work on visual lines.
+;; ;; We could use (visual-line-mode), which redefines all the editing commands to work on visual lines.
 
-;; In truncate-lines mode, lines just carry on off the side of the screen, and if you keep typing, the buffer will scroll so that you can always see the cursor
+;; ;; In truncate-lines mode, lines just carry on off the side of the screen, and if you keep typing, the buffer will scroll so that you can always see the cursor
 
-;; You can experiment with these variables
-;; (setq truncate-lines t)
-;; (setq truncate-lines nil)
-;; M-x toggle-truncate-lines
+;; ;; You can experiment with these variables
+;; ;; (setq truncate-lines t)
+;; ;; (setq truncate-lines nil)
+;; ;; M-x toggle-truncate-lines
 
-;; (setq word-wrap t)
-;; (setq word-wrap nil)
-;; M-x toggle-word-wrap
+;; ;; (setq word-wrap t)
+;; ;; (setq word-wrap nil)
+;; ;; M-x toggle-word-wrap
 
-;; There's also 'filling', which is when hard newlines get inserted in the file.
+;; ;; There's also 'filling', which is when hard newlines get inserted in the file.
 
-;; Here is a piece of text. Which is perhaps a little longer than it needs to be. If you press M-q
-;; on it then emacs will insert hard newlines throughout the paragraph.  The place where these
-;; newlines get inserted is the fill-column, which is usually set around 70. Emacs is careful not to
-;; break words when filling. If you find yourself pressing M-q to reformat paragraphs often, then
-;; you want auto-fill-mode.
+;; ;; Here is a piece of text. Which is perhaps a little longer than it needs to be. If you press M-q
+;; ;; on it then emacs will insert hard newlines throughout the paragraph.  The place where these
+;; ;; newlines get inserted is the fill-column, which is usually set around 70. Emacs is careful not to
+;; ;; break words when filling. If you find yourself pressing M-q to reformat paragraphs often, then
+;; ;; you want auto-fill-mode.
 
-;; You can get the fill mode to right-justify text too, using C-u M-q instead of just M-q.
+;; ;; You can get the fill mode to right-justify text too, using C-u M-q instead of just M-q.
 
 
-;; ;; no line wrapping 
-;; (setq-default truncate-lines nil)
-;; ;; set fill column for netbook screen
-;; (setq-default fill-column 80)
+;; ;; ;; no line wrapping 
+;; ;; (setq-default truncate-lines nil)
+;; ;; ;; set fill column for netbook screen
+;; ;; (setq-default fill-column 80)
 
-;; ;; I'd like for text
-;; (setq truncate-lines nil)
-;; (setq word-wrap t)
-;; (setq fill-column 80)
-;; ;; But for code
-;; (setq truncate-lines t)
-;; (setq word-wrap nil)
-;; (setq fill-column 100)
-
-;; Here are some explicit functions to do that
-(defun wrap-as-text()
-  "text mode wrapping, wrap without splitting words in the manner of notepad"
-  (interactive)
-  (setq truncate-lines nil
-        word-wrap t)
-  (setq fill-column 100))
-
-(defun wrap-as-code()
-  "programming mode wrapping, just let lines run off the end"
-  (interactive)
-  (setq truncate-lines t
-        word-wrap nil)
-  (setq fill-column 100))
-
-;; Someone on Stack Overflow suggested:
-;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
-(add-hook 'text-mode-hook (lambda () (wrap-as-text)))
-
-(add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
-
-
-
-
-;sane scrolling (don't jump about when point moves off-screen, just keep it visible)
-(setq scroll-conservatively 10000)
-
-;stop messing about
-(setq even-window-heights nil)
-
-; make emacs use the clipboard
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-
-;make the set-fill-column key, which I never use, go away and stop
-;interfering with C-x C-f for find-file
-(global-set-key (kbd "C-x f") 'find-file)
-
-;these only started working after I disabled all the GNOME A-C-arrow etc keys.
-(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-C-<down>") 'shrink-window)
-(global-set-key (kbd "S-C-<up>") 'enlarge-window)
-
-;whitespace highlighting is useful for python, but annoying usually
-;(global-whitespace-mode)
-
-;; Set to nil so that indentation doesn't use real tab characters
-(setq-default indent-tabs-mode nil)
-
-;; disable overwrite mode, so that accidentally hitting the insert key asks for
-;; confirmation
-(put 'overwrite-mode 'disabled t)
-
-;; ========== Place Backup Files in Specific Directory ==========
-;; Note that a backup gets made the first time you save a file in a session, and not on every save.
-;; Enable backup files.
-(setq make-backup-files t)
-;; And *of course* I want you to make backups of version controlled files as 
-;; well, you stupid shed.
-(setq vc-make-backup-files t)
-; make a copy for backup rather than moving the file and writing a new one.
-; means that hard links survive editing.
-(setq backup-by-copying t)
-;; Keep several previous versions too
-(setq version-control t)
-;; Just delete the excess old versions without asking
-(setq delete-old-versions t)
-;; No of versions to keep. probably excessive, but disk space is cheap.
-(setq 
-  kept-new-versions 100
-  kept-old-versions 100)
-
-
-;; There are various sensible places to put backup files
-
-;; Save all backup files in ~/.emacs_backups directory. Argument one
-;; is a regexp so .* matches everything.
-;; (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
-
-;; Save all backup files in invisible .~ directory in their own directories
-(setq backup-directory-alist (quote (("." . ".~"))))
-
-;; At solarflare, my preferred option was to put everything in /tmp. That avoided having emacs locking up when their crappy network was running slow.
-;; This is a terrible idea on my crash-prone netbook which keeps /tmp in memory though.
-;; (setq backup-directory-alist
-;;      `((".*" . ,temporary-file-directory)))
-;; That's also a good place to put auto-save files, come to think of it
-;;( setq auto-save-file-name-transforms
-;;      `((".*" ,temporary-file-directory t)))
-
-
-
-
-
-;; Put the full path of the file being edited in the titlebar
-(setq frame-title-format '("%b" (buffer-file-name ": %f")))
-
-;; Save the history of kills, and searches
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
-(setq savehist-file "~/.emacs.d/tmp/savehist")
-(savehist-mode t)
-
-;; disable bell function
-(setq ring-bell-function 'ignore)
-;; disable toolbar
-(tool-bar-mode -1)
-;; disable scrollbar
-(toggle-scroll-bar -1)
-;; disable menu bar. actually I quite like the menu bar.
-;(menu-bar-mode -1)
-
-
-
-
-
-;; start emacs server
-(server-start)
-
-;; Unique names for buffers with identical filenames
-; __init__.py, indeed
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)   
-(setq uniquify-separator "/")   
-(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
-(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
-
-
-;; Swap windows with C-x 8
-;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
-(defun swap-windows ()
-  "If you have 2 windows, it swaps them." 
-  (interactive) 
-  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-        (t
-         (let* ((w1 (first (window-list)))
-                (w2 (second (window-list)))
-                (b1 (window-buffer w1))
-                (b2 (window-buffer w2))
-                (s1 (window-start w1))
-                (s2 (window-start w2)))
-           (set-window-buffer w1 b2)
-           (set-window-buffer w2 b1)
-           (set-window-start w1 s2)
-           (set-window-start w2 s1)))))
-
-(define-key global-map (kbd "C-x 8") 'swap-windows)
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; C compilation using F9 for make, F7 and F8 to jump around the errors
-(global-set-key [(f9)] 'compile)
-(global-set-key [(f7)] 'previous-error)
-(global-set-key [(f8)] 'next-error)
-(setq compilation-ask-about-save nil)
-;(setq compilation-window-height 8)
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Clojure-related stuff
-
-;; ;;copy last expression to repl (nrepl version)
-;; (defun copy-last-expression-to-nrepl()
-;;   "copy-last-expression-to-nrepl. Not very clever about it. Finds buffer by name."
+;; ;; ;; I'd like for text
+;; ;; (setq truncate-lines nil)
+;; ;; (setq word-wrap t)
+;; ;; (setq fill-column 80)
+;; ;; ;; But for code
+;; ;; (setq truncate-lines t)
+;; ;; (setq word-wrap nil)
+;; ;; (setq fill-column 100)
+
+;; ;; Here are some explicit functions to do that
+;; (defun wrap-as-text()
+;;   "text mode wrapping, wrap without splitting words in the manner of notepad"
 ;;   (interactive)
-;;   (let((end (point))
-;;        (beg (save-excursion
-;;               (backward-list 1)
-;;               (point)))
-;;        (edit-buffer (current-buffer))
-;;        (lisp-buffer (get-buffer "*nrepl*"))
-;;        (eval-command 'nrepl-return))
-;;   (progn
-;;      (pop-to-buffer lisp-buffer)
-;;      (end-of-buffer)
-;;      (pop-to-buffer edit-buffer)
-;;      (append-to-buffer lisp-buffer beg end)
-;;      (pop-to-buffer lisp-buffer)
-;;      (funcall eval-command)
-;;      (pop-to-buffer edit-buffer))))
+;;   (setq truncate-lines nil
+;;         word-wrap t)
+;;   (setq fill-column 100))
 
-;; ;(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-nrepl)
+;; (defun wrap-as-code()
+;;   "programming mode wrapping, just let lines run off the end"
+;;   (interactive)
+;;   (setq truncate-lines t
+;;         word-wrap nil)
+;;   (setq fill-column 100))
 
-;; (add-hook 'clojure-mode-hook
+;; ;; Someone on Stack Overflow suggested:
+;; ;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
+;; (add-hook 'text-mode-hook (lambda () (wrap-as-text)))
+
+;; (add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
+
+
+
+
+;; ;sane scrolling (don't jump about when point moves off-screen, just keep it visible)
+;; (setq scroll-conservatively 10000)
+
+;; ;stop messing about
+;; (setq even-window-heights nil)
+
+;; ; make emacs use the clipboard
+;; (setq x-select-enable-clipboard t)
+;; (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+;; ;make the set-fill-column key, which I never use, go away and stop
+;; ;interfering with C-x C-f for find-file
+;; (global-set-key (kbd "C-x f") 'find-file)
+
+;; ;these only started working after I disabled all the GNOME A-C-arrow etc keys.
+;; (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+;; (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+;; (global-set-key (kbd "S-C-<down>") 'shrink-window)
+;; (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+
+;; ;whitespace highlighting is useful for python, but annoying usually
+;; ;(global-whitespace-mode)
+
+;; ;; Set to nil so that indentation doesn't use real tab characters
+;; (setq-default indent-tabs-mode nil)
+
+;; ;; disable overwrite mode, so that accidentally hitting the insert key asks for
+;; ;; confirmation
+;; (put 'overwrite-mode 'disabled t)
+
+;; ;; ========== Place Backup Files in Specific Directory ==========
+;; ;; Note that a backup gets made the first time you save a file in a session, and not on every save.
+;; ;; Enable backup files.
+;; (setq make-backup-files t)
+;; ;; And *of course* I want you to make backups of version controlled files as 
+;; ;; well, you stupid shed.
+;; (setq vc-make-backup-files t)
+;; ; make a copy for backup rather than moving the file and writing a new one.
+;; ; means that hard links survive editing.
+;; (setq backup-by-copying t)
+;; ;; Keep several previous versions too
+;; (setq version-control t)
+;; ;; Just delete the excess old versions without asking
+;; (setq delete-old-versions t)
+;; ;; No of versions to keep. probably excessive, but disk space is cheap.
+;; (setq 
+;;   kept-new-versions 100
+;;   kept-old-versions 100)
+
+
+;; ;; There are various sensible places to put backup files
+
+;; ;; Save all backup files in ~/.emacs_backups directory. Argument one
+;; ;; is a regexp so .* matches everything.
+;; ;; (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+
+;; ;; Save all backup files in invisible .~ directory in their own directories
+;; (setq backup-directory-alist (quote (("." . ".~"))))
+
+;; ;; At solarflare, my preferred option was to put everything in /tmp. That avoided having emacs locking up when their crappy network was running slow.
+;; ;; This is a terrible idea on my crash-prone netbook which keeps /tmp in memory though.
+;; ;; (setq backup-directory-alist
+;; ;;      `((".*" . ,temporary-file-directory)))
+;; ;; That's also a good place to put auto-save files, come to think of it
+;; ;;( setq auto-save-file-name-transforms
+;; ;;      `((".*" ,temporary-file-directory t)))
+
+
+
+
+
+;; ;; Put the full path of the file being edited in the titlebar
+;; (setq frame-title-format '("%b" (buffer-file-name ": %f")))
+
+;; ;; Save the history of kills, and searches
+;; (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+;; (setq savehist-file "~/.emacs.d/tmp/savehist")
+;; (savehist-mode t)
+
+;; ;; disable bell function
+;; (setq ring-bell-function 'ignore)
+;; ;; disable toolbar
+;; (tool-bar-mode -1)
+;; ;; disable scrollbar
+;; (toggle-scroll-bar -1)
+;; ;; disable menu bar. actually I quite like the menu bar.
+;; ;(menu-bar-mode -1)
+
+
+
+
+
+;; ;; start emacs server
+;; (server-start)
+
+;; ;; Unique names for buffers with identical filenames
+;; ; __init__.py, indeed
+;; (require 'uniquify)
+;; (setq uniquify-buffer-name-style 'reverse)   
+;; (setq uniquify-separator "/")   
+;; (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
+;; (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
+
+
+;; ;; Swap windows with C-x 8
+;; ;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
+;; (defun swap-windows ()
+;;   "If you have 2 windows, it swaps them." 
+;;   (interactive) 
+;;   (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+;;         (t
+;;          (let* ((w1 (first (window-list)))
+;;                 (w2 (second (window-list)))
+;;                 (b1 (window-buffer w1))
+;;                 (b2 (window-buffer w2))
+;;                 (s1 (window-start w1))
+;;                 (s2 (window-start w2)))
+;;            (set-window-buffer w1 b2)
+;;            (set-window-buffer w2 b1)
+;;            (set-window-start w1 s2)
+;;            (set-window-start w2 s1)))))
+
+;; (define-key global-map (kbd "C-x 8") 'swap-windows)
+
+
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; C compilation using F9 for make, F7 and F8 to jump around the errors
+;; (global-set-key [(f9)] 'compile)
+;; (global-set-key [(f7)] 'previous-error)
+;; (global-set-key [(f8)] 'next-error)
+;; (setq compilation-ask-about-save nil)
+;; ;(setq compilation-window-height 8)
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Clojure-related stuff
+
+;; ;; ;;copy last expression to repl (nrepl version)
+;; ;; (defun copy-last-expression-to-nrepl()
+;; ;;   "copy-last-expression-to-nrepl. Not very clever about it. Finds buffer by name."
+;; ;;   (interactive)
+;; ;;   (let((end (point))
+;; ;;        (beg (save-excursion
+;; ;;               (backward-list 1)
+;; ;;               (point)))
+;; ;;        (edit-buffer (current-buffer))
+;; ;;        (lisp-buffer (get-buffer "*nrepl*"))
+;; ;;        (eval-command 'nrepl-return))
+;; ;;   (progn
+;; ;;      (pop-to-buffer lisp-buffer)
+;; ;;      (end-of-buffer)
+;; ;;      (pop-to-buffer edit-buffer)
+;; ;;      (append-to-buffer lisp-buffer beg end)
+;; ;;      (pop-to-buffer lisp-buffer)
+;; ;;      (funcall eval-command)
+;; ;;      (pop-to-buffer edit-buffer))))
+
+;; ;; ;(define-key global-map (kbd "C-x C-r") 'copy-last-expression-to-nrepl)
+
+;; ;; (add-hook 'clojure-mode-hook
+;; ;;                     (lambda ()
+;; ;;                       (local-set-key (kbd "C-x C-r") 'copy-last-expression-to-nrepl)))
+
+
+
+;; ;; this one takes .clj.html to blogger in clipboard
+;; (fset 'clj-html-to-blogger-copy
+;;    [?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-n ?\C-n ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?. ?c ?l ?o ?j ?u ?r ?e ?- ?\C-s ?/ ?h ?e ?a ?d ?\C-a ?\C-k ?\C-k ?\C-k ?\C-k ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?  ?c ?l ?a ?s ?s ?= ?\" ?c ?l ?o ?j ?u ?r ?e ?- ?b ?o ?o ?\C-? ?d ?y ?\" ?\C-n ?\M-> ?\C-p ?\C-p ?\C-k ?\C-k ?\C-k ?\C-k ?\C-x ?h ?\M-w])
+
+;; ;; keyboard macro of the gods:
+;; ;; evaluates the expression on the line BELOW, and pastes the result afterwards
+
+;; ;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
+;; (fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
+
+;; (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
+
+
+;; ;; set it to be the last keyboard macro, which means that it's executable with f4
+;; (defun restore-eval-paste ()
+;;   (interactive)
+;;   (setq last-kbd-macro 'clj-eval-paste))
+
+;; (restore-eval-paste)
+
+;; (defun restore-eval-paste-below ()
+;;   (interactive)
+;;   (setq last-kbd-macro 'clj-eval-paste-below))
+
+
+;; ;; Compile and goto repl
+;; (fset 'compile-and-goto-repl
+;;    "\C-x\C-s\C-c\C-k\C-c\C-z")
+;; ;; would be great if we could also add C-c M-p to change package somehow
+;; (global-set-key [f6] 'compile-and-goto-repl)
+
+
+;; ;; I've had various favourite things to bind to f5
+
+;; ;;eval and move forwards
+;; (fset 'running-eval
+;;       "\M-\C-x\M-\C-e")
+
+;; ;; A version for making tests
+;; (defun clojure-eval-paste-test ()
+;;   (interactive)
+;;   (next-line)
+;;   (move-beginning-of-line nil)
+;;   (insert "(is= ")
+;;   (forward-sexp)
+;;   (insert " ")
+;;   (nrepl-eval-last-expression 't)
+;;   (sleep-for 0.1)
+;;   (insert ")"))
+
+;; ;; And this one that turns (* 3 4) into (* 3 4) ;-> 12
+;; (defun clj-eval-paste-function ()
+;;   (interactive)
+;;   (next-line)
+;;   (move-beginning-of-line nil)
+;;   (forward-sexp)
+;;   (insert ";") ; make sure there's something to kill
+;;   (left-char 1)
+;;   (kill-line)
+;;   (nrepl-eval-last-expression 't)
+;;   (sleep-for 0.1)
+;;   (backward-sexp)
+;;   (insert " ;-> ")
+;; )
+
+;; ;(global-set-key [f5] #'clojure-eval-paste-test)
+;; ;(global-set-key [f5] 'running-eval)
+;; (global-set-key [f5] 'clj-eval-paste-function)
+
+
+
+
+;; ;; save a list of open files in ~/.emacs.desktop
+;; (desktop-save-mode t)
+
+;; ;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
+;; (setq desktop-restore-eager 5)
+
+;; ;; save a bunch of variables to the desktop file
+;; ;; for lists specify the len of the maximal saved data also
+;; (setq desktop-globals-to-save
+;;       (append '((extended-command-history . 30)
+;;                 (file-name-history        . 100)
+;;                 (grep-history             . 30)
+;;                 (compile-history          . 30)
+;;                 (minibuffer-history       . 50)
+;;                 (query-replace-history    . 60)
+;;                 (read-expression-history  . 60)
+;;                 (regexp-history           . 60)
+;;                 (regexp-search-ring       . 20)
+;;                 (search-ring              . 20)
+;;                 (shell-command-history    . 50)
+;;                 tags-file-name
+;;                 register-alist)))
+
+
+;; (defun path-to-clipboard ()
+;;   "Copy the current file's path to the clipboard.
+;;   If the current buffer has no file, copy the buffer's default directory."
+;;   (interactive)
+;;   (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
+;;     (kill-new path)
+;;     (message "%s" path)))
+
+;; (defun revert-all-buffers ()
+;;   "Refreshes all open buffers from their respective files."
+;;   (interactive)
+;;   (dolist (buf (buffer-list))
+;;     (with-current-buffer buf
+;;       (when (and (buffer-file-name) (not (buffer-modified-p)))
+;;         (revert-buffer t t t) )))
+;;   (message "Refreshed open files."))
+
+;; ;; splits the screen into three windows which I like at the moment
+;; (fset 'split
+;;    [?\C-x ?b ?j ?l ?a ?. ?c return ?\C-x ?3 ?\C-x ?o ?\C-x ?b ?s ?a ?m ?p ?l ?e ?. ?c return ?\C-x ?2 ?\C-x ?o ?\C-x ?b ?* ?c ?o ?m ?p ?i ?l ?a ?t ?i ?o ?n ?* ])
+
+;; (defun sdesk ()
+;;    (interactive)
+;;    (desktop-read "~/solarflare-desktop"))
+
+;; (defun sdesk-save ()
+;;    (interactive)
+;;    (desktop-save "~/solarflare-desktop"))
+
+;; ;; Winner mode, only set up to use the window keys
+;; ;; http://emacs-fu.blogspot.com/search?q=windows
+;; (require 'winner)
+;; (setq winner-dont-bind-my-keys t) ;; default bindings conflict with org-mode
+
+;; (global-set-key (kbd "<C-s-left>") 'winner-undo)
+;; (global-set-key (kbd "<C-s-right>") 'winner-redo)
+
+;; (winner-mode t) ;; turn on the global minor mode
+
+
+
+
+
+;; (put 'upcase-region 'disabled nil)
+;; (put 'downcase-region 'disabled nil)
+
+;; (setq org-support-shift-select 'always)
+
+
+
+
+;; ;; googling code
+;; ;; either M-x google-it
+;; ;; or select something and M-x google-search-selection
+;; (add-to-list 'load-path "~/hobby-code")
+;; (require 'google-search)
+
+
+;; ;; version of that for solarflare's autodocs
+;; (require 'url)
+
+;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
+
+;; (defun autodocs-search-selection ()
+;;   "Search autodocs for current selection"
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (let ((start (region-beginning))
+;;                         (end   (region-end)))
+;;                     (if (> (- end start) autodocs-search-maxlen)
+;;                         (buffer-substring start (+ start autodocs-search-maxlen))
+;;                       (buffer-substring start end)))
+;;                 (read-string "autodocs search: "))))
+;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
+;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
+
+;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
+
+;; (defun region-find-grep (directory)
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (buffer-substring (region-beginning) (region-end))
+;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
+;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
+
+
+;; (defun fgf()
+;;   (interactive)
+;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
+
+;; (defun fgc()
+;;   (interactive)
+;;   (region-find-grep "~/chip_test --ignore-dir=build"))
+
+
+;; (defun fgh()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
+
+;; (defun fgq()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
+
+;; (defun fgi()
+;;   (interactive)
+;;   (region-find-grep "~/iqtest"))
+
+;; (defun fghc()
+;;   (interactive)
+;;   (region-find-grep "~/hobby-code"))
+
+;; (defun fgs()
+;;   (interactive)
+;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
+
+
+
+;; ;; these variables are something to do with splitting.
+;; ;; After evaluating this bit, it seems to prefer horizontal splitting.
+;; (setq split-height-threshold 0) ;; any window can be split horizontally
+;; (setq split-width-threshold nil) ;; but don't split anything vertically
+;; ; can test the behaviour like this
+;; ;(split-window-sensibly (first (window-list)))
+
+
+;; ;; ido makes competing buffers and finding files easier
+;; ;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
+;; (require 'ido) 
+
+;; (setq 
+;;   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
+
+;;   ido-ignore-buffers ;; ignore these guys
+;;   '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
+
+;;      "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+;;   ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
+;;   ido-case-fold  t                 ; be case-insensitive
+
+;;   ido-enable-last-directory-history t ; remember last used dirs
+;;   ido-max-work-directory-list 30   ; should be enough
+;;   ido-max-work-file-list      50   ; remember many
+;;   ido-use-filename-at-point nil    ; don't use filename at point (annoying)
+;;   ido-use-url-at-point nil         ; don't use url at point (annoying)
+
+;;   ido-enable-flex-matching nil     ; don't try to be too smart
+;;   ido-max-prospects 8              ; don't spam my minibuffer
+;;   ido-confirm-unique-completion t) ; wait for RET, even with unique completion
+
+;; ;; when using ido, the confirmation is rather annoying...
+;; (setq confirm-nonexistent-file-or-buffer nil)
+
+
+;; (ido-mode 'both) ;; for buffers and files
+
+;; (require 'windmove)
+;; (windmove-default-keybindings 'super)
+
+
+;; (add-hook 'c-mode-common-hook
+;;   (lambda()
+;;     (local-set-key (kbd "C-c <right>") 'hs-show-block)
+;;     (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+;;     (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+;;     (local-set-key (kbd "C-c <down>")  'hs-show-all)
+;;     (hs-minor-mode t)))
+
+;; ;; undo-tree-mode can be got through the package manager
+;; (require 'undo-tree)
+
+;; (global-undo-tree-mode)
+
+
+;; ;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
+;; (defun yank-escaped-string ()
+;;   (interactive)
+;;   (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
+
+;; ;; If inferior octave mode is hanging without giving a prompt, try making a .octaverc prompt with the prompt emacs' octave mode is expecting
+;; ;; cat >~/.octaverc
+;; ;; PS1(">> ")
+
+
+;; ;; use octave mode for .m files rather than objective-c which is the default in emacs
+;; (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+;; (setq auto-mode-alist (cons '("\\.ocaml$" . tuareg-mode) auto-mode-alist))
+
+;; ;; README.md files are github-flavoured-markdown, so use gfm-mode rather than markdown-mode
+;; (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
+
+;; (defun delete-buffer ()
+;;   (interactive)
+;;   (delete-region (point-min) (point-max)))
+
+;; (defun goto-end-of-other-window ()
+;;   (interactive)
+;;   (other-window 1)
+;;   (end-of-buffer))
+
+;; ;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
+;; ;; kind of the opposite way round to lisp, but it feels right somehow.
+;; ; can't do this in startup. should be in octave mode hook
+;; ;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
+;; ;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
+;; ;(define-key inferior-octave-mode-map "\C-c\M-o" 'delete-buffer)
+
+;; ; Xah Lee shows us a better way:
+;; ;http://ergoemacs.org/emacs/keyboard_shortcuts.html
+;; (add-hook 'octave-mode-hook
 ;;                     (lambda ()
-;;                       (local-set-key (kbd "C-x C-r") 'copy-last-expression-to-nrepl)))
-
-
-
-;; this one takes .clj.html to blogger in clipboard
-(fset 'clj-html-to-blogger-copy
-   [?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-n ?\C-n ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?. ?c ?l ?o ?j ?u ?r ?e ?- ?\C-s ?/ ?h ?e ?a ?d ?\C-a ?\C-k ?\C-k ?\C-k ?\C-k ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?  ?c ?l ?a ?s ?s ?= ?\" ?c ?l ?o ?j ?u ?r ?e ?- ?b ?o ?o ?\C-? ?d ?y ?\" ?\C-n ?\M-> ?\C-p ?\C-p ?\C-k ?\C-k ?\C-k ?\C-k ?\C-x ?h ?\M-w])
-
-;; keyboard macro of the gods:
-;; evaluates the expression on the line BELOW, and pastes the result afterwards
-
-;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
-(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
-
-(fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
-
-
-;; set it to be the last keyboard macro, which means that it's executable with f4
-(defun restore-eval-paste ()
-  (interactive)
-  (setq last-kbd-macro 'clj-eval-paste))
-
-(restore-eval-paste)
-
-(defun restore-eval-paste-below ()
-  (interactive)
-  (setq last-kbd-macro 'clj-eval-paste-below))
-
-
-;; Compile and goto repl
-(fset 'compile-and-goto-repl
-   "\C-x\C-s\C-c\C-k\C-c\C-z")
-;; would be great if we could also add C-c M-p to change package somehow
-(global-set-key [f6] 'compile-and-goto-repl)
-
-
-;; I've had various favourite things to bind to f5
-
-;;eval and move forwards
-(fset 'running-eval
-      "\M-\C-x\M-\C-e")
-
-;; A version for making tests
-(defun clojure-eval-paste-test ()
-  (interactive)
-  (next-line)
-  (move-beginning-of-line nil)
-  (insert "(is= ")
-  (forward-sexp)
-  (insert " ")
-  (nrepl-eval-last-expression 't)
-  (sleep-for 0.1)
-  (insert ")"))
-
-;; And this one that turns (* 3 4) into (* 3 4) ;-> 12
-(defun clj-eval-paste-function ()
-  (interactive)
-  (next-line)
-  (move-beginning-of-line nil)
-  (forward-sexp)
-  (insert ";") ; make sure there's something to kill
-  (left-char 1)
-  (kill-line)
-  (nrepl-eval-last-expression 't)
-  (sleep-for 0.1)
-  (backward-sexp)
-  (insert " ;-> ")
-)
-
-;(global-set-key [f5] #'clojure-eval-paste-test)
-;(global-set-key [f5] 'running-eval)
-(global-set-key [f5] 'clj-eval-paste-function)
-
-
-
-
-;; save a list of open files in ~/.emacs.desktop
-(desktop-save-mode t)
-
-;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
-(setq desktop-restore-eager 5)
-
-;; save a bunch of variables to the desktop file
-;; for lists specify the len of the maximal saved data also
-(setq desktop-globals-to-save
-      (append '((extended-command-history . 30)
-                (file-name-history        . 100)
-                (grep-history             . 30)
-                (compile-history          . 30)
-                (minibuffer-history       . 50)
-                (query-replace-history    . 60)
-                (read-expression-history  . 60)
-                (regexp-history           . 60)
-                (regexp-search-ring       . 20)
-                (search-ring              . 20)
-                (shell-command-history    . 50)
-                tags-file-name
-                register-alist)))
-
-
-(defun path-to-clipboard ()
-  "Copy the current file's path to the clipboard.
-  If the current buffer has no file, copy the buffer's default directory."
-  (interactive)
-  (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
-    (kill-new path)
-    (message "%s" path)))
-
-(defun revert-all-buffers ()
-  "Refreshes all open buffers from their respective files."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (with-current-buffer buf
-      (when (and (buffer-file-name) (not (buffer-modified-p)))
-        (revert-buffer t t t) )))
-  (message "Refreshed open files."))
-
-;; splits the screen into three windows which I like at the moment
-(fset 'split
-   [?\C-x ?b ?j ?l ?a ?. ?c return ?\C-x ?3 ?\C-x ?o ?\C-x ?b ?s ?a ?m ?p ?l ?e ?. ?c return ?\C-x ?2 ?\C-x ?o ?\C-x ?b ?* ?c ?o ?m ?p ?i ?l ?a ?t ?i ?o ?n ?* ])
-
-(defun sdesk ()
-   (interactive)
-   (desktop-read "~/solarflare-desktop"))
-
-(defun sdesk-save ()
-   (interactive)
-   (desktop-save "~/solarflare-desktop"))
-
-;; Winner mode, only set up to use the window keys
-;; http://emacs-fu.blogspot.com/search?q=windows
-(require 'winner)
-(setq winner-dont-bind-my-keys t) ;; default bindings conflict with org-mode
-
-(global-set-key (kbd "<C-s-left>") 'winner-undo)
-(global-set-key (kbd "<C-s-right>") 'winner-redo)
-
-(winner-mode t) ;; turn on the global minor mode
-
-
-
-
-
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
-(setq org-support-shift-select 'always)
-
-
-
-
-;; googling code
-;; either M-x google-it
-;; or select something and M-x google-search-selection
-(add-to-list 'load-path "~/hobby-code")
-(require 'google-search)
-
-
-;; version of that for solarflare's autodocs
-(require 'url)
-
-(defvar autodocs-search-maxlen 50 "Maximum string length of search term")
-
-(defun autodocs-search-selection ()
-  "Search autodocs for current selection"
-  (interactive)
-  (let ((term (if (use-region-p)
-                  (let ((start (region-beginning))
-                        (end   (region-end)))
-                    (if (> (- end start) autodocs-search-maxlen)
-                        (buffer-substring start (+ start autodocs-search-maxlen))
-                      (buffer-substring start end)))
-                (read-string "autodocs search: "))))
-    (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
-                        (url-hexify-string (encode-coding-string term 'utf-8))))))
-
-(defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
-
-(defun region-find-grep (directory)
-  (interactive)
-  (let ((term (if (use-region-p)
-                  (buffer-substring (region-beginning) (region-end))
-                (read-string (concat  "region-find-grep: (" directory ") ")))))
-    (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
-
-
-(defun fgf()
-  (interactive)
-  (region-find-grep "~/firmwaresrc --ignore-dir=build"))
-
-(defun fgc()
-  (interactive)
-  (region-find-grep "~/chip_test --ignore-dir=build"))
-
-
-(defun fgh()
-  (interactive)
-  (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
-
-(defun fgq()
-  (interactive)
-  (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
-
-(defun fgi()
-  (interactive)
-  (region-find-grep "~/iqtest"))
-
-(defun fghc()
-  (interactive)
-  (region-find-grep "~/hobby-code"))
-
-(defun fgs()
-  (interactive)
-  (region-find-grep "~/solar_capture --ignore-dir=build")) 
-
-
-
-;; these variables are something to do with splitting.
-;; After evaluating this bit, it seems to prefer horizontal splitting.
-(setq split-height-threshold 0) ;; any window can be split horizontally
-(setq split-width-threshold nil) ;; but don't split anything vertically
-; can test the behaviour like this
-;(split-window-sensibly (first (window-list)))
-
-
-;; ido makes competing buffers and finding files easier
-;; http://www.emacswiki.org/cgi-bin/wiki/InteractivelyDoThings
-(require 'ido) 
-
-(setq 
-  ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
-
-  ido-ignore-buffers ;; ignore these guys
-  '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
-
-     "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
-  ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
-  ido-case-fold  t                 ; be case-insensitive
-
-  ido-enable-last-directory-history t ; remember last used dirs
-  ido-max-work-directory-list 30   ; should be enough
-  ido-max-work-file-list      50   ; remember many
-  ido-use-filename-at-point nil    ; don't use filename at point (annoying)
-  ido-use-url-at-point nil         ; don't use url at point (annoying)
-
-  ido-enable-flex-matching nil     ; don't try to be too smart
-  ido-max-prospects 8              ; don't spam my minibuffer
-  ido-confirm-unique-completion t) ; wait for RET, even with unique completion
-
-;; when using ido, the confirmation is rather annoying...
-(setq confirm-nonexistent-file-or-buffer nil)
-
-
-(ido-mode 'both) ;; for buffers and files
-
-(require 'windmove)
-(windmove-default-keybindings 'super)
-
-
-(add-hook 'c-mode-common-hook
-  (lambda()
-    (local-set-key (kbd "C-c <right>") 'hs-show-block)
-    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-    (local-set-key (kbd "C-c <down>")  'hs-show-all)
-    (hs-minor-mode t)))
-
-;; undo-tree-mode can be got through the package manager
-(require 'undo-tree)
-
-(global-undo-tree-mode)
-
-
-;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
-(defun yank-escaped-string ()
-  (interactive)
-  (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
-
-;; If inferior octave mode is hanging without giving a prompt, try making a .octaverc prompt with the prompt emacs' octave mode is expecting
-;; cat >~/.octaverc
-;; PS1(">> ")
-
-
-;; use octave mode for .m files rather than objective-c which is the default in emacs
-(setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
-
-(setq auto-mode-alist (cons '("\\.ocaml$" . tuareg-mode) auto-mode-alist))
-
-;; README.md files are github-flavoured-markdown, so use gfm-mode rather than markdown-mode
-(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-
-
-(defun delete-buffer ()
-  (interactive)
-  (delete-region (point-min) (point-max)))
-
-(defun goto-end-of-other-window ()
-  (interactive)
-  (other-window 1)
-  (end-of-buffer))
-
-;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
-;; kind of the opposite way round to lisp, but it feels right somehow.
-; can't do this in startup. should be in octave mode hook
-;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
-;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
-;(define-key inferior-octave-mode-map "\C-c\M-o" 'delete-buffer)
-
-; Xah Lee shows us a better way:
-;http://ergoemacs.org/emacs/keyboard_shortcuts.html
-(add-hook 'octave-mode-hook
-                    (lambda ()
-                      (local-set-key (kbd "C-x C-r") 'octave-send-region)
-                      (local-set-key (kbd "M-C-x") 'octave-send-line)
-                      (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
-
-(add-hook 'inferior-octave-mode-hook
-                    (lambda ()
-                      (local-set-key (kbd "C-c M-o") 'delete-buffer)
-                      (local-set-key (kbd "<f12>") 'other-window)))
-
-;; ; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
-;; ; there too
-
-;; (fset 'py-line-to-repl
-;;       [?\C-a ?\C-  down ?\M-w ?\C-x ?o ?\C-y return ?\C-x ?o])
-
-
-;; (add-hook 'python-mode-hook
-;;                     (lambda ()
-;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)
-;;                       (setq last-kbd-macro 'py-line-to-repl)
-;;                       (local-set-key (kbd "<f5>") 'py-line-to-repl)))
-
-;; (add-hook 'inferior-python-mode-hook
+;;                       (local-set-key (kbd "C-x C-r") 'octave-send-region)
+;;                       (local-set-key (kbd "M-C-x") 'octave-send-line)
+;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
+
+;; (add-hook 'inferior-octave-mode-hook
 ;;                     (lambda ()
 ;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
 ;;                       (local-set-key (kbd "<f12>") 'other-window)))
 
+;; ;; ; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
+;; ;; ; there too
 
-(defun haskellxr ()
-  (interactive)
-  (move-beginning-of-line nil)
-  (set-mark-command nil)
-  (move-end-of-line nil)
-  (kill-ring-save (point) (line-beginning-position nil))
-  (other-window 1)
-  (yank)
-  (comint-send-input)
-  (other-window 1))
+;; ;; (fset 'py-line-to-repl
+;; ;;       [?\C-a ?\C-  down ?\M-w ?\C-x ?o ?\C-y return ?\C-x ?o])
 
 
-(add-hook 'haskell-mode-hook
-                    (lambda ()
-                      (local-set-key (kbd "C-c M-o") 'delete-buffer)
-                      (local-set-key (kbd "<f12>") 'other-window)
-                      (local-set-key (kbd "C-x C-r") 'haskellxr)
-                      (local-set-key (kbd "C-x r") 'haskellxr)))
+;; ;; (add-hook 'python-mode-hook
+;; ;;                     (lambda ()
+;; ;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)
+;; ;;                       (setq last-kbd-macro 'py-line-to-repl)
+;; ;;                       (local-set-key (kbd "<f5>") 'py-line-to-repl)))
 
-(defun kill-all-buffers ()
-  (interactive)
-  (mapc 'kill-buffer (buffer-list)))
-
-
-(defun kill-all-other-buffers ()
-    "Kill all other buffers."
-    (interactive)
-    (mapc 'kill-buffer 
-          (delq (current-buffer) 
-                (remove-if-not 'buffer-file-name (buffer-list)))))
+;; ;; (add-hook 'inferior-python-mode-hook
+;; ;;                     (lambda ()
+;; ;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
+;; ;;                       (local-set-key (kbd "<f12>") 'other-window)))
 
 
+;; (defun haskellxr ()
+;;   (interactive)
+;;   (move-beginning-of-line nil)
+;;   (set-mark-command nil)
+;;   (move-end-of-line nil)
+;;   (kill-ring-save (point) (line-beginning-position nil))
+;;   (other-window 1)
+;;   (yank)
+;;   (comint-send-input)
+;;   (other-window 1))
 
-(global-set-key (kbd "C-x ;") 'comment-region)
 
-;; stop the speedbar jumping around
-(require 'speedbar)
-(speedbar-disable-update)
-(setq speedbar-show-unknown-files t)
+;; (add-hook 'haskell-mode-hook
+;;                     (lambda ()
+;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
+;;                       (local-set-key (kbd "<f12>") 'other-window)
+;;                       (local-set-key (kbd "C-x C-r") 'haskellxr)
+;;                       (local-set-key (kbd "C-x r") 'haskellxr)))
+
+;; (defun kill-all-buffers ()
+;;   (interactive)
+;;   (mapc 'kill-buffer (buffer-list)))
 
 
-
-
-;; Here is some code from http://pastebin.com/VeERJJHs
-;; that disables emacs obnoxious habit of splitting my windows for me
-;; And makes it so that the default split is horizontal rather than vertical
-
-(setq pop-up-windows nil)
- 
-(defun my-display-buffer-function (buf not-this-window)
-  (if (and (not pop-up-frames)
-           (one-window-p)
-           (or not-this-window
-               (not (eq (window-buffer (selected-window)) buf)))
-           (> (frame-width) 162))
-      (split-window-horizontally))
-  ;; Note: Some modules sets `pop-up-windows' to t before calling
-  ;; `display-buffer' -- Why, oh, why!
-  (let ((display-buffer-function nil)
-        (pop-up-windows nil))
-    (display-buffer buf not-this-window)))
- 
-(setq display-buffer-function 'my-display-buffer-function)
-       
-(defun split-window-prefer-side-by-side (&optional window)
-  (let ((split-height-threshold (and (< (window-width window)
-                                        split-width-threshold)
-                                     split-height-threshold)))
-    (split-window-sensibly window)))
- 
-(setq split-window-preferred-function 'split-window-prefer-side-by-side)
-
-;; End of window splitting code
+;; (defun kill-all-other-buffers ()
+;;     "Kill all other buffers."
+;;     (interactive)
+;;     (mapc 'kill-buffer 
+;;           (delq (current-buffer) 
+;;                 (remove-if-not 'buffer-file-name (buffer-list)))))
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
-;;(require 'rainbow-delimiters)
-
-;; (require 'nrepl)
- 
-;; ;; Configure nrepl.el
-;; (setq nrepl-hide-special-buffers t)
-;; (setq nrepl-popup-stacktraces nil)
-;; (setq nrepl-popup-stacktraces-in-repl nil)
-;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
- 
-;; ;; Some default eldoc facilities
-;; (add-hook 'nrepl-connected-hook
-;;           (defun pnh-clojure-mode-eldoc-hook ()
-;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-;;             (nrepl-enable-on-existing-clojure-buffers)))
- 
-;; ;; Repl mode hook
-;; (add-hook 'nrepl-mode-hook 'subword-mode)
- 
-;; ;; Auto completion for NREPL
-;; (require 'ac-nrepl)
-
-;; (eval-after-load "auto-complete"
-;;   '(add-to-list 'ac-modes 'nrepl-mode))
-
-;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-
-;; Object inspector
-
-;; git clone https://github.com/vitalreactor/nrepl-inspect.git
-;; cd nrepl-inspect
-;; lein install
-
-;; and add this to ~/.lein/profiles.clj
-;; {:user 
-;;  {:dependencies [[nrepl-inspect "0.3.0"]]
-;;   :repl-options {:nrepl-middleware
-;;                  [inspector.middleware/wrap-inspect]}}}
-
-;; (load-file "~/nrepl-inspect/nrepl-inspect.el")
-;; (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
-
-
-;; Sadly all the stuff with ritz seems to be well and truly broken, 
-;; but one day...
-
-;; (require 'nrepl-ritz)
-
-;; ;; Ritz middleware
-;; (define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-;; (define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
-;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
-
-
-;; ;; Ack and a half
-;; (require 'ack-and-a-half)
-
-;; (defalias 'ack 'ack-and-a-half)
-;; (defalias 'ack-same 'ack-and-a-half-same)
-;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
-;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-
-
-;; ;; Ramana's theorem prover
-;; (autoload 'hol "/home/john/holstuff/HOL/tools/hol-mode"
-;;      "Runs a HOL session in a comint window.
-;;    With a numeric prefix argument, runs it niced to that level
-;;    or at level 10 with a bare prefix. " t)
-
-;; This is what you actually need to type
-;;(load "/home/john/holstuff/HOL/tools/hol-mode")
-
-
-
-;; ;; disable splash screen and show unknown files in speedbar
-;; (custom-set-variables
-;;  '(inhibit-startup-screen t)
-;;  '(speedbar-show-unknown-files t))
+;; (global-set-key (kbd "C-x ;") 'comment-region)
 
 ;; ;; stop the speedbar jumping around
 ;; (require 'speedbar)
 ;; (speedbar-disable-update)
-
-;; make the speedbar show all files
-;;(custom-set-variables '(speedbar-show-unknown-files t))
-;; even the ones that begin with a dot!
-;;(setq speedbar-directory-unshown-regexp "^$")
-;;(actually, this can be irritating) original behaviour comes back with:
-;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+;; (setq speedbar-show-unknown-files t)
 
 
 
 
+;; ;; Here is some code from http://pastebin.com/VeERJJHs
+;; ;; that disables emacs obnoxious habit of splitting my windows for me
+;; ;; And makes it so that the default split is horizontal rather than vertical
 
-;; ;; Dired command for finding all marked files, use F in dired mode
-;; (eval-after-load "dired"
-;;   '(progn
-;;      (define-key dired-mode-map "F" 'my-dired-find-file)
-;;      (defun my-dired-find-file (&optional arg)
-;;        "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
-;;        (interactive "P")
-;;        (let* ((fn-list (dired-get-marked-files nil arg)))
-;;          (mapc 'find-file fn-list)))))
+;; (setq pop-up-windows nil)
+ 
+;; (defun my-display-buffer-function (buf not-this-window)
+;;   (if (and (not pop-up-frames)
+;;            (one-window-p)
+;;            (or not-this-window
+;;                (not (eq (window-buffer (selected-window)) buf)))
+;;            (> (frame-width) 162))
+;;       (split-window-horizontally))
+;;   ;; Note: Some modules sets `pop-up-windows' to t before calling
+;;   ;; `display-buffer' -- Why, oh, why!
+;;   (let ((display-buffer-function nil)
+;;         (pop-up-windows nil))
+;;     (display-buffer buf not-this-window)))
+ 
+;; (setq display-buffer-function 'my-display-buffer-function)
+       
+;; (defun split-window-prefer-side-by-side (&optional window)
+;;   (let ((split-height-threshold (and (< (window-width window)
+;;                                         split-width-threshold)
+;;                                      split-height-threshold)))
+;;     (split-window-sensibly window)))
+ 
+;; (setq split-window-preferred-function 'split-window-prefer-side-by-side)
 
-;; ;; I occasionally find myself needing to gather lines up one by one and paste
-;; ;; them all somewhere You can do C-space, end, Cxx, M-C-w, M-w to get an
-;; ;; appending yanking version of C-k Or this function should do the same thing.
-;; (defun yank-append-line (arg)
-;;   "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
-;;   (interactive "p")
-;;   (append-next-kill)
-;;   (kill-ring-save (point)
-;;                   (line-beginning-position (+ 1 arg)))
-;;   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
-
-;; (define-key global-map (kbd "M-k") 'yank-append-line)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; python
-
-
-;; use the version of python.el in fgallina's github repository
-;; which should be checked out in the root directory:
-;; cd &&  git clone git://github.com/fgallina/python.el.git
-;; (add-to-list 'load-path "~/python.el/")
-;; (require 'python)
-
-;; this code got move into emacs proper
-
-;; And this is something to do with using a pyenv
-;; environment, which I'm commenting out because I can't remember what it means
-
-;; use the ~/pyenv virtual environment
-;; (setq python-shell-process-environment
-;;       (list
-;;        (format "PATH=%s" (mapconcat
-;;                           'identity
-;;                           (reverse
-;;                            (cons (getenv "PATH")
-;;                                  '("~/pyenv/bin/")))
-;;                           ":"))
-;;        "VIRTUAL_ENV=~/pyenv"))
-
-;; (setq python-shell-exec-path '("~/pyenv/bin/"))
+;; ;; End of window splitting code
 
 
-;; ;; Buffer switching foolishness from http://www.telecom.otago.ac.nz/tele402/emacs.html
-;; ;; Make it easier to navigate buffers
-;; (iswitchb-mode t)
-;; (add-to-list 'iswitchb-buffer-ignore "*Messages*")
-;; (add-to-list 'iswitchb-buffer-ignore "*Completions")
-;; (add-to-list 'iswitchb-buffer-ignore "*ftp ")
-;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
 
 
-(add-hook 'cider-repl-mode-hook #'eldoc-mode)
-(setq cider-repl-display-in-current-window t)
-
-;; better indentation for compojure functions
-(require 'clojure-mode)
-
-(define-clojure-indent
-  (defroutes 'defun)
-  (GET 2)
-  (POST 2)
-  (PUT 2)
-  (DELETE 2)
-  (HEAD 2)
-  (ANY 2)
-  (context 2))
-
-;; ;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
-;; (add-hook 'ess-mode-hook
-;;           (lambda () 
-;;              (ess-toggle-underscore nil)
-;;              (setq ess-fancy-comments nil)))
-
-;; ;; do it twice because the fucking thing will not die
-;; (require 'ess-site)
-;; (ess-toggle-underscore nil)
-;; (setq ess-fancy-comments nil)
-
-;; ;; this might be quicker but the whole thing is so fragile I daren't break it
-;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
-;; Get the inferior shell in which make commands run to load the aliases
-;; See http://stackoverflow.com/questions/10946219/emacs-compilation-mode-wont-see-bash-alias
-;; alternatively use bash -ic make-alias as the compile command
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
 
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(sh-heredoc ((t (:foreground "firebrick")))))
 
 
-;; render verilog mode usable by stopping all the crazy electric nonsense
-(eval-after-load 'verilog-mode
-    '(progn
-        ;; same for all the electric-verilog-* commands in                
-        ;; the mode's map (see verilog-mode.el)                      
-        (define-key verilog-mode-map (kbd ";") 'self-insert-command)
-        (define-key verilog-mode-map (kbd ":") 'self-insert-command)
-        (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
-        (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
 
-(setq verilog-align-ifelse nil)
-(setq verilog-auto-indent-on-newline nil)
-(setq verilog-auto-lineup (quote all))
-(setq verilog-auto-newline nil)
-(setq verilog-indent-begin-after-if nil)
-(setq verilog-indent-lists nil)
-(setq verilog-tab-always-indent nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (sr-speedbar ggtags elpy realgud yaml-mode undo-tree company cider))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
+;; ;;(require 'rainbow-delimiters)
+
+;; ;; (require 'nrepl)
+ 
+;; ;; ;; Configure nrepl.el
+;; ;; (setq nrepl-hide-special-buffers t)
+;; ;; (setq nrepl-popup-stacktraces nil)
+;; ;; (setq nrepl-popup-stacktraces-in-repl nil)
+;; ;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
+ 
+;; ;; ;; Some default eldoc facilities
+;; ;; (add-hook 'nrepl-connected-hook
+;; ;;           (defun pnh-clojure-mode-eldoc-hook ()
+;; ;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+;; ;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+;; ;;             (nrepl-enable-on-existing-clojure-buffers)))
+ 
+;; ;; ;; Repl mode hook
+;; ;; (add-hook 'nrepl-mode-hook 'subword-mode)
+ 
+;; ;; ;; Auto completion for NREPL
+;; ;; (require 'ac-nrepl)
+
+;; ;; (eval-after-load "auto-complete"
+;; ;;   '(add-to-list 'ac-modes 'nrepl-mode))
+
+;; ;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+
+;; ;; Object inspector
+
+;; ;; git clone https://github.com/vitalreactor/nrepl-inspect.git
+;; ;; cd nrepl-inspect
+;; ;; lein install
+
+;; ;; and add this to ~/.lein/profiles.clj
+;; ;; {:user 
+;; ;;  {:dependencies [[nrepl-inspect "0.3.0"]]
+;; ;;   :repl-options {:nrepl-middleware
+;; ;;                  [inspector.middleware/wrap-inspect]}}}
+
+;; ;; (load-file "~/nrepl-inspect/nrepl-inspect.el")
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
+
+
+;; ;; Sadly all the stuff with ritz seems to be well and truly broken, 
+;; ;; but one day...
+
+;; ;; (require 'nrepl-ritz)
+
+;; ;; ;; Ritz middleware
+;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+
+
+;; ;; ;; Ack and a half
+;; ;; (require 'ack-and-a-half)
+
+;; ;; (defalias 'ack 'ack-and-a-half)
+;; ;; (defalias 'ack-same 'ack-and-a-half-same)
+;; ;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
+;; ;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+
+;; ;; ;; Ramana's theorem prover
+;; ;; (autoload 'hol "/home/john/holstuff/HOL/tools/hol-mode"
+;; ;;      "Runs a HOL session in a comint window.
+;; ;;    With a numeric prefix argument, runs it niced to that level
+;; ;;    or at level 10 with a bare prefix. " t)
+
+;; ;; This is what you actually need to type
+;; ;;(load "/home/john/holstuff/HOL/tools/hol-mode")
+
+
+
+;; ;; ;; disable splash screen and show unknown files in speedbar
+;; ;; (custom-set-variables
+;; ;;  '(inhibit-startup-screen t)
+;; ;;  '(speedbar-show-unknown-files t))
+
+;; ;; ;; stop the speedbar jumping around
+;; ;; (require 'speedbar)
+;; ;; (speedbar-disable-update)
+
+;; ;; make the speedbar show all files
+;; ;;(custom-set-variables '(speedbar-show-unknown-files t))
+;; ;; even the ones that begin with a dot!
+;; ;;(setq speedbar-directory-unshown-regexp "^$")
+;; ;;(actually, this can be irritating) original behaviour comes back with:
+;; ;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+
+
+
+
+
+;; ;; ;; Dired command for finding all marked files, use F in dired mode
+;; ;; (eval-after-load "dired"
+;; ;;   '(progn
+;; ;;      (define-key dired-mode-map "F" 'my-dired-find-file)
+;; ;;      (defun my-dired-find-file (&optional arg)
+;; ;;        "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
+;; ;;        (interactive "P")
+;; ;;        (let* ((fn-list (dired-get-marked-files nil arg)))
+;; ;;          (mapc 'find-file fn-list)))))
+
+;; ;; ;; I occasionally find myself needing to gather lines up one by one and paste
+;; ;; ;; them all somewhere You can do C-space, end, Cxx, M-C-w, M-w to get an
+;; ;; ;; appending yanking version of C-k Or this function should do the same thing.
+;; ;; (defun yank-append-line (arg)
+;; ;;   "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
+;; ;;   (interactive "p")
+;; ;;   (append-next-kill)
+;; ;;   (kill-ring-save (point)
+;; ;;                   (line-beginning-position (+ 1 arg)))
+;; ;;   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+;; ;; (define-key global-map (kbd "M-k") 'yank-append-line)
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; python
+
+
+;; ;; use the version of python.el in fgallina's github repository
+;; ;; which should be checked out in the root directory:
+;; ;; cd &&  git clone git://github.com/fgallina/python.el.git
+;; ;; (add-to-list 'load-path "~/python.el/")
+;; ;; (require 'python)
+
+;; ;; this code got move into emacs proper
+
+;; ;; And this is something to do with using a pyenv
+;; ;; environment, which I'm commenting out because I can't remember what it means
+
+;; ;; use the ~/pyenv virtual environment
+;; ;; (setq python-shell-process-environment
+;; ;;       (list
+;; ;;        (format "PATH=%s" (mapconcat
+;; ;;                           'identity
+;; ;;                           (reverse
+;; ;;                            (cons (getenv "PATH")
+;; ;;                                  '("~/pyenv/bin/")))
+;; ;;                           ":"))
+;; ;;        "VIRTUAL_ENV=~/pyenv"))
+
+;; ;; (setq python-shell-exec-path '("~/pyenv/bin/"))
+
+
+;; ;; ;; Buffer switching foolishness from http://www.telecom.otago.ac.nz/tele402/emacs.html
+;; ;; ;; Make it easier to navigate buffers
+;; ;; (iswitchb-mode t)
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*Messages*")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*Completions")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*ftp ")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
+
+
+;; (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+;; (setq cider-repl-display-in-current-window t)
+
+;; ;; better indentation for compojure functions
+;; (require 'clojure-mode)
+
+;; (define-clojure-indent
+;;   (defroutes 'defun)
+;;   (GET 2)
+;;   (POST 2)
+;;   (PUT 2)
+;;   (DELETE 2)
+;;   (HEAD 2)
+;;   (ANY 2)
+;;   (context 2))
+
+;; ;; ;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
+;; ;; (add-hook 'ess-mode-hook
+;; ;;           (lambda () 
+;; ;;              (ess-toggle-underscore nil)
+;; ;;              (setq ess-fancy-comments nil)))
+
+;; ;; ;; do it twice because the fucking thing will not die
+;; ;; (require 'ess-site)
+;; ;; (ess-toggle-underscore nil)
+;; ;; (setq ess-fancy-comments nil)
+
+;; ;; ;; this might be quicker but the whole thing is so fragile I daren't break it
+;; ;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
+;; ;; Get the inferior shell in which make commands run to load the aliases
+;; ;; See http://stackoverflow.com/questions/10946219/emacs-compilation-mode-wont-see-bash-alias
+;; ;; alternatively use bash -ic make-alias as the compile command
+;; (setq shell-file-name "bash")
+;; (setq shell-command-switch "-ic")
+
+
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(sh-heredoc ((t (:foreground "firebrick")))))
+
+
+;; ;; render verilog mode usable by stopping all the crazy electric nonsense
+;; (eval-after-load 'verilog-mode
+;;     '(progn
+;;         ;; same for all the electric-verilog-* commands in                
+;;         ;; the mode's map (see verilog-mode.el)                      
+;;         (define-key verilog-mode-map (kbd ";") 'self-insert-command)
+;;         (define-key verilog-mode-map (kbd ":") 'self-insert-command)
+;;         (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
+;;         (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
+
+;; (setq verilog-align-ifelse nil)
+;; (setq verilog-auto-indent-on-newline nil)
+;; (setq verilog-auto-lineup (quote all))
+;; (setq verilog-auto-newline nil)
+;; (setq verilog-indent-begin-after-if nil)
+;; (setq verilog-indent-lists nil)
+;; (setq verilog-tab-always-indent nil)
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;;     (ggtags elpy realgud yaml-mode undo-tree company cider))))
+
+
+;; ;(require 'sr-speedbar)
