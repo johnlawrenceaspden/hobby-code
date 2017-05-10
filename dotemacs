@@ -1,70 +1,75 @@
 ;; ; -*- mode: lisp-interaction; -*-
 
+;; To reinstall packages, use
+;; (package-refresh-contents)
+;; (package-install-selected-packages)
+
+
+
+(require 'package)
+
+(add-to-list 'package-archives
+	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+
+;; There's also the melpa archive which gets bleeding edge stuff
+;; If enabled, you may need to pin certain packages to the melpa-stable versions
+;;(add-to-list 'package-archives
+;;             '("melpa" . "http://melpa.org/packages/") t)
+;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (company undo-tree ggtags))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+ '(package-selected-packages (quote (company undo-tree ggtags elpy clojure-mode cider))))
 
 
+;; packages are normally enabled after this file has run, do it now instead
+;; then we can require as normal
+(package-initialize)
+;; don't do it twice
+(setq package-enable-at-startup nil) 
 
-
-
-
-;; (require 'package)
-
-;; (package-initialize)
-
-;; (add-to-list 'package-archives
-;; 	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-
-;; ;;(add-to-list 'package-archives
-;; ;;             '("melpa" . "http://melpa.org/packages/") t)
-
-;; ;; uncomment this to update the package lists
-;; ;; (package-refresh-contents)
-
-;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
-
-;; (defvar my-packages '(clojure-mode
-;;                       cider
-;; 		      company
-;;                       undo-tree))
-
-;; (dolist (p my-packages)
-;;   (unless (package-installed-p p)
-;;     (package-install p)))
-
-;; ;; packages are normally enabled after this file has run, do it now instead
-;; ;; then we can require as normal
-;; (setq package-enable-at-startup nil)
+;; start emacs server so that we can load files from the command line
+(server-start)
 
 ;; ;;emacs color themes are in the package emacs-goodies-el on ubuntu
-;; (require 'color-theme)
-;; (color-theme-initialize)
+;;(require 'color-theme)
+(color-theme-initialize)
 ;; ;;here are the ones I find usable
 ;; ;(color-theme-billw)
-;; (color-theme-gtk-ide)
+(color-theme-gtk-ide)
 ;; ;(color-theme-katester)
 ;; ;(color-theme-midnight)
 ;; ;(color-theme-retro-green)
 ;; ;(color-theme-retro-orange)
 ;; ;(color-theme-scintilla)
 
+;;lisp editing is better with flashing brackets
+(show-paren-mode)
+
+;; Set to nil so that indentation doesn't use real tab characters
+(setq-default indent-tabs-mode nil)
+
+;; disable overwrite mode, so that accidentally hitting the insert key asks for confirmation
+(put 'overwrite-mode 'disabled t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Boundary between new and old
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
 ;; ;; nice big letters. problem with this is it enlarges the window off the screen
 ;; ;; and hides the region at the bottom
 ;; ;; (set-face-attribute 'default nil :height 120)
 
 
-;; ;;lisp editing is better with flashing brackets
-;; (show-paren-mode)
 
 ;; ;; emacs insanely complicated line wrapping section
 ;; ;; when we wake up, we're in emac's default mode
@@ -165,12 +170,6 @@
 ;; ;whitespace highlighting is useful for python, but annoying usually
 ;; ;(global-whitespace-mode)
 
-;; ;; Set to nil so that indentation doesn't use real tab characters
-;; (setq-default indent-tabs-mode nil)
-
-;; ;; disable overwrite mode, so that accidentally hitting the insert key asks for
-;; ;; confirmation
-;; (put 'overwrite-mode 'disabled t)
 
 ;; ;; ========== Place Backup Files in Specific Directory ==========
 ;; ;; Note that a backup gets made the first time you save a file in a session, and not on every save.
@@ -234,8 +233,6 @@
 
 
 
-;; ;; start emacs server
-;; (server-start)
 
 ;; ;; Unique names for buffers with identical filenames
 ;; ; __init__.py, indeed
