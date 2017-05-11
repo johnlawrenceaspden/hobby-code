@@ -69,8 +69,7 @@
 ;; only restore the first few buffers when restoring a desktop. The rest get restored in the background, which means emacs becomes responsive earlier.
 (setq desktop-restore-eager 5)
 
-;; save a bunch of variables to the desktop file
-;; for lists specify the len of the maximal saved data also
+;; save a bunch of variables to the desktop file (for lists specify the length of the maximal saved data also)
 (setq desktop-globals-to-save
       (append '((extended-command-history . 30)
                 (file-name-history        . 100)
@@ -86,6 +85,28 @@
                 tags-file-name
                 register-alist)))
 
+;; make the set-fill-column key, which I never use, go away and stop interfering with C-x C-f for find-file
+(global-set-key (kbd "C-x f") 'find-file)
+
+;; disable bell function
+;(setq ring-bell-function 'ignore)
+;; disable toolbar
+(tool-bar-mode -1)
+;; disable scrollbar
+;(toggle-scroll-bar -1)
+;; disable menu bar. actually I quite like the menu bar.
+;(menu-bar-mode -1)
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C compilation using F9 for make, F7 and F8 to jump around the errors
+(global-set-key [(f9)] 'compile)
+(global-set-key [(f7)] 'previous-error)
+(global-set-key [(f8)] 'next-error)
+(setq compilation-ask-about-save nil)
+;(setq compilation-window-height 8)
 
 
 
@@ -190,9 +211,6 @@
 ;; (setq x-select-enable-clipboard t)
 ;; (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
-;; ;make the set-fill-column key, which I never use, go away and stop
-;; ;interfering with C-x C-f for find-file
-;; (global-set-key (kbd "C-x f") 'find-file)
 
 ;; ;these only started working after I disabled all the GNOME A-C-arrow etc keys.
 ;; (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
@@ -246,14 +264,6 @@
 
 
 
-;; ;; disable bell function
-;; (setq ring-bell-function 'ignore)
-;; ;; disable toolbar
-;; (tool-bar-mode -1)
-;; ;; disable scrollbar
-;; (toggle-scroll-bar -1)
-;; ;; disable menu bar. actually I quite like the menu bar.
-;; ;(menu-bar-mode -1)
 
 
 
@@ -293,13 +303,6 @@
 
 
 
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; C compilation using F9 for make, F7 and F8 to jump around the errors
-;; (global-set-key [(f9)] 'compile)
-;; (global-set-key [(f7)] 'previous-error)
-;; (global-set-key [(f8)] 'next-error)
-;; (setq compilation-ask-about-save nil)
-;; ;(setq compilation-window-height 8)
 
 
 
