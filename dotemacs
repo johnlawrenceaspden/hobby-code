@@ -166,8 +166,38 @@
 (ido-mode 'both) ;; for buffers and files
 
 
+;; undo tree mode
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
+(defun yank-escaped-string ()
+  (interactive)
+  (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
 
 
+
+(defun kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+
+
+(defun kill-all-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+
+
+
+(global-set-key (kbd "C-x ;") 'comment-region)
+
+;; Get the inferior shell in which make commands run to load the aliases
+;; See http://stackoverflow.com/questions/10946219/emacs-compilation-mode-wont-see-bash-alias
+;; alternatively use bash -ic make-alias as the compile command
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
 
 
 
@@ -187,505 +217,23 @@
 
 
 
-;; (put 'upcase-region 'disabled nil)
-;; (put 'downcase-region 'disabled nil)
 
-;; (setq org-support-shift-select 'always)
 
 
 
 
-;; ;; googling code
-;; ;; either M-x google-it
-;; ;; or select something and M-x google-search-selection
-;; (add-to-list 'load-path "~/hobby-code")
-;; (require 'google-search)
 
 
-;; ;; version of that for solarflare's autodocs
-;; (require 'url)
 
-;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
 
-;; (defun autodocs-search-selection ()
-;;   "Search autodocs for current selection"
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (let ((start (region-beginning))
-;;                         (end   (region-end)))
-;;                     (if (> (- end start) autodocs-search-maxlen)
-;;                         (buffer-substring start (+ start autodocs-search-maxlen))
-;;                       (buffer-substring start end)))
-;;                 (read-string "autodocs search: "))))
-;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
-;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
 
-;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
 
-;; (defun region-find-grep (directory)
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (buffer-substring (region-beginning) (region-end))
-;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
 
 
-;; (defun fgf()
-;;   (interactive)
-;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
 
-;; (defun fgc()
-;;   (interactive)
-;;   (region-find-grep "~/chip_test --ignore-dir=build"))
 
 
-;; (defun fgh()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
 
-;; (defun fgq()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
-
-;; (defun fgi()
-;;   (interactive)
-;;   (region-find-grep "~/iqtest"))
-
-;; (defun fghc()
-;;   (interactive)
-;;   (region-find-grep "~/hobby-code"))
-
-;; (defun fgs()
-;;   (interactive)
-;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
-
-
-
-;; ;; these variables are something to do with splitting.
-;; ;; After evaluating this bit, it seems to prefer horizontal splitting.
-;; (setq split-height-threshold 0) ;; any window can be split horizontally
-;; (setq split-width-threshold nil) ;; but don't split anything vertically
-;; ; can test the behaviour like this
-;; ;(split-window-sensibly (first (window-list)))
-
-
-
-;; (require 'windmove)
-;; (windmove-default-keybindings 'super)
-
-
-;; (add-hook 'c-mode-common-hook
-;;   (lambda()
-;;     (local-set-key (kbd "C-c <right>") 'hs-show-block)
-;;     (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-;;     (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-;;     (local-set-key (kbd "C-c <down>")  'hs-show-all)
-;;     (hs-minor-mode t)))
-
-;; ;; undo-tree-mode can be got through the package manager
-;; (require 'undo-tree)
-
-;; (global-undo-tree-mode)
-
-
-;; ;; http://stackoverflow.com/questions/2045781/simple-way-to-add-escape-characters-to-a-string
-;; (defun yank-escaped-string ()
-;;   (interactive)
-;;   (insert (prin1-to-string (substring-no-properties (current-kill 0)))))
-
-;; ;; If inferior octave mode is hanging without giving a prompt, try making a .octaverc prompt with the prompt emacs' octave mode is expecting
-;; ;; cat >~/.octaverc
-;; ;; PS1(">> ")
-
-
-;; ;; use octave mode for .m files rather than objective-c which is the default in emacs
-;; (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
-
-;; (setq auto-mode-alist (cons '("\\.ocaml$" . tuareg-mode) auto-mode-alist))
-
-;; ;; README.md files are github-flavoured-markdown, so use gfm-mode rather than markdown-mode
-;; (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
-
-
-;; (defun delete-buffer ()
-;;   (interactive)
-;;   (delete-region (point-min) (point-max)))
-
-;; (defun goto-end-of-other-window ()
-;;   (interactive)
-;;   (other-window 1)
-;;   (end-of-buffer))
-
-;; ;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
-;; ;; kind of the opposite way round to lisp, but it feels right somehow.
-;; ; can't do this in startup. should be in octave mode hook
-;; ;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
-;; ;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
-;; ;(define-key inferior-octave-mode-map "\C-c\M-o" 'delete-buffer)
-
-;; ; Xah Lee shows us a better way:
-;; ;http://ergoemacs.org/emacs/keyboard_shortcuts.html
-;; (add-hook 'octave-mode-hook
-;;                     (lambda ()
-;;                       (local-set-key (kbd "C-x C-r") 'octave-send-region)
-;;                       (local-set-key (kbd "M-C-x") 'octave-send-line)
-;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
-
-;; (add-hook 'inferior-octave-mode-hook
-;;                     (lambda ()
-;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
-;;                       (local-set-key (kbd "<f12>") 'other-window)))
-
-;; ;; ; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
-;; ;; ; there too
-
-;; ;; (fset 'py-line-to-repl
-;; ;;       [?\C-a ?\C-  down ?\M-w ?\C-x ?o ?\C-y return ?\C-x ?o])
-
-
-;; ;; (add-hook 'python-mode-hook
-;; ;;                     (lambda ()
-;; ;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)
-;; ;;                       (setq last-kbd-macro 'py-line-to-repl)
-;; ;;                       (local-set-key (kbd "<f5>") 'py-line-to-repl)))
-
-;; ;; (add-hook 'inferior-python-mode-hook
-;; ;;                     (lambda ()
-;; ;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
-;; ;;                       (local-set-key (kbd "<f12>") 'other-window)))
-
-
-;; (defun haskellxr ()
-;;   (interactive)
-;;   (move-beginning-of-line nil)
-;;   (set-mark-command nil)
-;;   (move-end-of-line nil)
-;;   (kill-ring-save (point) (line-beginning-position nil))
-;;   (other-window 1)
-;;   (yank)
-;;   (comint-send-input)
-;;   (other-window 1))
-
-
-;; (add-hook 'haskell-mode-hook
-;;                     (lambda ()
-;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
-;;                       (local-set-key (kbd "<f12>") 'other-window)
-;;                       (local-set-key (kbd "C-x C-r") 'haskellxr)
-;;                       (local-set-key (kbd "C-x r") 'haskellxr)))
-
-;; (defun kill-all-buffers ()
-;;   (interactive)
-;;   (mapc 'kill-buffer (buffer-list)))
-
-
-;; (defun kill-all-other-buffers ()
-;;     "Kill all other buffers."
-;;     (interactive)
-;;     (mapc 'kill-buffer 
-;;           (delq (current-buffer) 
-;;                 (remove-if-not 'buffer-file-name (buffer-list)))))
-
-
-
-;; (global-set-key (kbd "C-x ;") 'comment-region)
-
-;; ;; stop the speedbar jumping around
-;; (require 'speedbar)
-;; (speedbar-disable-update)
-;; (setq speedbar-show-unknown-files t)
-
-
-
-
-;; ;; Here is some code from http://pastebin.com/VeERJJHs
-;; ;; that disables emacs obnoxious habit of splitting my windows for me
-;; ;; And makes it so that the default split is horizontal rather than vertical
-
-;; (setq pop-up-windows nil)
- 
-;; (defun my-display-buffer-function (buf not-this-window)
-;;   (if (and (not pop-up-frames)
-;;            (one-window-p)
-;;            (or not-this-window
-;;                (not (eq (window-buffer (selected-window)) buf)))
-;;            (> (frame-width) 162))
-;;       (split-window-horizontally))
-;;   ;; Note: Some modules sets `pop-up-windows' to t before calling
-;;   ;; `display-buffer' -- Why, oh, why!
-;;   (let ((display-buffer-function nil)
-;;         (pop-up-windows nil))
-;;     (display-buffer buf not-this-window)))
- 
-;; (setq display-buffer-function 'my-display-buffer-function)
-       
-;; (defun split-window-prefer-side-by-side (&optional window)
-;;   (let ((split-height-threshold (and (< (window-width window)
-;;                                         split-width-threshold)
-;;                                      split-height-threshold)))
-;;     (split-window-sensibly window)))
- 
-;; (setq split-window-preferred-function 'split-window-prefer-side-by-side)
-
-;; ;; End of window splitting code
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
-;; ;;(require 'rainbow-delimiters)
-
-;; ;; (require 'nrepl)
- 
-;; ;; ;; Configure nrepl.el
-;; ;; (setq nrepl-hide-special-buffers t)
-;; ;; (setq nrepl-popup-stacktraces nil)
-;; ;; (setq nrepl-popup-stacktraces-in-repl nil)
-;; ;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
- 
-;; ;; ;; Some default eldoc facilities
-;; ;; (add-hook 'nrepl-connected-hook
-;; ;;           (defun pnh-clojure-mode-eldoc-hook ()
-;; ;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-;; ;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-;; ;;             (nrepl-enable-on-existing-clojure-buffers)))
- 
-;; ;; ;; Repl mode hook
-;; ;; (add-hook 'nrepl-mode-hook 'subword-mode)
- 
-;; ;; ;; Auto completion for NREPL
-;; ;; (require 'ac-nrepl)
-
-;; ;; (eval-after-load "auto-complete"
-;; ;;   '(add-to-list 'ac-modes 'nrepl-mode))
-
-;; ;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-
-;; ;; Object inspector
-
-;; ;; git clone https://github.com/vitalreactor/nrepl-inspect.git
-;; ;; cd nrepl-inspect
-;; ;; lein install
-
-;; ;; and add this to ~/.lein/profiles.clj
-;; ;; {:user 
-;; ;;  {:dependencies [[nrepl-inspect "0.3.0"]]
-;; ;;   :repl-options {:nrepl-middleware
-;; ;;                  [inspector.middleware/wrap-inspect]}}}
-
-;; ;; (load-file "~/nrepl-inspect/nrepl-inspect.el")
-;; ;; (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
-
-
-;; ;; Sadly all the stuff with ritz seems to be well and truly broken, 
-;; ;; but one day...
-
-;; ;; (require 'nrepl-ritz)
-
-;; ;; ;; Ritz middleware
-;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-;; ;; (define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
-;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
-;; ;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
-
-
-;; ;; ;; Ack and a half
-;; ;; (require 'ack-and-a-half)
-
-;; ;; (defalias 'ack 'ack-and-a-half)
-;; ;; (defalias 'ack-same 'ack-and-a-half-same)
-;; ;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
-;; ;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
-
-
-;; ;; ;; Ramana's theorem prover
-;; ;; (autoload 'hol "/home/john/holstuff/HOL/tools/hol-mode"
-;; ;;      "Runs a HOL session in a comint window.
-;; ;;    With a numeric prefix argument, runs it niced to that level
-;; ;;    or at level 10 with a bare prefix. " t)
-
-;; ;; This is what you actually need to type
-;; ;;(load "/home/john/holstuff/HOL/tools/hol-mode")
-
-
-
-;; ;; ;; disable splash screen and show unknown files in speedbar
-;; ;; (custom-set-variables
-;; ;;  '(inhibit-startup-screen t)
-;; ;;  '(speedbar-show-unknown-files t))
-
-;; ;; ;; stop the speedbar jumping around
-;; ;; (require 'speedbar)
-;; ;; (speedbar-disable-update)
-
-;; ;; make the speedbar show all files
-;; ;;(custom-set-variables '(speedbar-show-unknown-files t))
-;; ;; even the ones that begin with a dot!
-;; ;;(setq speedbar-directory-unshown-regexp "^$")
-;; ;;(actually, this can be irritating) original behaviour comes back with:
-;; ;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
-
-
-
-
-
-;; ;; ;; Dired command for finding all marked files, use F in dired mode
-;; ;; (eval-after-load "dired"
-;; ;;   '(progn
-;; ;;      (define-key dired-mode-map "F" 'my-dired-find-file)
-;; ;;      (defun my-dired-find-file (&optional arg)
-;; ;;        "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
-;; ;;        (interactive "P")
-;; ;;        (let* ((fn-list (dired-get-marked-files nil arg)))
-;; ;;          (mapc 'find-file fn-list)))))
-
-;; ;; ;; I occasionally find myself needing to gather lines up one by one and paste
-;; ;; ;; them all somewhere You can do C-space, end, Cxx, M-C-w, M-w to get an
-;; ;; ;; appending yanking version of C-k Or this function should do the same thing.
-;; ;; (defun yank-append-line (arg)
-;; ;;   "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
-;; ;;   (interactive "p")
-;; ;;   (append-next-kill)
-;; ;;   (kill-ring-save (point)
-;; ;;                   (line-beginning-position (+ 1 arg)))
-;; ;;   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
-
-;; ;; (define-key global-map (kbd "M-k") 'yank-append-line)
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; python
-
-
-;; ;; use the version of python.el in fgallina's github repository
-;; ;; which should be checked out in the root directory:
-;; ;; cd &&  git clone git://github.com/fgallina/python.el.git
-;; ;; (add-to-list 'load-path "~/python.el/")
-;; ;; (require 'python)
-
-;; ;; this code got move into emacs proper
-
-;; ;; And this is something to do with using a pyenv
-;; ;; environment, which I'm commenting out because I can't remember what it means
-
-;; ;; use the ~/pyenv virtual environment
-;; ;; (setq python-shell-process-environment
-;; ;;       (list
-;; ;;        (format "PATH=%s" (mapconcat
-;; ;;                           'identity
-;; ;;                           (reverse
-;; ;;                            (cons (getenv "PATH")
-;; ;;                                  '("~/pyenv/bin/")))
-;; ;;                           ":"))
-;; ;;        "VIRTUAL_ENV=~/pyenv"))
-
-;; ;; (setq python-shell-exec-path '("~/pyenv/bin/"))
-
-
-;; ;; ;; Buffer switching foolishness from http://www.telecom.otago.ac.nz/tele402/emacs.html
-;; ;; ;; Make it easier to navigate buffers
-;; ;; (iswitchb-mode t)
-;; ;; (add-to-list 'iswitchb-buffer-ignore "*Messages*")
-;; ;; (add-to-list 'iswitchb-buffer-ignore "*Completions")
-;; ;; (add-to-list 'iswitchb-buffer-ignore "*ftp ")
-;; ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
-
-
-;; (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-;; (setq cider-repl-display-in-current-window t)
-
-;; ;; better indentation for compojure functions
-;; (require 'clojure-mode)
-
-;; (define-clojure-indent
-;;   (defroutes 'defun)
-;;   (GET 2)
-;;   (POST 2)
-;;   (PUT 2)
-;;   (DELETE 2)
-;;   (HEAD 2)
-;;   (ANY 2)
-;;   (context 2))
-
-;; ;; ;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
-;; ;; (add-hook 'ess-mode-hook
-;; ;;           (lambda () 
-;; ;;              (ess-toggle-underscore nil)
-;; ;;              (setq ess-fancy-comments nil)))
-
-;; ;; ;; do it twice because the fucking thing will not die
-;; ;; (require 'ess-site)
-;; ;; (ess-toggle-underscore nil)
-;; ;; (setq ess-fancy-comments nil)
-
-;; ;; ;; this might be quicker but the whole thing is so fragile I daren't break it
-;; ;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
-;; ;; Get the inferior shell in which make commands run to load the aliases
-;; ;; See http://stackoverflow.com/questions/10946219/emacs-compilation-mode-wont-see-bash-alias
-;; ;; alternatively use bash -ic make-alias as the compile command
-;; (setq shell-file-name "bash")
-;; (setq shell-command-switch "-ic")
-
-
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(sh-heredoc ((t (:foreground "firebrick")))))
-
-
-;; ;; render verilog mode usable by stopping all the crazy electric nonsense
-;; (eval-after-load 'verilog-mode
-;;     '(progn
-;;         ;; same for all the electric-verilog-* commands in                
-;;         ;; the mode's map (see verilog-mode.el)                      
-;;         (define-key verilog-mode-map (kbd ";") 'self-insert-command)
-;;         (define-key verilog-mode-map (kbd ":") 'self-insert-command)
-;;         (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
-;;         (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
-
-;; (setq verilog-align-ifelse nil)
-;; (setq verilog-auto-indent-on-newline nil)
-;; (setq verilog-auto-lineup (quote all))
-;; (setq verilog-auto-newline nil)
-;; (setq verilog-indent-begin-after-if nil)
-;; (setq verilog-indent-lists nil)
-;; (setq verilog-tab-always-indent nil)
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(package-selected-packages
-;;    (quote
-;;     (ggtags elpy realgud yaml-mode undo-tree company cider))))
-
-
-;; ;(require 'sr-speedbar)
 
 
 
@@ -998,3 +546,463 @@
 ;; (defun sdesk-save ()
 ;;    (interactive)
 ;;    (desktop-save "~/solarflare-desktop"))
+
+
+
+;; (put 'upcase-region 'disabled nil)
+;; (put 'downcase-region 'disabled nil)
+
+;; (setq org-support-shift-select 'always)
+
+
+
+
+;; ;; googling code
+;; ;; either M-x google-it
+;; ;; or select something and M-x google-search-selection
+;; (add-to-list 'load-path "~/hobby-code")
+;; (require 'google-search)
+
+
+;; ;; version of that for solarflare's autodocs
+;; (require 'url)
+
+;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
+
+;; (defun autodocs-search-selection ()
+;;   "Search autodocs for current selection"
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (let ((start (region-beginning))
+;;                         (end   (region-end)))
+;;                     (if (> (- end start) autodocs-search-maxlen)
+;;                         (buffer-substring start (+ start autodocs-search-maxlen))
+;;                       (buffer-substring start end)))
+;;                 (read-string "autodocs search: "))))
+;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
+;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
+
+;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
+
+;; (defun region-find-grep (directory)
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (buffer-substring (region-beginning) (region-end))
+;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
+;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
+
+
+;; (defun fgf()
+;;   (interactive)
+;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
+
+;; (defun fgc()
+;;   (interactive)
+;;   (region-find-grep "~/chip_test --ignore-dir=build"))
+
+
+;; (defun fgh()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
+
+;; (defun fgq()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
+
+;; (defun fgi()
+;;   (interactive)
+;;   (region-find-grep "~/iqtest"))
+
+;; (defun fghc()
+;;   (interactive)
+;;   (region-find-grep "~/hobby-code"))
+
+;; (defun fgs()
+;;   (interactive)
+;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
+
+
+
+;; ;; these variables are something to do with splitting.
+;; ;; After evaluating this bit, it seems to prefer horizontal splitting.
+;; (setq split-height-threshold 0) ;; any window can be split horizontally
+;; (setq split-width-threshold nil) ;; but don't split anything vertically
+;; ; can test the behaviour like this
+;; ;(split-window-sensibly (first (window-list)))
+
+
+
+;; (require 'windmove)
+;; (windmove-default-keybindings 'super)
+
+
+;; (add-hook 'c-mode-common-hook
+;;   (lambda()
+;;     (local-set-key (kbd "C-c <right>") 'hs-show-block)
+;;     (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+;;     (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+;;     (local-set-key (kbd "C-c <down>")  'hs-show-all)
+;;     (hs-minor-mode t)))
+
+
+;; ;; If inferior octave mode is hanging without giving a prompt, try making a .octaverc prompt with the prompt emacs' octave mode is expecting
+;; ;; cat >~/.octaverc
+;; ;; PS1(">> ")
+
+
+;; ;; use octave mode for .m files rather than objective-c which is the default in emacs
+;; (setq auto-mode-alist (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+;; (setq auto-mode-alist (cons '("\\.ocaml$" . tuareg-mode) auto-mode-alist))
+
+;; ;; README.md files are github-flavoured-markdown, so use gfm-mode rather than markdown-mode
+;; (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+
+
+;; (defun delete-buffer ()
+;;   (interactive)
+;;   (delete-region (point-min) (point-max)))
+
+;; (defun goto-end-of-other-window ()
+;;   (interactive)
+;;   (other-window 1)
+;;   (end-of-buffer))
+
+;; ;; In octave mode send the current region on Control X Control R, and the current line on Alt-Ctrl-X, 
+;; ;; kind of the opposite way round to lisp, but it feels right somehow.
+;; ; can't do this in startup. should be in octave mode hook
+;; ;(define-key octave-mode-map "\C-x\C-r" 'octave-send-region)
+;; ;(define-key octave-mode-map "\M-\C-x" 'octave-send-line)
+;; ;(define-key inferior-octave-mode-map "\C-c\M-o" 'delete-buffer)
+
+;; ; Xah Lee shows us a better way:
+;; ;http://ergoemacs.org/emacs/keyboard_shortcuts.html
+;; (add-hook 'octave-mode-hook
+;;                     (lambda ()
+;;                       (local-set-key (kbd "C-x C-r") 'octave-send-region)
+;;                       (local-set-key (kbd "M-C-x") 'octave-send-line)
+;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)))
+
+;; (add-hook 'inferior-octave-mode-hook
+;;                     (lambda ()
+;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
+;;                       (local-set-key (kbd "<f12>") 'other-window)))
+
+;; ;; ; python already has C-x C-r and M-C-x bound nicely, but the jump about and clear repl keys are useful
+;; ;; ; there too
+
+;; ;; (fset 'py-line-to-repl
+;; ;;       [?\C-a ?\C-  down ?\M-w ?\C-x ?o ?\C-y return ?\C-x ?o])
+
+
+;; ;; (add-hook 'python-mode-hook
+;; ;;                     (lambda ()
+;; ;;                       (local-set-key (kbd "<f12>") 'goto-end-of-other-window)
+;; ;;                       (setq last-kbd-macro 'py-line-to-repl)
+;; ;;                       (local-set-key (kbd "<f5>") 'py-line-to-repl)))
+
+;; ;; (add-hook 'inferior-python-mode-hook
+;; ;;                     (lambda ()
+;; ;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
+;; ;;                       (local-set-key (kbd "<f12>") 'other-window)))
+
+
+;; (defun haskellxr ()
+;;   (interactive)
+;;   (move-beginning-of-line nil)
+;;   (set-mark-command nil)
+;;   (move-end-of-line nil)
+;;   (kill-ring-save (point) (line-beginning-position nil))
+;;   (other-window 1)
+;;   (yank)
+;;   (comint-send-input)
+;;   (other-window 1))
+
+
+;; (add-hook 'haskell-mode-hook
+;;                     (lambda ()
+;;                       (local-set-key (kbd "C-c M-o") 'delete-buffer)
+;;                       (local-set-key (kbd "<f12>") 'other-window)
+;;                       (local-set-key (kbd "C-x C-r") 'haskellxr)
+;;                       (local-set-key (kbd "C-x r") 'haskellxr)))
+
+
+;; ;; stop the speedbar jumping around
+;; (require 'speedbar)
+;; (speedbar-disable-update)
+;; (setq speedbar-show-unknown-files t)
+
+
+
+
+;; ;; Here is some code from http://pastebin.com/VeERJJHs
+;; ;; that disables emacs obnoxious habit of splitting my windows for me
+;; ;; And makes it so that the default split is horizontal rather than vertical
+
+;; (setq pop-up-windows nil)
+ 
+;; (defun my-display-buffer-function (buf not-this-window)
+;;   (if (and (not pop-up-frames)
+;;            (one-window-p)
+;;            (or not-this-window
+;;                (not (eq (window-buffer (selected-window)) buf)))
+;;            (> (frame-width) 162))
+;;       (split-window-horizontally))
+;;   ;; Note: Some modules sets `pop-up-windows' to t before calling
+;;   ;; `display-buffer' -- Why, oh, why!
+;;   (let ((display-buffer-function nil)
+;;         (pop-up-windows nil))
+;;     (display-buffer buf not-this-window)))
+ 
+;; (setq display-buffer-function 'my-display-buffer-function)
+       
+;; (defun split-window-prefer-side-by-side (&optional window)
+;;   (let ((split-height-threshold (and (< (window-width window)
+;;                                         split-width-threshold)
+;;                                      split-height-threshold)))
+;;     (split-window-sensibly window)))
+ 
+;; (setq split-window-preferred-function 'split-window-prefer-side-by-side)
+
+;; ;; End of window splitting code
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Stuff from http://ianeslick.com/2013/05/17/clojure-debugging-13-emacs-nrepl-and-ritz/
+;; ;;(require 'rainbow-delimiters)
+
+;; ;; (require 'nrepl)
+ 
+;; ;; ;; Configure nrepl.el
+;; ;; (setq nrepl-hide-special-buffers t)
+;; ;; (setq nrepl-popup-stacktraces nil)
+;; ;; (setq nrepl-popup-stacktraces-in-repl nil)
+;; ;; (setq nrepl-history-file "~/.emacs.d/nrepl-history")
+ 
+;; ;; ;; Some default eldoc facilities
+;; ;; (add-hook 'nrepl-connected-hook
+;; ;;           (defun pnh-clojure-mode-eldoc-hook ()
+;; ;;             (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+;; ;;             (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+;; ;;             (nrepl-enable-on-existing-clojure-buffers)))
+ 
+;; ;; ;; Repl mode hook
+;; ;; (add-hook 'nrepl-mode-hook 'subword-mode)
+ 
+;; ;; ;; Auto completion for NREPL
+;; ;; (require 'ac-nrepl)
+
+;; ;; (eval-after-load "auto-complete"
+;; ;;   '(add-to-list 'ac-modes 'nrepl-mode))
+
+;; ;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+
+;; ;; Object inspector
+
+;; ;; git clone https://github.com/vitalreactor/nrepl-inspect.git
+;; ;; cd nrepl-inspect
+;; ;; lein install
+
+;; ;; and add this to ~/.lein/profiles.clj
+;; ;; {:user 
+;; ;;  {:dependencies [[nrepl-inspect "0.3.0"]]
+;; ;;   :repl-options {:nrepl-middleware
+;; ;;                  [inspector.middleware/wrap-inspect]}}}
+
+;; ;; (load-file "~/nrepl-inspect/nrepl-inspect.el")
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
+
+
+;; ;; Sadly all the stuff with ritz seems to be well and truly broken, 
+;; ;; but one day...
+
+;; ;; (require 'nrepl-ritz)
+
+;; ;; ;; Ritz middleware
+;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-j") 'nrepl-javadoc)
+;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+;; ;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
+
+
+;; ;; ;; Ack and a half
+;; ;; (require 'ack-and-a-half)
+
+;; ;; (defalias 'ack 'ack-and-a-half)
+;; ;; (defalias 'ack-same 'ack-and-a-half-same)
+;; ;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
+;; ;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+
+;; ;; ;; Ramana's theorem prover
+;; ;; (autoload 'hol "/home/john/holstuff/HOL/tools/hol-mode"
+;; ;;      "Runs a HOL session in a comint window.
+;; ;;    With a numeric prefix argument, runs it niced to that level
+;; ;;    or at level 10 with a bare prefix. " t)
+
+;; ;; This is what you actually need to type
+;; ;;(load "/home/john/holstuff/HOL/tools/hol-mode")
+
+
+
+;; ;; ;; disable splash screen and show unknown files in speedbar
+;; ;; (custom-set-variables
+;; ;;  '(inhibit-startup-screen t)
+;; ;;  '(speedbar-show-unknown-files t))
+
+;; ;; ;; stop the speedbar jumping around
+;; ;; (require 'speedbar)
+;; ;; (speedbar-disable-update)
+
+;; ;; make the speedbar show all files
+;; ;;(custom-set-variables '(speedbar-show-unknown-files t))
+;; ;; even the ones that begin with a dot!
+;; ;;(setq speedbar-directory-unshown-regexp "^$")
+;; ;;(actually, this can be irritating) original behaviour comes back with:
+;; ;;(setq speedbar-directory-unshown-regexp "^\\(\\..*\\)\\'")
+
+
+
+
+
+;; ;; ;; Dired command for finding all marked files, use F in dired mode
+;; ;; (eval-after-load "dired"
+;; ;;   '(progn
+;; ;;      (define-key dired-mode-map "F" 'my-dired-find-file)
+;; ;;      (defun my-dired-find-file (&optional arg)
+;; ;;        "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
+;; ;;        (interactive "P")
+;; ;;        (let* ((fn-list (dired-get-marked-files nil arg)))
+;; ;;          (mapc 'find-file fn-list)))))
+
+;; ;; ;; I occasionally find myself needing to gather lines up one by one and paste
+;; ;; ;; them all somewhere You can do C-space, end, Cxx, M-C-w, M-w to get an
+;; ;; ;; appending yanking version of C-k Or this function should do the same thing.
+;; ;; (defun yank-append-line (arg)
+;; ;;   "Copy lines (as many as prefix argument) to the kill ring, appending to the last kill."
+;; ;;   (interactive "p")
+;; ;;   (append-next-kill)
+;; ;;   (kill-ring-save (point)
+;; ;;                   (line-beginning-position (+ 1 arg)))
+;; ;;   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+
+;; ;; (define-key global-map (kbd "M-k") 'yank-append-line)
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; python
+
+
+;; ;; use the version of python.el in fgallina's github repository
+;; ;; which should be checked out in the root directory:
+;; ;; cd &&  git clone git://github.com/fgallina/python.el.git
+;; ;; (add-to-list 'load-path "~/python.el/")
+;; ;; (require 'python)
+
+;; ;; this code got move into emacs proper
+
+;; ;; And this is something to do with using a pyenv
+;; ;; environment, which I'm commenting out because I can't remember what it means
+
+;; ;; use the ~/pyenv virtual environment
+;; ;; (setq python-shell-process-environment
+;; ;;       (list
+;; ;;        (format "PATH=%s" (mapconcat
+;; ;;                           'identity
+;; ;;                           (reverse
+;; ;;                            (cons (getenv "PATH")
+;; ;;                                  '("~/pyenv/bin/")))
+;; ;;                           ":"))
+;; ;;        "VIRTUAL_ENV=~/pyenv"))
+
+;; ;; (setq python-shell-exec-path '("~/pyenv/bin/"))
+
+
+;; ;; ;; Buffer switching foolishness from http://www.telecom.otago.ac.nz/tele402/emacs.html
+;; ;; ;; Make it easier to navigate buffers
+;; ;; (iswitchb-mode t)
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*Messages*")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*Completions")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "*ftp ")
+;; ;; (add-to-list 'iswitchb-buffer-ignore "^[tT][aA][gG][sS]$")
+
+
+;; (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+;; (setq cider-repl-display-in-current-window t)
+
+;; ;; better indentation for compojure functions
+;; (require 'clojure-mode)
+
+;; (define-clojure-indent
+;;   (defroutes 'defun)
+;;   (GET 2)
+;;   (POST 2)
+;;   (PUT 2)
+;;   (DELETE 2)
+;;   (HEAD 2)
+;;   (ANY 2)
+;;   (context 2))
+
+;; ;; ;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
+;; ;; (add-hook 'ess-mode-hook
+;; ;;           (lambda () 
+;; ;;              (ess-toggle-underscore nil)
+;; ;;              (setq ess-fancy-comments nil)))
+
+;; ;; ;; do it twice because the fucking thing will not die
+;; ;; (require 'ess-site)
+;; ;; (ess-toggle-underscore nil)
+;; ;; (setq ess-fancy-comments nil)
+
+;; ;; ;; this might be quicker but the whole thing is so fragile I daren't break it
+;; ;; (eval-after-load 'ess-site '(ess-toggle-underscore nil))
+
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(sh-heredoc ((t (:foreground "firebrick")))))
+
+
+;; ;; render verilog mode usable by stopping all the crazy electric nonsense
+;; (eval-after-load 'verilog-mode
+;;     '(progn
+;;         ;; same for all the electric-verilog-* commands in                
+;;         ;; the mode's map (see verilog-mode.el)                      
+;;         (define-key verilog-mode-map (kbd ";") 'self-insert-command)
+;;         (define-key verilog-mode-map (kbd ":") 'self-insert-command)
+;;         (define-key verilog-mode-map (kbd "RET") 'electric-indent-just-newline)
+;;         (define-key verilog-mode-map (kbd "TAB") 'tab-to-tab-stop)))
+
+;; (setq verilog-align-ifelse nil)
+;; (setq verilog-auto-indent-on-newline nil)
+;; (setq verilog-auto-lineup (quote all))
+;; (setq verilog-auto-newline nil)
+;; (setq verilog-indent-begin-after-if nil)
+;; (setq verilog-indent-lists nil)
+;; (setq verilog-tab-always-indent nil)
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;;     (ggtags elpy realgud yaml-mode undo-tree company cider))))
+
+
+;; ;(require 'sr-speedbar)
