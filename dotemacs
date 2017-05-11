@@ -203,7 +203,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Boundary between new and old
+;;  Potentially Interesting, see if I can live without it
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -212,38 +212,34 @@
 
 
 
+;; ;; Unique names for buffers with identical filenames
+;; ; __init__.py, indeed
+;; (require 'uniquify)
+;; (setq uniquify-buffer-name-style 'reverse)   
+;; (setq uniquify-separator "/")   
+;; (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
+;; (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
 
 
+;; ;; Swap windows with C-x 8
+;; ;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
+;; (defun swap-windows ()
+;;   "If you have 2 windows, it swaps them." 
+;;   (interactive) 
+;;   (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+;;         (t
+;;          (let* ((w1 (first (window-list)))
+;;                 (w2 (second (window-list)))
+;;                 (b1 (window-buffer w1))
+;;                 (b2 (window-buffer w2))
+;;                 (s1 (window-start w1))
+;;                 (s2 (window-start w2)))
+;;            (set-window-buffer w1 b2)
+;;            (set-window-buffer w2 b1)
+;;            (set-window-start w1 s2)
+;;            (set-window-start w2 s1)))))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Sifted Old Stuff
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+;; (define-key global-map (kbd "C-x 8") 'swap-windows)
 
 
 ;; ;; nice big letters. problem with this is it enlarges the window off the screen
@@ -331,6 +327,127 @@
 ;; ;sane scrolling (don't jump about when point moves off-screen, just keep it visible)
 ;; (setq scroll-conservatively 10000)
 
+
+
+;; (defun sdesk ()
+;;    (interactive)
+;;    (desktop-read "~/solarflare-desktop"))
+
+;; (defun sdesk-save ()
+;;    (interactive)
+;;    (desktop-save "~/solarflare-desktop"))
+
+
+
+;; ;; googling code
+;; ;; either M-x google-it
+;; ;; or select something and M-x google-search-selection
+;; (add-to-list 'load-path "~/hobby-code")
+;; (require 'google-search)
+
+
+;; ;; version of that for solarflare's autodocs
+;; (require 'url)
+
+;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
+
+;; (defun autodocs-search-selection ()
+;;   "Search autodocs for current selection"
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (let ((start (region-beginning))
+;;                         (end   (region-end)))
+;;                     (if (> (- end start) autodocs-search-maxlen)
+;;                         (buffer-substring start (+ start autodocs-search-maxlen))
+;;                       (buffer-substring start end)))
+;;                 (read-string "autodocs search: "))))
+;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
+;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
+
+;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
+
+;; (defun region-find-grep (directory)
+;;   (interactive)
+;;   (let ((term (if (use-region-p)
+;;                   (buffer-substring (region-beginning) (region-end))
+;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
+;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
+
+
+;; (defun fgf()
+;;   (interactive)
+;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
+
+;; (defun fgc()
+;;   (interactive)
+;;   (region-find-grep "~/chip_test --ignore-dir=build"))
+
+
+;; (defun fgh()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
+
+;; (defun fgq()
+;;   (interactive)
+;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
+
+;; (defun fgi()
+;;   (interactive)
+;;   (region-find-grep "~/iqtest"))
+
+;; (defun fghc()
+;;   (interactive)
+;;   (region-find-grep "~/hobby-code"))
+
+;; (defun fgs()
+;;   (interactive)
+;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
+
+
+
+;; ;; stop the speedbar jumping around
+;; (require 'speedbar)
+;; (speedbar-disable-update)
+;; (setq speedbar-show-unknown-files t)
+
+;; Speedbar in a window rather than its own frame
+;; ;(require 'sr-speedbar)
+
+;; ;; ;; Ack and a half
+;; ;; (require 'ack-and-a-half)
+
+;; ;; (defalias 'ack 'ack-and-a-half)
+;; ;; (defalias 'ack-same 'ack-and-a-half-same)
+;; ;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
+;; ;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Sifted Old Stuff
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
 ;; ;stop messing about
 ;; (setq even-window-heights nil)
 
@@ -391,36 +508,6 @@
 
 
 
-
-
-;; ;; Unique names for buffers with identical filenames
-;; ; __init__.py, indeed
-;; (require 'uniquify)
-;; (setq uniquify-buffer-name-style 'reverse)   
-;; (setq uniquify-separator "/")   
-;; (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified   
-;; (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
-
-
-;; ;; Swap windows with C-x 8
-;; ;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
-;; (defun swap-windows ()
-;;   "If you have 2 windows, it swaps them." 
-;;   (interactive) 
-;;   (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-;;         (t
-;;          (let* ((w1 (first (window-list)))
-;;                 (w2 (second (window-list)))
-;;                 (b1 (window-buffer w1))
-;;                 (b2 (window-buffer w2))
-;;                 (s1 (window-start w1))
-;;                 (s2 (window-start w2)))
-;;            (set-window-buffer w1 b2)
-;;            (set-window-buffer w2 b1)
-;;            (set-window-start w1 s2)
-;;            (set-window-start w2 s1)))))
-
-;; (define-key global-map (kbd "C-x 8") 'swap-windows)
 
 
 
@@ -539,13 +626,6 @@
 ;; (fset 'split
 ;;    [?\C-x ?b ?j ?l ?a ?. ?c return ?\C-x ?3 ?\C-x ?o ?\C-x ?b ?s ?a ?m ?p ?l ?e ?. ?c return ?\C-x ?2 ?\C-x ?o ?\C-x ?b ?* ?c ?o ?m ?p ?i ?l ?a ?t ?i ?o ?n ?* ])
 
-;; (defun sdesk ()
-;;    (interactive)
-;;    (desktop-read "~/solarflare-desktop"))
-
-;; (defun sdesk-save ()
-;;    (interactive)
-;;    (desktop-save "~/solarflare-desktop"))
 
 
 
@@ -557,69 +637,6 @@
 
 
 
-;; ;; googling code
-;; ;; either M-x google-it
-;; ;; or select something and M-x google-search-selection
-;; (add-to-list 'load-path "~/hobby-code")
-;; (require 'google-search)
-
-
-;; ;; version of that for solarflare's autodocs
-;; (require 'url)
-
-;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
-
-;; (defun autodocs-search-selection ()
-;;   "Search autodocs for current selection"
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (let ((start (region-beginning))
-;;                         (end   (region-end)))
-;;                     (if (> (- end start) autodocs-search-maxlen)
-;;                         (buffer-substring start (+ start autodocs-search-maxlen))
-;;                       (buffer-substring start end)))
-;;                 (read-string "autodocs search: "))))
-;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
-;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
-
-;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
-
-;; (defun region-find-grep (directory)
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (buffer-substring (region-beginning) (region-end))
-;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
-
-
-;; (defun fgf()
-;;   (interactive)
-;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
-
-;; (defun fgc()
-;;   (interactive)
-;;   (region-find-grep "~/chip_test --ignore-dir=build"))
-
-
-;; (defun fgh()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
-
-;; (defun fgq()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
-
-;; (defun fgi()
-;;   (interactive)
-;;   (region-find-grep "~/iqtest"))
-
-;; (defun fghc()
-;;   (interactive)
-;;   (region-find-grep "~/hobby-code"))
-
-;; (defun fgs()
-;;   (interactive)
-;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
 
 
 
@@ -727,11 +744,6 @@
 ;;                       (local-set-key (kbd "C-x r") 'haskellxr)))
 
 
-;; ;; stop the speedbar jumping around
-;; (require 'speedbar)
-;; (speedbar-disable-update)
-;; (setq speedbar-show-unknown-files t)
-
 
 
 
@@ -836,14 +848,6 @@
 ;; ;; (define-key nrepl-interaction-mode-map (kbd "C-c C-a") 'nrepl-apropos)
 ;; ;; (define-key nrepl-mode-map (kbd "C-c C-a") 'nrepl-apropos)
 
-
-;; ;; ;; Ack and a half
-;; ;; (require 'ack-and-a-half)
-
-;; ;; (defalias 'ack 'ack-and-a-half)
-;; ;; (defalias 'ack-same 'ack-and-a-half-same)
-;; ;; (defalias 'ack-find-file 'ack-and-a-half-find-file)
-;; ;; (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 
 
 ;; ;; ;; Ramana's theorem prover
@@ -1005,4 +1009,3 @@
 ;;     (ggtags elpy realgud yaml-mode undo-tree company cider))))
 
 
-;; ;(require 'sr-speedbar)
