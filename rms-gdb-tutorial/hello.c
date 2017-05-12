@@ -25,13 +25,18 @@
    now starts without complaints
  
    (gdb) run
+   (gdb) run banana
+   (gdb) kill
+   (gdb) help
+   (gdb) quit
+
 
  */
 
 int main(int argc, char**argv){
   if (argc==2){
     char* arg1=argv[1];
-    printf("hello %s", arg1);
+    printf("hello %s\n", arg1);
   } else {
     printf("hello world\n");
   }
