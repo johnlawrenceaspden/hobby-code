@@ -5,6 +5,7 @@
 
 
 
+
 int main(int argc, char**argv){
   if (argc==2){
     char* arg1=argv[1];
@@ -73,4 +74,17 @@ int main(int argc, char**argv){
    (gdb) break main
    (gdb) run
 
+ */
+
+/**
+   Can run gdb from emacs using M-x gdb
+   M-x gdb-many-windows brings up local-variables type windows
+ */
+
+/**
+   Can run gdb from emacs using realgud
+   https://github.com/realgud/realgud
+   M-x package-install RET realgud RET
+   M-x load-library RET realgud RET
+   M-x realgud:gdb
  */
