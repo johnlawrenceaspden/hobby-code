@@ -1,6 +1,7 @@
-run:
+run: hello
 	./hello
+	./hello banana
 
-hello:
+hello: hello.c
 	gcc -g hello.c -o hello
 
