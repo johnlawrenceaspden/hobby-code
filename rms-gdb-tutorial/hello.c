@@ -54,7 +54,7 @@ int main(int argc, char**argv){
    (gdb) next               ; next line
    (gdb) step               ; into
    (gdb) up
-
+   (gdb) finish
 
    (gdb) print i
    (gdb) set var i = 0
