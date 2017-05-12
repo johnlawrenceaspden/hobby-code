@@ -22,7 +22,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (company undo-tree ggtags elpy clojure-mode cider))))
+ '(package-selected-packages
+   (quote
+    (realgud company undo-tree ggtags elpy clojure-mode cider))))
 
 
 ;; packages are normally enabled after this file has run, do it now instead
