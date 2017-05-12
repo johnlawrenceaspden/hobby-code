@@ -4,6 +4,23 @@
 /* http://unknownroad.com/rtfm/gdbtut/gdbuse.html */
 
 
+
+int main(int argc, char**argv){
+  if (argc==2){
+    char* arg1=argv[1];
+    printf("hello %s\n", arg1);
+  } else {
+    int i;
+  begin:
+    
+    printf("hello world (%d)\n", i);
+    i++;
+    goto begin;
+  }
+  return 0;
+}
+
+
 /* cc hello.c -o hello
    ./hello
    gdb hello
@@ -51,21 +68,9 @@
 
    (gdb) info args
 
+   ; breakpoints
 
+   (gdb) break main
+   (gdb) run
 
  */
-
-int main(int argc, char**argv){
-  if (argc==2){
-    char* arg1=argv[1];
-    printf("hello %s\n", arg1);
-  } else {
-    int i;
-  begin:
-    
-    printf("hello world (%d)\n", i);
-    i++;
-    goto begin;
-  }
-  return 0;
-}
