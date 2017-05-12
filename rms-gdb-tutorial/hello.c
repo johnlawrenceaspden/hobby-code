@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+/* RMS's gdb tutorial */
+/* http://unknownroad.com/rtfm/gdbtut/gdbuse.html */
+
 
 /* cc hello.c -o hello
    ./hello
