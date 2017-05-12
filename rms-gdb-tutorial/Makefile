@@ -1,5 +1,4 @@
 run: hello
-	./hello
 	./hello banana
 
 hello: hello.c

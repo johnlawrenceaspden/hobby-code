@@ -30,6 +30,28 @@
    (gdb) help
    (gdb) quit
 
+   stopping program
+   (gdb) run
+   C-c
+   (gdb) list
+   (gdb) next               ; next line
+   (gdb) step               ; into
+   (gdb) up
+
+
+   (gdb) print i
+   (gdb) set var i = 0
+
+   (gdb) backtrace
+
+   (gdb) frame 7
+   (gdb) info frame
+
+   (gdb) info locals
+
+   (gdb) info args
+
+
 
  */
 
@@ -38,7 +60,12 @@ int main(int argc, char**argv){
     char* arg1=argv[1];
     printf("hello %s\n", arg1);
   } else {
-    printf("hello world\n");
+    int i;
+  begin:
+    
+    printf("hello world (%d)\n", i);
+    i++;
+    goto begin;
   }
   return 0;
 }
