@@ -20,11 +20,17 @@
 
    gdb hello 
    now starts without complaints
-
+ 
+   (gdb) run
 
  */
 
-int main(void){
-  printf("hello world\n");
+int main(int argc, char**argv){
+  if (argc==2){
+    char* arg1=argv[1];
+    printf("hello %s", arg1);
+  } else {
+    printf("hello world\n");
+  }
   return 0;
 }
