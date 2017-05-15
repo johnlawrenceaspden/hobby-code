@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in hgrc emacs bashrc inputrc gitconfig profile xmodmaprc fonts.conf; 
+for i in hgrc emacs bashrc inputrc gitconfig profile xmodmaprc fonts.conf gdbinit; 
     do 
 	echo replacing $i
 	mv ~/.$i ~/old.$i
