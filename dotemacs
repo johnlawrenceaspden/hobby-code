@@ -203,6 +203,75 @@
 
 
 
+;; googling code
+;; either M-x google-it
+;; or select something and M-x google-search-selection
+(add-to-list 'load-path "~/hobby-code")
+(require 'google-search)
+
+
+;; version of that for solarflare's autodocs
+(require 'url)
+
+(defvar autodocs-search-maxlen 50 "Maximum string length of search term")
+
+(defun autodocs-search-selection ()
+  "Search autodocs for current selection"
+  (interactive)
+  (let ((term (if (use-region-p)
+                  (let ((start (region-beginning))
+                        (end   (region-end)))
+                    (if (> (- end start) autodocs-search-maxlen)
+                        (buffer-substring start (+ start autodocs-search-maxlen))
+                      (buffer-substring start end)))
+                (read-string "autodocs search: "))))
+    (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
+                        (url-hexify-string (encode-coding-string term 'utf-8))))))
+
+(defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
+
+(defun region-find-grep (directory)
+  (interactive)
+  (let ((term (if (use-region-p)
+                  (buffer-substring (region-beginning) (region-end))
+                (read-string (concat  "region-find-grep: (" directory ") ")))))
+    (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
+
+
+(defun fgf()
+  (interactive)
+  (region-find-grep "~/firmwaresrc --ignore-dir=build"))
+
+(defun fgc()
+  (interactive)
+  (region-find-grep "~/chip_test --ignore-dir=build"))
+
+
+(defun fgh()
+  (interactive)
+  (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
+
+(defun fgq()
+  (interactive)
+  (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
+
+(defun fgi()
+  (interactive)
+  (region-find-grep "~/iqtest"))
+
+(defun fghc()
+  (interactive)
+  (region-find-grep "~/hobby-code"))
+
+(defun fgs()
+  (interactive)
+  (region-find-grep "~/solar_capture --ignore-dir=build")) 
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Potentially Interesting, see if I can live without it
@@ -339,71 +408,6 @@
 ;;    (interactive)
 ;;    (desktop-save "~/solarflare-desktop"))
 
-
-
-;; ;; googling code
-;; ;; either M-x google-it
-;; ;; or select something and M-x google-search-selection
-;; (add-to-list 'load-path "~/hobby-code")
-;; (require 'google-search)
-
-
-;; ;; version of that for solarflare's autodocs
-;; (require 'url)
-
-;; (defvar autodocs-search-maxlen 50 "Maximum string length of search term")
-
-;; (defun autodocs-search-selection ()
-;;   "Search autodocs for current selection"
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (let ((start (region-beginning))
-;;                         (end   (region-end)))
-;;                     (if (> (- end start) autodocs-search-maxlen)
-;;                         (buffer-substring start (+ start autodocs-search-maxlen))
-;;                       (buffer-substring start end)))
-;;                 (read-string "autodocs search: "))))
-;;     (browse-url (concat "http://ukservices.uk.solarflarecom.com/cgi-bin/htsearch?config=htdig&restrict=&exclude=&method=and&format=builtin-long&words="
-;;                         (url-hexify-string (encode-coding-string term 'utf-8))))))
-
-;; (defun ass () "autodocs-search-selection" (interactive) (autodocs-search-selection))
-
-;; (defun region-find-grep (directory)
-;;   (interactive)
-;;   (let ((term (if (use-region-p)
-;;                   (buffer-substring (region-beginning) (region-end))
-;;                 (read-string (concat  "region-find-grep: (" directory ") ")))))
-;;     (grep-find (concat "ack --smart-case --no-heading --no-color " (shell-quote-argument term)  " " directory))))
-
-
-;; (defun fgf()
-;;   (interactive)
-;;   (region-find-grep "~/firmwaresrc --ignore-dir=build"))
-
-;; (defun fgc()
-;;   (interactive)
-;;   (region-find-grep "~/chip_test --ignore-dir=build"))
-
-
-;; (defun fgh()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom")) 
-
-;; (defun fgq()
-;;   (interactive)
-;;   (region-find-grep "/projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu")) 
-
-;; (defun fgi()
-;;   (interactive)
-;;   (region-find-grep "~/iqtest"))
-
-;; (defun fghc()
-;;   (interactive)
-;;   (region-find-grep "~/hobby-code"))
-
-;; (defun fgs()
-;;   (interactive)
-;;   (region-find-grep "~/solar_capture --ignore-dir=build")) 
 
 
 
