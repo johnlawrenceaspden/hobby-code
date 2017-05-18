@@ -268,6 +268,47 @@
   (region-find-grep "~/solar_capture --ignore-dir=build")) 
 
 
+;; Org mode repurposes S-arrows for its own purposes, but this is confusing
+(setq org-support-shift-select 'always)
+
+
+;; ========== Place Backup Files in Specific Directory ==========
+;; Note that a backup gets made the first time you save a file in a session, and not on every save.
+;; Enable backup files.
+(setq make-backup-files t)
+;; And *of course* I want you to make backups of version controlled files as 
+;; well, you stupid shed.
+(setq vc-make-backup-files t)
+;; make a copy for backup rather than moving the file and writing a new one.
+;; means that hard links survive editing.
+(setq backup-by-copying t)
+;; Keep several previous versions too
+(setq version-control t)
+;; Just delete the excess old versions without asking
+(setq delete-old-versions t)
+;; No of versions to keep. probably excessive, but disk space is cheap.
+(setq 
+  kept-new-versions 100
+  kept-old-versions 100)
+
+
+;; There are various sensible places to put backup files
+
+;; Save all backup files in ~/.emacs_backups directory. Argument one
+;; is a regexp so .* matches everything.
+;; (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+
+;; Save all backup files in invisible .~ directory in their own directories
+(setq backup-directory-alist (quote (("." . ".~"))))
+
+;; At solarflare, my preferred option was to put everything in /tmp. That avoided having emacs locking up when their crappy network was running slow.
+;; This is a terrible idea on my crash-prone netbook which keeps /tmp in memory though.
+;; (setq backup-directory-alist
+;;      `((".*" . ,temporary-file-directory)))
+;; That's also a good place to put auto-save files, come to think of it
+
+;;( setq auto-save-file-name-transforms
+;;      `((".*" ,temporary-file-directory t)))
 
 
 
@@ -472,42 +513,6 @@
 ;; ;(global-whitespace-mode)
 
 
-;; ;; ========== Place Backup Files in Specific Directory ==========
-;; ;; Note that a backup gets made the first time you save a file in a session, and not on every save.
-;; ;; Enable backup files.
-;; (setq make-backup-files t)
-;; ;; And *of course* I want you to make backups of version controlled files as 
-;; ;; well, you stupid shed.
-;; (setq vc-make-backup-files t)
-;; ; make a copy for backup rather than moving the file and writing a new one.
-;; ; means that hard links survive editing.
-;; (setq backup-by-copying t)
-;; ;; Keep several previous versions too
-;; (setq version-control t)
-;; ;; Just delete the excess old versions without asking
-;; (setq delete-old-versions t)
-;; ;; No of versions to keep. probably excessive, but disk space is cheap.
-;; (setq 
-;;   kept-new-versions 100
-;;   kept-old-versions 100)
-
-
-;; ;; There are various sensible places to put backup files
-
-;; ;; Save all backup files in ~/.emacs_backups directory. Argument one
-;; ;; is a regexp so .* matches everything.
-;; ;; (setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
-
-;; ;; Save all backup files in invisible .~ directory in their own directories
-;; (setq backup-directory-alist (quote (("." . ".~"))))
-
-;; ;; At solarflare, my preferred option was to put everything in /tmp. That avoided having emacs locking up when their crappy network was running slow.
-;; ;; This is a terrible idea on my crash-prone netbook which keeps /tmp in memory though.
-;; ;; (setq backup-directory-alist
-;; ;;      `((".*" . ,temporary-file-directory)))
-;; ;; That's also a good place to put auto-save files, come to think of it
-;; ;;( setq auto-save-file-name-transforms
-;; ;;      `((".*" ,temporary-file-directory t)))
 
 
 
@@ -638,7 +643,6 @@
 ;; (put 'upcase-region 'disabled nil)
 ;; (put 'downcase-region 'disabled nil)
 
-;; (setq org-support-shift-select 'always)
 
 
 
