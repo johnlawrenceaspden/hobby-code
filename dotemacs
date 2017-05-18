@@ -305,10 +305,11 @@
 ;; This is a terrible idea on my crash-prone netbook which keeps /tmp in memory though.
 ;; (setq backup-directory-alist
 ;;      `((".*" . ,temporary-file-directory)))
-;; That's also a good place to put auto-save files, come to think of it
 
+;; That's also a good place to put auto-save files, come to think of it
 ;;( setq auto-save-file-name-transforms
 ;;      `((".*" ,temporary-file-directory t)))
+;; But actually, the existence of auto-save files alerts one to having forgotten to save things, so leave them how they are.
 
 
 
