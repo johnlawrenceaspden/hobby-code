@@ -311,7 +311,10 @@
 ;;      `((".*" ,temporary-file-directory t)))
 ;; But actually, the existence of auto-save files alerts one to having forgotten to save things, so leave them how they are.
 
-
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (ggtags-mode 1))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
