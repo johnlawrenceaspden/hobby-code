@@ -559,6 +559,16 @@ alias anvils="mate-terminal --geometry=110x40+1200+10 --profile anvil \
 --tab    --title=uart \
 --tab    --title=host"
 
+function xxdiffpcap {
+    A=$(mktemp --tmpdir "$1".XXX)
+    B=$(mktemp --tmpdir "$2".XXX)
+    tcpdump -xr "$1" >"$A"
+    tcpdump -xr "$2" >"$B"
+    xxdiff "$A" "$B"
+}
+
+
+
 
 ### END Solarflare
 
