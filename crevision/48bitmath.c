@@ -3,8 +3,6 @@
 #include<inttypes.h>
 #include<assert.h>
 
-
-
 /**
 
 https://stackoverflow.com/questions/44166714/in-c-how-do-i-calculate-the-signed-difference-between-two-48-bit-unsigned-integ 
@@ -34,7 +32,7 @@ objdump -d 48bitmath | grep -C10 sub48
 
   
 /* Use noinline to stop gcc optimising the crap out of the various test functions */
-int64_t __attribute__((noinline)) sub48(uint64_t x, uint64_t y)
+int64_t __attribute__((noinline)) sub48a(uint64_t x, uint64_t y)
 {
   uint64_t diff;
   
@@ -45,24 +43,54 @@ int64_t __attribute__((noinline)) sub48(uint64_t x, uint64_t y)
   
   int64_t sdiff;
   sdiff= shifteddiff >> 16;
-  //sdiff= shifteddiff / 65536;
 
-  /* printf("x=%"PRIu64" y=%"PRIu64"\n",x,y); */
+  printf("x=%"PRIu64" y=%"PRIu64"\n",x,y);
 
-  /* printf("x=%"PRIu64"(0x%"PRIx64")\n",x,x); */
-  /* printf("y=%"PRIu64"(0x%"PRIx64")\n",y,y); */
+  printf("x=%"PRIu64"(0x%"PRIx64")\n",x,x);
+  printf("y=%"PRIu64"(0x%"PRIx64")\n",y,y);
   
-  /* printf("diff=%"PRIu64"(0x%"PRIx64")\n",diff,diff); */
+  printf("diff=%"PRIu64"(0x%"PRIx64")\n",diff,diff);
 
-  /* printf("shifteddiff=%"PRId64"(0x%"PRIx64")\n",shifteddiff,shifteddiff); */
+  printf("shifteddiff=%"PRId64"(0x%"PRIx64")\n",shifteddiff,shifteddiff);
 
-  /* printf("sdiff=%"PRId64"(0x%"PRIx64")\n",sdiff,sdiff); */
+  printf("sdiff=%"PRId64"(0x%"PRIx64")\n",sdiff,sdiff);
 
-  /* printf("\n"); */
+  printf("\n");
 
   return sdiff;
   
 }
+
+
+int64_t __attribute__((noinline)) sub48b(uint64_t x, uint64_t y)
+{
+  uint64_t diff;
+  
+  diff=x-y;
+
+  int64_t shifteddiff;
+  shifteddiff=(diff << 16);
+  
+  int64_t sdiff;
+  sdiff= shifteddiff >> 16;
+
+  printf("x=%"PRIu64" y=%"PRIu64"\n",x,y);
+
+  printf("x=%"PRIu64"(0x%"PRIx64")\n",x,x);
+  printf("y=%"PRIu64"(0x%"PRIx64")\n",y,y);
+  
+  printf("diff=%"PRIu64"(0x%"PRIx64")\n",diff,diff);
+
+  printf("shifteddiff=%"PRId64"(0x%"PRIx64")\n",shifteddiff,shifteddiff);
+
+  printf("sdiff=%"PRId64"(0x%"PRIx64")\n",sdiff,sdiff);
+
+  printf("\n");
+
+  return sdiff;
+  
+}
+
 
 
 int main(int argc, char**argv){
@@ -71,41 +99,44 @@ int main(int argc, char**argv){
 
   int64_t diff;
 
+  int64_t (*sub48)(uint64_t x, uint64_t y);
+
+  sub48=&sub48a;
 
   x=5; y=3;
-  assert(sub48(x,y)==2);
+  assert((*sub48)(x,y)==2);
 
   x=3; y=5;
-  assert(sub48(x,y)==-2);
+  assert((*sub48)(x,y)==-2);
 
   x=0xffffffffffff;
   y=0x000000000000;
-  assert(sub48(x,y)==-1);
-  assert(sub48(y,x)==+1);
+  assert((*sub48)(x,y)==-1);
+  assert((*sub48)(y,x)==+1);
 
   x=0xffffffffffff;
   y=0x000000000002;
-  assert(sub48(x,y)==-3);
-  assert(sub48(y,x)==+3);
+  assert((*sub48)(x,y)==-3);
+  assert((*sub48)(y,x)==+3);
 
   x=0xfffffffffff8;
   y=0xfffffffffff9;
-  assert(sub48(x,y)==-1);
-  assert(sub48(y,x)==+1);
+  assert((*sub48)(x,y)==-1);
+  assert((*sub48)(y,x)==+1);
 
   x=0x7fffffffffff;
   y=0x800000000002;
-  assert(sub48(x,y)==-3);
-  assert(sub48(y,x)==+3);
+  assert((*sub48)(x,y)==-3);
+  assert((*sub48)(y,x)==+3);
 
   x=0xfffffffffffff;
   y=0xf000000000000;
-  assert(sub48(x,y)==-1);
-  assert(sub48(y,x)==+1);
+  assert((*sub48)(x,y)==-1);
+  assert((*sub48)(y,x)==+1);
 
   /* this bit means that gcc can't precalculate all the results and actually has to produce a function */
-  srand(argc);
-  printf("%"PRIx64"\n",sub48((((uint64_t)rand()<<32)+rand()),((uint64_t)rand()<<32)+rand()));
+  srand(argc); //but it's still deterministic, provide different numbers of args to get different results
+  printf("%"PRIx64"\n",(*sub48)((((uint64_t)rand()<<32)+rand()),((uint64_t)rand()<<32)+rand()));
 
   
   return 0;
