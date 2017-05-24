@@ -90,6 +90,11 @@ int64_t __attribute__((noinline)) sub48d(uint64_t x, uint64_t y)
   return ((int64_t)((x-y)<<16)>>16);
 }
 
+int64_t __attribute__((noinline)) sub48e(uint64_t x, uint64_t y)
+{
+  return (((int64_t)((x-y)<<16))>>16);
+}
+
 
 
 int main(int argc, char**argv){
@@ -97,7 +102,7 @@ int main(int argc, char**argv){
 
   int64_t (*sub48)(uint64_t x, uint64_t y);
 
-  int64_t (*sub48s[])(uint64_t x, uint64_t y)={&sub48a, &sub48b, &sub48c, &sub48d};
+  int64_t (*sub48s[])(uint64_t x, uint64_t y)={&sub48a, &sub48b, &sub48c, &sub48d, &sub48e};
 
   int arraylen=sizeof(sub48s)/sizeof(int64_t (*)(uint64_t x, uint64_t y)); 
 
