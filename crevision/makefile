@@ -1,4 +1,7 @@
-run: runduffdevice
+run: run48bitmath
+
+run48bitmath: 48bitmath
+	./48bitmath
 
 runstringreverse: stringreverse
 	./stringreverse
@@ -11,6 +14,9 @@ runpuzzle: puzzle
 
 runduffdevice: duffdevice
 	./duffdevice
+
+48bitmath: 48bitmath.c
+	gcc -std=c99 -O3 -o 48bitmath 48bitmath.c
 
 duffdevice: duffdevice.c
 	cc -o duffdevice duffdevice.c
