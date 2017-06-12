@@ -645,7 +645,6 @@
 
 
 ;; (put 'upcase-region 'disabled nil)
-;; (put 'downcase-region 'disabled nil)
 
 
 
@@ -1023,3 +1022,4 @@
 ;;     (ggtags elpy realgud yaml-mode undo-tree company cider))))
 
 
+(put 'downcase-region 'disabled nil)
