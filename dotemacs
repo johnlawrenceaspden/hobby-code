@@ -317,6 +317,13 @@
               (ggtags-mode 1))))
 
 
+(defun  tidy-buffer ()
+  (interactive)
+  (whitespace-cleanup)
+  (indent-region (point-min) (point-max)))
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Potentially Interesting, see if I can live without it
