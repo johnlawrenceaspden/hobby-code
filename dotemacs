@@ -327,6 +327,38 @@
 (elpy-enable)
 
 
+;; Swap windows with C-x 8
+;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
+(defun swap-windows ()
+  "If you have 2 windows, it swaps them." 
+  (interactive) 
+  (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (first (window-list)))
+                (w2 (second (window-list)))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1)))))
+
+(define-key global-map (kbd "C-x 8") 'swap-windows)
+
+
+(defun my-restart-python-console ()
+  "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloading modules even when they are changed"
+  (interactive)
+  (kill-process "Python")
+  (sleep-for 0.05)
+  (elpy-shell-send-region-or-buffer))
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Potentially Interesting, see if I can live without it
@@ -347,25 +379,6 @@
 ;; (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers 
 
 
-;; ;; Swap windows with C-x 8
-;; ;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
-;; (defun swap-windows ()
-;;   "If you have 2 windows, it swaps them." 
-;;   (interactive) 
-;;   (cond ((not (= (count-windows) 2)) (message "You need exactly 2 windows to do this."))
-;;         (t
-;;          (let* ((w1 (first (window-list)))
-;;                 (w2 (second (window-list)))
-;;                 (b1 (window-buffer w1))
-;;                 (b2 (window-buffer w2))
-;;                 (s1 (window-start w1))
-;;                 (s2 (window-start w2)))
-;;            (set-window-buffer w1 b2)
-;;            (set-window-buffer w2 b1)
-;;            (set-window-start w1 s2)
-;;            (set-window-start w2 s1)))))
-
-;; (define-key global-map (kbd "C-x 8") 'swap-windows)
 
 
 ;; ;; nice big letters. problem with this is it enlarges the window off the screen
