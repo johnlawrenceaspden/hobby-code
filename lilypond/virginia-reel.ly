@@ -1,3 +1,9 @@
+ \header{
+   title=" Virginia Reel: for Accordion and Violin"
+ }
+ 
+ \score{
+   \header {   piece="Swallow Tails"}
  <<
   \time 4/4
   \chords {
@@ -15,3 +21,4 @@
                     {g,4 e d e | g2 g4. a8 | b4 d a b8 a8 | g1}}
   }
  >>
+ }
