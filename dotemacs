@@ -24,7 +24,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (realgud company undo-tree ggtags elpy clojure-mode cider))))
+    (ack realgud company undo-tree ggtags elpy clojure-mode cider))))
 
 
 ;; packages are normally enabled after this file has run, do it now instead
@@ -356,6 +356,38 @@
   (elpy-shell-send-region-or-buffer))
 
 
+;; Clojure
+;; keyboard macro of the gods:
+;; evaluates the expression on the line BELOW, and pastes the result afterwards
+
+;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
+(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
+
+(fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
+
+
+;; set it to be the last keyboard macro, which means that it's executable with f4
+(defun restore-eval-paste ()
+  (interactive)
+  (setq last-kbd-macro 'clj-eval-paste))
+
+(restore-eval-paste)
+
+(defun restore-eval-paste-below ()
+   (interactive)
+   (setq last-kbd-macro 'clj-eval-paste-below))
+
+
+;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
+(add-hook 'ess-mode-hook
+          (lambda () 
+             (ess-toggle-underscore nil)
+             (setq ess-fancy-comments nil)))
+
+;; do it twice because the fucking thing will not die
+(require 'ess-site)
+(ess-toggle-underscore nil)
+(setq ess-fancy-comments nil)
 
 
 
@@ -589,25 +621,6 @@
 ;; (fset 'clj-html-to-blogger-copy
 ;;    [?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-k ?\C-n ?\C-n ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?. ?c ?l ?o ?j ?u ?r ?e ?- ?\C-s ?/ ?h ?e ?a ?d ?\C-a ?\C-k ?\C-k ?\C-k ?\C-k ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?\C-f ?  ?c ?l ?a ?s ?s ?= ?\" ?c ?l ?o ?j ?u ?r ?e ?- ?b ?o ?o ?\C-? ?d ?y ?\" ?\C-n ?\M-> ?\C-p ?\C-p ?\C-k ?\C-k ?\C-k ?\C-k ?\C-x ?h ?\M-w])
 
-;; ;; keyboard macro of the gods:
-;; ;; evaluates the expression on the line BELOW, and pastes the result afterwards
-
-;; ;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
-;; (fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
-
-;; (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
-
-
-;; ;; set it to be the last keyboard macro, which means that it's executable with f4
-;; (defun restore-eval-paste ()
-;;   (interactive)
-;;   (setq last-kbd-macro 'clj-eval-paste))
-
-;; (restore-eval-paste)
-
-;; (defun restore-eval-paste-below ()
-;;   (interactive)
-;;   (setq last-kbd-macro 'clj-eval-paste-below))
 
 
 ;; ;; Compile and goto repl

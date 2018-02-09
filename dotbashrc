@@ -573,10 +573,10 @@ function xxdiffpcap {
 ### END Solarflare
 
 # Mate aliases
-alias evince=atril
-alias nautilus=caja
-alias gedit=pluma
-alias eog=eom
+# alias evince=atril
+# alias nautilus=caja
+# alias gedit=pluma
+# alias eog=eom
 
 # This is how you print out a list of variables and their names in bash
 # for i in SSH_ASKPASS SSH_CLIENT SSH_CONNECTION  SSH_TTY ; do echo $i : ${!i} ; done
