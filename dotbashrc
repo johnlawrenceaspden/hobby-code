@@ -543,8 +543,8 @@ alias sfc-make-both='sfc-make-fw && sfc-make-chiptest'
 alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
 
 
-alias ets='e ~/solarflare2/timesheet.py'
-alias rts=~/solarflare2/timesheet.py
+# alias ets='e ~/solarflare2/timesheet.py'
+# alias rts=~/solarflare2/timesheet.py
 
 alias furnaces="mate-terminal --geometry=110x40+1200+10 --profile furnace \
 --window --title=furnace \
