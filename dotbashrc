@@ -468,7 +468,7 @@ alias kem='~/.screenlayout/kemurilondonoffice.sh && fix'
 
 # relies on apt-get install cdargs to provide bash directory bookmarking
 # creates ca,cv,cb: ca adds the current directory, cv=cb cds to bookmark with completion, in case of complexity edit ~/.cdargs
-# source /usr/share/doc/cdargs/examples/cdargs-bash.sh
+source /usr/share/doc/cdargs/examples/cdargs-bash.sh
 
 
 
