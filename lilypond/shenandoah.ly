@@ -1,7 +1,4 @@
- \header{
-   title="Shenandoah"
- }
-
+ \version "2.18.2"
 
 % 5 | 1 2 3 4 | 6 5 1 7 | 6 5 6 5 | 3 5 5 | 6 6 6 3 5 3 | 2 1 | 2 3 1 3 6 5 | 1 2 3 1 | 2 | 1
 % - | I       | I       | IV      | I     | IV          | vi  | V           | vi      | V | I
@@ -21,17 +18,42 @@
 
 
 
- \score{
-   \header {   piece="Shenandoah"}
- <<
-  \time 4/4
-  \chords {
-    c1 | c | f | c | f | a | g | a | g | c
-  }
+ \header {
+   title = "Shenandoah"
+ }
  
-  \relative c'' {
-      \key c \major
-      {g | c d e 4 | a g c b | a g a g | e g g | a a a e g e | d c | d e c e a g | c d e c | d | c}
-  }
- >>
+ global = {
+   \time 4/4
+   \key c \major
+   \tempo 4=100
+ }
+ 
+ chordNames = \chordmode {
+   \global
+   c1 | c | f | c | f | a | g | a | g | c
+ }
+ 
+ melody = \relative c' {
+   \global
+   g4 c c c2 r4 d4 e f a2 g2 r4 c4  b a2. g4 a g e g2. g4 a a a2. e4 g e d2 c2 d4 e2. c4 e4 a4 g2 c4 d e2 r4 c d2 c
+ }
+ 
+ words = \lyricmode {
+  O Shen- an- doah, I long to see you. Roll aw- ay, you roll- ing ri- ver. Oh Shen- an- doah, I long to see you. A- way, I'm bound to go. 'Cross the wide Mis- sou- ri 
+ }
+ 
+ \score {
+   <<
+     \new ChordNames \chordNames
+     %\new FretBoards \chordNames
+     \new Staff { \melody }
+     \addlyrics { \words }
+   >>
+   \layout { }
+   \midi { }
+ }
+
+
+ \header{
+   title="Shenandoah"
  }
