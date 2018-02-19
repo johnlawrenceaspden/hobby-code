@@ -23,7 +23,7 @@
  }
  
  global = {
-   \time 4/4
+   %\time 4/4
    \key c \major
    \tempo 4=100
  }
@@ -35,7 +35,7 @@
  
  melody = \relative c' {
    \global
-   g4 c c c2 r4 d4 e f a2 g2 r4 c4  b a2. g4 a g e g2. g4 a a a2. e4 g e d2 c2 d4 e2. c4 e4 a4 g2 c4 d e2 r4 c d2 c
+   g4 c8 c8 c2 r4 d4 e f a2 g2 r4 c4  b a4~ a2 r4 g4 a g e g4~ g2. r4 g4 a8 a8 a2~ a4 r4 e4 g e d2 c2 r4 d4 e2. r4 c4 e4 a4 g2~ g2~ g4 r4 c4 d e2. r4 c d2 c1
  }
  
  words = \lyricmode {
