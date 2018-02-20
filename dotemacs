@@ -1059,3 +1059,7 @@
 
 
 (put 'downcase-region 'disabled nil)
+
+;; Turn off the annoying question about version control/symlinks
+(setq vc-follow-symlinks t)
+
