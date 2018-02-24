@@ -12,25 +12,25 @@ global = {
 
 soprano = \relative c'' {
   \global
-  c4
+  g4 a g e g b b c c b g
   
 }
 
 alto = \relative c' {
   \global
-  c4
+  e4 f e c e g g a a g e
   
 }
 
 tenor = \relative c' {
   \global
-  c4
+  c4 d c
   
 }
 
 bass = \relative c {
   \global
-  c4
+  e4 f e
   
 }
 
@@ -55,7 +55,7 @@ verseThree = \lyricmode {
 \score {
   \new ChoirStaff <<
     \new Staff \with {
-      midiInstrument = "choir oohs"
+      midiInstrument = "oboe"
       instrumentName = \markup \center-column { S A }
     } <<
       \new Voice = "soprano" { \voiceOne \soprano }
@@ -71,7 +71,7 @@ verseThree = \lyricmode {
       \override VerticalAxisGroup #'staff-affinity = #CENTER
     } \lyricsto "soprano" \verseThree
     \new Staff \with {
-      midiInstrument = "choir oohs"
+      midiInstrument = "oboe"
       instrumentName = \markup \center-column { T B }
     } <<
       \clef bass
