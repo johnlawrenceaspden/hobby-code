@@ -1,6 +1,9 @@
 #lang icfp2017-minikanren/racket-scheme-compat
 
-(require "mk/mk.rkt" "mk/test-check.rkt")
+;; minikanren tutorial 
+;; http://io.livecode.ch/learn/webyrd/webmk
+
+(require "mk/mk.rkt")
 
 (run 1 (q) (fresh (x y z) (== x z) (== 3 y)))
 
@@ -55,3 +58,10 @@
                     ((== 'yo q))
                     ((conde ((== #f q) (== #t q))
                             ((== 'oy q))))))))
+
+
+(define anyo
+  (lambda (g)
+    (conde
+     (g)
+     ((anyo g)))))
