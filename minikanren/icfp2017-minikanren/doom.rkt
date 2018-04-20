@@ -65,3 +65,61 @@
     (conde
      (g)
      ((anyo g)))))
+
+
+(run 5 (q)
+      (conde ((anyo (== #f q)))
+             ((== #t q))))
+
+(run 10 (q)
+     (anyo
+      (conde (( == 1 q))
+             (( == 2 q))
+             (( == 3 q)))))
+
+
+(run 3 (q)
+  (let ((nevero (anyo (== #f #t))))
+    (conde
+      ((== 1 q))
+      (nevero)
+      ((conde
+         ((== 2 q))
+         (nevero)
+         ((== 3 q)))))))
+
+
+(run* (q) (symbolo q))
+
+(run* (q) (symbolo q) (numbero q))
+
+(run* (p) (=/= p p))
+
+(run* (p) (=/= p 1))
+
+(run* (q)
+  (fresh (p r)
+    (=/= '(1 2) `(,p ,r))
+    (== `(,p ,r) q)))
+
+
+(run* (q)
+  (fresh (p r)
+    (=/= '(1 2) `(,p ,r))
+    (== 1 p)
+    (== `(,p ,r) q)))
+
+
+(run* (q)
+  (fresh (p r)
+    (=/= '(1 2) `(,p ,r))
+    (== 1 p)
+    (== 2 r)
+    (== `(,p ,r) q)))
+
+(run* (p r)
+    (=/= '(1 2) `(,p ,r))
+    (== r p))
+
+
+
