@@ -128,6 +128,24 @@
 
 (run* (x y) (appendo x y '(a b c d e)))
 
-
-
 (run 1 (q) (evalo '((lambda (x) x) 5) q))
+
+(printf "------------------\n")
+
+
+
+(run 10 (q) (evalo q '(I love you)))
+(printf "------------------\n")
+;; examining particularly
+;; ((lambda _.0 '(I love you)) _.1 _.2) (=/= ((_.0 quote))) (num _.1 _.2) (sym _.0)
+
+(let ((_.0 0) (_.1 1) (_.2 2) ) ((lambda _.0 '(I love you)) _.1 _.2))
+
+((lambda doom '(I love you)) 1 1)
+
+((lambda doom `(I love you ,doom)) 1 1)
+
+;; I have no idea what makes this fail
+;; ((lambda quote '(I love you)) 1 1)
+;; while this is ok:
+((lambda lambda '(I love you)) 1 1)
