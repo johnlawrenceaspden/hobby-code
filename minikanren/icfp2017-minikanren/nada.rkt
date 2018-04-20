@@ -10,6 +10,7 @@
 ;; http://io.livecode.ch/learn/webyrd/webmk
 
 (require "mk/mk.rkt")
+(require "evalo-standard.rkt")
 
 
 (define append-0
@@ -126,3 +127,7 @@
 
 
 (run* (x y) (appendo x y '(a b c d e)))
+
+
+
+(run 1 (q) (evalo '((lambda (x) x) 5) q))
