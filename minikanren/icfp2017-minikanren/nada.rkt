@@ -160,3 +160,24 @@
  ((lambda (_.0)
     (_.0 '(I love you) 42 list))
   list))
+
+;; challenge 2
+(run 4 (q) (evalo q q))
+
+
+42
+#t
+#f
+
+;;(((lambda (_.0) (list _.0 (list 'quote _.0))) '(lambda (_.0) (list _.0 (list 'quote _.0))))
+;;   (=/= ((_.0 closure)) ((_.0 list)) ((_.0 prim)) ((_.0 quote))
+        
+((lambda (_.0) (list _.0 (list 'quote _.0))) '(lambda (_.0) (list _.0 (list 'quote _.0))))
+
+((lambda (x) (list x (list 'quote x))) '(lambda (x) (list x (list 'quote x))))
+
+;; challenge 2, but only non-trivial ones
+(run 1 (e)
+  (fresh (a d)
+    (== `(,a . ,d) e))
+  (evalo e e))
