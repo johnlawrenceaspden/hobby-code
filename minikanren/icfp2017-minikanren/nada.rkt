@@ -149,3 +149,14 @@
 ;; ((lambda quote '(I love you)) 1 1)
 ;; while this is ok:
 ((lambda lambda '(I love you)) 1 1)
+
+;; lambda-happy
+((lambda ()
+   (((lambda () cons)) 'I
+    ((lambda _.0 '(love you)) list 42))))
+
+;; ok this is good!
+(car
+ ((lambda (_.0)
+    (_.0 '(I love you) 42 list))
+  list))
