@@ -41,7 +41,8 @@ melodywords = \lyricmode {
   four four three three two two one
 }
 
-harmony = \relative c' {
+harmony = \relative c {
+  \clef bass
   \global
   <c e g>4 
   <c e g>
@@ -64,13 +65,13 @@ harmony = \relative c' {
   r1*4
   
   <c e g>4 
-  <c e g>
-  <g' b d>
+  <a c e>
+  <e' g b>
   <g b d>
   
-  <a c e>4
+  <c e a>4
   <a c e> 
-  <g b d>2
+  <c, e g>2
  
 
   <f a c>4
@@ -79,8 +80,8 @@ harmony = \relative c' {
   <c e g>
   
   <f a c>4
-  <g b d>
-  <g e c c' e>2 
+  <g, b d f>
+  <g' e c>2 
 }
 
 harmonywords = \lyricmode {
@@ -89,11 +90,11 @@ harmonywords = \lyricmode {
   IV IV iii iii 
   ii ii I
   
-  I I iii V 
+  I vi iii V 
   vi vic V
 
   IV "IV7" iii I 
-  IV V I
+  IV "V7" I
 }
 
 \score {
