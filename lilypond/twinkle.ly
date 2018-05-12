@@ -45,7 +45,7 @@ harmony = \relative c {
   \clef bass
   \global
   <c e g>4 
-  <c e g>
+  <e g c>
   <e g b>
   <g b d>
   
@@ -54,9 +54,9 @@ harmony = \relative c {
   <g b d>2
   
   <f a c>4
-  <f a c>
+  <b, d f >
   <e g b>  
-  <e g b>
+  <c e g>
   
   <d f a>
   <d f a>
@@ -85,9 +85,9 @@ harmony = \relative c {
 }
 
 harmonywords = \lyricmode {
-  I I iii V 
+  I Ib iii V 
   vi vic V
-  IV IV iii iii 
+  viio IV iii I 
   ii ii I
   
   I vi iii V 
