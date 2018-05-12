@@ -54,8 +54,8 @@ harmony = \relative c {
   c2
   
   f4
-  a
-  c  
+  <a d,>
+  <a c> 
   d
   
   <a>
@@ -100,8 +100,8 @@ harmonywords = \lyricmode {
 
 \score {
   <<
-    \new Staff \with{midiInstrument=violin} { \melody }
-    \addlyrics { \melodywords }
+    %\new Staff \with{midiInstrument=violin} { \melody }
+    %\addlyrics { \melodywords }
     \new Staff \with{midiInstrument=cello} { \harmony }
     \addlyrics { \harmonywords }
   >>
