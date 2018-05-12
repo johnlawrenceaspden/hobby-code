@@ -54,7 +54,7 @@ harmony = \relative c {
   c2
   
   f4
-  <a d,>
+  <f>
   <a c> 
   d
   
@@ -63,16 +63,15 @@ harmony = \relative c {
   <g,>2 
   
   r1*4
-  
-  <c, e g>4 
-  <a c e>
-  <e' g b>
-  <g b d>
-  
-  <c e a>4
-  <a c e> 
-  <c, e g>2
  
+  c,4 
+  e
+  e
+  c
+  
+  f4
+  e8 f8
+  c2
 
   <f a c>4
   <f a c e>
@@ -86,9 +85,9 @@ harmony = \relative c {
 }
 
 harmonywords = \lyricmode {
-  I Ib iii V 
-  vi vi - c  V
-  viio IV iii I 
+  one three three one  
+  four three four one
+  four four iii I 
   ii ii I
   
   I vi iii V 
@@ -100,8 +99,8 @@ harmonywords = \lyricmode {
 
 \score {
   <<
-    %\new Staff \with{midiInstrument=violin} { \melody }
-    %\addlyrics { \melodywords }
+    \new Staff \with{midiInstrument=violin} { \melody }
+    \addlyrics { \melodywords }
     \new Staff \with{midiInstrument=cello} { \harmony }
     \addlyrics { \harmonywords }
   >>
