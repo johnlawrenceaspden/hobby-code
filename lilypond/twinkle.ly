@@ -45,11 +45,11 @@ harmony = \relative c' {
   \global
   <c e g>4 
   <c e g>
-  <g' b d>
+  <e g b>
   <g b d>
   
   <a c e>4
-  <a c e> 
+  <e a c> 
   <g b d>2
   
   <f a c>4
@@ -59,7 +59,7 @@ harmony = \relative c' {
   
   <d f a>
   <d f a>
-  <c e g>2 
+  < e g c>2 
   
   r1*4
   
@@ -77,16 +77,21 @@ harmony = \relative c' {
   <e g b>  
   <e g b>
   
-  <d f a>
-  <d f a>
-  <c e g>2 
+  <f a c>
+  <g b d>
+  <g e c>2 
 }
 
 harmonywords = \lyricmode {
-  I I V V 
-  vi vi V
+  I I iii V 
+  vi vic V
   IV IV iii iii 
   ii ii I
+  
+  I I iii V 
+  vi vic V
+  IV IV iii iii 
+  IV V I
 }
 
 \score {
