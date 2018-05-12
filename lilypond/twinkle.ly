@@ -73,12 +73,12 @@ harmony = \relative c {
   e8 f8
   c2
 
-  <f a c>4
-  <f a c e>
-  <e g b>  
-  <c e g>
+  <a' c>4
+  <a f>
+  <g b>  
+  <c g>
   
-  <f a c>4
+  <f, a>4
   <a, c e>8
   <g b d f>8
   <g' e c>2 
