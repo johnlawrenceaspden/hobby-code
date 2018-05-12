@@ -71,15 +71,16 @@ harmony = \relative c' {
   <a c e>4
   <a c e> 
   <g b d>2
+ 
+
+  <f a c>4
+  <f a c e>
+  <e g b>  
+  <c e g>
   
   <f a c>4
-  <f a c>
-  <e g b>  
-  <e g b>
-  
-  <f a c>
   <g b d>
-  <g e c>2 
+  <g e c c' e>2 
 }
 
 harmonywords = \lyricmode {
@@ -90,7 +91,8 @@ harmonywords = \lyricmode {
   
   I I iii V 
   vi vic V
-  IV IV iii iii 
+
+  IV "IV7" iii I 
   IV V I
 }
 
