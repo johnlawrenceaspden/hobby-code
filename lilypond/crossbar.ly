@@ -23,6 +23,18 @@ e f e d d e
 c c d d e e 
 c c d e f f e d d e e 
 c c c d c b c
+
+% 5 5 5 6 6 5 4 5
+% 1 1 2 2 3 3
+% 1 1 2 3 4 4 3 2 2 3 3 
+% 1 1 1 2 1 7 1
+
+g g g a g f g 
+c c d d e e
+c c d e f f e d d e e 
+c c c d c b c
+
+
 }
 
 melodywords = \lyricmode {
