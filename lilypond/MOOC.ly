@@ -25,7 +25,18 @@ PartPOneVoiceOne =  \relative gis' {
     \clef "bass" ais2 b4
   }
   | % 9
-  \clef "treble" R2.*24 \bar "|."
+  \clef "treble" 
+  b'4 b4. cis8 |
+  b4  a4. b8 |
+  a4 gis e' |
+  gis,4 fisis gis |
+  a4 a4.( cis8) |
+  cis4. ( b8) <a f>8 <e g>8 |
+  
+  
+  
+  
+  R2.*24 \bar "|."
 }
 
 PartPOneVoiceTwo =  \relative b {
