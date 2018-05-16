@@ -25,7 +25,7 @@ melody = \relative c' {
   \global
 
 a gis a b b 
-b ab c c 
+b a b c c 
 c b c d d 
 g ,g 'f e 
 
