@@ -24,21 +24,21 @@ global = {
 melody = \relative c' {
   \global
 
-a gis a b b 
-b a b c c 
-c b c d d 
-g ,g 'f e 
+a8 gis8 a8 b4 b4 r8
+b8 a8 b8 c4 c4 r8
+c8 b8 c8 d4 d4 r8
+g,8 g'8 f8 e2 r8 
 
-e g f d 
-d f e c 
+e8 g8 f8 d2 r8 
+d8 f8 e8 c2 r8
 
-c c d e a e d c a b e a
+c8 c8 d8 e8 a8 e d c a b e a
 
   
 }
 
 words = \lyricmode {
-  words go here
+  % words go here
 }
 
 \score {
