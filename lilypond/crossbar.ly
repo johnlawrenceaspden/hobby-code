@@ -5,7 +5,7 @@
 }
 
 global = {
-  \time 10/4
+  \time 4/4
   \key c \major
   \tempo 4=120
 }
@@ -13,38 +13,38 @@ global = {
 
 melody = \relative c' {
   \global
+  \clef treble
 
 % 3 4 3 2 2 3 
 % 1 1 2 2 3 3
 % 1 1 2 3 4 4 3 2 2 3 3
 % 1 1  1 2 1 7 1
-
-e f e d d e 
-c c d d e e 
-c c d e f f e d d e e 
-c c c d c b c
+e2 f4. e8 d4 d4 e4. |
+c8 c4. d8 d4. e8 e4.  
+c8 \tuplet 3/2 {c4 d4 e4} f2 \tuplet 3/2 {f4 e4 d4} d4. e8 e4. 
+c8 c4. c8 \tuplet 3/2 {d4 c4 b4} c2 r4.
 
 % 5 5 5 6 6 5 4 5
 % 1 1 2 2 3 3
 % 1 1 2 3 4 4 3 2 2 3 3 
 % 1 1 1 2 1 7 1
 
-g g g a g f g 
-c c d d e e
-c c d e f f e d d e e 
-c c c d c b c
+g'8 | g4. g8 \tuplet 3/2 {a4 g4 f4} g2 
+c,8 c4. d8 d4. e4  e4
+% c c d e f f e d d e e 
+% c c c d c b c
 
 
 }
 
 melodywords = \lyricmode {
   
-Sun set and even -- ing star,
-And one clear call for me!
-And may there be no mo -- an ing of the bar,
-When I put ou -- ut to sea,
+'Sun -- set and 'even -- ing star,
+And 'one clear 'call for 'me!
+And 'may there be 'no mo -- an ing 'of the bar,
+When 'I put 'ou -- ut to 'sea,
  
-When I put out to sea,
+When I put ou -- t to sea,
 When I put out to sea,
 And may there be no moaning of the bar,
 When I put out to sea,
@@ -64,7 +64,7 @@ harmonywords = \lyricmode {
 
 \score {
   <<
-    \new Staff \with{midiInstrument=violin} { \melody }
+    \new Staff \with{midiInstrument="voice oohs"} { \melody }
     \addlyrics { \melodywords }
     \new Staff \with{midiInstrument=cello} { \harmony }
     \addlyrics { \harmonywords }
