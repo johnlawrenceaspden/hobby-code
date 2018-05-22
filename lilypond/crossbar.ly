@@ -61,7 +61,7 @@ g'4. g8 \tuplet 3/2 {a4 (g4 f4)} g2 r2
 c,4. d8 d2 e4.  
 c8 c8 d8 e8 g8 f4. e8 d4 d4 e2 
 
-c4. c8 \tuplet 3/2 {d4 (c4) b4} c2 
+c4. c8 \tuplet 3/2 {d4 (c4 b4)} c2 
 
 
 
@@ -90,7 +90,7 @@ Turns a -- gain home.
 Turns a -- gain home.
 Turns a -- gain home.
 When that which drew from out the bound -- less deep
-Turns again home.
+Turns a -- gain home.
 
 
 }
