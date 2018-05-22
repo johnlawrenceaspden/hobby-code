@@ -32,7 +32,8 @@ c8 c4. c8 \tuplet 3/2 {d4 (c4) b4} c2 r4.
 g'8 | g4. g8 \tuplet 3/2 {a4 (g4) f4} g2 r4. 
 c,8 c4. d8 d4. e8 e4.  
 c8 \tuplet 3/2 {c4 d4 e4} f2 \tuplet 3/2 {f4 (e4 d4)} d4. e8 e4. 
-c8 c4. c8 \tuplet 3/2 {d4 (c4) b4} c2. r4 
+c8 
+c4. c8 \tuplet 3/2 {d4 (c4) b4} c4. 
 
 % 11235 
 % 43223 
@@ -41,15 +42,15 @@ c8 c4. c8 \tuplet 3/2 {d4 (c4) b4} c2. r4
 % 44223 
 % 12217 1
 
-c8 c4. \tuplet 3/2 {d4 e4 g4} 
+c8 c8 d8 e8 g8
 
-f4. (e8) d4 d8 (e8)
+f4. (e8) d4. d8 (e4.)
 
 c8 c4. d8 d4. e8 e4.
-c8 c4. \tuplet 3/2 {d4 e4 g4}  
+c8 c8 d8 e8 g8 
 
 f4. e8 d4. d8 e2 
-c4. c8 \tuplet 3/2 {d4 c b} c2
+c4. c8  \tuplet 3/2 {d4 (c b)}  c2
 
 
 }
@@ -64,12 +65,14 @@ When I put out to 'sea,
 When I put out to sea,
 When I put out to sea,
 And may there be no moaning of the bar,
-When I put out to sea,
+When 
+
+I put out to sea,
 
 But such a tide as moving seems asleep,
 Too full for sound and foam,
 When that which drew from out the bound -- less deep
-Turns again home.
+Turns a -- gain home.
 
 
 }
