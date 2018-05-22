@@ -1,7 +1,7 @@
 \version "2.18.2"
 
 \header {
-  title = ""
+  title = "Crossing the Bar"
 }
 
 global = {
@@ -73,24 +73,28 @@ harmonywords = \lyricmode {
 }
 
 
-allwords= \lyricmode{
-Sunset and evening star,
-And one clear call for me!
-And may there be no moaning of the bar,
-When I put out to sea,
+\markup { \column{
+\line{Sunset and evening star,}
+\line{And one clear call for me!}
+\line{And may there be no moaning of the bar,}
+\line{When I put out to sea,}
+\vspace #0.5
 
-But such a tide as moving seems asleep,
-Too full for sound and foam,
-When that which drew from out the boundless deep
-Turns again home.
+\line{But such a tide as moving seems asleep,}
+\line{Too full for sound and foam,}
+\line{When that which drew from out the boundless deep}
+\line{Turns again home.}
+\vspace #0.5
 
-Twilight and evening bell,
-And after that the dark!
-And may there be no sadness of farewell,
-When I embark;
+\line{Twilight and evening bell,}
+\line{And after that the dark!}
+\line{And may there be no sadness of farewell,}
+\line{When I embark;}
+\vspace #0.5
 
-For tho' from out our bourne of Time and Place
-The flood may bear me far,
-I hope to see my Pilot face to face
-When I have crost the bar.
-}
+\line{For tho' from out our bourne of Time and Place}
+\line{The flood may bear me far,}
+\line{I hope to see my Pilot face to face}
+\line{When I have crost the bar.}
+}}
+
