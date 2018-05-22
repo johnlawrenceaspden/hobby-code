@@ -30,10 +30,9 @@ c8 c4. c8 \tuplet 3/2 {d4 c4 b4} c2 r4.
 % 1 1 1 2 1 7 1
 
 g'8 | g4. g8 \tuplet 3/2 {a4 g4 f4} g2 
-c,8 c4. d8 d4. e4  e4
-% c c d e f f e d d e e 
-% c c c d c b c
-
+c,8 c4. d8 d4. e8 e4.  
+c8 \tuplet 3/2 {c4 d4 e4} f2 \tuplet 3/2 {f4 e4 d4} d4. e8 e4. 
+c8 c4. c8 \tuplet 3/2 {d4 c4 b4} c2 
 
 }
 
