@@ -49,8 +49,8 @@ f4. (e8) d4. d8 (e4.)
 c8 c4. d8 d4. e8 e4.
 c8 c8 d8 e8 g8 
 
-f4. e8 d4. d8 e2 
-c4. c8  \tuplet 3/2 {d4 (c b)}  c1
+f4. e8 d4 d4 e2 
+c4. c8  \tuplet 3/2 {d4 (c b)}  c2 r2
 
 % 556545
 % 12233
@@ -58,10 +58,10 @@ c4. c8  \tuplet 3/2 {d4 (c b)}  c1
 % 122171
 
 g'4. g8 \tuplet 3/2 {a4 (g4 f4)} g2 r2 
-c,8 c4. d8 d4. e8 e4.  
-c8 \tuplet 3/2 {c4 d4 e4} f2 \tuplet 3/2 {f4 (e4 d4)} d4. e8 e4. 
-c8 
-c4. c8 \tuplet 3/2 {d4 (c4) b4} c4. 
+c,4. d8 d2 e4.  
+c8 c8 d8 e8 g8 f4. e8 d4 d4 e2 
+
+c4. c8 \tuplet 3/2 {d4 (c4) b4} c2 
 
 
 
@@ -88,8 +88,8 @@ When that which drew from out the bound -- less deep
 Turns a -- gain home.
 
 Turns a -- gain home.
-Turns again home.
-When that which drew from out the boundless deep
+Turns a -- gain home.
+When that which drew from out the bound -- less deep
 Turns again home.
 
 
