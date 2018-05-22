@@ -50,7 +50,20 @@ c8 c4. d8 d4. e8 e4.
 c8 c8 d8 e8 g8 
 
 f4. e8 d4. d8 e2 
-c4. c8  \tuplet 3/2 {d4 (c b)}  c2
+c4. c8  \tuplet 3/2 {d4 (c b)}  c1
+
+% 556545
+% 12233
+% 1123543223
+% 122171
+
+g'4. g8 \tuplet 3/2 {a4 (g4 f4)} g2 r2 
+c,8 c4. d8 d4. e8 e4.  
+c8 \tuplet 3/2 {c4 d4 e4} f2 \tuplet 3/2 {f4 (e4 d4)} d4. e8 e4. 
+c8 
+c4. c8 \tuplet 3/2 {d4 (c4) b4} c4. 
+
+
 
 
 }
@@ -73,6 +86,11 @@ But such a tide as moving seems asleep,
 Too full for sound and foam,
 When that which drew from out the bound -- less deep
 Turns a -- gain home.
+
+Turns a -- gain home.
+Turns again home.
+When that which drew from out the boundless deep
+Turns again home.
 
 
 }
