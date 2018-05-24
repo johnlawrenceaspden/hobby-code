@@ -1,7 +1,6 @@
 \version "2.18.2"
 \language "english"
 
-% 1 1 5 5 2# 4# 4# 5#
 
 \header {
   title = ""
@@ -29,7 +28,7 @@ melody = \relative c' {
   g4 g gs as2 c4 as gs f g2.
   ds4 f f g2.
 
-  g4 g gs as2 c4 as4 gs f g2.
+  g4 g gs as2 c4 as gs f g2.
   ds4 f f e2.
   
 }
