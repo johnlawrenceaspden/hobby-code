@@ -3,7 +3,7 @@
 
 
 \header {
-  title = ""
+  title = "a tallisy sort of thing"
 }
 
 global = {
@@ -22,7 +22,11 @@ melody = \relative c' {
   r1
   
   c,4 c g' g ds f f g2.
-  c,4 c g' g ds f f e2.
+  
+  g4 g g af f g2.
+
+  
+  % c,4 c g' g ds f f e2.
   
   
   g4 g gs as2 c4 as gs f g2.
@@ -34,7 +38,15 @@ melody = \relative c' {
 }
 
 words = \lyricmode {
-  words go here, here
+  I gave my love a pea -- cock's wings
+  That nev -- er would de -- cay
+  I gave my love so ma -- ny things
+  That she has thrown aw -- ay
+  
+  I gave my love all that I could make
+  She hurt and spoiled
+  I gave my love all the world ent -- ire
+  She made it vile.  
 }
 
 \score {
