@@ -58,3 +58,14 @@ words = \lyricmode {
   \midi { }
 }
 
+\markup { \column{
+\line{  I gave my love a peacock's wings }
+\line{  That never would decay }
+\line{  I gave my love so many things }
+\line{  That she has thrown away }
+\vspace #0.5
+\line{  I gave my love all that I could make }
+\line{  She hurt and spoiled. }
+\line{  I gave my love all the world entire }
+\line{  She made it vile.   }
+}}
