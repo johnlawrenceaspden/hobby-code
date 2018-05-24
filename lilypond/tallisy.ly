@@ -60,7 +60,7 @@ words = \lyricmode {
 
 \markup { \column{
 \line{  I gave my love a peacock's wings }
-\line{  That never would decay }
+\line{  That never would decay. }
 \line{  I gave my love so many things }
 \line{  That she has thrown away. }
 \vspace #0.5
@@ -69,10 +69,10 @@ words = \lyricmode {
 \line{  I gave my love all the world entire }
 \line{  She made it vile.   }
 \vspace #0.5
-\line{And when I sang my great song of joy }
-\line{She snarled and spat }
-\line{And so I sang to the moon and stars }
-\line{And left the world. }
+\line{ And when I sang my great song of joy }
+\line{ She snarled and spat. }
+\line{ And so I sang to the moon and stars }
+\line{ And left the world. }
 
 
 
