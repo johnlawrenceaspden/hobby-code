@@ -15,14 +15,21 @@ global = {
 
 melody = \relative c' {
   \global
+
   c4 c g' g ds f f g2.
   
-  g4 g
-  g gs a f g
+  g4 g g af f g2.
+
+  r1
   
-  g g gs as c as gs f g
-  ds f f g2.
+  c,4 c g' g ds f f g2.
+  c,4 c g' g ds f f e2.
   
+  
+  g4 g gs as2 c4 as gs f g2.
+  ds4 f f g2.
+
+  g4 g gs as2 c4 as4 gs f g2.
   ds4 f f e2.
   
 }
