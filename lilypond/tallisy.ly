@@ -13,13 +13,18 @@ global = {
   \tempo 4=100
 }
 
-melody = \relative c'' {
+melody = \relative c' {
   \global
-  c c g g ds fs fs gs 
-  gs a fs fs
-  e fs fs gs
-  c c gs gs a b cs b a fs gs
-  gs gs a b cs b a fs gs
+  c4 c g' g ds f f g2.
+  
+  g4 g
+  g gs a f g
+  
+  g g gs as c as gs f g
+  ds f f g2.
+  
+  ds4 f f e2.
+  
 }
 
 words = \lyricmode {
