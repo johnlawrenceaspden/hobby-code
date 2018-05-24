@@ -62,10 +62,18 @@ words = \lyricmode {
 \line{  I gave my love a peacock's wings }
 \line{  That never would decay }
 \line{  I gave my love so many things }
-\line{  That she has thrown away }
+\line{  That she has thrown away. }
 \vspace #0.5
 \line{  I gave my love all that I could make }
 \line{  She hurt and spoiled. }
 \line{  I gave my love all the world entire }
 \line{  She made it vile.   }
+\vspace #0.5
+\line{And when I sang my great song of joy }
+\line{She snarled and spat }
+\line{And so I sang to the moon and stars }
+\line{And left the world. }
+
+
+
 }}
