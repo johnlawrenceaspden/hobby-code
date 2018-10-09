@@ -19,10 +19,15 @@ melody = \transpose c' a {\relative c'' {
 
 \score {
   <<
-    \new Staff \with{midiInstrument=violin} { \melody }
+    \new Staff { \melody }
   >>
   \layout { }
-  \midi { }
 }
 
+\score {
+  <<
+    \new Staff \with{midiInstrument=violin} { \unfoldRepeats \melody }
+  >>
+  \midi { }
+}
 
