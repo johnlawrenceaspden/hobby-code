@@ -15,7 +15,7 @@ global = {
 
 melody = \relative c'' {
   \global
-  c c g g  
+  \repeat volta 2 {\partial 4 c4 | c g g}  
 }
 
 words = \lyricmode {
@@ -24,10 +24,16 @@ words = \lyricmode {
 
 \score {
   <<
-    \new Staff \with{midiInstrument=violin} { \melody }
+    \new Staff { \melody }
     \addlyrics { \words }
   >>
   \layout { }
+}
+
+\score {
+  <<
+    \new Staff \with{midiInstrument=violin} { \unfoldRepeats \melody }
+  >>
   \midi { }
 }
 
