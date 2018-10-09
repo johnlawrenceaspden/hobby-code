@@ -17,9 +17,13 @@ melody = \transpose c' a {\relative c'' {
   \repeat volta 2 {\partial 8  g8 |  c d e f16 f16 g g g e f8 f16 f16 e e e e e8 c16 e16 d e d b g8 g8 c8 d8 e8 f16 f16 g g g e f8 f16 f e8 e d16 d8. c4 r8 }
 }}
 
+words = \lyricmode {}
+
 \score {
   <<
     \new Staff { \melody }
+    \addlyrics { \words }
+
   >>
   \layout { }
 }
@@ -31,3 +35,11 @@ melody = \transpose c' a {\relative c'' {
   \midi { }
 }
 
+\markup { \column{
+\line{Titty Mary, you know I gwine follow, I gwine follow, gwine follow}
+\line{Brudder William, you know I gwine to follow, For to do my Fader will.}
+\line{'Tis well and good I'm acomin' here tonight, I'm acomin' here tonight,}
+\line{I'm acomin' here tonight.}
+\line{'Tis well and good, I'm acomin' here tonight, For to do my Fader will}
+
+}}
