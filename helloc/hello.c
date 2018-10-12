@@ -1,12 +1,16 @@
+/*Skeleton C program, load into emacs should provoke C mode, F9 runs makefile and output should appear in compilation window */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include <stdarg.h>
 
+
+
 #include"module.h"
 
 #define DEBUG 1
 
+/* redirect to stderr */
 void debug_vprintf(const char *fmt, ...)
 {
   va_list args;
@@ -44,5 +48,8 @@ void debug_vprintf(const char *fmt, ...)
 int main(void){
   printf("hello\n");
   yo();
+  for(int i=1; i<10; i++) {
+    DBGI(i);
+  }
 }
 
