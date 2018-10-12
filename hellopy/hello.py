@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Load into Emacs, should cause elpy mode, use C-c C-c to run in a repl window
+
 print "hello"
 
 def fib(n):
