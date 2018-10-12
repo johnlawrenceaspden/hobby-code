@@ -2,7 +2,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include <stdarg.h>
+#include<stdarg.h>
+#include<bsd/string.h>
 
 
 
@@ -39,6 +40,7 @@ void debug_vprintf(const char *fmt, ...)
 /* hello.c:86:main(): 1*2*3*4*5*6->720 */
 /* 720                                 */
 #define DBGI(expr) ({int g2rE3Jo=expr; fprintf(stderr, "%s:%d:%s(): ""%s->%i\n", __FILE__,  __LINE__, __func__, #expr, g2rE3Jo); g2rE3Jo;})
+#define DBGS(expr) ({char *g2rE3Jo=expr; fprintf(stderr, "%s:%d:%s(): ""%s->%s\n", __FILE__,  __LINE__, __func__, #expr, g2rE3Jo); g2rE3Jo;})
 
 
 
@@ -46,10 +48,18 @@ void debug_vprintf(const char *fmt, ...)
 
 
 int main(void){
+  char s[100]="";
+  DBGS(s);
+  DBGI(sizeof(s));
+  DBGI(snprintf(DBGS(s),DBGI(sizeof(s)),"yo%i",2));
+  DBGS(s);
   printf("hello\n");
   yo();
   for(int i=1; i<10; i++) {
     DBGI(i);
+    DBGI(snprintf(s,sizeof(s),"%i",i));
+    DBGI(strlcat(s,"hello",sizeof(s)));
+    printf("%s",s);
   }
 }
 
