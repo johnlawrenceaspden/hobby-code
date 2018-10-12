@@ -1,5 +1,6 @@
 #include<stdarg.h>
-#include<debug.h>
+#include<stdio.h>
+#include"debug.h"
 
 void debug_vprintf(const char *fmt, ...)
 {
