@@ -10,7 +10,7 @@
 global = {
   \time 2/4
   \key f \major
-  \tempo 4=100
+  \tempo 4=50
 }
 
 melody = \relative c' {
@@ -35,6 +35,14 @@ words = \lyricmode {
 \score {
   <<
     \new Staff { \melody }
+    \addlyrics { \words }
+  >>
+  \layout { }
+}
+
+\score {
+  <<
+    \new Staff { \transpose f c \melody }
     \addlyrics { \words }
   >>
   \layout { }
