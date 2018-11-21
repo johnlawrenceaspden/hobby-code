@@ -1,4 +1,5 @@
 \version "2.18.2"
+\language "english"
 
 global = {
   \key c \major
@@ -23,13 +24,11 @@ altoVoice = \relative c' {
   \global
   \dynamicUp
   % Music follows here.
-  a4
   
 }
 
 verseAltoVoice = \lyricmode {
   % Lyrics follow here.
-  alt
   
 }
 
@@ -37,26 +36,24 @@ tenorVoice = \relative c' {
   \global
   \dynamicUp
   % Music follows here.
-  e4
   
 }
 
 verseTenorVoice = \lyricmode {
   % Lyrics follow here.
-  tenor
+  
 }
 
 bassVoice = \relative c {
   \global
   \dynamicUp
   % Music follows here.
-  c4
   
 }
 
 verseBassVoice = \lyricmode {
   % Lyrics follow here.
-  bass
+  
 }
 
 sopranoVoicePart = \new Staff \with {
