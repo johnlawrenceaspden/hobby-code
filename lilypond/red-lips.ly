@@ -1,10 +1,8 @@
 \version "2.18.2"
 \language "english"
 
-% 1 1 5 5
-
 \header {
-  title = ""
+  title = "Red Lips"
 }
 
 global = {
@@ -75,57 +73,36 @@ words = \lyricmode {
 }
 
 \markup { \column{
-\line{more words}
-\line{}
-\line{}
-\line{}
-\vspace #0.5
+  \line{Red lips are not so red}
+  \line{As the stained stones kissed by the English dead.}
+  \line{Kindness of wooed and wooer}
+  \line{Seems shame to their love pure.}
+  \line{O Love, your eyes lose lure}
+  \line{When I behold eyes blinded in my stead!}
 
-\line{can go here}
-\line{}
-\line{}
-\line{}
 \vspace #0.5
-
-\line{}
-\line{}
-\line{}
-\line{}
+\line{Your slender attitude}
+\line{Trembles not exquisite like limbs knife-skewed,}
+\line{Rolling and rolling there}
+\line{Where God seems not to care;}
+\line{Till the fierce Love they bear}
+\line{Cramps them in death's extreme decrepitude.}
 \vspace #0.5
-
-\line{}
-\line{}
-\line{}
-\line{}
+\line{Your voice sings not so soft, --}
+\line{Though even as wind murmuring through raftered loft, --}
+\line{Your dear voice is not dear,}
+\line{Gentle, and evening clear,}
+\line{As theirs whom none now hear}
+\line{Now earth has stopped their piteous mouths that coughed.}
+\vspace #0.5
+\line{Heart, you were never hot,}
+\line{Nor large, nor full like hearts made great with shot;}
+\line{And though your hand be pale,}
+\line{Paler are all which trail}
+\line{Your cross through flame and hail:}
+\line{Weep, you may weep, for you may touch them not. }
 }}
 
 
-%Red lips are not so red
-%As the stained stones kissed by the English dead.
-%Kindness of wooed and wooer
-%Seems shame to their love pure.
-%O Love, your eyes lose lure
-%When I behold eyes blinded in my stead!
-%
-%Your slender attitude
-%Trembles not exquisite like limbs knife-skewed,
-%Rolling and rolling there
-%Where God seems not to care;
-%Till the fierce Love they bear
-%Cramps them in death's extreme decrepitude.
-%
-%Your voice sings not so soft, --
-%Though even as wind murmuring through raftered loft, --
-%Your dear voice is not dear,
-%Gentle, and evening clear,
-%As theirs whom none now hear
-%Now earth has stopped their piteous mouths that coughed.
-%
-%Heart, you were never hot,
-%Nor large, nor full like hearts made great with shot;
-%And though your hand be pale,
-%Paler are all which trail
-%Your cross through flame and hail:
-%Weep, you may weep, for you may touch them not. 
 
 
