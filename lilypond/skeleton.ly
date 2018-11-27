@@ -15,11 +15,16 @@ global = {
 
 melody = \relative c'' {
   \global
-  \repeat volta 2 {\partial 4 c4 | c g g}  
+  \partial 4 
+  c4
+  e d e
+  \repeat volta 2 {c g g a a }  
+  \alternative {{c e g }{g (e c)}}
+  a b c d 
 }
 
 words = \lyricmode {
-  words go here, here
+  words go here hy -- phen hy -- phen skip _ extender __  ex __ me -- lisma __ _ _
 }
 
 \score {
