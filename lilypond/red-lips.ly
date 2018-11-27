@@ -8,9 +8,9 @@
 }
 
 global = {
-  \time 4/4
+  \time 3/4
   \key c \minor
-  \tempo 4=100
+  \tempo 4=50
 }
 
 % transpose {c fs} 
@@ -18,38 +18,38 @@ global = {
 melody = \relative c'' {
   \global
 
-% 5   3b   3b  4  3b 2 1 7   5, 5,  1       2      3b     2  1   7  5,   1
-  g   ef   ef  f  ef d c b   g  g   c       d      ef     d  c   b  g   c
+% 5    3b    3b  4    3b 2 1 7    5,  5,  1       2      3b     2  1   7  5,   1
+  g4   ef8   ef  f16  ef d c b8   g16  g  c8       d      ef     d16  c   b8  g   c4
 
-% 5   3b   3b 4 3b  2 1 7     5,     1     2  3b    4    5
-  g'   ef   ef f ef  d (c) b  g      c     d  ef    f    g
+% 5     3b    3b 4   3b  2  1    7   5,     1     2  3b    4    5
+  g'4   ef8   ef f16 ef  d (c)   b8  g      c     d  ef    f    g4
 
 
 % 5    3b   4  3b 2  1  7    5,   1 2  3b   4    5    1   2 1 7  1
-  g    ef   f  ef d  c  b    g    c d  ef   f    g    c,   d c b  c
+  g    ef   f16  ef d  c  b8    g    c d  ef   f    g    c,   d16 c b8  c4
 
 
 % 5      5#  6#  4     2   3b  5   2     5(7,?)    1('?)
-  g'     af  bf  f     d   ef  g   d     g         c,
+  g'4     af8  bf  f4.     d8   ef8  g8   d8     g8  c,4
 
 }
 
 words = \lyricmode {
 % 1=f#
-% -   -        -         -          -              -             -       -
+% -   -        -          -          -              -             -       -
  Red lips are no- ot s- o red as the stained stones kissed by the Eng- lish dead.
 % 5   3b   3b  4  3b 2 1 7   5, 5,  1       2      3b     2  1   7  5,   1
 
-% -   -       -         -           -        -          -
+% -    -       -           -           -        -          -
  Kind- ness of woo- ed and wooer seems shame to their love pure.
 %5     3b   3b 4 3b  2 1 7     5,     1     2  3b    4    5
 
-% -    -    -           -         -    -         -        -      -
+%-    -    -             -         -     -         -         -       -
  Love your ey- es lo- se lure when I be- hold eyes blin- ded i- n my stead.
 % 5    3b   4  3b 2  1   7    5,   1 2   3b   4    5     1   2 1 7  1
 
-
-Weep,   you may weep, for you may touch them not. 
+% -  -    -   -   - -   - -   -   -   -     -    - 
+  Weep,   you may weep,   for you may touch them not. 
 % 5     5#  6#  4     2   3b  5   2     5(7,?)    1('?)
 
 }
@@ -59,7 +59,13 @@ Weep,   you may weep, for you may touch them not.
     \new Staff { \melody }
     \addlyrics { \words }
   >>
-  \layout { }
+  \layout {     
+%    \context {
+%      \Staff
+%      whichBar = #""
+%      \remove Time_signature_engraver
+%    }
+  }
 }
 
 \score {
