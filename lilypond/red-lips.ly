@@ -6,7 +6,7 @@
 }
 
 global = {
-  \time 3/4
+  \time 2/4
   \key c \minor
   \tempo 4=50
 }
