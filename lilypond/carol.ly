@@ -18,14 +18,18 @@ melody = \relative c'' {
   c4 a f g g c,2.
   e4 f a g b c2.
   c4 a f g g c,2.
+  r1 r1
+  c'4 a4. f8 g4 b4 c2.
   
 }
 
 words = \lyricmode {
-  one six four five seven one 
-  one six four five five one
-  three four six five seven one
-  one six four five five one
+  (A)one six four five seven one 
+  (B)one six four five five one
+  (C)three four six five seven one
+  (D)one six four five five one
+  
+  (E)one six four five seven one
 }
 
 \score {
@@ -44,22 +48,22 @@ words = \lyricmode {
 }
 
 \markup { \column{
-\line{Come all good men and pray}
-\line{For Christ is born to - day}
-\line{So sing the joy - ful song}
-\line{For he will stand no wrong!}
+\line{A Come all good men and pray}
+\line{B For Christ is born to - day}
+\line{C So sing the joy - ful song}
+\line{D For he will stand no wrong!}
 \vspace #0.5
 
-\line{He comes to har - row Hell}
-\line{To make all foul things well!}
-\line{He rises like the dawn}
-\line{Sing out! the Christ is born!}
+\line{A He comes to har - row Hell}
+\line{A To make all foul things well!}
+\line{B He rises like the dawn}
+\line{E Sing out! for Christ is born!}
 \vspace #0.5
 
-\line{All men on earth to - day}
-\line{Down on your knees and pray}
-\line{For Christ is come at last}
-\line{And all our woe is past}
+\line{B All men on earth to - day}
+\line{C Down on your knees and pray}
+\line{B The Christ is come at last}
+\line{C And all our woe is past}
 \vspace #0.5
 
 \line{}
