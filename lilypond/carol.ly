@@ -8,7 +8,7 @@
 global = {
   \time 4/4
   \key c \major
-  \tempo 4=100
+  \tempo 4=200
 }
 
 melody = \relative c'' {
@@ -63,7 +63,7 @@ words = \lyricmode {
 \line{B All men on earth to - day}
 \line{C Down on your knees and pray}
 \line{B The Christ is come at last}
-\line{C And all our woe is past}
+\line{C And all our woe is past!}
 \vspace #0.5
 
 \line{}
