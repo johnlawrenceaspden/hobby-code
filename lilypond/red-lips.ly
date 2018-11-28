@@ -11,9 +11,7 @@ global = {
   \tempo 4=50
 }
 
-% transpose {c fs} 
-
-melody = \relative c''
+melody = \transpose c fs \relative c''
 {
   \global
 
