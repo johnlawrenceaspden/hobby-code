@@ -2,3 +2,7 @@
 *.dvi
 *.log
 *.pdf
+*.nav
+*.out
+*.snm
+*.toc
