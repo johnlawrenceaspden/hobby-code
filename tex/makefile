@@ -1,3 +1,6 @@
-view: hello.tex
-	pdflatex hello.tex
-	evince hello.pdf
+default: hellobeamer.view
+
+%.view: %.pdf
+	evince $<
+%.pdf: %.tex
+	pdflatex $<
