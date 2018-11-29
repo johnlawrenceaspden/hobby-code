@@ -1,0 +1,28 @@
+\documentclass[a4paper]{article}
+
+\begin{document}
+
+Documents for \verb+lilypond-book+ may freely mix music and text.
+For example,
+
+\begin{lilypond}
+\relative {
+  c'2 e2 \tuplet 3/2 { f8 a b } a2 e4
+}
+\end{lilypond}
+
+Options are put in brackets.
+
+\begin{lilypond}[fragment,quote,staffsize=26,verbatim]
+  c'4 f16
+\end{lilypond}
+
+Larger examples can be put into a separate file, and introduced with
+\verb+\lilypondfile+.
+
+\lilypondfile[quote,noindent]{screech-and-boink.ly}
+
+(If needed, replace @file{screech-and-boink.ly} by any @file{.ly} file
+you put in the same directory as this file.)
+
+\end{document}
