@@ -4,3 +4,6 @@ default: hellobeamer.view
 	evince $<
 %.pdf: %.tex
 	pdflatex $<
+
+clean:
+	-rm *.pdf *.aux *.log *.dvi *.out *.toc *.snm *.nav
