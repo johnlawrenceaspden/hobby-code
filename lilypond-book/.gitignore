@@ -1,0 +1,8 @@
+??/
+*.aux
+*.dep
+*.log
+*.pdf
+snippet*.ly
+lilybook.tex
+
