@@ -1,4 +1,4 @@
-default: hellobeamer.view
+default: sing1.view
 
 %.view: %.pdf
 	evince $<
