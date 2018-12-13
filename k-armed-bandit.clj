@@ -1,39 +1,20 @@
-;; K armed bandits, chapter 2 of Sutton's book
+;; Reinforcement Learning : Exploration vs Exploitation
 
+;; I'm reading the excellent:
 
-;; First, I want to define a few general utility functions that will come in handy later
+;; Reinforcement Learning: An Introduction
+;; by Richard S. Sutton and Andrew G. Barto
 
-;; mapvals applies a function to every value in a map, returning a new map with the same keys
-(defn mapvals [m f] (into {} (for [[k v] m] [k (f v)])))
+;; The book's website, on which is available a complete pdf, is here:
+;; http://www.incompleteideas.net/book/the-book.html
 
-(mapvals {} inc) ; {}
-(mapvals {:a 1} inc) ; {:a 2}
-(mapvals {:a 1, :b 2} inc) ; {:a 2, :b 3}
-(mapvals {:a 1, :b 2, :c 3} #(* % %)) ; {:a 1, :b 4, :c 9}
+;; Chapter 2 Multi-Armed Bandits
 
+;; In chapter 2, they introduce multi-armed bandits as a simplified model problem 
 
-;; average-list tells us the average value of a list of numbers, with a default if the list is empty.
-(defn average-list [lst default] (if (empty? lst) default (/ (reduce + lst) (count lst))))
+;; On the basis that you don't understand anything you can't explain to a computer, I thought I'd code it up:
 
-(average-list (list 1 2 3 4 5) 0) ; 3
-(average-list (list) 10) ; 10
-(average-list (list 1) 2) ; 1
-
-
-;; max-keys finds the keys with the highest value in a map, and returns a map with just these keys
-(defn max-keys [m]
-  (let [slist (reverse (sort-by second m)) 
-        [_ max] (first slist)]
-    (take-while #(= (second %) max) slist)))
-
-(max-keys {}) ; ()
-(max-keys {1 0}) ; ([1 0])
-(max-keys {1 0, 2 0}) ; ([2 0] [1 0])
-(max-keys {1 0, 2 1}) ; ([2 1])
-(max-keys {1 0, 2 1, 3 -1 , 4 -3, 5 2, 6 2}) ; ([6 2] [5 2])
-
-
-;; A 2 armed bandit
+;; Here is a 2 armed bandit
 (defn bandit [action]
   (if (= action :arms?) [:right :left]
       (case action
@@ -41,48 +22,124 @@
         :left (if (< (rand) 0.2) 5 0)
         :oops!!)))
 
+;; We can ask it how many arms it's got, and what they're called
 (bandit :arms?) ; [:right :left]
-(map bandit [:right :left]) ; (4 0)
+
+;; And we can pull those arms. Rewards are variable.
+(bandit :right) ; 4 ; 4 ; 4 ; 0 ; 0 ; 0 ; 0
+(bandit :left) ; 5 ; 0 ; 0 ; 0 ; 5 ; 0 ; 5 ; 0
 
 
-;; We'd like to record what goes on in order to learn from it
+;; Since we can see the code
+;; for this particular bandit, we know that the expected value of pulling the right arm is 2 (a half-chance of a reward of 4)
+;; and the expected reward for the left arm is 0.2*5 = 1
 
-;; initial state, no data
+;; So if we were seeking to maximize reward, we'd probably be best to pull the right arm all the time.
+
+(map bandit (repeat :right)) ; (0 4 0 0 4 0 4 0 0 4 0 4 0 4 4 4 0 0 4 4 4 4 4 0 4 0 4 0 4 4 4 4 4 0 4 0 4 4 0 0 4 4 0 0 0 0 0 0 4 4 0 0 0 0 4 4 0 0 4 0 4 0 0 0 0 0 4 0 4 0 0 0 0 0 0 0 0 4 4 4 4 4 0 4 4 ...)
+(map bandit (repeat :left))  ; (0 0 0 0 0 0 0 0 0 5 5 5 0 0 0 0 0 0 5 0 0 0 5 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 5 0 0 0 5 5 0 5 0 0 5 0 0 5 0 0 0 0 5 0 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 5 5 0 ...) ;
+
+
+;; The interesting question is, if we don't know how the bandit works, how should we design an algorithm that gets the most reward?
+
+;; One thing our algorithm is going to have to do is to record what happens:
+
+;; At first, we know nothing, so we can set up a table to represent that we know nothing
 (defn initial-state [bandit]
   (into {} (for [k (bandit :arms?)] [k (list)])))
 
+;; We haven't pulled either arm yet
 (initial-state bandit) ; {:right (), :left ()}
 
-;; When we get a new action reward pair, we'll update our state
+
+;; Once we pull an arm, we'll have an action/reward pair
+(bandit :right) ; 4
+;; the pair would be:
+[:right 4]
+
+;; When we get a new action reward/pair, we'll update our state
 (defn update-state [state [action reward]]
   (update-in state [action] #(conj % reward)))
 
+(update-state (initial-state bandit) [:right 4]) ; {:right (4), :left ()}
 
-
+;; here are some examples of using update-state
 (update-state {:right (), :left ()} [:right 2]) ; {:right (2), :left ()}
-(reduce update-state {:right (), :left ()}
-            [[:right 2] [:left 3]  [:right 4] [:right 5]]) ; {:right (5 4 2), :left (3)}
-
+(reduce update-state {:right (), :left ()} [[:right 2] [:left 3]  [:right 4] [:right 5]]) ; {:right (5 4 2), :left (3)}
 (update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2]) ; {:right (), :left (2)}
 
 
-;; q*(a) is the true expectation of the action a
-;; Q_t(a) is the current estimate (at time t)
+;; Once we actually have some data, we can make estimates of the expected rewards
 
 ;; We'll use as our estimate of the value of an action the average value seen so far, or zero if we have no information
+
+;; To help with this, a couple of utility functions:
+
+;; average-list tells us the average value of a list of numbers, with a default value if the list is empty.
+(defn average-list [lst default] (if (empty? lst) default (/ (reduce + lst) (count lst))))
+
+(average-list (list 1 2 3 4 5) 0) ; 3
+(average-list (list) 10) ; 10
+(average-list (list 1) 2) ; 1
+
+;; mapvals applies a function to every value in a map, returning a new map with the same keys
+(defn mapvals [m f] (into {} (for [[k v] m] [k (f v)]))) 
+
+;; examples
+(mapvals {} inc) ; {}
+(mapvals {:a 1} inc) ; {:a 2}
+(mapvals {:a 1, :b 2} inc) ; {:a 2, :b 3}
+(mapvals {:a 1, :b 2, :c 3} #(* % %)) ; {:a 1, :b 4, :c 9}
+
+
+;; In the book, Q_t(a) is the current estimate (at time t)
+;; Using the two functions, we can define our estimate so:
+
 (defn Q [state] (mapvals state #(average-list % 0)))
 
+;; examples
 (Q '{:right (5 4 2), :left (3)}) ; {:right 11/3, :left 3}
 (Q '{:right (5 4 2), :left ()}) ; {:right 11/3, :left 0}
 (Q (initial-state bandit)) ; {:right 0, :left 0} 
 (Q (update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2])) ; {:right 0, :left 2}
 
 
-;; The greedy action is the one with the highest expected value
-;; if there is a tie, we choose at random
+
+
+
+
+
+
+
+
+
+;; If we have estimates of the value of each arm, then a good way to use them is to pull the arm with the highest estimate
+;; This is called 'exploitation', as opposed to 'exploration', which is when you try things you think may be suboptimal in order to get information
+
+;; The 'greedy' action is the one with the highest expected value
+
+
+;; To help with this, another utility function
+
+;; max-keys finds the keys with the highest value in a map, and returns a map with just these keys
+(defn max-keys [m]
+  (let [slist (reverse (sort-by second m)) 
+        [_ max] (first slist)]
+    (take-while #(= (second %) max) slist)))
+
+;; examples
+(max-keys {}) ; ()
+(max-keys {1 0}) ; ([1 0])
+(max-keys {1 0, 2 0}) ; ([2 0] [1 0])
+(max-keys {1 0, 2 1}) ; ([2 1])
+(max-keys {1 0, 2 1, 3 -1 , 4 -3, 5 2, 6 2}) ; ([6 2] [5 2])
+
+;; if there is a tie for the greedy action, we choose at random between the candidates
+;; And so we can go from estimates to greedy action like this:
 (defn greedy-action [estimates]
   (first (rand-nth (max-keys estimates))))
 
+;; examples
 (greedy-action '{:right 10, :left 3}) ; :right
 (greedy-action '{:right 10, :left 3 :centre 20}) ; :centre
 (greedy-action '{:right 10, :left 3 :centre 3}) ; :right
@@ -92,7 +149,11 @@
 (greedy-action (Q '{:right (), :left (3)})) ; :left
 (greedy-action (Q (initial-state bandit))) ; :left
 
+;; OK, so we have our stage set, a way of recording what's happened, and some helpful functions defined.
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Our first try at a learning algorithm will be 'by hand', as it were.
 
