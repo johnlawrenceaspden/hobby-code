@@ -32,43 +32,67 @@
 (max-keys {1 0, 2 1}) ; ([2 1])
 (max-keys {1 0, 2 1, 3 -1 , 4 -3, 5 2, 6 2}) ; ([6 2] [5 2])
 
-;; q*(a) is the true expectation of the action a
-;; Q_t(a) is the current estimate (at time t)
-
 
 ;; A 2 armed bandit
 (defn bandit [action]
-  (if (= action :arms?) [1 2]
+  (if (= action :arms?) [:right :left]
       (case action
-        1 (if (< (rand) 0.5) 4 0)
-        2 (if (< (rand) 0.2) 5 0)
-        :oops)))
+        :right (if (< (rand) 0.5) 4 0)
+        :left (if (< (rand) 0.2) 5 0)
+        :oops!!)))
 
-(map bandit [1 2 1 2 1 2 1 2 :arms? :oops]) ; (0 5 0 0 4 5 4 0 :oops)
+(bandit :arms?) ; [:right :left]
+(map bandit [:right :left]) ; (4 0)
 
 
-
+;; We'd like to record what goes on in order to learn from it
 
 ;; initial state, no data
 (defn initial-state [bandit]
-  (into {} (for [k (bandit :arms?)] [k '()])))
+  (into {} (for [k (bandit :arms?)] [k (list)])))
 
-(initial-state bandit) ; {1 (), 2 ()}
+(initial-state bandit) ; {:right (), :left ()}
+
+;; When we get a new action reward pair, we'll update our state
+(defn update-state [state [action reward]]
+  (update-in state [action] #(conj % reward)))
+
+
+
+(update-state {:right (), :left ()} [:right 2]) ; {:right (2), :left ()}
+(reduce update-state {:right (), :left ()}
+            [[:right 2] [:left 3]  [:right 4] [:right 5]]) ; {:right (5 4 2), :left (3)}
+
+(update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2]) ; {:right (), :left (2)}
+
+
+;; q*(a) is the true expectation of the action a
+;; Q_t(a) is the current estimate (at time t)
 
 
 (defn Q [state] (mapvals state average-list))
 
 (Q (initial-state bandit)) ; {1 0, 2 0}
+(Q '{:right (5 4 2), :left (3)}) ; {:right 11/3, :left 3}
 
 
+;; The greedy action is the one with the highest expected value
+;; if there is a tie, we choose at random
 (defn greedy-action [state]
   (first (rand-nth (max-keys (Q state)))))
 
-(greedy-action (initial-state bandit)) ; 2
+(greedy-action (initial-state bandit)) ; :right
+(greedy-action '{:right (5 4 2), :left (3)}) ; :right
 
 
-;; choose at random
-(greedy-action (Q (initial-state bandit))) ; 2
+;; Our first try at a learning algorithm will by 'by hand', as it were.
+;; And we'll always make the 'greedy' choice.
+
+;; At first, we have no records to go on
+(initial-state bandit) ; {:right (), :left ()}
+
+;; so the greedy action choose at random
+(greedy-action (initial-state bandit)) ; :left
 
 ;; bandit's response
 (bandit 2) ; 5
