@@ -12,12 +12,12 @@
 (mapvals {:a 1, :b 2, :c 3} #(* % %)) ; {:a 1, :b 4, :c 9}
 
 
-;; average-list tells us the average value of a list of numbers, with an average of 0 if the list is empty?
-(defn average-list [l] (if (empty? l) 0 (/ (reduce + l) (count l))))
+;; average-list tells us the average value of a list of numbers, with a default if the list is empty.
+(defn average-list [lst default] (if (empty? lst) default (/ (reduce + lst) (count lst))))
 
-(average-list (list 1 2 3 4 5)) ; 3
-(average-list (list)) ; 0
-(average-list (list 1)) ; 1
+(average-list (list 1 2 3 4 5) 0) ; 3
+(average-list (list) 10) ; 10
+(average-list (list 1) 2) ; 1
 
 
 ;; max-keys finds the keys with the highest value in a map, and returns a map with just these keys
@@ -69,45 +69,97 @@
 ;; q*(a) is the true expectation of the action a
 ;; Q_t(a) is the current estimate (at time t)
 
+;; We'll use as our estimate of the value of an action the average value seen so far, or zero if we have no information
+(defn Q [state] (mapvals state #(average-list % 0)))
 
-(defn Q [state] (mapvals state average-list))
-
-(Q (initial-state bandit)) ; {1 0, 2 0}
 (Q '{:right (5 4 2), :left (3)}) ; {:right 11/3, :left 3}
+(Q '{:right (5 4 2), :left ()}) ; {:right 11/3, :left 0}
+(Q (initial-state bandit)) ; {:right 0, :left 0} 
+(Q (update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2])) ; {:right 0, :left 2}
 
 
 ;; The greedy action is the one with the highest expected value
 ;; if there is a tie, we choose at random
-(defn greedy-action [state]
-  (first (rand-nth (max-keys (Q state)))))
+(defn greedy-action [estimates]
+  (first (rand-nth (max-keys estimates))))
 
-(greedy-action (initial-state bandit)) ; :right
-(greedy-action '{:right (5 4 2), :left (3)}) ; :right
+(greedy-action '{:right 10, :left 3}) ; :right
+(greedy-action '{:right 10, :left 3 :centre 20}) ; :centre
+(greedy-action '{:right 10, :left 3 :centre 3}) ; :right
+(greedy-action '{:right 3, :left 3 :centre 3}) ; :right ; :right ; :centre ; :right ; 
+
+(greedy-action (Q '{:right (5 4 2), :left (3)})) ; :right
+(greedy-action (Q '{:right (), :left (3)})) ; :left
+(greedy-action (Q (initial-state bandit))) ; :left
 
 
-;; Our first try at a learning algorithm will by 'by hand', as it were.
-;; And we'll always make the 'greedy' choice.
+
+;; Our first try at a learning algorithm will be 'by hand', as it were.
+
+;; We'll always make the 'greedy' choice.
 
 ;; At first, we have no records to go on
 (initial-state bandit) ; {:right (), :left ()}
 
-;; so the greedy action choose at random
-(greedy-action (initial-state bandit)) ; :left
+;; expected values for both levers are therefore zero
+(Q (initial-state bandit)) ; {:right 0, :left 0}
 
-;; bandit's response
-(bandit 2) ; 5
+;; so the greedy action will get chosen at random
+(greedy-action (Q (initial-state bandit))) ; :left
+
+;; in this case, we've chosen :left, and the bandit's response is
+(bandit :left) ; 0 
 
 ;; record it
-(update-in {1 '() 2 '()} [2] #(cons 5 %)) ; {1 (), 2 (5)}
+(update-state (initial-state bandit) [:left 0]) ;
 
-;; new state
-'{1 (), 2 (5)}
+;; and we have a new state
+'{:right (), :left (0)}
 
-(greedy-action (Q '{1 (), 2 (5)})) ; 2
+;; new estimates
+(Q '{:right (), :left (0)}) ; {:right 0, :left 0}
 
-(bandit 2) ; 0
+;; again, choose at random
+(greedy-action (Q '{:right (), :left (0)})) ; :left
 
-(update-in {1 '(), 2 '(5)} [2] #(cons 0 %)) ; {1 (), 2 (0 5)}
+;; it's not feeling very generous
+(bandit :left) ; 0
+
+(update-state '{:right (), :left (0)} [:left 0]) ; {:right (), :left (0 0)}
+
+;; new state:
+'{:right (), :left (0 0)}
+
+(Q '{:right (), :left (0 0)}) ; {:right 0, :left 0}
+
+;; this time we choose :right
+(greedy-action (Q '{:right (), :left (0 0)})) ; :right
+
+;; and the bandit pays out! 
+(bandit :right) ; 4
+
+(update-state '{:right (), :left (0 0)} [:right 4]) ; {:right (4), :left (0 0)}
+
+;; You get the idea......
+
+;; Let's automate that....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 (defn step [state bandit]
