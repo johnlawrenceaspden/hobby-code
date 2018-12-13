@@ -1,4 +1,4 @@
-;; Reinforcement Learning : Exploration vs Exploitation
+;; Reinforcement Learning : Exploration vs Exploitation : Multi-Armed Bandits
 
 ;; I'm reading the excellent:
 
@@ -8,9 +8,7 @@
 ;; The book's website, on which is available a complete pdf, is here:
 ;; http://www.incompleteideas.net/book/the-book.html
 
-;; Chapter 2 Multi-Armed Bandits
-
-;; In chapter 2, they introduce multi-armed bandits as a simplified model problem 
+;; In Chapter 2, they introduce multi-armed bandits as a simplified model problem 
 
 ;; On the basis that you don't understand anything you can't explain to a computer, I thought I'd code it up:
 
@@ -30,9 +28,9 @@
 (bandit :left) ; 5 ; 0 ; 0 ; 0 ; 5 ; 0 ; 5 ; 0
 
 
-;; Since we can see the code
-;; for this particular bandit, we know that the expected value of pulling the right arm is 2 (a half-chance of a reward of 4)
-;; and the expected reward for the left arm is 0.2*5 = 1
+;; Since we can see the code for this particular bandit, we know that
+;; the expected value of pulling the right arm is 2 (a half-chance of
+;; a reward of 4) and the expected reward for the left arm is 0.2*5 = 1
 
 ;; So if we were seeking to maximize reward, we'd probably be best to pull the right arm all the time.
 
@@ -113,13 +111,16 @@
 
 
 
-;; If we have estimates of the value of each arm, then a good way to use them is to pull the arm with the highest estimate
-;; This is called 'exploitation', as opposed to 'exploration', which is when you try things you think may be suboptimal in order to get information
+;; If we have estimates of the value of each arm, then a good way to
+;; use them is to pull the arm with the highest estimate.
+
+;; This is called 'exploitation', as opposed to 'exploration', which
+;; is when you try things you think may be suboptimal in order to get
+;; information
 
 ;; The 'greedy' action is the one with the highest expected value
 
-
-;; To help with this, another utility function
+;; To help with this, another utility function:
 
 ;; max-keys finds the keys with the highest value in a map, and returns a map with just these keys
 (defn max-keys [m]
@@ -172,7 +173,7 @@
 (bandit :left) ; 0 
 
 ;; we record it
-(update-state (initial-state bandit) [:left 0]) ;
+(update-state (initial-state bandit) [:left 0]) ; {:right (), :left (0)}
 
 ;; and we have a new state
 '{:right (), :left (0)}
@@ -183,7 +184,7 @@
 ;; and again, we choose at random
 (greedy-action (Q '{:right (), :left (0)})) ; :left
 
-;; it's not feeling very generous
+;; the bandit is not feeling very generous
 (bandit :left) ; 0
 
 (update-state '{:right (), :left (0)} [:left 0]) ; {:right (), :left (0 0)}
@@ -206,7 +207,8 @@
 
 ;; Let's automate that....
 
-;; Given a state and a bandit, we decide an action and the bandit responds, producing an action/reward pair, and a new state
+;; Given a state and a bandit, we decide an action and the bandit
+;; responds, producing an action/reward pair, and a new state
 
 (defn greedy-algorithm [bandit state]
   (let [action (greedy-action (Q state))
