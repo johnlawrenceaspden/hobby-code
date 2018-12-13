@@ -171,7 +171,7 @@
 ;; in this case, we've chosen :left, and the bandit's response is
 (bandit :left) ; 0 
 
-;; record it
+;; we record it
 (update-state (initial-state bandit) [:left 0]) ;
 
 ;; and we have a new state
@@ -180,7 +180,7 @@
 ;; new estimates
 (Q '{:right (), :left (0)}) ; {:right 0, :left 0}
 
-;; again, choose at random
+;; and again, we choose at random
 (greedy-action (Q '{:right (), :left (0)})) ; :left
 
 ;; it's not feeling very generous
@@ -191,6 +191,7 @@
 ;; new state:
 '{:right (), :left (0 0)}
 
+;; new estimates
 (Q '{:right (), :left (0 0)}) ; {:right 0, :left 0}
 
 ;; this time we choose :right
@@ -205,6 +206,83 @@
 
 ;; Let's automate that....
 
+;; Given a state and a bandit, we decide an action and the bandit responds, producing an action/reward pair, and a new state
+
+(defn greedy-algorithm [bandit state]
+  (let [action (greedy-action (Q state))
+        reward (bandit action)]
+    [[action reward] (update-state state [action reward])]))
+
+
+(greedy-algorithm bandit (initial-state bandit)) ; [[:left 0] {:right (), :left (0)}]
+
+;; To get something we can iterate:
+
+(defn step [[[a r] state]]
+  (greedy-algorithm bandit state))
+
+(iterate step [ [:dummy :dummy] (initial-state bandit)])
+
+;; ([[:dummy :dummy] {:right (), :left ()}]
+;;  [[:left 5] {:right (), :left (5)}]
+;;  [[:left 0] {:right (), :left (0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 5] {:right (), :left (5 0 0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 5 0 0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 5 0 0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 5 0 0 0 0 0 0 0 0 0 0 5)}]
+;;  [[:left 0] {:right (), :left (0 0 0 0 5 0 0 0 0 0 0 0 0 0 0 5)}]
+
+;; In this case, the greedy algorithm happens to get a payout on its
+;; first try, and decides that it will pull that arm for ever. It
+;; never even tries the other arm.
+
+;; Try again:
+
+(iterate step [ [:dummy :dummy] (initial-state bandit)])
+;;([[:dummy :dummy] {:right (), :left ()}]
+;;  [[:right 0] {:right (0), :left ()}]
+;;  [[:right 0] {:right (0 0), :left ()}]
+;;  [[:left 0] {:right (0 0), :left (0)}]
+;;  [[:right 4] {:right (4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 4 4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 0] {:right (0 4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 0] {:right (0 0 4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 0 0 4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 0] {:right (0 4 0 0 4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 4] {:right (4 0 4 0 0 4 4 4 4 4 4 0 0), :left (0)}]
+;;  [[:right 0] {:right (0 4 0 4 0 0 4 4 4 4 4 4 0 0), :left (0)}]
+
+;; In this case, it tried the right arm a couple of times, then had a
+;; go with the left arm, then went back to the right arm, won a
+;; payout, and then got hung up on pulling the right arm repeatedly.
+
+
+
+;; We've got a couple of problems here!
+
+;; First is that the algorithm has clearly got into a state where it
+;; always pulls the left arm (in the first case), and the right
+;; arm (in the second case).
+
+;; It can't be doing the right thing in both cases.
+
+;; Secondly the state is growing linearly, as the algorithm remembers
+;; all previous results. That's giving us algorithmic complexity
+;; problems and the calculation will get slower and slower, and
+;; eventually run out of memory.
 
 
 
@@ -218,41 +296,3 @@
 
 
 
-
-
-
-
-
-(defn step [state bandit]
-  (let [a (greedy-action (Q state))
-        r (bandit a)
-        new-state (update-in state [a] #(cons r %))]
-    [a r new-state]))
-
-(step (initial-state bandit) bandit) ; [2 0 {1 (), 2 (0)}]
-
-(defn do-step [[a r state]]
-  (step state bandit))
-
-(do-step (step (initial-state bandit) bandit)) ; [1 4 {1 (4 4), 2 ()}]
-(do-step (do-step (step (initial-state bandit) bandit))) ; [1 4 {1 (4 4 0), 2 ()}]
-
-(take 10 (iterate do-step (step (initial-state bandit) bandit)))
-(
- [2 0 {1 (), 2 (0)}]
- [2 0 {1 (), 2 (0 0)}]
- [1 4 {1 (4), 2 (0 0)}]
- [1 0 {1 (0 4), 2 (0 0)}]
- [1 4 {1 (4 0 4), 2 (0 0)}]
- [1 0 {1 (0 4 0 4), 2 (0 0)}]
- [1 0 {1 (0 0 4 0 4), 2 (0 0)}]
- [1 0 {1 (0 0 0 4 0 4), 2 (0 0)}]
- [1 0 {1 (0 0 0 0 4 0 4), 2 (0 0)}]
- [1 0 {1 (0 0 0 0 0 4 0 4), 2 (0 0)}]) ;
-
-(defn run [bandit initializer step]
-  (let [initial-state (initializer bandit)
-        do-step (fn [[a r state]] (step state bandit))]
-    (iterate do-step initial-state)))
-
-(run bandit initial-state step)
