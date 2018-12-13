@@ -25,109 +25,41 @@
 
 (defn Q [state] (mapvals state average-list))
 
-(Q (initial-state bandit)) ; 
+(Q (initial-state bandit)) ; {1 0, 2 0}
 
+(defn max-keys [m]
+  (let [slist (reverse (sort-by second m)) 
+        [_ max] (first slist)]
+    (take-while #(= (second %) max) slist)))
 
-(defn greedy-action [qmap])
+(max-keys {1 0, 2 0, 3 -1 , 4 -3, 5 2, 6 2}) ; ([6 2] [5 2])
 
+(defn greedy-action [qmap]
+  (first (rand-nth (max-keys qmap))))
 
-(second (first (sort-by second {1 0, 2 0}))) ; ([1 0] [2 0])
-(take-while #(= (second %) 0) {1 0, 2 0, 3 -1})
-  
-  
-(greedy-action (Q (initial-state bandit)))
+(greedy-action (Q (initial-state bandit))) ; 2
 
 (initial-state bandit) ; {1 (), 2 ()}
 ;; The Qs are (by definition):
 (Q (initial-state bandit)) ; {1 0, 2 0}
+
 ;; choose at random
-(rand-nth [1 2]) ; 2
+(greedy-action (Q (initial-state bandit))) ; 2
+
 ;; bandit's response
 (bandit 2) ; 5
-(update-in {1 '() 2 '()} [1] #(cons 5 %))
+
+;; record it
+(update-in {1 '() 2 '()} [2] #(cons 5 %)) ; {1 (), 2 (5)}
 
 ;; new state
-{1 (5), 2 ()}
-;; Q
-{1 5, 2 0}
-;; choose 1
-(bandit 1) ; 4
-(update-in {1 '(5) 2 '()} [1] #(cons 4 %)) ; {1 (4 5), 2 ()}
+{1 (), 2 (5)}
 
+(greedy-action (Q {1 (), 2 '(5)})) ; 2
 
+(bandit 2) ; 0
 
-
-(average-list '()) ; 0
-(average-list '(1)) ; 1
-(average-list '(1 2)) ; 3/2
-
-;; new state
-{1 (4 5), 2 ()}
-
-(mapvals {1 '(4 5), 2 '()} average-list) ; {1 9/2, 2 0}
-
-;; choose 1
-(bandit 1) ; 0
-(update-in  {1 '(4 5), 2 '()} [1] #(cons 0 %)) ; {1 (0 4 5), 2 ()}
-(mapvals {1 '(0 4 5), 2 '()} average-list) ; {1 3, 2 0}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(def available-actions [1 2])
-
-(def actions [1 2 1 2 2 2])
-(def rewards [5 0 0 3 0 0])
-
-
-
-;; two different ways to define Q as in (2.1) in the book
-(defn Q [actions rewards]
-  (fn [action]
-    (let [l (map second (filter (fn[[a r]] (= a action)) (map vector actions rewards)))]
-      (/ (reduce + l)(count l)))))
-
-;; more like the book definition
-(defn indicator [l v]
-  (map #(if (= % v) 1 0) l))
-
-(defn Q [actions rewards]
-  (fn [action]
-    (let [I (indicator actions action)]
-      (/ (reduce + (map * I rewards))
-         (reduce + I)))))
-
-
-((Q actions rewards) 1) ; 5/2
-((Q actions rewards) 2) ; 3/4
-
-;; greedy action is the one that's best so far
-
-(defn argvals [F vals]
-  (sort-by first (map (juxt F identity) vals)))
-
-(argvals (Q actions rewards) available-actions) ; ([3/4 2] [5/2 1])
-
-(defn argmax [F vals]
-  (second (last (argvals F vals))))
-
-(argmax (Q actions rewards) available-actions) ; 1
-
-
+(update-in {1 '(), 2 '(5)} [2] #(cons 0 %)) ; {1 (), 2 (0 5)}
 
 
 
