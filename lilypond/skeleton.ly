@@ -1,8 +1,6 @@
 \version "2.18.2"
 \language "english"
 
-% 1 1 5 5
-
 \header {
   title = ""
 }
