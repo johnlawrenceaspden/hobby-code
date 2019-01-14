@@ -14,11 +14,11 @@
 
 ;; Here is a 2 armed bandit
 (defn bandit [action]
-  (if (= action :arms?) [:right :left]
-      (case action
-        :right (if (< (rand) 0.5) 4 0)
-        :left (if (< (rand) 0.2) 5 0)
-        :oops!!)))
+  (case action
+    :arms? [:right :left]
+    :right (if (< (rand) 0.5) 4 0)
+    :left (if (< (rand) 0.2) 5 0)
+    :oops!!))
 
 ;; We can ask it how many arms it's got, and what they're called
 (bandit :arms?) ; [:right :left]
@@ -27,6 +27,21 @@
 (bandit :right) ; 4 ; 4 ; 4 ; 0 ; 0 ; 0 ; 0
 (bandit :left) ; 5 ; 0 ; 0 ; 0 ; 5 ; 0 ; 5 ; 0
 
+;; Once we pull an arm, we'll have an action/reward pair
+(bandit :right) ; 4
+;; the pair would be:
+[:right 4]
+
+(defn random-yank [bandit]
+  (let [a (rand-nth (bandit :arms?))]
+    [a (bandit a)]))
+
+(random-yank bandit) ; [:right 4]
+
+;; If we just pull arms at random we get an average reward of about 1.5
+(defn average [seq] (/ (reduce + seq) (count seq)))
+
+(float (average (map second (repeatedly 1000 #(random-yank bandit))))) ; 1.49
 
 ;; Since we can see the code for this particular bandit, we know that
 ;; the expected value of pulling the right arm is 2 (a half-chance of
@@ -34,13 +49,15 @@
 
 ;; So if we were seeking to maximize reward, we'd probably be best to pull the right arm all the time.
 
-(map bandit (repeat :right)) ; (0 4 0 0 4 0 4 0 0 4 0 4 0 4 4 4 0 0 4 4 4 4 4 0 4 0 4 0 4 4 4 4 4 0 4 0 4 4 0 0 4 4 0 0 0 0 0 0 4 4 0 0 0 0 4 4 0 0 4 0 4 0 0 0 0 0 4 0 4 0 0 0 0 0 0 0 0 4 4 4 4 4 0 4 4 ...)
-(map bandit (repeat :left))  ; (0 0 0 0 0 0 0 0 0 5 5 5 0 0 0 0 0 0 5 0 0 0 5 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 5 0 0 0 5 5 0 5 0 0 5 0 0 5 0 0 0 0 5 0 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 5 5 0 ...) ;
+(float (average (take 10000 (map bandit (repeat :right))))) ; 1.9912 
+(float (average (take 10000 (map bandit (repeat :left ))))) ; 0.985
 
 
 ;; The interesting question is, if we don't know how the bandit works, how should we design an algorithm that gets the most reward?
+;; (Or at least do better than yanking arms at random!)
 
-;; One thing our algorithm is going to have to do is to record what happens:
+;; One thing our algorithm is going to have to do is keep some state to record what happens.
+;; Let's start by recording the results of all pulls to date:
 
 ;; At first, we know nothing, so we can set up a table to represent that we know nothing
 (defn initial-state [bandit]
@@ -49,22 +66,19 @@
 ;; We haven't pulled either arm yet
 (initial-state bandit) ; {:right (), :left ()}
 
-
-;; Once we pull an arm, we'll have an action/reward pair
-(bandit :right) ; 4
-;; the pair would be:
-[:right 4]
-
 ;; When we get a new action reward/pair, we'll update our state
 (defn update-state [state [action reward]]
   (update-in state [action] #(conj % reward)))
 
 (update-state (initial-state bandit) [:right 4]) ; {:right (4), :left ()}
 
+
 ;; here are some examples of using update-state
 (update-state {:right (), :left ()} [:right 2]) ; {:right (2), :left ()}
 (reduce update-state {:right (), :left ()} [[:right 2] [:left 3]  [:right 4] [:right 5]]) ; {:right (5 4 2), :left (3)}
-(update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2]) ; {:right (), :left (2)}
+(reduce update-state
+        (initial-state bandit)
+        (repeatedly 10 #(random-yank bandit))) ; {:right (4 4 0 0 0), :left (0 0 0 0 5)}
 
 
 ;; Once we actually have some data, we can make estimates of the expected rewards
@@ -79,6 +93,7 @@
 (average-list (list 1 2 3 4 5) 0) ; 3
 (average-list (list) 10) ; 10
 (average-list (list 1) 2) ; 1
+(average-list [] 100) ; 100
 
 ;; mapvals applies a function to every value in a map, returning a new map with the same keys
 (defn mapvals [m f] (into {} (for [[k v] m] [k (f v)]))) 
@@ -101,14 +116,9 @@
 (Q (initial-state bandit)) ; {:right 0, :left 0} 
 (Q (update-state (initial-state bandit) [(rand-nth (bandit :arms?)) 2])) ; {:right 0, :left 2}
 
-
-
-
-
-
-
-
-
+;; let's check that we get roughly what we expect in the long run
+(Q (reduce update-state (initial-state bandit)
+        (repeatedly 10000 #(random-yank bandit))))
 
 
 ;; If we have estimates of the value of each arm, then a good way to
@@ -118,7 +128,9 @@
 ;; is when you try things you think may be suboptimal in order to get
 ;; information
 
-;; The 'greedy' action is the one with the highest expected value
+;; The 'greedy' action is the one with the highest expected value. Of
+;; course there may be more than one greedy action especially at
+;; first.
 
 ;; To help with this, another utility function:
 
@@ -135,7 +147,7 @@
 (max-keys {1 0, 2 1}) ; ([2 1])
 (max-keys {1 0, 2 1, 3 -1 , 4 -3, 5 2, 6 2}) ; ([6 2] [5 2])
 
-;; if there is a tie for the greedy action, we choose at random between the candidates
+;; if there is a tie for the greedy action, we can choose at random between the candidates
 ;; And so we can go from estimates to greedy action like this:
 (defn greedy-action [estimates]
   (first (rand-nth (max-keys estimates))))
@@ -149,6 +161,10 @@
 (greedy-action (Q '{:right (5 4 2), :left (3)})) ; :right
 (greedy-action (Q '{:right (), :left (3)})) ; :left
 (greedy-action (Q (initial-state bandit))) ; :left
+
+;; after a lot of random pulls, the greedy action should reliably be the one with the highest expected payoff
+(greedy-action (Q (reduce update-state (initial-state bandit)
+        (repeatedly 10000 #(random-yank bandit))))) ; :right 
 
 ;; OK, so we have our stage set, a way of recording what's happened, and some helpful functions defined.
 
@@ -202,6 +218,9 @@
 (bandit :right) ; 4
 
 (update-state '{:right (), :left (0 0)} [:right 4]) ; {:right (4), :left (0 0)}
+
+;; the greedy action will be :right now, because we have evidence that right is better.
+(greedy-action (Q '{:right (4), :left (0 0)})) ; :right
 
 ;; You get the idea......
 
