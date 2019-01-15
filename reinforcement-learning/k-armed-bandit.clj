@@ -1,4 +1,4 @@
-;; Reinforcement Learning : Exploration vs Exploitation : Multi-Armed Bandits
+;; Reinforcement Learning : Exploration vs Exploitation : Multi-Armed Bandits (Part Two)
 
 ;; I'm reading the excellent:
 
@@ -12,7 +12,9 @@
 
 ;; On the basis that you don't understand anything you can't explain to a computer, I thought I'd code it up:
 
-;; Here is a 2 armed bandit
+;; From the previous post, we'll keep:
+
+;; A 2 armed bandit
 (defn bandit [action]
   (case action
     :arms? [:right :left]
