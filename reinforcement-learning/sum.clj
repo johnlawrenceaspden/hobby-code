@@ -97,6 +97,42 @@
 (infinite-sum [2 1 0] 0.9) ; 10.701107011070114
 (infinite-sum [1 0 2] 0.9) ; 9.667896678966793
 
+
+;; 0 1 0 2 1 0 2 1 0 2
+
+(+ 0 (* 0.9 (infinite-sum [1 0 2] 0.9)))
+
+(defn transient-infinite-sum [initial sq gamma]
+  (+ initial (* gamma (infinite-sum sq gamma))))
+
+
+(transient-infinite-sum 8 [1 0 2] 0.1) ; 8.102102102102101
+(transient-infinite-sum 0 [1 0 2] 0.1) ; 0.10210210210210212
+
+(transient-infinite-sum 8 [1 0 2] 1/10) ; 2698/333 
+(transient-infinite-sum 0 [1 0 2] 1/10) ; 34/333
+(infinite-sum [1 0 2] 1/10) ; 340/333
+(+ 8 34/333) ; 2698/333
+
+
+(transient-infinite-sum 0 [1 0 2] 0.9) ; 8.701107011070114
+(transient-infinite-sum 0 [2 1 0] 0.9) ; 9.630996309963104
+
+(transient-infinite-sum 1 [0 2 1] 0.9) ; 9.667896678966793
+
+
+
+
+
+
+
+
+
+
+
+
+;; here be dragons
+
 (def gamma 0.7)
 (declare ^:dynamic gamma)
 
