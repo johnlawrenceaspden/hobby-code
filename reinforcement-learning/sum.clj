@@ -97,3 +97,24 @@
 (infinite-sum [2 1 0] 0.9) ; 10.701107011070114
 (infinite-sum [1 0 2] 0.9) ; 9.667896678966793
 
+(def gamma 0.7)
+(declare ^:dynamic gamma)
+
+(eval '(* gamma gamma)) ; 0.48999999999999994
+gamma ; 0.7
+(let [gamma 0.1]
+  (eval '(* gamma gamma))) ; 0.48999999999999994
+
+(binding [gamma 0.1] (eval '(* gamma gamma))) ; 0.010000000000000002 ;
+
+(eval '(let [gamma 0.4] (* gamma gamma))) ; 0.16000000000000003
+
+
+
+(cons '+ (map #(list '* %1 %2) '[0 1 2] '[1 gamma (* gamma gamma)])) ; (+ (* 0 1) (* 1 gamma) (* 2 (* gamma gamma)))
+
+(list 'let '[gamma 0.4] (cons '+ (map #(list '* %1 %2) '[0 1 2] '[1 gamma (* gamma gamma)]))) ; (let [gamma 0.4] (+ (* 0 1) (* 1 gamma) (* 2 (* gamma gamma)))) ;
+
+(eval (list 'let '[gamma 0.4] (cons '+ (map #(list '* %1 %2) '[0 1 2] '[1 gamma (* gamma gamma)])))) ; 0.7200000000000001
+
+
