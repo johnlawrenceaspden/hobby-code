@@ -35,9 +35,65 @@
 (finite-sums [5 4] 2)
 
 
-(defn infinite-sum [seq discount]
+(defn infinite-sum-approx [seq discount]
   (float (nth (finite-sums seq discount) 1000)))
 
-(infinite-sum [1] 2) ; 2.0
-(infinite-sum [1] 3) ; 1.5
-(infinite-sum [1] 4) ; 1.3333334
+(infinite-sum-approx [1] 2) ; 2.0
+(infinite-sum-approx [1] 3) ; 1.5
+(infinite-sum-approx [1] 4) ; 1.3333334
+
+
+(defn infinite-sum [seq gamma]
+  (/ (reduce + 
+        (map * 
+             (take (count seq) (iterate #(* % gamma) 1))
+             seq))
+   (- 1 (reduce * (repeat (count seq) gamma)))))
+
+
+(infinite-sum [1] 1/2) ; 2N ; 2N
+(infinite-sum [1] 1/3) ; 3/2 ; 3/2
+(infinite-sum [2] 1/3) ; 3N ; 3N
+(infinite-sum [2 2 2] 1/3) ; 3N ; 3N
+
+(float (infinite-sum [2 1 0] 1/3)) ; 2.4230769
+(infinite-sum-approx [2 1 0] 3) ; 2.4230769
+
+(float (infinite-sum [2 1 0] 0.9)) ; 10.701107
+(float (infinite-sum [2 1 0] 0.8)) ; 5.7377048
+(float (infinite-sum [2 1 0] 0.1)) ; 2.102102
+
+(float (infinite-sum [0 1 2] 0.9)) ; 9.298893
+(float (infinite-sum [2 1 0] 0.9)) ; 10.701107
+(float (infinite-sum [1 0 2] 0.9)) ; 9.667896
+
+(infinite-sum [0 1 2] 0.9) ; 9.298892988929893
+(infinite-sum [2 1 0] 0.9) ; 10.701107011070114
+(infinite-sum [1 0 2] 0.9) ; 9.667896678966793
+
+(infinite-sum [0 1 2] 9/10) ; 2520/271
+(infinite-sum [2 1 0] 9/10) ; 2900/271
+(infinite-sum [1 0 2] 9/10) ; 2620/271
+
+(/ 271.0) ; 0.0036900369003690036
+(/ 369 99999) ; 1/271
+
+(infinite-sum [0 1 2] 1/10) ; 40/333  120/999
+(infinite-sum [2 1 0] 1/10) ; 700/333 210/999
+(infinite-sum [1 0 2] 1/10) ; 340/333 102/999
+
+(infinite-sum [0 1 2] 0.1) ; 0.12012012012012013 ; 40/333  120/999
+(infinite-sum [2 1 0] 0.1) ; 2.1021021021021022  ; 700/333 210/999
+(infinite-sum [1 0 2] 0.1) ; 1.021021021021021   ; 340/333 102/999
+
+
+(* 3 271)
+(- 1000 813)
+   
+
+
+
+(infinite-sum [0 1 2] 0.9) ; 9.298892988929893
+(infinite-sum [2 1 0] 0.9) ; 10.701107011070114
+(infinite-sum [1 0 2] 0.9) ; 9.667896678966793
+
