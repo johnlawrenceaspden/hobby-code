@@ -1,0 +1,29 @@
+\documentclass[letter,10pt]{article}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows,positioning,calc}
+\begin{document}
+
+\begin{center}
+\begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+\tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+\node[state]    (A)                     {$A$};
+\node[state]    (B)[above right of=A]   {$B$};
+\node[state]    (C)[below right of=A]   {$C$};
+\node[state]    (D)[below right of=B]   {$D$};
+\path
+(A) edge[loop left]     node{$p^2$}         (A)
+    edge[bend left]     node{$(1-p)^2$}     (B)
+    edge[bend left,below]      node{$p(1-p)$}      (D)
+    edge[bend right]    node{$p(1-p)$}      (C)
+(B) edge                node{$1$}           (D)
+(C) edge                node{$1$}           (D)
+(D) edge[loop right]    node{$(1-q)^2$}     (D)
+    edge[bend right,right]    node{$q(1-q)$}      (B)
+    edge[bend left]     node{$q(1-q)$}      (C)
+    edge[bend left,above]     node{$q^2$}         (A);
+\node[above=0.5cm] (A){Patch G};
+\draw[red] ($(D)+(-1.5,0)$) ellipse (2cm and 3.5cm)node[yshift=3cm]{Patch H};
+\end{tikzpicture}
+\end{center}
+\end{document}
