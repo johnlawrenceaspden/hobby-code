@@ -22,15 +22,16 @@
 
 
 \path (A) edge[bend left]           node{$p^2$}         (AC);
-\path (AC) edge (B);
+\path (AC) edge node{$5$} (B);
 \path (AC) edge (A);
 
+
 \path (B) edge[bend left]           node{$p^2$}         (BC);
-\path (BC) edge (C);
+\path (BC) edge node{$3$} (C);
 \path (BC) edge (B);
 
 \path (C) edge[bend left]           node{$p^2$}         (CC);
-\path (CC) edge (A);
+\path (CC) edge node{$1$} (A);
 \path (CC) edge (C);
 
 \end{tikzpicture}
