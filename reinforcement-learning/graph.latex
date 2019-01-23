@@ -13,26 +13,45 @@
 
 \newlength{\R}\setlength{\R}{2.7cm}
 
-\node[state]    (A)  at(60 :\R)          {$A$};
-\node[action]   (AC) at(120:\R)          {$AC$};
-\node[state]    (B)  at(180:\R)          {$B$};
-\node[action]   (BC) at(240:\R)          {$BC$};
-\node[state]    (C)  at(300:\R)          {$C$};
-\node[action]   (CC) at(360:\R)          {$CC$};
+\node[state]    (A)  at (60 :\R)          {$A$};
+\node[action]   (AC) at (90:1.5\R)          {$CW$};
+\node[action]   (AA) at (30:1.5\R)          {$AC$};
+
+\node[state]    (B)  at (180:\R)          {$B$};
+\node[action]   (BC) at (210:1.5\R)          {$CW$};
+\node[action]   (BA) at (150:1.5\R)          {$AC$};
+
+\node[state]    (C)  at (300:\R)          {$C$};
+\node[action]   (CC) at (330:1.5\R)          {$CW$};
+\node[action]   (CA) at (270:1.5\R)          {$AC$};
 
 
-
-\path (A)  edge            node{$anticlockwise$} (AC);
+\path (A)  edge            (AC);
 \path (AC) edge[bend left] node{$5$}             (B);
 \path (AC) edge[bend left]                       (A);
 
-\path (B)  edge            node{$anticlockwise$} (BC);
+\path (A)  edge            (AA);
+\path (AA) edge[bend left] node{$5$}             (C);
+\path (AA) edge[bend left]                       (A);
+
+\path (B)  edge            (BC);
 \path (BC) edge[bend left] node{$2$}             (C);
 \path (BC) edge[bend left]                       (B);
 
-\path (C)  edge            node{$anticlockwise$} (CC);
+\path (B)  edge            (BA);
+\path (BA) edge[bend left] node{$5$}             (A);
+\path (BA) edge[bend left]                       (B);
+
+
+\path (C)  edge             (CC);
 \path (CC) edge[bend left] node{$1$}             (A);
 \path (CC) edge[bend left]                       (C);
+
+\path (C)  edge            (CA);
+\path (CA) edge[bend left] node{$5$}             (B);
+\path (CA) edge[bend left]                       (C);
+
+
 
 \end{tikzpicture}
 \end{center}
