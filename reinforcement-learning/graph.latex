@@ -1,7 +1,6 @@
 \documentclass[10pt]{article}
 \nofiles
 
-\usepackage{amsmath}
 \usepackage{tikz}
 \usetikzlibrary{automata,arrows,positioning,calc}
 
@@ -9,30 +8,31 @@
 \begin{center}
 \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
 
-\tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+  \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+  \tikzstyle{action}=[fill=red,draw=black,thick,text=black,scale=1]
+
+\newlength{\R}\setlength{\R}{2.7cm}
+
+\node[state]    (A)  at(60 :\R)          {$A$};
+\node[action]   (AC) at(120:\R)          {$AC$};
+\node[state]    (B)  at(180:\R)          {$B$};
+\node[action]   (BC) at(240:\R)          {$BC$};
+\node[state]    (C)  at(300:\R)          {$C$};
+\node[action]   (CC) at(360:\R)          {$CC$};
 
 
-\node[state]    (A)                        {$A$};
-\node[state]   (AC) [right of=A ]          {$AC$};
-\node[state]    (B) [right of=AC]          {$B$};
-\node[state]   (BC) [above of=B ]          {$BC$};
-\node[state]    (C) [left  of=BC]          {$C$};
-\node[state]   (CC) [left  of=C ]          {$CC$};
 
+\path (A)  edge            node{$anticlockwise$} (AC);
+\path (AC) edge[bend left] node{$5$}             (B);
+\path (AC) edge[bend left]                       (A);
 
+\path (B)  edge            node{$anticlockwise$} (BC);
+\path (BC) edge[bend left] node{$2$}             (C);
+\path (BC) edge[bend left]                       (B);
 
-\path (A) edge[bend left]           node{$p^2$}         (AC);
-\path (AC) edge node{$5$} (B);
-\path (AC) edge (A);
-
-
-\path (B) edge[bend left]           node{$p^2$}         (BC);
-\path (BC) edge node{$3$} (C);
-\path (BC) edge (B);
-
-\path (C) edge[bend left]           node{$p^2$}         (CC);
-\path (CC) edge node{$1$} (A);
-\path (CC) edge (C);
+\path (C)  edge            node{$anticlockwise$} (CC);
+\path (CC) edge[bend left] node{$1$}             (A);
+\path (CC) edge[bend left]                       (C);
 
 \end{tikzpicture}
 \end{center}
