@@ -2,3 +2,5 @@ graph.aux
 graph.dvi
 graph.log
 graph.pdf
+graph.fdb_latexmk
+graph.fls
