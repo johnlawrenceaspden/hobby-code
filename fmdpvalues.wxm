@@ -1,0 +1,46 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 16.04.2 ] */
+
+/* [wxMaxima: input   start ] */
+gamma:9999/10000;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eq1:vpa=1/12*(8+gamma*vpa+10*gamma*vpb);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(eq1);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eq1a:vpa=1/2*1/6*(3+gamma*vpa)+1/2*2/6*(2+gamma*vpb)+1/2*3/6*(1+gamma*vpb) + 1/2*(0+gamma*vpb);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+ratsimp(eq1a);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eq2:vpb=10+gamma*vpa;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+solution:solve([eq1a,eq2], [vpa,vpb]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float (solution);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+/* average rewards per step are */;
+float((1-gamma)*rhs(first(first(solution))));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float((1-gamma)*rhs(second(first(solution))));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
