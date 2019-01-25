@@ -1,7 +1,6 @@
 ;; The Can-Collecting Robot
 
-
-;; Utility Functions
+;;  Helpful Functions
 
 ;; A random weighted choice function
 (defn wrand 
@@ -23,6 +22,19 @@
 
 (wchoose [[5 :A][2 :B][2 :C][1 :D]]) ; (:A) ; (:B) ; (:B) ; (:D) ; (:C) ; (:A) ; (:B) ; (:D) ; (:B)
 (sort (frequencies (map first (take 1000 (repeatedly #(wchoose [[700 :A][200 :B][60 :C][39.99 :D]])))))) ; ([:A 705] [:B 184] [:C 65] [:D 46])
+
+;; the average of a finite sequence
+(defn average [sq] (/ (reduce + sq) (count sq)))
+
+;; round to two significant figures
+(defn twosf   [x]  (float (/ (Math/round (* x 100.0)) 100))) 
+(defn twosfs  [x]  (clojure.pprint/cl-format nil "~,2f" x))
+
+(twosf  3.14159265358) ; 3.14  ;; close enough for government work
+(twosfs 3.14159265358) ; "3.14" ;; type safety vs. annoying quote marks....
+
+
+(map (juxt identity twosf twosfs) [1000000000000001/30787878787, 234N, 22/7, 0.555,-0.555 ,-1,-1.01, -1.001, 0, 3.14159265358,3.15,3.0,3.0001,3.01,3.005,3.0049,3.0051]) ; ([1000000000000001/30787878787 32480.31 "32480.31"] [234N 234.0 "234.00"] [22/7 3.14 "3.14"] [0.555 0.56 "0.56"] [-0.555 -0.56 "-0.56"] [-1 -1.0 "-1.00"] [-1.01 -1.01 "-1.01"] [-1.001 -1.0 "-1.00"] [0 0.0 "0.00"] [3.14159265358 3.14 "3.14"] [3.15 3.15 "3.15"] [3.0 3.0 "3.00"] [3.0001 3.0 "3.00"] [3.01 3.01 "3.01"] [3.005 3.01 "3.01"] [3.0049 3.0 "3.00"] [3.0051 3.01 "3.01"])
 
 
 (def Rwait   1)   ;; cans collected while waiting
@@ -94,23 +106,33 @@
 
 
 
-(defn average [sq] (/ (reduce + sq) (count sq)))
+
+
 
 ;; average them (careful not to look into the face of the gorgon...)
-(float (average (rewards (take 10 (run :H))))) ; 4.111111  ; 3.2222223 ; 2.3333333 ; 2.3333333 ; 3.2222223 
-(float (average (rewards (take 10 (run :L))))) ; 2.2222223 ; 3.1111112 ; 1.7777778 ; 3.5555556 ; 1.7777778 
+(twosf (average (rewards (take 10 (run :H))))) ; 2.78 ; 2.22 ; 2.22 ; 2.33
+(twosf (average (rewards (take 10 (run :L))))) ; 1.78 ; 2.22 ; 2.22 ; 2.67
 
 
-(float (average (rewards (take 100 (run :H))))) ; 2.7777777 ; 2.989899  ; 2.4242425 ; 2.9191918
-(float (average (rewards (take 100 (run :L))))) ; 2.838384  ; 2.9494948 ; 2.8282828 ; 2.7474747
+(twosf (average (rewards (take 100 (run :H))))) ; 2.8 ; 2.72 ; 2.77 ; 2.47
+(twosf (average (rewards (take 100 (run :L))))) ; 2.87 ; 3.08 ; 2.95 ; 3.07
 
-(float (average (rewards (take 1000 (run :H))))) ; 2.8388388 ; 2.7497497 ; 2.903904 ; 2.873874 ; 2.821822 ; 2.8088088 
-(float (average (rewards (take 1000 (run :L))))) ; 2.8208208 ; 2.9469469 ; 2.867868 ; 2.7467468 ; 2.9229228 ; 2.7667668 
+(twosf (average (rewards (take 1000 (run :H))))) ; 2.73 ; 2.77 ; 2.85 ; 2.76
+(twosf (average (rewards (take 1000 (run :L))))) ; 2.8 ; 2.79 ; 2.76 ; 2.99
 
-(float (average (rewards (take 10000 (run :H))))) ; 2.8353837 ; 2.8274827 ; 2.849385 ; 2.839984  ; 2.7978797 
-(float (average (rewards (take 10000 (run :L))))) ; 2.8379838 ; 2.8384838 ; 2.8164816 ; 2.848985 ; 2.8355834 
+(twosf (average (rewards (take 10000 (run :H))))) ; 2.86 ; 2.83 ; 2.85 ; 2.85
+(twosf (average (rewards (take 10000 (run :L))))) ; 2.84 ; 2.85 ; 2.8 ; 2.82
 
-;; I think we can be reasonably confident that with our random policy, the long term average value of the automaton is 2.8
+;; I think we can be reasonably confident that with our random policy, the long term average value of the automaton is ~2.8
+
+;; Over ten iterations, it's not particularly clear that starting off with a full battery is better
+(twosf (average (rewards (take 10 (run :H))))) ; 2.33 ; 2.78 ; 3.22 ; 2.78 ; 3.67
+(twosf (average (rewards (take 10 (run :L))))) ; 2.22 ; 3.56 ; 1.78 ; 2.67 ; 0.89
 
 
+;; But if we look at thousands of runs
+(twosf (average (repeatedly 1000 #(average (rewards (take 10 (run :H))))))) ; 2.89 ; 2.95 ; 2.91 ; 2.92 ; 2.87 ; 2.87
+(twosf (average (repeatedly 1000 #(average (rewards (take 10 (run :L))))))) ; 2.5  ; 2.49 ; 2.53 ; 2.52 ; 2.51 ; 2.51
+
+;; Then it looks as though the high-battery state is worth ~2.9 and the low state ~2.5
     
