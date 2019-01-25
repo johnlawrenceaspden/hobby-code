@@ -29,10 +29,6 @@ b:[5,3,1];
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-;
-/* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: input   start ] */
 vp:invert(ident(3)-gamma*A).(1/2*b);
 /* [wxMaxima: input   end   ] */
 
@@ -45,8 +41,7 @@ vp*(1-gamma);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-It would be nicer if we gave the reward matrix B, and then took the row sum of the Hadamard product of A and B
-but I can't find a nice way to do it:
+More generally we could give the reward matrix B, and then took the row sum of the Hadamard product of A and B
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -57,13 +52,12 @@ B:matrix([0,5,0],[0,0,3],[1,0,0]);
 A*B;
 /* [wxMaxima: input   end   ] */
 
-/* [wxMaxima: comment start ]
-There's got to be a better way than:;
-   [wxMaxima: comment end   ] */
+/* [wxMaxima: input   start ] */
+rewards:(A*B).[1,1,1];
+/* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-
-[sum((A*B)[1,i],i,1,3), sum((A*B)[2,i],i,1,3), sum((A*B)[3,i],i,1,3)];
+vp:invert(ident(3)-gamma*A).(rewards);
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
