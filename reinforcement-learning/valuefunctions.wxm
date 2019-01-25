@@ -1,16 +1,27 @@
 /* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
 /* [ Created with wxMaxima version 16.04.2 ] */
 
+/* [wxMaxima: comment start ]
+Suppose we got a three state markov chain
+each step the chain has a half chance of doing nothing, a half chance of moving forward
+the state transitions pay 5, 3, 1
+So it might generate a sequence of payoffs like 0500301500003100503001....
+
+My intuitions learn me that the average payoff here will be (5+0+3+0+1+0)/6 = 1.5
+
+Friends, let us solve the Bellman equations for this chain.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+We need a discount factor for the Bellman equations, let us take a very long term view */
+   [wxMaxima: comment end   ] */
+
 /* [wxMaxima: input   start ] */
 gamma:0.999;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-A:matrix([gamma,gamma,0],[0,gamma,gamma],[gamma,0,gamma]);
-/* [wxMaxima: input   end   ] */
-
-/* [wxMaxima: input   start ] */
-diagmatrix(3,2);
+A:1/2*matrix([1,1,0],[0,1,1],[1,0,1]);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -18,11 +29,41 @@ b:[5,3,1];
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-vp:invert(diagmatrix(3,2)-A).b;
+;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
+vp:invert(ident(3)-gamma*A).(1/2*b);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Now un-discount it to give a sort of long-term thousand-step average payoff per step sort of thing.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
 vp*(1-gamma);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+It would be nicer if we gave the reward matrix B, and then took the row sum of the Hadamard product of A and B
+but I can't find a nice way to do it:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+B:matrix([0,5,0],[0,0,3],[1,0,0]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+A*B;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+There's got to be a better way than:;
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+
+[sum((A*B)[1,i],i,1,3), sum((A*B)[2,i],i,1,3), sum((A*B)[3,i],i,1,3)];
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
