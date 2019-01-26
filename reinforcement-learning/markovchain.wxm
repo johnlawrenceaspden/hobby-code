@@ -1,0 +1,65 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 16.04.2 ] */
+
+/* [wxMaxima: title   start ]
+A Markov Chain with Payoffs
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: input   start ] */
+Transitions: matrix(
+ [1/2,1/4,0], 
+ [1/2,1/2,1/2], 
+ [0,1/4,1/2]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Rewards: matrix(
+ [2,0,0], 
+ [0,0,0], 
+ [0,0,2]
+);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+transpose(Transitions);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eigenvectors(Transitions);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+eR:(Rewards*transpose(Transitions)).[1,1,1];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Bellman:ident(3)-gamma*transpose(Transitions);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vals:invert(Bellman).(eR)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+vals*(1-gamma),gamma=0.99999;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+A:matrix([4-2*gamma, -2*gamma, 0], [-gamma ,4-2*gamma, -gamma], [0 ,-2*gamma ,4-2*gamma]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+invert(A);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+v:invert(A).[4,0,4];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+v*(1-gamma),gamma=0.99999;
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
