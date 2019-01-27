@@ -1071,3 +1071,8 @@
 ;; Turn off the annoying question about version control/symlinks
 (setq vc-follow-symlinks t)
 
+;; admit defeat; do what I meant
+(global-set-key (kbd "C-v") 'yank)
+(global-set-key (kbd "M-v") 'yank-pop)
+
+
