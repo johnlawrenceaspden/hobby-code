@@ -446,7 +446,7 @@ alias rts='~/data/timesheet.py'
 # also we lose xmodmap settings on hibernate and suspend so with any luck this should restore them
 alias hib='echo are you sure?'
 alias simonsayshib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sync && sudo pm-hibernate && xmodmap ~/.xmodmaprc'
-alias sus='cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sync && sudo pm-suspend && xmodmap ~/.xmodmaprc'
+alias sus='cp /var/log/pm-suspend.log ~/pm-suspend.log && xscreensaver-command -lock && sync && sudo pm-suspend-hybrid && xmodmap ~/.xmodmaprc'
 alias postmortem='diff /var/log/pm-suspend.log ~/pm-suspend.log >suspenddiff ; xxdiff successfulsuspenddiff suspenddiff'
 
 
