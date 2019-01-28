@@ -402,6 +402,107 @@
 
 
 
+
+;; emacs insanely complicated line wrapping section
+;; when we wake up, we're in emac's default mode
+
+;; which is to say that there's no line wrapping or anything going on , and when we type outside of the window, all of the line gets displayed, but there are little arrows in the margins. The cursor works as expected (i.e. it moves the position on the screen, so C-p/up-arrow will move 1 space vertical but may stay on the same line number.
+;; In this default mode, resizing the window will cause the text to flow. 
+
+;; It's non-optimal for C code though, where you'd rather not have the lines wrapping round. 
+;; To do better, use (setq truncate-lines t), which means that each line in the file gets one line in the window, and if you go over the edge, too bad.
+;; You won't get a new line starting (either visually or in the file) unless you press RETURN explicitly.
+;; You can turn that off with (setq truncate-lines nil), which will get you back to 'see everything' mode
+
+;; For writing text, neither mode is particularly neat, because the default will break words at the edge of the window, which is deeply annoying.
+;; For text use (setq word-wrap t), which causes the line breaks to happen at word boundaries.
+
+;; We could use (visual-line-mode), which redefines all the editing commands to work on visual lines.
+
+;; In truncate-lines mode, lines just carry on off the side of the screen, and if you keep typing, the buffer will scroll so that you can always see the cursor
+
+;; You can experiment with these variables
+;; (setq truncate-lines t)
+;; (setq truncate-lines nil)
+;; M-x toggle-truncate-lines
+
+;; (setq word-wrap t)
+;; (setq word-wrap nil)
+;; M-x toggle-word-wrap
+
+;; There's also 'filling', which is when hard newlines get inserted in the file.
+
+;; Here is a piece of text. Which is perhaps a little longer than it needs to be. If you press M-q
+;; on it then emacs will insert hard newlines throughout the paragraph.  The place where these
+;; newlines get inserted is the fill-column, which is usually set around 70. Emacs is careful not to
+;; break words when filling. If you find yourself pressing M-q to reformat paragraphs often, then
+;; you want auto-fill-mode.
+
+;; You can get the fill mode to right-justify text too, using C-u M-q instead of just M-q.
+
+
+;; ;; no line wrapping 
+;; (setq-default truncate-lines nil)
+;; ;; set fill column for netbook screen
+;; (setq-default fill-column 80)
+
+;; ;; I'd like for text
+;; (setq truncate-lines nil)
+;; (setq word-wrap t)
+;; (setq fill-column 80)
+;; ;; But for code
+;; (setq truncate-lines t)
+;; (setq word-wrap nil)
+;; (setq fill-column 100)
+
+;; Here are some explicit functions to do that
+(defun wrap-as-text()
+  "text mode wrapping, wrap without splitting words in the manner of notepad"
+  (interactive)
+  (setq truncate-lines nil
+        word-wrap t)
+  (setq fill-column 100))
+
+(defun wrap-as-code()
+  "programming mode wrapping, just let lines run off the end"
+  (interactive)
+  (setq truncate-lines t
+        word-wrap nil)
+  (setq fill-column 100))
+
+;; Someone on Stack Overflow suggested:
+;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
+(add-hook 'text-mode-hook (lambda () (wrap-as-text)))
+
+(add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  Potentially Interesting, see if I can live without it
@@ -427,81 +528,6 @@
 ;; ;; nice big letters. problem with this is it enlarges the window off the screen
 ;; ;; and hides the region at the bottom
 ;; ;; (set-face-attribute 'default nil :height 120)
-
-
-
-;; ;; emacs insanely complicated line wrapping section
-;; ;; when we wake up, we're in emac's default mode
-
-;; ;; which is to say that there's no line wrapping or anything going on , and when we type outside of the window, all of the line gets displayed, but there are little arrows in the margins. The cursor works as expected (i.e. it moves the position on the screen, so C-p/up-arrow will move 1 space vertical but may stay on the same line number.
-;; ;; In this default mode, resizing the window will cause the text to flow. 
-
-;; ;; It's non-optimal for C code though, where you'd rather not have the lines wrapping round. 
-;; ;; To do better, use (setq truncate-lines t), which means that each line in the file gets one line in the window, and if you go over the edge, too bad.
-;; ;; You won't get a new line starting (either visually or in the file) unless you press RETURN explicitly.
-;; ;; You can turn that off with (setq truncate-lines nil), which will get you back to 'see everything' mode
-
-;; ;; For writing text, neither mode is particularly neat, because the default will break words at the edge of the window, which is deeply annoying.
-;; ;; For text use (setq word-wrap t), which causes the line breaks to happen at word boundaries.
-
-;; ;; We could use (visual-line-mode), which redefines all the editing commands to work on visual lines.
-
-;; ;; In truncate-lines mode, lines just carry on off the side of the screen, and if you keep typing, the buffer will scroll so that you can always see the cursor
-
-;; ;; You can experiment with these variables
-;; ;; (setq truncate-lines t)
-;; ;; (setq truncate-lines nil)
-;; ;; M-x toggle-truncate-lines
-
-;; ;; (setq word-wrap t)
-;; ;; (setq word-wrap nil)
-;; ;; M-x toggle-word-wrap
-
-;; ;; There's also 'filling', which is when hard newlines get inserted in the file.
-
-;; ;; Here is a piece of text. Which is perhaps a little longer than it needs to be. If you press M-q
-;; ;; on it then emacs will insert hard newlines throughout the paragraph.  The place where these
-;; ;; newlines get inserted is the fill-column, which is usually set around 70. Emacs is careful not to
-;; ;; break words when filling. If you find yourself pressing M-q to reformat paragraphs often, then
-;; ;; you want auto-fill-mode.
-
-;; ;; You can get the fill mode to right-justify text too, using C-u M-q instead of just M-q.
-
-
-;; ;; ;; no line wrapping 
-;; ;; (setq-default truncate-lines nil)
-;; ;; ;; set fill column for netbook screen
-;; ;; (setq-default fill-column 80)
-
-;; ;; ;; I'd like for text
-;; ;; (setq truncate-lines nil)
-;; ;; (setq word-wrap t)
-;; ;; (setq fill-column 80)
-;; ;; ;; But for code
-;; ;; (setq truncate-lines t)
-;; ;; (setq word-wrap nil)
-;; ;; (setq fill-column 100)
-
-;; ;; Here are some explicit functions to do that
-;; (defun wrap-as-text()
-;;   "text mode wrapping, wrap without splitting words in the manner of notepad"
-;;   (interactive)
-;;   (setq truncate-lines nil
-;;         word-wrap t)
-;;   (setq fill-column 100))
-
-;; (defun wrap-as-code()
-;;   "programming mode wrapping, just let lines run off the end"
-;;   (interactive)
-;;   (setq truncate-lines t
-;;         word-wrap nil)
-;;   (setq fill-column 100))
-
-;; ;; Someone on Stack Overflow suggested:
-;; ;; http://stackoverflow.com/questions/10235305/in-emacs-can-i-have-one-set-of-line-wrap-settings-for-code-and-one-for-text/10235546#10235546
-;; (add-hook 'text-mode-hook (lambda () (wrap-as-text)))
-
-;; (add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
 
 
 
