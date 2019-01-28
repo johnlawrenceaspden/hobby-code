@@ -1,0 +1,106 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 16.04.2 ] */
+
+/* [wxMaxima: title   start ]
+Reinforcement Learning Exercise 3.6
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: comment start ]
+Various natural reward functions for the same problem
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+noddy cart-pole model, there are three states start, falling, dead
+half-chance of going downhill, reward of 1 for not being dead yet, episode ends on dead
+The worst case would be start->falling (1)->dead(0), for a reward of 1.
+what is the expectation of the reward? (no discount factor)
+
+sfd has chance 1/4, reward 1
+sffd has chance 1/8, reward 2
+ssfd has chance 1/8, reward 2
+sssfd has chance 1/16, reward 3
+etc...
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+S:sum(n^2/(2^(n+1)),n,1, m);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+S,m=inf;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+S,m=inf,simpsum;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+S,m=100;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+S100:S,m=100,simpsum;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(S100);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+reformulate the problem to use discounting, with a penalty of -1 for failure, 0 otherwise
+chain is the same, but rewards are now e.g. -gamma^3 instead of 3
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+SD:sum(-gamma^n*n/(2^(n+1)),n,1, m);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+SD,m=inf,simpsum;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+SD100:SD,m=100,simpsum, gamma=9/10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+float(SD100);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+can also make a continuous version with the original rewards,
+but stop state transitions back to start state (with zero reward),
+using same gamma for discounting
+worst case is now sfdsfdsfdsfd, rewards 100100100100100 discount to 1+gamma^3+gamma^6 ... 1/(1-gamma^3)
+sffdsffdsffd, rewards 1100110011001100 discount to (1+gamma)/(1-gamma^4)
+sfffdsfffdsfffd, rewards 11100111001110011100 -> (1+gamma+gamma^2)/(1-gamma^5)
+top term can be summed -> (1-gamma^3)/(1-gamma)/(1-gamma^5)
+in general (1-gamma^n)/(1-gamma^(n+2))/(1-gamma)
+
+
+or alternatively use the 0, -1 penalty form, 
+sfdsfd -> -010010010010    -> -gamma-gamma^4-gamma^7... = -gamma/(1-gamma^3)
+sffdsffd -> -001000100010001 -> -gamma^2/(1-gamma^4)
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+gamma:0.9;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+[n,1/(1-gamma^n),-gamma^n],n=3;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+F(n):=n;
+G(n):=(1-gamma^n)/(1-gamma^(n+2))/(1-gamma);
+H(n):=-gamma^n;
+I(n):=-gamma^(n-2)/(1-gamma^n);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+plot2d([F,G,H,I],[n,3,10]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
