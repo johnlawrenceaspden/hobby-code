@@ -476,6 +476,9 @@
 
 (add-hook 'prog-mode-hook (lambda () (wrap-as-code)))
 
+;; nervously give this a try
+(global-auto-revert-mode)
+
 
 
 
