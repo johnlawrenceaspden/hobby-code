@@ -45,10 +45,14 @@
 ;; [496.83 0.5 0.09 0.09 0.09]
 
 
-;; It seems that all these functions are correct, in the sense that they are producing correct-looking answers, and yet:
+;; It seems that all these functions are correct, in the sense that they are producing
+;; correct-looking answers, and yet:
 
-;; It seems that variance-one is doing what I expect, running down the sequence twice and ending up taking about twice as long as averaging it.
+;; It seems that variance-one is doing what I expect, running down the sequence twice and ending up
+;; taking about twice as long as averaging it.
 
-;; But that the other two are taking hundreds of times longer, possibly because they are re-calculating the average of the sequence every time.
+;; But that the other two are taking hundreds of times longer, possibly because they are
+;; re-calculating the average of the sequence every time.
 
-;; I had a nice hour or so, thinking about what was going on here, and why, and wonder if you might enjoy the same thoughts, dear readers.
+;; I had a nice hour or so, thinking about what was going on here, and why, and wonder if you might
+;; enjoy the same thoughts, dear readers.
