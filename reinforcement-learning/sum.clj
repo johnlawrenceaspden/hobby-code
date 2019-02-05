@@ -1,3 +1,4 @@
+;; I seem to be doing a lot of infinite sums while looking at the reinforcement learning book
 
 (float (+ 1)) ; 1.0
 (float (+ 1 1/4)) ; 1.25
