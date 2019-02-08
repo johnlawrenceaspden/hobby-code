@@ -40,7 +40,7 @@
 
 (defn go-to [n]
   (if (= n :t) (list :t)
-      (map terminal (map oc (periodic-adj (co n))))))
+      (map terminal (map oc (crop-adj (co n))))))
 
 (def cells (cons :t (range 1 15)))
 
