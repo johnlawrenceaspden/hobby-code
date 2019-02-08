@@ -171,6 +171,69 @@ vfinal-gs ; {7 -20.0, 1 -14.0, 4 -14.0, 13 -20.0, 6 -20.0, 3 -21.99, 12 -21.99, 
 
 
 
-(def vfinal-sor-1.1 (into {} (for [[a b] (nth  (iterate (sor 1.1) v) 83)] [a (twosf b)])) ) 
-(= vfinal-sor-1.1 ((sor 1.1) vfinal-sor-1.1)) ; true 
-(= vfinal-sor-1.1 vfinal-j) ; true
+(def vfinal-sor-11 (into {} (for [[a b] (nth  (iterate (sor 1.1) v) 83)] [a (twosf b)])) ) ; #'user/vfinal-sor-11
+vfinal-sor-11 ; {7 -20.0, 1 -14.0, 4 -14.0, 13 -20.0, 6 -20.0, 3 -22.0, 12 -22.0, 2 -20.0, 11 -14.0, 9 -20.0, 5 -18.0, :t 0.0, 14 -14.0, 10 -18.0, 8 -20.0} ; 
+(= vfinal-sor-11 ((sor 1.1) vfinal-sor-11)) ; true 
+(= vfinal-sor-11 vfinal-j) ; true
+
+(for [[a b] (nth  (iterate (sor 2.0) v) 10)] (twosf b)) ; (-19.98 -13.93 -13.93 -19.98 -19.98 -21.99 -21.99 -19.98 -13.99 -19.98 -18.04 0.0 -13.99 -18.0 -19.98)
+(for [[a b] (nth  (iterate (sor 3.0) v) 10)] (twosf b)) ; (-29.54 330.99 330.99 -29.54 104.28 236.57 236.57 265.2 -349.69 104.28 85.92 0.0 -349.69 -215.5 265.2)
+(for [[a b] (nth  (iterate (sor 2.5) v) 10)] (twosf b)) ; (-24.97 -5.55 -5.55 -24.97 -23.05 -21.02 -21.02 -17.95 -21.99 -23.05 -24.07 0.0 -21.99 -26.8 -17.95)
+
+(for [[a b] (nth  (iterate (sor 2.0) v) 20)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 2.0) v) 15)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -17.99 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 2.0) v) 16)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+
+(def vfinal-sor-2 (into {} (for [[a b] (nth  (iterate (sor 2.0) v) 16)] [a (twosf b)])) ) ; #'user/vfinal-sor-2
+(= vfinal-sor-2 ((sor 2.0) vfinal-sor-2)) ; true
+(= vfinal-sor-2 vfinal-j) ; true
+
+(for [[a b] (nth  (iterate (sor 2.1) v) 16)] (twosf b)) ; (-19.99 -13.98 -13.98 -19.99 -19.99 -22.0 -22.0 -19.99 -14.0 -19.99 -18.02 0.0 -14.0 -18.0 -19.99)
+(for [[a b] (nth  (iterate (sor 1.9) v) 16)] (twosf b)) ; (-19.99 -13.99 -13.99 -19.99 -19.99 -21.99 -21.99 -19.99 -14.0 -19.99 -17.99 0.0 -14.0 -17.99 -19.99)
+(for [[a b] (nth  (iterate (sor 2.01) v) 16)] (twosf b)) ; (-20.0 -13.99 -13.99 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 1.99) v) 16)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+
+(def a )
+
+(defn l2error [ method its ]
+  (Math/sqrt
+   (reduce +
+           (map #(* % %)
+                (for [c cells] (-
+                                ((nth  (iterate method v) its) c)
+                                (vfinal-j c)))))))
+
+
+
+(l2error (sor 2.0) 16) ; 0.007775195519450396
+(l2error (sor 1.9) 16) ; 0.0346695210788383
+(l2error (sor 1.95) 16) ; 0.008210797893234447
+(l2error (sor 1.97) 16) ; 0.005842332536781981
+(l2error (sor 1.98) 16) ; 0.005949376660155789
+(l2error (sor 1.96) 16) ; 0.006534845813183601
+
+(l2error jacobi 16) ; 28.88787060168189 
+(l2error gauss-seidel 16) ; 17.26740892000507
+(l2error (sor 2.0) 16) ; 0.007775195519450396
+
+(l2error jacobi 32) ; 12.046925440162795 
+(l2error gauss-seidel 32) ; 4.256041879879601
+(l2error (sor 2.0) 32) ; 9.110653309046185E-6
+
+(l2error jacobi 64) ; 2.0950655094988813 
+(l2error gauss-seidel 64) ; 0.25856064270263823
+(l2error (sor 2.0) 64) ; 5.1711589578882766E-11
+
+
+(Math/log (l2error jacobi 16)) ; 3.3634218046547497 
+(Math/log (l2error gauss-seidel 16)) ; 2.848820847318467 
+(Math/log (l2error (sor 2.0) 16)) ; -4.856816674036832 
+
+(Math/log (l2error jacobi 32)) ; 2.4888094771863565 
+(Math/log (l2error gauss-seidel 32)) ; 1.4483395921882034 
+(Math/log (l2error (sor 2.0) 32)) ; -11.606066135866744 
+
+(Math/log (l2error jacobi 64)) ; 0.739584822335762 
+(Math/log (l2error gauss-seidel 64)) ; -1.352625017952317 
+(Math/log (l2error (sor 2.0) 64)) ; -23.68533918973215
+
