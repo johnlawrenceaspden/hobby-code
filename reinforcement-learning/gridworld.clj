@@ -102,9 +102,13 @@
 (for [[a b] (nth  (iterate jacobi v) 152)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
 (for [[a b] (nth  (iterate jacobi v) 151)] (twosf b)) ; (-19.99 -14.0 -14.0 -19.99 -19.99 -21.99 -21.99 -19.99 -14.0 -19.99 -18.0 0.0 -14.0 -18.0 -19.99)
 
-(def vfinal (for [[a b] (nth  (iterate jacobi v) 152)] (twosf b)))
 
-vfinal ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+;; At this point, truncating to two sf gets the actual answer!
+(def vfinal-j (into {} (for [[a b] (nth  (iterate jacobi v) 154)] [a (twosf b)])))
+(= vfinal-j (jacobi vfinal-j)) ; true
+
+
+vfinal-j ; {7 -20.0, 1 -14.0, 4 -14.0, 13 -20.0, 6 -20.0, 3 -22.0, 12 -22.0, 2 -20.0, 11 -14.0, 9 -20.0, 5 -18.0, :t 0.0, 14 -14.0, 10 -18.0, 8 -20.0}
 
 
 (def inplace (fn [v n] (assoc v n (up v n))))
@@ -129,19 +133,44 @@ vfinal ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -20.0 -14.0 -20.0 -18.0 0.
 (for [[a b] (nth  (iterate gauss-seidel v) 60)] (twosf b)) ; (-19.9 -13.92 -13.92 -19.9 -19.9 -21.88 -21.88 -19.89 -13.93 -19.9 -17.9 0.0 -13.93 -17.91 -19.89)
 (for [[a b] (nth  (iterate gauss-seidel v) 90)] (twosf b)) ; (-19.99 -13.99 -13.99 -19.99 -19.99 -21.99 -21.99 -19.99 -14.0 -19.99 -17.99 0.0 -14.0 -17.99 -19.99)
 (for [[a b] (nth  (iterate gauss-seidel v) 120)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate gauss-seidel v) 100)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate gauss-seidel v) 95)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -19.99 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -19.99)
+(for [[a b] (nth  (iterate gauss-seidel v) 96)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+
+(def vfinal-gs (into {} (for [[a b] (nth  (iterate gauss-seidel v) 97)] [a (twosf b)])) )
+(= vfinal-gs (gauss-seidel vfinal-gs)) ; true
+
+vfinal-gs ; {7 -20.0, 1 -14.0, 4 -14.0, 13 -20.0, 6 -20.0, 3 -21.99, 12 -21.99, 2 -20.0, 11 -14.0, 9 -20.0, 5 -18.0, :t 0.0, 14 -14.0, 10 -18.0, 8 -20.0}
+
+(= vfinal-gs vfinal-j) ; true
+
+(defn over-relax [v n omega]
+  (let [a (v n)
+        d (- (up v n) a)]
+    (+ a (* omega d))))
+
+(v 1) ; 0.0
+(up v 1) ; -1.0
+(over-relax v 1 1.1) ; -1.1
+
+(defn sor-inplace[omega]
+  (fn [v n] (assoc v n (over-relax v n omega))))
+
+(reduce (sor-inplace 1.1) v cells) ; {7 -2.0460687500000003, 1 -1.1, 4 -1.1, 13 -2.0460687500000003, 6 -1.9545625000000002, 3 -1.4856875, 12 -1.4856875, 2 -1.4025, 11 -2.260796484375, 9 -1.9545625000000002, 5 -1.7050000000000003, :t 0.0, 14 -2.260796484375, 10 -2.175009375, 8 -1.4025}
+
+(defn sor[omega] (fn [v] (reduce (sor-inplace omega) v cells)))
+
+(for [[a b] (nth  (iterate (sor 1.1) v) 100)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 1.1) v) 50)] (twosf b)) ; (-19.89 -13.91 -13.91 -19.89 -19.89 -21.86 -21.86 -19.88 -13.93 -19.89 -17.89 0.0 -13.93 -17.9 -19.88)
+(for [[a b] (nth  (iterate (sor 1.1) v) 75)] (twosf b)) ; (-19.99 -13.99 -13.99 -19.99 -19.99 -21.99 -21.99 -19.99 -13.99 -19.99 -17.99 0.0 -13.99 -17.99 -19.99)
+(for [[a b] (nth  (iterate (sor 1.1) v) 87)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 1.1) v) 81)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -19.99 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -19.99)
+(for [[a b] (nth  (iterate (sor 1.1) v) 82)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -21.99 -21.99 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
+(for [[a b] (nth  (iterate (sor 1.1) v) 83)] (twosf b)) ; (-20.0 -14.0 -14.0 -20.0 -20.0 -22.0 -22.0 -20.0 -14.0 -20.0 -18.0 0.0 -14.0 -18.0 -20.0)
 
 
 
-(reduce inplace (reduce inplace v cells) cells)
-(def f (reduce inplace (reduce inplace (reduce inplace v cells) cells) cells))
 
-
-
-(for [[k val] f] [k (twosf val)]) ; ([7 -4.88] [1 -2.82] [4 -2.82] [13 -4.88] [6 -4.71] [3 -4.18] [12 -4.18] [2 -3.83] [11 -4.26] [9 -4.71] [5 -4.03] [:t 0.0] [14 -4.26] [10 -4.96] [8 -3.83])
-
-
-          
-
-
-
-
+(def vfinal-sor-1.1 (into {} (for [[a b] (nth  (iterate (sor 1.1) v) 83)] [a (twosf b)])) ) 
+(= vfinal-sor-1.1 ((sor 1.1) vfinal-sor-1.1)) ; true 
+(= vfinal-sor-1.1 vfinal-j) ; true
