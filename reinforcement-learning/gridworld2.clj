@@ -9,7 +9,7 @@
 ;; 12 13 14 t
 
 (defn drow [v cells ] (clojure.pprint/cl-format nil "| ~{~3d ~^| ~} |" (map v cells)))
-(defn arow [v cells ] (clojure.pprint/cl-format nil "| ~{~5a ~^| ~} |" (map v cells)))
+(defn arow [v cells ] (clojure.pprint/cl-format nil "| ~{~6a ~^| ~} |" (map v cells)))
 
 (def cells (cons :t (range 1 15)))
 (defn co [n] [(quot n 4) (rem n 4)])
@@ -116,16 +116,18 @@ vfinal-j ; {7 -20.0, 1 -14.0, 4 -14.0, 13 -20.0, 6 -20.0, 3 -22.0, 12 -22.0, 2 -
 ;; Finally we change the dynamics so that down from state 13 goes to 15
 (defn go-to [n]
   (cond (= n 15) (list 12 13 14 15)
-        (= n 13) (list  9 12 14 15)
+        (= n 13) (list 9  12 14 15)
         :else (gridworld-go-to n)))
 
 
 (def vfinal-sor-2 (into {} (for [[a b] (nth  (iterate (sor 2.0) v) 30)] [a (twosf b)])) ) ; #'user/vfinal-sor-2
 
-(= vfinal-sor-2 ((sor 2.0) vfinal-sor-2))
+(= vfinal-sor-2 ((sor 2.0) vfinal-sor-2)) ; true
 
-(arow vfinal-sor-2 [:t  1  2  3 ]) ; "| 0.0   | -14.0 | -20.0 | -22.0  |"
-(arow vfinal-sor-2 [ 4  5  6  7 ]) ; "| -14.0 | -18.0 | -20.0 | -20.0  |"
-(arow vfinal-sor-2 [ 8  9  10 11]) ; "| -20.0 | -20.0 | -18.0 | -14.0  |"
-(arow vfinal-sor-2 [ 12 13 14 :t]) ; "| -22.0 | -20.0 | -14.0 | 0.0    |"
-(arow vfinal-sor-2 [ :t 15 :t :t]) ; "| 0.0   | -20.0 | 0.0   | 0.0    |"
+(arow vfinal-sor-2 [:t  1  2  3 ]) ; "| 0.0    | -14.0  | -20.0  | -22.0   |"
+(arow vfinal-sor-2 [ 4  5  6  7 ]) ; "| -14.0  | -18.0  | -20.0  | -20.0   |"
+(arow vfinal-sor-2 [ 8  9  10 11]) ; "| -20.0  | -20.0  | -18.0  | -14.0   |"
+(arow vfinal-sor-2 [ 12 13 14 :t]) ; "| -22.0  | -20.0  | -14.0  | 0.0     |"
+(arow vfinal-sor-2 [ :t 15 :t :t]) ; "| 0.0    | -20.0  | 0.0    | 0.0     |"
+
+;; Which makes surprisingly little difference
