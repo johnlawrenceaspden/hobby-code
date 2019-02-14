@@ -1,80 +1,37 @@
-;; Jack's car rental from the reinforcement learning book
+;; Jack's Car Rental from the reinforcement learning book
 
+;; Absolute Value
+(defn abs[x] (if (< x 0) (- x) x))
+(map abs [-2 0 1 2]) ; (2 0 1 2) ; 
 
-;; at location 1 start with
-5
-;; cars
-;; recieve
-6
-;; rental requests with probability
-(poisson 3 6) ; 0.05040940672246224
-;; actually rent out
-(min 5 6) ; 5
-;; cars
-;; making $50 profit
-;; and location 1 then has
-(- 5 5) ; 0
-;; cars
-
-;; at location 1
-;; we have 0 cars,
-;; the number of returns accepted can therefore range from 0 to 20 (extra cars disappear by magic)
-;; we get
-(rand-int 21) ; 10
-;; and therefore have 
-(+ 0 10)
-;; in total
-
-
-
-
-
-
-;; at location 2 start with
-4
-;; cars
-;; receive
-(rand-int 20) ; 11
-;; requests
-;; consider this as
-(min 4 11) ; 4
-;; 4 cars rented, which happens with probability
-(poisson>= 3 4) ; 0.35276811121776874
-;; location 2 then has
-(- 4 4) ; 0
-;; cars
-;; and we make $40 profit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;; An old poisson program
-(defn old-poisson [l]
-  (map first
-       (iterate
-        (fn [[a c]] [(/(* a l) (inc c)) (inc c)])
-        [(Math/exp (- l)) 0])))
-
-(old-poisson 3) ; (0.049787068367863944 0.14936120510359183 0.22404180765538773 0.22404180765538773 0.1680313557415408 0.10081881344492447 0.050409406722462226 0.021604031452483814 0.00810151179468143 0.0027005039315604767 8.101511794681431E-4 2.2095032167312995E-4 5.5237580418282494E-5 1.2747133942680576E-5 2.7315287020029804E-6 5.463057404005961E-7 1.0243232632511178E-7 1.8076292880902075E-8 3.012715480150346E-9 4.756919179184757E-10 7.135378768777135E-11 1.0193398241110193E-11 1.3900088510604807E-12 1.813055023122366E-13 2.2663187789029575E-14 2.719582534683549E-15 3.1379798477117877E-16 3.48664427523532E-17 3.735690294894986E-18 3.8645072016155027E-19 3.864507201615503E-20 3.739845678982744E-21 3.5061053240463225E-22 3.187368476405748E-23 2.8123839497697776E-24 2.410614814088381E-25 2.0088456784069842E-26 1.6287937933029603E-27 1.2858898368181265E-28 9.891460283216357E-30 7.418595212412268E-31 5.42824039932605E-32 3.877314570947179E-33 2.7051031890329156E-34 1.844388537976988E-35 1.2295923586513253E-36 8.019080599899948E-38 5.11856208504252E-39 3.199101303151575E-40 1.9586334509091273E-41 1.1751800705454763E-42 6.912823944385154E-44 3.988167660222204E-45 2.257453392578606E-46 1.254140773654781E-47 6.840767856298805E-49 3.66469706587436E-50 1.9287879294075578E-51 9.976489290039091E-53 5.0727911644266567E-54 2.5363955822133285E-55 1.2474076633836042E-56 6.0358435325013105E-58 2.874211205953005E-59 1.347286502790471E-60 6.218245397494481E-62 2.82647518067931E-63 1.265585901796706E-64 5.583467213808998E-66 2.427594440786521E-67 1.0403976174799375E-68 4.3960462710419894E-70 1.8316859462674955E-71 7.527476491510255E-73 3.0516796587203734E-74 1.2206718634881492E-75 4.8184415664005895E-77 1.8773148960002297E-78 7.220441907693191E-80 2.7419399649467815E-81 1.0282274868550431E-82 3.8082499513149746E-84 1.3932621773103564E-85 5.035887387868757E-87 1.7985312099531275E-88 6.347757211599273E-90 2.214333911023002E-91 7.635634175941387E-93 2.603057105434564E-94 8.774349793599652E-96 2.9247832645332175E-97 9.642142630329288E-99 3.1441769446725937E-100 1.0142506273137398E-101 3.2369700871715104E-103 1.0222010801594243E-104 3.194378375498201E-106 9.879520748963508E-108 3.0243430864174006E-109 9.164676019446669E-111 ...)
-
-(clojure.pprint/cl-format nil "~{~$~^, ~}" (take 10 (old-poisson 1)))
-
-
-
+;; Pretty-printing truncation
 (defn twosf [x] (if (and (number? x) (not (integer? x))) (float (/ (Math/round (* x 100.0)) 100)) x))
+
+;; Print anything to two s.f.
 (use '[clojure.walk :only (postwalk)])
-(postwalk twosf [22/7 [2.345 [23.456 #{ Math/PI {:a 2}}]]] ) ; [3.14 [2.35 [23.46 #{3.14 {:a 2}}]]]
 (defn ps[s] (postwalk twosf (take 20 s)))
+(ps [22/7 [2.345 [23.456 #{ Math/PI {:a 2}}]]] ) ; [3.14 [2.35 [23.46 #{3.14 {:a 2}}]]]
+
+;; A famous random weighted choice function
+(defn wrand 
+  "given a vector of slice sizes, returns the index of a slice given a
+  random spin of a roulette wheel with compartments proportional to
+  slices."
+  [slices]
+  (let [total (reduce + slices)
+        r (rand total)]
+    (loop [i 0 sum 0]
+      (if (< r (+ (slices i) sum))
+        i
+        (recur (inc i) (+ (slices i) sum))))))
+
+(wrand [1/6 2/6 3/6]) ; 0 ; 1 ; 2 ; 1 ; 0 ; 2 ; 2 ; 2 ; 2 ; 2 ; 1
+
+;; adapted to choose from a vector of seqs whose first elements are their weights
+(defn wchoose[v] (drop 1 (nth v (wrand (mapv first v)))))
+
+(frequencies (repeatedly 11000 #(wchoose [[5 :A][3 :B][2 :C][1 :D]]))) ; {(:D) 1040, (:A) 4837, (:B) 3121, (:C) 2002}
+
 
 
 ;; First we need to define the Poisson distribution
@@ -96,6 +53,8 @@
 (poisson 3 1) ; 0.14936120510359183 ; 0.14936120510359183
 (poisson 3 2) ; 0.22404180765538775 ; 0.22404180765538775
 
+;; And for this example we're truncating the poisson distribution, so we might be interested in, say the chance of poisson 3 producing 6 or above.
+
 (defn poisson>= [lambda, n]
   (- 1.0 (reduce + (map (partial poisson lambda) (range n))))) ; #'user/poisson>=
 
@@ -115,6 +74,131 @@
 (ps (poiss-test 3 7)) ; (3 7 :| (0.05 0.15 0.22 0.22 0.17 0.1 0.05) 0.03 :| 1.0)
 (ps (poiss-test 5 5)) ; (5 5 :| (0.01 0.03 0.08 0.14 0.18) 0.56 :| 1.0)
 (ps (poiss-test 5 1)) ; (5 1 :| (0.01) 0.99 :| 1.0)
+
+(defn capped-poisson [lambda, cap, n]
+  (cond (< n cap) (poisson lambda n)
+        (= n cap) (poisson>= lambda cap)
+        :else 0))
+
+
+(ps (map (partial capped-poisson 3 5) (range 10))) ; (0.05 0.15 0.22 0.22 0.17 0.18 0 0 0 0)
+(reduce + (map (partial capped-poisson 3 5) (range 10))) ; 1.0
+
+
+(ps (into [] (for [i (range 6)] (capped-poisson 3 5 i)))) ; (0.05 0.15 0.22 0.22 0.17 0.18)
+(reduce + (into [] (for [i (range 6)] (capped-poisson 3 5 i)))) ; 1.0
+(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))) ; 4 ; 3 ; 4 ; 3 ; 3 ; 4 ; 5 ; 5 ; 3 ; 4 ; 2 ; 0 ; 2 ; 3 ; 3 ; 2 ; 5
+
+(frequencies (repeatedly 1000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ; {1 151, 3 221, 4 179, 5 181, 2 220, 0 48}
+
+(reduce + (for [[k v] {1 151, 3 221, 4 179, 5 181, 2 220, 0 48}] (* k v))) ; 2875
+
+(reduce + (repeatedly 1000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ; 2927 ; 2861 ; 2875 ; 2899 ; 2849 ; 2835 ; 2842 ; 2755 ; 2825 ; 2874
+(reduce + (repeatedly 10000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ; 28797 ; 28875 ; 28787 ; 28705 ; 28769 ; 28624 ; 28328
+(reduce + (repeatedly 1000000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ;  ; 28797 ; 28875 ; 28787 ; 28705 ; 28769 ; 28624 ; 28328
+
+(def capped-poisson-distribution
+  (memoize (fn [lambda cap]
+             (into [] (for [i (range (inc cap))] (capped-poisson lambda cap i))))))
+
+
+(ps (capped-poisson-distribution 3 10)) ; (0.05 0.15 0.22 0.22 0.17 0.1 0.05 0.02 0.01 0.0 0.0)
+(reduce + (capped-poisson-distribution 3 10)) ; 1.0
+
+
+(defn capped-poisson-sample [lambda cap]
+  (wrand (capped-poisson-distribution lambda cap )))
+
+
+(reduce + (repeatedly 100000 #(capped-poisson-sample 3 100))) ; 300736 ; 299740 ; 299846 ; 300170 ; 300365
+(reduce + (repeatedly 100000 #(capped-poisson-sample 3 5))) ; 286974 ; 286152 ; 286594 ; 286525 ; 286623 ; 286472
+
+
+
+
+;; A day in the life of Jack's:
+
+;; One evening, Jack's has 7 cars at location one
+;; and 2 cars at location two
+[7,2] ; [7 2]
+
+;; Jack decides to move 2 cars (from one to two), paying the transfer cost of
+(* (abs 2) 2) ; $4
+
+;; Jack's action is valid
+(> 7 2) ; true
+
+;; afterwards, the car count is:
+[(- 7 2),(+ 2 2)] ; [5 4]
+
+;; The following morning, 
+;; at location one there are
+5
+;; cars
+;; we can therefore successfully accomodate up to 5 rental requests, the rest are wasted
+(rand-int 5) ; 4
+;; We receive 4 rental requests with probability
+(capped-poisson 3 5 4) ; 0.16803135574154082
+;; making
+(* 4 10) ; 40
+$40 profit
+;; and location 1 then has
+(- 5 4) ; 1
+;; cars
+
+;; at location one
+;; we now have 0 cars,
+;; the number of returns accepted can therefore range from 0 to 20 (extra cars disappear by magic)
+;; we get
+(rand-int 21) ; 14
+;; with probability
+(capped-poisson 3 20 14) ; 2.73152870200298E-6
+;; and therefore have 
+(+ 0 14) ; 14
+;; in total
+;; at the end of the day
+
+
+;; at location 2 start with
+4
+;; cars
+;; can therefore receive up to four requests
+(rand-int 5) ; 2
+;; requests
+;; 2 cars are in fact rented, which happens with probability
+(capped-poisson 3 4 2) ; 0.22404180765538775
+;; location 2 then has
+(- 4 4) ; 0
+;; cars
+;; and we make $40 profit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; An old poisson program
+(defn old-poisson [l]
+  (map first
+       (iterate
+        (fn [[a c]] [(/(* a l) (inc c)) (inc c)])
+        [(Math/exp (- l)) 0]))) ; 
+
+(old-poisson 3) ; (0.049787068367863944 0.14936120510359183 0.22404180765538773 0.22404180765538773 0.1680313557415408 0.10081881344492447 0.050409406722462226 0.021604031452483814 0.00810151179468143 0.0027005039315604767 8.101511794681431E-4 2.2095032167312995E-4 5.5237580418282494E-5 1.2747133942680576E-5 2.7315287020029804E-6 5.463057404005961E-7 1.0243232632511178E-7 1.8076292880902075E-8 3.012715480150346E-9 4.756919179184757E-10 7.135378768777135E-11 1.0193398241110193E-11 1.3900088510604807E-12 1.813055023122366E-13 2.2663187789029575E-14 2.719582534683549E-15 3.1379798477117877E-16 3.48664427523532E-17 3.735690294894986E-18 3.8645072016155027E-19 3.864507201615503E-20 3.739845678982744E-21 3.5061053240463225E-22 3.187368476405748E-23 2.8123839497697776E-24 2.410614814088381E-25 2.0088456784069842E-26 1.6287937933029603E-27 1.2858898368181265E-28 9.891460283216357E-30 7.418595212412268E-31 5.42824039932605E-32 3.877314570947179E-33 2.7051031890329156E-34 1.844388537976988E-35 1.2295923586513253E-36 8.019080599899948E-38 5.11856208504252E-39 3.199101303151575E-40 1.9586334509091273E-41 1.1751800705454763E-42 6.912823944385154E-44 3.988167660222204E-45 2.257453392578606E-46 1.254140773654781E-47 6.840767856298805E-49 3.66469706587436E-50 1.9287879294075578E-51 9.976489290039091E-53 5.0727911644266567E-54 2.5363955822133285E-55 1.2474076633836042E-56 6.0358435325013105E-58 2.874211205953005E-59 1.347286502790471E-60 6.218245397494481E-62 2.82647518067931E-63 1.265585901796706E-64 5.583467213808998E-66 2.427594440786521E-67 1.0403976174799375E-68 4.3960462710419894E-70 1.8316859462674955E-71 7.527476491510255E-73 3.0516796587203734E-74 1.2206718634881492E-75 4.8184415664005895E-77 1.8773148960002297E-78 7.220441907693191E-80 2.7419399649467815E-81 1.0282274868550431E-82 3.8082499513149746E-84 1.3932621773103564E-85 5.035887387868757E-87 1.7985312099531275E-88 6.347757211599273E-90 2.214333911023002E-91 7.635634175941387E-93 2.603057105434564E-94 8.774349793599652E-96 2.9247832645332175E-97 9.642142630329288E-99 3.1441769446725937E-100 1.0142506273137398E-101 3.2369700871715104E-103 1.0222010801594243E-104 3.194378375498201E-106 9.879520748963508E-108 3.0243430864174006E-109 9.164676019446669E-111 ...)
+
+(clojure.pprint/cl-format nil "~{~$~^, ~}" (take 10 (old-poisson 1)))
+
+
+
 
 
 
