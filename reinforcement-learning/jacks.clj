@@ -95,7 +95,6 @@
 
 (reduce + (repeatedly 1000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ; 2927 ; 2861 ; 2875 ; 2899 ; 2849 ; 2835 ; 2842 ; 2755 ; 2825 ; 2874
 (reduce + (repeatedly 10000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ; 28797 ; 28875 ; 28787 ; 28705 ; 28769 ; 28624 ; 28328
-(reduce + (repeatedly 1000000 #(wrand (into [] (for [i (range 6)] (capped-poisson 3 5 i)))))) ;  ; 28797 ; 28875 ; 28787 ; 28705 ; 28769 ; 28624 ; 28328
 
 (def capped-poisson-distribution
   (memoize (fn [lambda cap]
@@ -141,7 +140,7 @@
 (capped-poisson 3 5 4) ; 0.16803135574154082
 ;; making
 (* 4 10) ; 40
-$40 profit
+;; $40 profit
 ;; and location 1 then has
 (- 5 4) ; 1
 ;; cars
@@ -191,6 +190,123 @@ $40 profit
 
 ;; the total probability of the day was:
 (* (capped-poisson 3 5 4) (capped-poisson 3 20 14) (capped-poisson 4 4 2) (capped-poisson 2 20 0)) ; 9.101630393225908E-9
+
+
+(defn cut-action [[a b] action]
+  (if (> action 0) (min a action)
+      (max (- b) action)))
+
+(map (partial cut-action [2 2]) (range -5 5)) ; (-2 -2 -2 -2 -1 0 1 2 2 2)
+
+
+(defn do-action [[a b] action]
+  (let [action (cut-action [a b] action)
+        [a b] [(- a action) (+ b action)]
+        reward (* -2 (abs action))
+        prob   1]
+    [[a b] reward prob]))
+
+
+(do-action [7 5] 2) ; [[5 7] -4 1]
+(do-action [7 0] -2) ; [[7 0] 0 1]
+(do-action [1 1] 2) ; [[0 2] -2 1]
+(do-action [5 5] -2) ; [[7 3] -4 1]
+
+
+(defn sample-jack-transition [[a b] action]
+  (let [[[a b] reward prob] (do-action [a b] action)
+        carslet1 (rand-int (inc a))
+        prob     (* prob (capped-poisson 3 a carslet1))
+        reward   (+ reward (* carslet1 10))
+        [a b]    [(- a carslet1) b]]
+    [[a b] reward prob]))
+    
+
+(sample-jack-transition [7 5] 2) ; [[5 7] -4 0.049787068367863944]
+(sample-jack-transition [7 0] -2) ; [[2 0] 50 0.10081881344492448]
+(sample-jack-transition [1 1] 2) ; [[0 2] -2 1.0] ; [[0 2] -2 1.0]
+(sample-jack-transition [5 5] -2) ; [[1 3] 56 0.05040940672246224]
+
+;; The following morning, 
+;; at location one there are
+5
+;; cars
+;; we can therefore successfully accomodate up to 5 rental requests, the rest are wasted
+(capped-poisson-sample 3 5) ; 4
+;; We receive 4 rental requests with probability
+(capped-poisson 3 5 4) ; 0.16803135574154082
+;; making
+(* 4 10) ; 40
+;; $40 profit
+;; and location 1 then has
+(- 5 4) ; 1
+;; cars
+
+;; at location one
+;; we now have 0 cars,
+;; the number of returns accepted can therefore range from 0 to 20 (extra cars disappear by magic)
+;; we get
+(capped-poisson-sample 3 20) ; 14
+;; with probability
+(capped-poisson 3 20 14) ; 2.73152870200298E-6
+;; and therefore have 
+(+ 0 14) ; 14
+;; in total
+;; at the end of the day
+
+
+;; at location 2 we start with
+4
+;; cars
+;; can therefore receive up to four requests
+(rand-int 5)
+(capped-poisson-sample 4 4) ; 2
+;; requests
+;; 2 cars are in fact rented, which happens with probability
+(capped-poisson 4 4 2) ; 0.14652511110987343
+;; location 2 then has
+(- 4 4) ; 0
+;; cars
+;; and we make
+(* 4 10) ; 40
+;; $40 profit
+
+;; we can accept up to
+(- 20 0) ; 20
+;; returns
+(capped-poisson-sample 2 20) ; 0
+;; with probability 
+(capped-poisson 2 20 0) ; 0.1353352832366127
+
+;; and we end the day with
+[(+ 0 14) (+ 0 0)] ; [14 0]
+;; cars
+;; a reward of 
+(+ (* 4 10) (* 4 10) (* (abs 2) -2)) ; $76
+;; for the day
+
+;; the total probability of the day was:
+(* (capped-poisson 3 5 4) (capped-poisson 3 20 14) (capped-poisson 4 4 2) (capped-poisson 2 20 0)) ; 9.101630393225908E-9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
