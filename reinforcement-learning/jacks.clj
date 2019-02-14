@@ -136,7 +136,7 @@
 5
 ;; cars
 ;; we can therefore successfully accomodate up to 5 rental requests, the rest are wasted
-(rand-int 5) ; 4
+(capped-poisson-sample 3 5) ; 4
 ;; We receive 4 rental requests with probability
 (capped-poisson 3 5 4) ; 0.16803135574154082
 ;; making
@@ -150,7 +150,7 @@ $40 profit
 ;; we now have 0 cars,
 ;; the number of returns accepted can therefore range from 0 to 20 (extra cars disappear by magic)
 ;; we get
-(rand-int 21) ; 14
+(capped-poisson-sample 3 20) ; 14
 ;; with probability
 (capped-poisson 3 20 14) ; 2.73152870200298E-6
 ;; and therefore have 
@@ -159,19 +159,38 @@ $40 profit
 ;; at the end of the day
 
 
-;; at location 2 start with
+;; at location 2 we start with
 4
 ;; cars
 ;; can therefore receive up to four requests
-(rand-int 5) ; 2
+(rand-int 5)
+(capped-poisson-sample 4 4) ; 2
 ;; requests
 ;; 2 cars are in fact rented, which happens with probability
-(capped-poisson 3 4 2) ; 0.22404180765538775
+(capped-poisson 4 4 2) ; 0.14652511110987343
 ;; location 2 then has
 (- 4 4) ; 0
 ;; cars
-;; and we make $40 profit
+;; and we make
+(* 4 10) ; 40
+;; $40 profit
 
+;; we can accept up to
+(- 20 0) ; 20
+;; returns
+(capped-poisson-sample 2 20) ; 0
+;; with probability 
+(capped-poisson 2 20 0) ; 0.1353352832366127
+
+;; and we end the day with
+[(+ 0 14) (+ 0 0)] ; [14 0]
+;; cars
+;; a reward of 
+(+ (* 4 10) (* 4 10) (* (abs 2) -2)) ; $76
+;; for the day
+
+;; the total probability of the day was:
+(* (capped-poisson 3 5 4) (capped-poisson 3 20 14) (capped-poisson 4 4 2) (capped-poisson 2 20 0)) ; 9.101630393225908E-9
 
 
 
