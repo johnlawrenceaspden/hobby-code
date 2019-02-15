@@ -180,12 +180,32 @@
 ;; location two return 2
 (def two-return 2)
 ;; cars often get picked up from two but returned to one
+(def max-cars 20)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; So, given the policy of 'never move any cars'
-;; the probability of going from state [5,5] via renting out [2,1] cars and then getting back [4,2] and ending up in state [7,6] is:
+;; the probability of going from state [5,5] via renting out [2,1] cars, having then [3,4] and then getting back [4,2] and ending up in state [7,6] is:
 
-(capped-poisson 3
+(* 
+ (capped-poisson one-hire   5 2)
+ (capped-poisson two-hire   5 1)
+ (capped-poisson one-return (- max-cars 3) 4)
+ (capped-poisson two-return (- max-cars 4) 2)) ; 7.465218009293776E-4
 
+;; and the associated reward is 
 
+(* 10 (+ 2 1)) ; 30
+
+;; generalising
+;; the probability of going from state [a,b] via renting out [i,j] cars, having then [a-i,b-j] and then getting back [c-(a-i),d-(b-j)] and ending up in state [c,d] is:
+
+(defn p[[a,b],[i,j],[c,d]]
+  (let [[s1,s2][(- a i)(- b j)]]
+    (* 
+     (capped-poisson one-hire   a i)
+     (capped-poisson two-hire   b j)
+     (capped-poisson one-return (- max-cars s1) (- c s1))
+     (capped-poisson two-return (- max-cars s2) (- d s2))))) ; #'user/p
+
+(p [5,5],[2,1],[7,6]) ; 7.465218009293776E-4
