@@ -228,35 +228,53 @@
 (v [20,20]) ; 0
 (v [1,21]) ; nil
 
-(defn expectation-fragments [[m,n]]
-  (for [c car-range d car-range]
-    (for [ i (irange c) j (irange d) ]
-      [[i,j] [c,d] (* (p [m,n] [i,j] [c,d])
-         (+ (r [m,n] [i,j] [c,d]) (v [c,d])))])))
+(defn expected-reward-fragment [[m,n] [i,j] [c,d]]
+  (* (p [m,n] [i,j] [c,d])
+     (+ (r [m,n] [i,j] [c,d]) (* gamma (v [c,d])))))
+
+(defn expected-contributions-from-state [[m,n] [c,d]]
+  (for [ i (irange m) j (irange n) ]
+    (expected-reward-fragment [m,n] [i,j] [c,d])))
+
+
+(expected-contributions-from-state [0,0] [1,1]) ; (0.0) ;  ; (0.0)
+(expected-contributions-from-state [1,0] [1,1]) ; (0.0 0.38414906227097734) ; (0.0 0.38414906227097734)
+(expected-contributions-from-state [2,0] [1,1]) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
+(expected-contributions-from-state [1,1] [1,1]) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
+
+(defn expected-contribution-from-state [[m,n],[c,d]]
+  (reduce +
+          (expected-contributions-from-state [m,n] [c,d]))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
+
+(expected-contribution-from-state [2,0] [1,1]) ; 0.6676593361712011
+(expected-contribution-from-state [0,0] [1,1]) ; 0.0
+(expected-contribution-from-state [1,1] [1,1]) ; 0.7643305895969366
 
 
 ;; Then the update to v[m,n] :=
 (defn update-val [[m,n]]
-  (reduce + (apply concat
-         (for [c car-range d car-range]
-           (for [ i (irange c) j (irange d) ]
-             (* (p [m,n] [i,j] [c,d])
-                (+ (r [m,n] [i,j] [c,d]) (v [c,d]))))))))
+  (reduce + 
+          (for [c car-range d car-range]
+            (expected-contribution-from-state [m,n] [c,d]))))
 
 ;; If you got no cars, you can't make anything:
-(update-val [0,0]) ; 0.0
-;; If you got one car then you'll rent it out for $10 with probability
-(capped-poisson 3 1 1) ; 0.950212931632136
-(capped-poisson 3 1 0) ; 0.049787068367863944
+(update-val [0,0]) ; 0.0 ;  ; 0.0
+;; If you got one car in location one then you'll rent it out for $10 with probability
+(capped-poisson one-hire 1 1) ; 0.950212931632136
+(capped-poisson one-hire 1 0) ; 0.049787068367863944
 
-(update-val [1,0]) ; 9.029046154409382
+(update-val [1,0]) ; 9.502129316321358
 
-(filter (fn[_ _ a] (<> a 0)) (expectation-fragments [0,0])) ;  ; 9.029046154409382
-(update-val [1,1]) ; 15.934394380316785
+(capped-poisson two-hire 1 1) ; 0.9816843611112658 
+(capped-poisson two-hire 1 0) ; 0.01831563888873418
+(update-val [0,1]) ; 9.81684361111267
+
+(update-val [2,0]) ; 17.53543410337345
+(update-val [2,2]) ; 36.67345353618055
 
 
-car-range 
-       
+
+
        
 
 
