@@ -223,55 +223,79 @@
 
 ;; If we start with an initial value function zero
 
-(def v (into {} (for [i car-range j car-range] [[i,j] 0])))
-(v [0,0]) ; 0
-(v [20,20]) ; 0
-(v [1,21]) ; nil
+(def vzero (into {} (for [i car-range j car-range] [[i,j] 0])))
+(vzero [0,0]) ; 0
+(vzero [20,20]) ; 0
+(vzero [1,21]) ; nil
 
-(defn expected-reward-fragment [[m,n] [i,j] [c,d]]
+(defn expected-reward-fragment [[m,n] [i,j] [c,d] v]
   (* (p [m,n] [i,j] [c,d])
      (+ (r [m,n] [i,j] [c,d]) (* gamma (v [c,d])))))
 
-(defn expected-contributions-from-state [[m,n] [c,d]]
+(defn expected-contributions-from-state [[m,n] [c,d] v]
   (for [ i (irange m) j (irange n) ]
-    (expected-reward-fragment [m,n] [i,j] [c,d])))
+    (expected-reward-fragment [m,n] [i,j] [c,d] v)))
 
 
-(expected-contributions-from-state [0,0] [1,1]) ; (0.0) ;  ; (0.0)
-(expected-contributions-from-state [1,0] [1,1]) ; (0.0 0.38414906227097734) ; (0.0 0.38414906227097734)
-(expected-contributions-from-state [2,0] [1,1]) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
-(expected-contributions-from-state [1,1] [1,1]) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
+(expected-contributions-from-state [0,0] [1,1] vzero) ; (0.0) ;  ; (0.0)
+(expected-contributions-from-state [1,0] [1,1] vzero) ; (0.0 0.38414906227097734) ; (0.0 0.38414906227097734)
+(expected-contributions-from-state [2,0] [1,1] vzero) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
+(expected-contributions-from-state [1,1] [1,1] vzero) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
 
-(defn expected-contribution-from-state [[m,n],[c,d]]
+(defn expected-contribution-from-state [[m,n],[c,d] v]
   (reduce +
-          (expected-contributions-from-state [m,n] [c,d]))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
+          (expected-contributions-from-state [m,n] [c,d] v))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
 
-(expected-contribution-from-state [2,0] [1,1]) ; 0.6676593361712011
-(expected-contribution-from-state [0,0] [1,1]) ; 0.0
-(expected-contribution-from-state [1,1] [1,1]) ; 0.7643305895969366
+(expected-contribution-from-state [2,0] [1,1] vzero) ; 0.6676593361712011 ; 0.6676593361712011
+(expected-contribution-from-state [0,0] [1,1] vzero) ; 0.0 ; 0.0
+(expected-contribution-from-state [1,1] [1,1] vzero) ; 0.7643305895969366 ; 0.7643305895969366
 
 
 ;; Then the update to v[m,n] :=
-(defn update-val [[m,n]]
+(defn update-val [[m,n] v]
   (reduce + 
           (for [c car-range d car-range]
-            (expected-contribution-from-state [m,n] [c,d]))))
+            (expected-contribution-from-state [m,n] [c,d] v))))
 
 ;; If you got no cars, you can't make anything:
-(update-val [0,0]) ; 0.0 ;  ; 0.0
+(update-val [0,0] vzero) ;  ; 0.0 ;  ; 0.0
 ;; If you got one car in location one then you'll rent it out for $10 with probability
 (capped-poisson one-hire 1 1) ; 0.950212931632136
 (capped-poisson one-hire 1 0) ; 0.049787068367863944
 
-(update-val [1,0]) ; 9.502129316321358
+(update-val [1,0] vzero) ; 9.502129316321358
 
 (capped-poisson two-hire 1 1) ; 0.9816843611112658 
 (capped-poisson two-hire 1 0) ; 0.01831563888873418
-(update-val [0,1]) ; 9.81684361111267
+(update-val [0,1] vzero) ; 9.81684361111267
 
-(update-val [2,0]) ; 17.53543410337345
-(update-val [2,2]) ; 36.67345353618055
+(update-val [2,0] vzero) ; 17.53543410337345
+(update-val [2,2] vzero) ; 36.67345353618055
 
+;; with twenty cars in each location we're looking at the summed expectation of the two poisson processes
+(update-val [20,20] vzero) ; 81.45105057847046
+
+(* 10 (+ one-hire two-hire)) ; 70
+
+(+ (reduce + (map * (range) (capped-poisson-distribution one-hire 20)))
+   (reduce + (map * (range) (capped-poisson-distribution two-hire 20)))) ; 6.9999999976454585
+
+(update-val [1,1] vzero) ; 19.33886081345325
+(+ (reduce + (map * (range) (capped-poisson-distribution one-hire 1)))
+   (reduce + (map * (range) (capped-poisson-distribution two-hire 1)))) ; 1.9318972927434017
+
+(reduce + (for [c car-range d car-range]
+            (expected-contribution-from-state [1,1] [c,d] vzero))) ; 19.33886081345325
+
+
+(for [c car-range d car-range]
+            (expected-contribution-from-state [1,1] [c,d] vzero))
+
+
+(def vone (into {} (for [i (range 2) j (range 2)] [[i,j] (update-val [i,j] vzero)])))
+(vone [0,0]) ; 0.0 ; 0.0
+(vone [1,1]) ; 19.33886081345325 ; 19.33886081345325
+(vone [0,1]) ; 9.81684361111267 ; 9.81684361111267
 
 
 
