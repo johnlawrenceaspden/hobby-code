@@ -263,35 +263,35 @@
 
 
 ;; Then the update to v[m,n] :=
-(defn update-val [[m,n] v]
+(defn update-val [v [m,n]]
   (reduce + 
           (for [c car-range d car-range]
             (expected-contribution-from-state [m,n] [c,d] v))))
 
 ;; If you got no cars, you can't make anything:
-(update-val [0,0] vzero) ;  ; 0.0 ;  ; 0.0
+(update-val vzero [0,0]) ;  ; 0.0 ;  ; 0.0
 ;; If you got one car in location one then you'll rent it out for $10 with probability
 (capped-poisson one-hire 1 1) ; 0.950212931632136
 (capped-poisson one-hire 1 0) ; 0.049787068367863944
 
-(update-val [1,0] vzero) ; 9.502129316321358
+(update-val vzero [1,0]) ; 9.502129316321358
 
 (capped-poisson two-hire 1 1) ; 0.9816843611112658 
 (capped-poisson two-hire 1 0) ; 0.01831563888873418
-(update-val [0,1] vzero) ; 9.81684361111267
+(update-val vzero [0,1]) ; 9.81684361111267
 
-(update-val [2,0] vzero) ; 17.53543410337345
-(update-val [2,2] vzero) ; 36.67345353618055
+(update-val vzero [2,0]) ; 17.53543410337345
+(update-val vzero [2,2]) ; 36.67345353618055
 
 ;; with twenty cars in each location we're looking at the summed expectation of the two poisson processes
-(update-val [20,20] vzero) ; 81.45105057847046
+(update-val vzero [20,20]) ; 81.45105057847046
 
 (* 10 (+ one-hire two-hire)) ; 70
 
 (+ (reduce + (map * (range) (capped-poisson-distribution one-hire 20)))
    (reduce + (map * (range) (capped-poisson-distribution two-hire 20)))) ; 6.9999999976454585
 
-(update-val [1,1] vzero) ; 19.33886081345325
+(update-val vzero [1,1]) ; 19.33886081345325
 (+ (reduce + (map * (range) (capped-poisson-distribution one-hire 1)))
    (reduce + (map * (range) (capped-poisson-distribution two-hire 1)))) ; 1.9318972927434017
 
@@ -303,7 +303,7 @@
             (expected-contribution-from-state [1,1] [c,d] vzero))
 
 
-(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val [i,j] vzero)])))
+(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val vzero [i,j])])))
 (vone [0,0]) ; 0.0 ; 0.0
 (vone [1,1]) ; 19.33886081345325 ; 19.33886081345325
 (vone [0,1]) ; 9.81684361111267 ; 9.81684361111267
@@ -314,13 +314,13 @@
  [[2 0] 17.54] [[2 1] 27.41] [[2 2] 36.67] [[2 3] 44.77]
  [[3 0] 23.39] [[3 1] 33.31] [[3 2] 42.65] [[3 3] 50.86])
 
-(def vtwo (into {} (for [i car-range j car-range] [[i,j] (update-val [i,j] vone)])))
+(def vtwo (into {} (for [i car-range j car-range] [[i,j] (update-val vone [i,j])])))
 (ps (sort vtwo))
 
-(def vthree (into {} (for [i car-range j car-range] [[i,j] (update-val [i,j] vtwo)]))) ; #'user/vthree
+(def vthree (into {} (for [i car-range j car-range] [[i,j] (update-val vtwo [i,j])]))) ; #'user/vthree
 (ps (sort vtwo)) ; ([[0 0] 31.99] [[0 1] 41.92] [[0 2] 51.62] [[0 3] 60.78] [[1 0] 41.64] [[1 1] 51.59] [[1 2] 61.35] [[1 3] 70.64] [[2 0] 50.18] [[2 1] 60.18] [[2 2] 70.01] [[2 3] 79.44] [[3 0] 56.93] [[3 1] 66.98] [[3 2] 76.9] [[3 3] 86.45])
 
-(defn jacobi [v] (into {} (for [i car-range j car-range] [[i,j] (update-val [i,j] v)])))
+(defn jacobi [v] (into {} (for [i car-range j car-range] [[i,j] (update-val v [i,j])])))
 
 (def vseries (take 10 (iterate jacobi vzero)))
 (ps vseries)
@@ -337,7 +337,7 @@
 {[2 2] 238.36, [0 0] 198.37, [1 0] 208.18, [2 3] 250.15, [3 3] 258.1, [1 1] 218.37, [3 0] 224.94, [1 3] 240.8, [0 3] 230.78, [0 2] 219.26, [2 0] 217.27, [3 1] 235.22, [2 1] 227.49, [1 2] 229.15, [3 2] 246.17, [0 1] 208.53})
 
 
-(def inplace (fn [v [i,j]] (assoc v [i,j] (update-val [i,j] v))))
+(def inplace (fn [v [i,j]] (assoc v [i,j] (update-val v [i,j]))))
 
 (inplace vzero [1,1]) ; {[2 2] 0, [0 0] 0, [1 0] 0, [2 3] 0, [3 3] 0, [1 1] 19.338860813453262, [3 0] 0, [1 3] 0, [0 3] 0, [0 2] 0, [2 0] 0, [3 1] 0, [2 1] 0, [1 2] 0, [3 2] 0, [0 1] 0} 
 
@@ -361,7 +361,7 @@
 
 (defn over-relax [v [i,j] omega]
   (let [a (v [i,j])
-        d (- (update-val [i,j] v) a)]
+        d (- (update-val v [i,j]) a)]
     (+ a (* omega d))))
 
 (over-relax vzero [1,1] 2.0)
