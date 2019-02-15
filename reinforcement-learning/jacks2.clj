@@ -115,7 +115,7 @@
 5
 ;; cars
 ;; we can therefore successfully accomodate up to 5 rental requests, the rest are wasted
-(capped-poisson-sample 3 5) ; 4
+(rand-int 5) ; 4
 ;; We receive 4 rental requests with probability
 (capped-poisson 3 5 4) ; 0.16803135574154082
 ;; making
@@ -129,7 +129,7 @@
 ;; we now have 0 cars,
 ;; the number of returns accepted can therefore range from 0 to 20 (extra cars disappear by magic)
 ;; we get
-(capped-poisson-sample 3 20) ; 14
+(rand-int 20) ; 14
 ;; with probability
 (capped-poisson 3 20 14) ; 2.73152870200298E-6
 ;; and therefore have 
@@ -142,8 +142,7 @@
 4
 ;; cars
 ;; can therefore receive up to four requests
-(rand-int 5)
-(capped-poisson-sample 4 4) ; 2
+(rand-int 5) ; 2
 ;; requests
 ;; 2 cars are in fact rented, which happens with probability
 (capped-poisson 4 4 2) ; 0.14652511110987343
@@ -157,7 +156,7 @@
 ;; we can accept up to
 (- 20 0) ; 20
 ;; returns
-(capped-poisson-sample 2 20) ; 0
+(rand-int 20) ; 0
 ;; with probability 
 (capped-poisson 2 20 0) ; 0.1353352832366127
 
@@ -182,7 +181,7 @@
 ;; location two return 2
 (def two-return 2)
 ;; cars often get picked up from two but returned to one
-(def max-cars 20)
+(def max-cars 3)
 (def car-range (range (inc max-cars)))
 ;; Jack is something of a short-termist
 (def gamma 0.9)
@@ -205,7 +204,7 @@
 ;; generalising
 ;; the probability of going from state [a,b] via renting out [i,j] cars, having then [a-i,b-j] and then getting back [c-(a-i),d-(b-j)] and ending up in state [c,d] is:
 
-(defn p[[a,b],[i,j],[c,d]]
+(defn ^:dynamic p[[a,b],[i,j],[c,d]]
   (let [[s1,s2][(- a i)(- b j)]]
     (* 
      (capped-poisson one-hire   a i)
@@ -215,24 +214,35 @@
 
 (p [5,5],[2,1],[7,6]) ; 7.465218009293776E-4
 
-(defn r[[a,b],[i,j],[c,d]]
+(trace [p] (p [5,5],[2,1],[7,6]))
+
+
+(defn ^:dynamic r[[a,b],[i,j],[c,d]]
   (* 10 (+ i j)))
 
-
+(trace [r] (r [5,5],[2,1],[7,6]))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; If we start with an initial value function zero
 
 (def vzero (into {} (for [i car-range j car-range] [[i,j] 0])))
 (vzero [0,0]) ; 0
-(vzero [20,20]) ; 0
-(vzero [1,21]) ; nil
+(vzero [max-cars,max-cars]) ; 0
+(vzero [(inc max-cars),0]) ; nil
 
-(defn expected-reward-fragment [[m,n] [i,j] [c,d] v]
+(defn ^:dynamic expected-reward-fragment [[m,n] [i,j] [c,d] v]
   (* (p [m,n] [i,j] [c,d])
      (+ (r [m,n] [i,j] [c,d]) (* gamma (v [c,d])))))
 
-(defn expected-contributions-from-state [[m,n] [c,d] v]
+(expected-reward-fragment [0,0] [1,1] [1,1] vzero) ; 0.0
+(expected-reward-fragment [1,1] [1,1] [1,2] vzero) ; 0.7542262535339523
+(expected-reward-fragment [1,1] [1,1] [2,2] vzero) ; 0.7542262535339523
+
+(use 'clojure.tools.trace)
+(dotrace [expected-reward-fragment r p] (expected-reward-fragment [0,0] [1,1] [1,1] vzero)) 
+
+
+(defn ^:dynamic expected-contributions-from-state [[m,n] [c,d] v]
   (for [ i (irange m) j (irange n) ]
     (expected-reward-fragment [m,n] [i,j] [c,d] v)))
 
@@ -242,7 +252,7 @@
 (expected-contributions-from-state [2,0] [1,1] vzero) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
 (expected-contributions-from-state [1,1] [1,1] vzero) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
 
-(defn expected-contribution-from-state [[m,n],[c,d] v]
+(defn ^:dynamic expected-contribution-from-state [[m,n],[c,d] v]
   (reduce +
           (expected-contributions-from-state [m,n] [c,d] v))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
 
@@ -292,7 +302,7 @@
             (expected-contribution-from-state [1,1] [c,d] vzero))
 
 
-(def vone (into {} (for [i (range 2) j (range 2)] [[i,j] (update-val [i,j] vzero)])))
+(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val [i,j] vzero)])))
 (vone [0,0]) ; 0.0 ; 0.0
 (vone [1,1]) ; 19.33886081345325 ; 19.33886081345325
 (vone [0,1]) ; 9.81684361111267 ; 9.81684361111267
@@ -303,3 +313,4 @@
 
 
 
+(dotrace [expected-reward-fragment r p expected-contributions-from-state] (expected-contributions-from-state [1,0] [1,1] vzero)) 
