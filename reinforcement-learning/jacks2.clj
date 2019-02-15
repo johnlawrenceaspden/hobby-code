@@ -237,10 +237,11 @@
 
 (expected-reward-fragment [0,0] [1,1] [1,1] vzero) ; 0.0
 (expected-reward-fragment [1,1] [1,1] [1,2] vzero) ; 0.7542262535339523
-(expected-reward-fragment [1,1] [1,1] [2,2] vzero) ; 0.7542262535339523
+(expected-reward-fragment [1,1] [1,1] [2,2] vzero) ; 1.1313393803009288
+(expected-reward-fragment [1,1] [1,1] [3,3] vzero) ; 3.4793082637975914
 
 
-(dotrace [expected-reward-fragment r p] (expected-reward-fragment [0,0] [1,1] [1,1] vzero)) 
+'(dotrace [expected-reward-fragment r p] (expected-reward-fragment [1,1] [1,1] [1,1] vzero)) 
 
 
 (defn ^:dynamic expected-contributions-from-state [[m,n] [c,d] v]
@@ -259,7 +260,7 @@
 
 (expected-contribution-from-state [2,0] [1,1] vzero) ; 0.6676593361712011 ; 0.6676593361712011
 (expected-contribution-from-state [0,0] [1,1] vzero) ; 0.0 ; 0.0
-(expected-contribution-from-state [1,1] [1,1] vzero) ; 0.7643305895969366 ; 0.7643305895969366
+(dotrace [expected-reward-fragment r p](expected-contribution-from-state [1,1] [1,1] vzero)) ; 0.7643305895969366 ; 0.7643305895969366
 
 
 ;; Then the update to v[m,n] :=
@@ -284,7 +285,13 @@
 (update-val vzero [2,2]) ; 36.67345353618055
 
 ;; with twenty cars in each location we're looking at the summed expectation of the two poisson processes
-(update-val vzero [20,20]) ; 81.45105057847046
+(update-val vzero [5,5]) ; 68.58979996482606
+(update-val vzero [10,10]) ; 72.51945127880626
+(update-val vzero [20,20]) ; 70.00542341310053
+(update-val vzero [100,100]) ; 70.0000000000002
+
+;;;;;;;;;; HANG ON HOW CAN this be larger than 70?
+
 
 (* 10 (+ one-hire two-hire)) ; 70
 
