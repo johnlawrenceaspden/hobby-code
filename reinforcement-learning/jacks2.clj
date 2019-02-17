@@ -524,4 +524,24 @@
 ;; OK, time to be a bit more grown up about all this
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  
+(Math/exp -1) ; 0.36787944117144233 
+(capped-poisson 1 5 0) ; 0.36787944117144233
+(ps (map * (repeat (Math/exp 1))
+         (map #(capped-poisson 1 5 %) (range 6)))) ; (1.0 1.0 0.5 0.17 0.04 0.01)
+
+(map #(capped-poisson one-return 5 %) [-1 0 1 2 3 4 5 6]) ; (0 0.049787068367863944 0.14936120510359183 0.22404180765538775 0.22404180765538775 0.16803135574154082 0.18473675547622792 0)
+
+(defn poneadowntob [a b] (capped-poisson one-hire a b))
+(defn ptwoadowntob [a b] (capped-poisson two-hire a b))
+(defn ponebuptoc   [b c] (capped-poisson one-return (- max-cars b) (- max-cars c)))
+
+
+(map #(poneadowntob 5 %) [-1 0 1 2 3 4 5 6]) ; (0 0.049787068367863944 0.14936120510359183 0.22404180765538775 0.22404180765538775 0.16803135574154082 0.18473675547622792 0)
+(map #(ponebuptoc   % 5) [-1 0 1 2 3 4 5 6]) ; (0.049787068367863944 0.049787068367863944 0.049787068367863944 0.049787068367863944 0.049787068367863944 0.049787068367863944 1.0 0)
+
+(defn poneatoc [a c]
+  (for [b (range (inc a))]
+    (* (poneadowntob a b) (ponebuptoc b c))))
+
+(poneatoc 5 5) ; (0.0)
+
