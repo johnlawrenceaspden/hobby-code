@@ -261,7 +261,7 @@
     (+ (* (abs action) 2) (expected-reward-from-state [a,b]))))
 
 
-(defn nupdate-val [v [m,n] action]
+(defn update-val [v [m,n] action]
   (+ (expected-reward [m,n] action)
      (* gamma
         (reduce + (for [s states] (* (ptransition [m,n] s action) (v s)))))))
@@ -269,10 +269,10 @@
 
 (def vzero (into {} (for [i car-range j car-range] [[i,j] 0])))
 
-(nupdate-val vzero [0,0] 0)
-(nupdate-val vzero [1,0] 0)
+(update-val vzero [0,0] 0)
+(update-val vzero [1,0] 0)
 
-(nupdate-val vzero [0,1] 0) ; 9.50212931632136
+(update-val vzero [0,1] 0) ; 9.50212931632136
 
 (expected-reward [0,1] 0) ; 9.816843611112658 ; 9.50212931632136 ; 9.50212931632136 ; 9.50212931632136
 (capped-poisson 4 1 1) ; 0.9816843611112658 ; 0.9816843611112658 ; 0.9816843611112658
@@ -283,47 +283,47 @@
 
 
 
-(def nvone (into {} (for [i car-range j car-range] [[i,j] (nupdate-val vzero [i,j] 0)])))
+(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val vzero [i,j] 0)])))
 
-(def nvtwo (into {} (for [i car-range j car-range] [[i,j] (nupdate-val nvone [i,j] 0)])))
+(def vtwo (into {} (for [i car-range j car-range] [[i,j] (update-val vone [i,j] 0)])))
 
 
 
-(ps 1000 (sort nvone)) ; ([[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55]) ; ([[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55])
+(ps 1000 (sort vone)) ; ([[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55]) ; ([[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55])
 
-(ps 1000 (sort nvtwo)) ; ([[0 0] 33.94] [[0 1] 43.87] [[0 2] 53.52] [[0 3] 62.51] [[0 4] 70.43] [[0 5] 76.98] [[1 0] 43.62] [[1 1] 53.56] [[1 2] 63.21] [[1 3] 72.2] [[1 4] 80.12] [[1 5] 86.66] [[2 0] 52.29] [[2 1] 62.22] [[2 2] 71.87] [[2 3] 80.86] [[2 4] 88.78] [[2 5] 95.32] [[3 0] 59.26] [[3 1] 69.2] [[3 2] 78.85] [[3 3] 87.84] [[3 4] 95.76] [[3 5] 102.3] [[4 0] 64.29] [[4 1] 74.22] [[4 2] 83.87] [[4 3] 92.87] [[4 4] 100.79] [[4 5] 107.33] [[5 0] 67.56] [[5 1] 77.5] [[5 2] 87.15] [[5 3] 96.14] [[5 4] 104.06] [[5 5] 110.6])
+(ps 1000 (sort vtwo)) ; ([[0 0] 33.94] [[0 1] 43.87] [[0 2] 53.52] [[0 3] 62.51] [[0 4] 70.43] [[0 5] 76.98] [[1 0] 43.62] [[1 1] 53.56] [[1 2] 63.21] [[1 3] 72.2] [[1 4] 80.12] [[1 5] 86.66] [[2 0] 52.29] [[2 1] 62.22] [[2 2] 71.87] [[2 3] 80.86] [[2 4] 88.78] [[2 5] 95.32] [[3 0] 59.26] [[3 1] 69.2] [[3 2] 78.85] [[3 3] 87.84] [[3 4] 95.76] [[3 5] 102.3] [[4 0] 64.29] [[4 1] 74.22] [[4 2] 83.87] [[4 3] 92.87] [[4 4] 100.79] [[4 5] 107.33] [[5 0] 67.56] [[5 1] 77.5] [[5 2] 87.15] [[5 3] 96.14] [[5 4] 104.06] [[5 5] 110.6])
 
 
 (println "time for longest update operation")
-(time (nupdate-val vzero [max-cars,max-cars] 0)) ; 64.55075249295302 ; 64.55075249295302 ; 64.55075249295302
+(time (update-val vzero [max-cars,max-cars] 0)) ; 64.55075249295302 ; 64.55075249295302 ; 64.55075249295302
 
 
-(defn jacobi [v] (into {} (for [s states] [s (nupdate-val v s 0)])))
+(defn jacobi [v] (into {} (for [s states] [s (update-val v s 0)])))
 
 (jacobi vzero)
 
-(def inplace (fn [v [[i,j] action]] (assoc v [i,j] (nupdate-val v [i,j] action))))
+(def inplace (fn [v [[i,j] action]] (assoc v [i,j] (update-val v [i,j] action))))
 
-(nupdate-val vzero [1,1] 0) ; 19.318972927434018
+(update-val vzero [1,1] 0) ; 19.318972927434018
 ( (inplace vzero [[1,1] 0]) [1,1]) ; 19.318972927434018
 
 (defn gauss-seidel [v] (reduce inplace v (for [s states][s 0])))
 
 (gauss-seidel vzero)
 
-(defn nover-relax [v [i,j] action omega]
+(defn over-relax [v [i,j] action omega]
   (let [a (v [i,j])
-        d (- (nupdate-val v [i,j] action)  a)]
+        d (- (update-val v [i,j] action)  a)]
     (+ a (* omega d))))
 
-(nover-relax vzero [1,1] 0 2.0) ; 38.637945854868036 
-(nover-relax vzero [max-cars,max-cars] 0 2.0) ; 139.99999995290918
+(over-relax vzero [1,1] 0 2.0) ; 38.637945854868036 
+(over-relax vzero [max-cars,max-cars] 0 2.0) ; 139.99999995290918
 
-(defn nsor-inplace[omega]
-  (fn [v [[i,j] action]] (assoc v [i,j] (nover-relax v [i,j] action omega))))
+(defn sor-inplace[omega]
+  (fn [v [[i,j] action]] (assoc v [i,j] (over-relax v [i,j] action omega))))
 
 (print "max-cars " max-cars "time for one iteration of SOR")
-(time (reduce (nsor-inplace 2.0) vzero (for [s states][s 0]))) 
+(time (reduce (sor-inplace 2.0) vzero (for [s states][s 0]))) 
 
 ;; timings with direct calculation gives 50x speedup and n^5 turns into n^3.5
 
@@ -369,14 +369,14 @@
 ;; Oh God I wrote an n^5 algorithm, actually why isn't it n^6 just to calculate the matrix?
 
 
-(defn nsor[omega] (fn [v] (println ".") (reduce (nsor-inplace omega) v (for [s states][s 0]))))
+(defn sor[omega] (fn [v] (println ".") (reduce (sor-inplace omega) v (for [s states][s 0]))))
 
 
-(def nvseries-sor  (iterate (nsor 1.5) vzero))
+(def vseries-sor  (iterate (sor 1.5) vzero))
 
-(ps 20 (for [v nvseries-sor] (v [3,3]))) ; (0 111.65 229.16 322.13 379.46 415.27 436.64 449.97 457.66 461.34 462.76 463.38 463.7 463.83 463.89 463.92 463.94 463.94 463.95 463.95)
+(ps 20 (for [v vseries-sor] (v [3,3]))) ; (0 111.65 229.16 322.13 379.46 415.27 436.64 449.97 457.66 461.34 462.76 463.38 463.7 463.83 463.89 463.92 463.94 463.94 463.95 463.95)
 
-(def final-sor (nth nvseries-sor 20))
+(def final-sor (nth vseries-sor 20))
 
 (def testm (jacobi final-sor))
 (def lastmove (apply max (for [s states] (- (testm s) (final-sor s)))))
