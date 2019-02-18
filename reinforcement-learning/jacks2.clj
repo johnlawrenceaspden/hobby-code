@@ -569,25 +569,27 @@
 
 (map #(capped-poisson one-return 5 %) [0 1 2 3 4 5 6 7]) ; (0.049787068367863944 0.14936120510359183 0.22404180765538775 0.22404180765538775 0.16803135574154082 0.18473675547622792 0)
 
-(defn poneadowntob [a b] (assert (<= 0 b a max-cars)) (capped-poisson one-hire a b))
-(defn ptwoadowntob [a b] (assert (<= 0 b a max-cars)) (capped-poisson two-hire a b))
+(defn poneadowntob [a b] (assert (<= 0 b a max-cars)) (capped-poisson one-hire a (- a b)))
+(defn ptwoadowntob [a b] (assert (<= 0 b a max-cars)) (capped-poisson two-hire a (- a b)))
 (defn ponebuptoc   [b c] (assert (<= 0 b c max-cars)) (capped-poisson one-return (- max-cars b) (- c b)))
 (defn ptwobuptoc   [b c] (assert (<= 0 b c max-cars)) (capped-poisson two-return (- max-cars b) (- c b)))
 
+(defn pathsoneatoc [a c]
+  (for [b (range (inc (min a c)))]
+    (* (poneadowntob a b) (ponebuptoc b c))))
 
-(map #(poneadowntob 5 %) [0 1 2 3 4 5]) ; (0.049787068367863944 0.14936120510359183 0.22404180765538775 0.22404180765538775 0.16803135574154082 0.18473675547622792)
-(map #(ponebuptoc   % 5) [0 1 2 3 4 5]) ; (0.18473675547622792 0.35276811121776874 0.5768099188731565 0.8008517265285442 0.950212931632136 1.0)
+(defn pathstwoatoc [a c]
+  (for [b (range (inc (min a c)))]
+    (* (ptwoadowntob a b) (ptwobuptoc b c))))
 
-(ponebuptoc 4 5)
+(def poneatoc (memoize (fn [a c] (reduce + (pathsoneatoc a c)))))
+(def ptwoatoc (memoize (fn [a c] (reduce + (pathstwoatoc a c)))))
+
+(ps (partition (inc max-cars) (for [[i j] states] (poneatoc i j))))
+(ps (partition (inc max-cars) (for [[i j] states] (ptwoatoc i j))))
 
 
-(defn poneatoc [a c]
-  (reduce + (for [b (range (inc (min a c)))]
-    (* (poneadowntob a b) (ponebuptoc b c)))))
 
-(poneatoc 5 5) ; 0.7149434996833688
-(poneatoc 5 4) ; 0.13385261753998334
-(poneatoc 1 1) ; 0.05474457272119666 
-(poneatoc 0 0) ; 0.049787068367863944
 
-(for [[i j] states] (poneatoc i j))
+
+
