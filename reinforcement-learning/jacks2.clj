@@ -1,7 +1,7 @@
 ;; Jack's Car Rental from the reinforcement learning book
 
 ;; The maximal number of cars at each site
-(def max-cars 20)
+(def max-cars 5)
 ;; Jack is something of a short-termist
 (def gamma 0.9)
 
@@ -430,13 +430,63 @@ lastmove ; 0.0015506759456229702
 ;; 473.30 483.27 493.14 502.77 512.05 520.92 529.37 537.40 545.04 552.32 559.25 565.84 572.12 578.10 583.79 589.19 594.30 599.12 603.60 607.66 611.20 
 ;; 473.50 483.47 493.34 502.97 512.25 521.12 529.57 537.60 545.24 552.52 559.45 566.05 572.33 578.30 583.99 589.39 594.50 599.32 603.80 607.86 611.40 
 
+max-cars
+
+(for [i (partition (inc max-cars)  (sort final-sor))] (clojure.pprint/cl-format nil "~{[~{[~{~1a~1a~}] ~$~}]~} ~%" i)) ;
+("[[0  0] 382.71][[0  1] 392.67][[0  2] 402.46][[0  3] 411.83][[0  4] 420.46][[0  5] 428.01] \n"
+ "[[1  0] 392.46][[1  1] 402.42][[1  2] 412.20][[1  3] 421.57][[1  4] 430.20][[1  5] 437.76] \n"
+ "[[2  0] 401.36][[2  1] 411.32][[2  2] 421.11][[2  3] 430.48][[2  4] 439.11][[2  5] 446.66] \n"
+ "[[3  0] 408.82][[3  1] 418.78][[3  2] 428.57][[3  3] 437.94][[3  4] 446.57][[3  5] 454.12] \n"
+ "[[4  0] 414.52][[4  1] 424.48][[4  2] 434.27][[4  3] 443.63][[4  4] 452.26][[4  5] 459.82] \n"
+ "[[5  0] 418.49][[5  1] 428.45][[5  2] 438.24][[5  3] 447.61][[5  4] 456.24][[5  5] 463.79] \n")
+
+(update-val final-sor [5,0] 0) ; 418.48893511882125
+(update-val final-sor [5,0] 1) ; 426.478369053209
+
+(reverse (sort (map #(vector (update-val final-sor [5,0] %) %) (irange 5)))) ; ([438.2027232706664 4] [438.01415047390566 5] [436.47803867766083 3] [432.5689443325233 2] [426.478369053209 1] [418.48893511882125 0])
+(reverse (sort (map #(vector (update-val final-sor [3,3] %) %) (irange 5)))) ;  ; ([438.2027232706664 4] [438.01415047390566 5] [436.47803867766083 3] [432.5689443325233 2] [426.478369053209 1] [418.48893511882125 0])
+
+(vector 1 2)
+
+(defn permissible? [[a,b] action]
+  (and (<= 0 (- a action) max-cars)
+       (<= 0 (+ b action) max-cars)))
+
+(permissible? [5,1] -4) ; false
+
+(defn permissible-actions [[a,b]]
+  (for [i (range -5 6) :when (permissible? [a,b] i)] i))
+
+(permissible-actions [3,3]) ; (-2 -1 0 1 2) 
+(permissible-actions [1,5]) ; (-4 -3 -2 -1 0)
+(permissible-actions [5,1]) ; (0 1 2 3 4)
 
 
 
+(reverse (sort (map #(vector (update-val final-sor [3,3] %) %) (permissible-actions [3,3])))) ;  ; ([438.2027232706664 4] [438.01415047390566 5] [436.47803867766083 3] [432.5689443325233 2] [426.478369053209 1] [418.48893511882125 0])
+
+(update-val final-sor [3,3] -2) ; 432.45037447215583
+(update-val final-sor [3,3] -1) ; 436.2655818847663
+(update-val final-sor [3,3] 0) ; 437.93624386102465
+(update-val final-sor [3,3] 1) ; 441.1080341068023
+(update-val final-sor [3,3] 2) ; 441.75959450265043
+
+(defn actions [v [a,b]]
+  (reverse (sort
+            (map #(vector (update-val v [a,b] %) %)
+                 (permissible-actions [a,b])))))
+
+(actions final-sor [3,3]) ; ([441.75959450265043 2] [441.1080341068023 1] [437.93624386102465 0] [436.2655818847663 -1] [432.45037447215583 -2])
+
+(defn optimal-action [v [a,b]]
+  (second(first (actions v [a,b]))))
+
+(optimal-action final-sor [3,3]) ; 2
+(optimal-action final-sor [1,1]) ; 1
+(optimal-action final-sor [0,0]) ; 0
+(optimal-action final-sor [1,5])
+(optimal-action final-sor [5,1])
 
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OK, time to be a bit more grown up about all this
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(into {} (for [s states] [s (optimal-action final-sor s)]))
