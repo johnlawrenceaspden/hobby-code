@@ -26,6 +26,14 @@
 (for [i (irange 3) j (irange 4)] [i,j]) ; ([0 0] [0 1] [0 2] [0 3] [0 4] [1 0] [1 1] [1 2] [1 3] [1 4] [2 0] [2 1] [2 2] [2 3] [2 4] [3 0] [3 1] [3 2] [3 3] [3 4])
 
 
+(defmacro defn-memo
+  "Just like defn, but memoizes the function using clojure.core/memoize"
+  [fn-name & defn-stuff]
+  `(do
+     (defn ~fn-name ~@defn-stuff)
+     (alter-var-root (var ~fn-name) memoize)
+     (var ~fn-name)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Defining the Poisson distribution, and a capped variant for e.g. poiss(l)>=5
@@ -117,6 +125,16 @@
 
 (ps (capped-poisson-distribution 3 10)) ; (0.05 0.15 0.22 0.22 0.17 0.1 0.05 0.02 0.01 0.0 0.0)
 (reduce + (capped-poisson-distribution 3 10)) ; 1.0
+
+
+(defn-memo capped-poisson-expectation [lambda a]
+  (reduce + (map *
+                 (range)
+                 (capped-poisson-distribution lambda a))))
+
+(capped-poisson-distribution 1 10) ; [0.36787944117144233 0.36787944117144233 0.18393972058572117 0.061313240195240384 0.015328310048810096 0.0030656620097620196 5.109436682936699E-4 7.299195261338141E-5 9.123994076672677E-6 1.0137771196302976E-6 1.1142547839959605E-7]
+(ps (for [i (range)] (capped-poisson-expectation 3 i))) ; (0.0 0.95 1.75 2.33 2.68 2.87 2.95 2.98 2.99 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0)
+(ps (for [i (range)] (capped-poisson-expectation 10 i))) ; (0.0 1.0 2.0 3.0 3.99 4.96 5.89 6.76 7.54 8.21 8.75 9.17 9.47 9.68 9.81 9.9 9.95 9.97 9.99 9.99)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -589,7 +607,41 @@
 (ps (partition (inc max-cars) (for [[i j] states] (ptwoatoc i j))))
 
 
+(def ptransition (memoize (fn [[a,b] [c,d] action]
+  (assert (and (>= a action) (<= (+ b action) max-cars)))
+  (let [[a,b] [(- a action) (+ b action)]]
+    (* (poneatoc a c)
+       (ptwoatoc b d))))))
+
+(rand-nth (for [[a b] states [c d] states]
+  (let [maxaction (min a (- max-cars b))
+        minaction (- (min b (- max-cars a)))]
+    (for [action (range minaction (inc maxaction))]
+      [[a b][c d] action (ptransition [a b] [c d] action)]))))
 
 
+(defn-memo expected-reward-from-state [[a,b]]
+  (* 10 (+ (capped-poisson-expectation one-hire a)
+           (capped-poisson-expectation one-hire b))))
+
+(defn-memo expected-reward [[a,b] action]
+  (assert (and (>= a action) (<= (+ b action) max-cars)))
+  (let [[a,b] [(- a action) (+ b action)]]
+    (+ (* (abs action) 2) (expected-reward-from-state [a,b]))))
 
 
+(defn nupdate-val [v [m,n] action]
+  (+ (expected-reward [m,n] action)
+     (* gamma
+        (reduce + (for [s states] (* (ptransition [m,n] s action) (v [m,n])))))))
+
+(nupdate-val vzero [0,0] 0)
+(nupdate-val vzero [1,0] 0)
+(nupdate-val vzero [5,5] 0)
+
+(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val vzero [i,j])])))
+(def nvone (into {} (for [i car-range j car-range] [[i,j] (nupdate-val vzero [i,j] 0)])))
+
+
+(ps 1000 (sort vone))  ; ([[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9]  [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9]  [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55])
+(ps 1000 (sort nvone)) ; ([[0 0] 0.0] [[0 1] 9.5]  [[0 2] 17.51] [[0 3] 23.28] [[0 4] 26.81] [[0 5] 28.65] [[1 0] 9.5] [[1 1] 19.0] [[1 2] 27.01] [[1 3] 32.78] [[1 4] 36.31] [[1 5] 38.16] [[2 0] 17.51] [[2 1] 27.01] [[2 2] 35.02] [[2 3] 40.79] [[2 4] 44.32] [[2 5] 46.16] [[3 0] 23.28] [[3 1] 32.78] [[3 2] 40.79] [[3 3] 46.56] [[3 4] 50.09] [[3 5] 51.93] [[4 0] 26.81] [[4 1] 36.31] [[4 2] 44.32] [[4 3] 50.09] [[4 4] 53.61] [[4 5] 55.46] [[5 0] 28.65] [[5 1] 38.16] [[5 2] 46.16] [[5 3] 51.93] [[5 4] 55.46] [[5 5] 57.31])
