@@ -1,7 +1,9 @@
 ;; Jack's Car Rental from the reinforcement learning book
-(def max-cars 5)
 
-(use 'clojure.tools.trace)
+;; The maximal number of cars at each site
+(def max-cars 5)
+;; Jack is something of a short-termist
+(def gamma 0.9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful utility functions
@@ -108,34 +110,20 @@
 (ps (eseq (partial capped-poisson 4 5))) ; (0.0 0.07 0.37 0.95 1.73 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59 3.59)
 
 
-
-
-
-(capped-poisson 3 5 2) ; 0.22404180765538775
-
-
-(ps (pseq (partial capped-poisson 3 10))) ; (0.05 0.2 0.42 0.65 0.82 0.92 0.97 0.99 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0) 
-(ps (pseq (partial capped-poisson 3 5)))  ; (0.05 0.2 0.42 0.65 0.82 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0)
-(ps (eseq (partial capped-poisson 3 10))) ; (0.0 0.15 0.6 1.27 1.94 2.45 2.75 2.9 2.96 2.99 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0) 
-(ps (eseq (partial capped-poisson 3 5)))  ; (0.0 0.15 0.6 1.27 1.94 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87 2.87)
-
-
-
 (def capped-poisson-distribution
   (memoize (fn [lambda cap]
-             (into [] (for [i (range (inc cap))] (capped-poisson lambda cap i))))))
+             (into [] ))))
 
 
 (ps (capped-poisson-distribution 3 10)) ; (0.05 0.15 0.22 0.22 0.17 0.1 0.05 0.02 0.01 0.0 0.0)
 (reduce + (capped-poisson-distribution 3 10)) ; 1.0
 
 
-(defn-memo capped-poisson-expectation [lambda a]
+(defn-memo capped-poisson-expectation [lambda cap]
   (reduce + (map *
                  (range)
-                 (capped-poisson-distribution lambda a))))
+                 (map (partial capped-poisson lambda cap) (range (inc cap))))))
 
-(capped-poisson-distribution 1 10) ; [0.36787944117144233 0.36787944117144233 0.18393972058572117 0.061313240195240384 0.015328310048810096 0.0030656620097620196 5.109436682936699E-4 7.299195261338141E-5 9.123994076672677E-6 1.0137771196302976E-6 1.1142547839959605E-7]
 (ps (for [i (range)] (capped-poisson-expectation 3 i))) ; (0.0 0.95 1.75 2.33 2.68 2.87 2.95 2.98 2.99 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0)
 (ps (for [i (range)] (capped-poisson-expectation 10 i))) ; (0.0 1.0 2.0 3.0 3.99 4.96 5.89 6.76 7.54 8.21 8.75 9.17 9.47 9.68 9.81 9.9 9.95 9.97 9.99 9.99)
 
@@ -214,6 +202,7 @@
 (+ (* 4 10) (* 4 10) (* (abs 2) -2)) ; $76
 ;; for the day
 
+;; cars often get picked up from two but returned to one
 ;; lambdas are
 ;; location one hire 3
 (def one-hire 3)
@@ -231,353 +220,342 @@
 ;; state [7,2] , action 2 -> payout $56, state [15,2]
 ;; can happen in several ways, can choose any a,b : a+b=6, and have [a,b] rentals and [15-(7-2)+a, 2-(2+2)+b] returns and will get the same transition
 
-;; cars often get picked up from two but returned to one
-(def car-range (range (inc max-cars)))
-
-
-;; Jack is something of a short-termist
-(def gamma 0.9)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Estimate the value function for the policy 'never move any cars'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; So, given the policy of 'never move any cars'
-;; the probability of going from state [5,5] via renting out [2,1] cars, having then [3,4] and then getting back [4,2] and ending up in state [7,6] is:
+;; ;; So, given the policy of 'never move any cars'
+;; ;; the probability of going from state [5,5] via renting out [2,1] cars, having then [3,4] and then getting back [4,2] and ending up in state [7,6] is:
 
-(* 
- (capped-poisson one-hire   5 2)
- (capped-poisson two-hire   5 1)
- (capped-poisson one-return (- max-cars 3) 4)
- (capped-poisson two-return (- max-cars 4) 2)) ; 7.465218009293776E-4
-
-
-
-;; and the associated reward is 
-
-(* 10 (+ 2 1)) ; 30
-
-;; generalising
-;; the probability of going from state [a,b] via renting out [i,j] cars, having then [a-i,b-j] and then getting back [c-(a-i),d-(b-j)] and ending up in state [c,d] is:
-
-(defn ^:dynamic p[[a,b],[i,j],[c,d]]
-  (assert (and (<= (- a i) c)(<= (- b j) d)))
-  (let [[s1,s2][(- a i)(- b j)]]
-    (* 
-     (capped-poisson one-hire   a i)
-     (capped-poisson two-hire   b j)
-     (capped-poisson one-return (- max-cars s1) (- c s1))
-     (capped-poisson two-return (- max-cars s2) (- d s2))))) ; #'user/p
-
-'(p [1,0] [0,0] [0,0])
-
-(p [1,1],[2,1],[7,6]) ; 0.0 ; 0.0
-(p [1,1],[1,1],[1,1]) ; 0.03771131267669762 
-(p [1,1],[1,0],[1,1]) ; 3.517967752000541E-4
-(p [1,1],[1,0],[1,3]) ; 7.035935504001082E-4
-(p [1,1],[1,0],[1,4]) ; 4.690623669334054E-4
-
-(p [max-cars,max-cars],[max-cars,max-cars],[max-cars,max-cars]) ; 2.506337820724936E-5
-(p [max-cars,max-cars],[0,0],[max-cars,max-cars]) ; 9.118819655545161E-4
-
-(capped-poisson one-return 0 0) ; 1.0
+;; (* 
+;;  (capped-poisson one-hire   5 2)
+;;  (capped-poisson two-hire   5 1)
+;;  (capped-poisson one-return (- max-cars 3) 4)
+;;  (capped-poisson two-return (- max-cars 4) 2)) ; 7.465218009293776E-4
 
 
 
-(defn ^:dynamic r[[a,b],[i,j],[c,d]]
-  (* 10 (+ i j)))
+;; ;; and the associated reward is 
+
+;; (* 10 (+ 2 1)) ; 30
+
+;; ;; generalising
+;; ;; the probability of going from state [a,b] via renting out [i,j] cars, having then [a-i,b-j] and then getting back [c-(a-i),d-(b-j)] and ending up in state [c,d] is:
+
+;; (defn ^:dynamic p[[a,b],[i,j],[c,d]]
+;;   (assert (and (<= (- a i) c)(<= (- b j) d)))
+;;   (let [[s1,s2][(- a i)(- b j)]]
+;;     (* 
+;;      (capped-poisson one-hire   a i)
+;;      (capped-poisson two-hire   b j)
+;;      (capped-poisson one-return (- max-cars s1) (- c s1))
+;;      (capped-poisson two-return (- max-cars s2) (- d s2))))) ; #'user/p
+
+;; '(p [1,0] [0,0] [0,0])
+
+;; (p [1,1],[2,1],[7,6]) ; 0.0 ; 0.0
+;; (p [1,1],[1,1],[1,1]) ; 0.03771131267669762 
+;; (p [1,1],[1,0],[1,1]) ; 3.517967752000541E-4
+;; (p [1,1],[1,0],[1,3]) ; 7.035935504001082E-4
+;; (p [1,1],[1,0],[1,4]) ; 4.690623669334054E-4
+
+;; (p [max-cars,max-cars],[max-cars,max-cars],[max-cars,max-cars]) ; 2.506337820724936E-5
+;; (p [max-cars,max-cars],[0,0],[max-cars,max-cars]) ; 9.118819655545161E-4
+
+;; (capped-poisson one-return 0 0) ; 1.0
+
+
+
+;; (defn ^:dynamic r[[a,b],[i,j],[c,d]]
+;;   (* 10 (+ i j)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; If we start with an initial value function zero
+;; ;; If we start with an initial value function zero
+;; (def car-range (range (inc max-cars)))
 
-(def vzero (into {} (for [i car-range j car-range] [[i,j] 0])))
-(vzero [0,0]) ; 0
-(vzero [max-cars,max-cars]) ; 0
-(vzero [(inc max-cars),0]) ; nil
+;; (def vzero (into {} (for [i car-range j car-range] [[i,j] 0])))
+;; (vzero [0,0]) ; 0
+;; (vzero [max-cars,max-cars]) ; 0
+;; (vzero [(inc max-cars),0]) ; nil
 
-(defn ^:dynamic expected-reward-fragment [[m,n] [i,j] [c,d] v]
-  (assert (and (<= (- m i) c)(<= (- n j) d)))
-  (* (p [m,n] [i,j] [c,d])
-     (+ (r [m,n] [i,j] [c,d]) (* gamma (v [c,d])))))
+;; (defn ^:dynamic expected-reward-fragment [[m,n] [i,j] [c,d] v]
+;;   (assert (and (<= (- m i) c)(<= (- n j) d)))
+;;   (* (p [m,n] [i,j] [c,d])
+;;      (+ (r [m,n] [i,j] [c,d]) (* gamma (v [c,d])))))
 
-'(expected-reward-fragment [1,0] [0,0] [0,0] vzero)
+;; '(expected-reward-fragment [1,0] [0,0] [0,0] vzero)
 
-(expected-reward-fragment [0,0] [1,1] [1,1] vzero) ; 0.0
-(expected-reward-fragment [1,1] [1,1] [1,2] vzero) ; 0.7542262535339523
-(expected-reward-fragment [1,1] [1,1] [2,2] vzero) ; 1.1313393803009288
-(expected-reward-fragment [1,1] [1,1] [3,3] vzero) ; 3.4793082637975914
+;; (expected-reward-fragment [0,0] [1,1] [1,1] vzero) ; 0.0
+;; (expected-reward-fragment [1,1] [1,1] [1,2] vzero) ; 0.7542262535339523
+;; (expected-reward-fragment [1,1] [1,1] [2,2] vzero) ; 1.1313393803009288
+;; (expected-reward-fragment [1,1] [1,1] [3,3] vzero) ; 3.4793082637975914
 
-'(dotrace [expected-reward-fragment r p] (expected-reward-fragment [1,1] [1,1] [1,1] vzero)) 
+;; '(dotrace [expected-reward-fragment r p] (expected-reward-fragment [1,1] [1,1] [1,1] vzero)) 
 
 
-(defn ^:dynamic expected-contributions-from-state [[m,n] [c,d] v]
-  (for [ i (irange m) j (irange n) :when (and (<= (- m i) c)(<= (- n j) d))]
-    (expected-reward-fragment [m,n] [i,j] [c,d] v)))
+;; (defn ^:dynamic expected-contributions-from-state [[m,n] [c,d] v]
+;;   (for [ i (irange m) j (irange n) :when (and (<= (- m i) c)(<= (- n j) d))]
+;;     (expected-reward-fragment [m,n] [i,j] [c,d] v)))
 
-(expected-contributions-from-state [1,0] [0,0] vzero)
+;; (expected-contributions-from-state [1,0] [0,0] vzero)
 
 
 
 
 
-(expected-contributions-from-state [0,0] [1,1] vzero) ; (0.0) ;  ; (0.0)
-(expected-contributions-from-state [1,0] [1,1] vzero) ; (0.0 0.38414906227097734) ; (0.0 0.38414906227097734)
-'(expected-contributions-from-state [2,0] [1,1] vzero) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
-(expected-contributions-from-state [1,1] [1,1] vzero) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
+;; (expected-contributions-from-state [0,0] [1,1] vzero) ; (0.0) ;  ; (0.0)
+;; (expected-contributions-from-state [1,0] [1,1] vzero) ; (0.0 0.38414906227097734) ; (0.0 0.38414906227097734)
+;; '(expected-contributions-from-state [2,0] [1,1] vzero) ; (0.0 0.02012775767415071 0.6475315784970503) ; (0.0 0.02012775767415071 0.6475315784970503)
+;; (expected-contributions-from-state [1,1] [1,1] vzero) ; (0.0 0.006586368310983673 0.0035179677520005407 0.7542262535339523)
 
 
 
-(count (expected-contributions-from-state [1,1] [1,1] vzero)) ; 4
-(count (expected-contributions-from-state [max-cars,max-cars] [max-cars,max-cars] vzero)) ; 36
+;; (count (expected-contributions-from-state [1,1] [1,1] vzero)) ; 4
+;; (count (expected-contributions-from-state [max-cars,max-cars] [max-cars,max-cars] vzero)) ; 36
 
-;; (count (expected-contributions-from-state [10,10] [10,10] vzero)) ; 121
-;; (count (expected-contributions-from-state [20,20] [20,20] vzero)) ; 441
-;; hmm, we need to do something about this, calculate it once and for all
+;; ;; (count (expected-contributions-from-state [10,10] [10,10] vzero)) ; 121
+;; ;; (count (expected-contributions-from-state [20,20] [20,20] vzero)) ; 441
+;; ;; hmm, we need to do something about this, calculate it once and for all
 
 
-(defn ^:dynamic expected-contribution-from-state [[m,n],[c,d] v]
-  (reduce +
-          (expected-contributions-from-state [m,n] [c,d] v))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
+;; (defn ^:dynamic expected-contribution-from-state [[m,n],[c,d] v]
+;;   (reduce +
+;;           (expected-contributions-from-state [m,n] [c,d] v))) ; #'user/expected-contribution-from-state ; #'user/expected-contribution-from-state
 
-'(expected-contribution-from-state [2,0] [1,1] vzero) ; 0.6676593361712011 ; 0.6676593361712011
-(expected-contribution-from-state [0,0] [1,1] vzero) ; 0.0 ; 0.0
-'(dotrace [expected-reward-fragment r p](expected-contribution-from-state [1,1] [1,1] vzero)) ; 0.7643305895969366 ; 0.7643305895969366
+;; '(expected-contribution-from-state [2,0] [1,1] vzero) ; 0.6676593361712011 ; 0.6676593361712011
+;; (expected-contribution-from-state [0,0] [1,1] vzero) ; 0.0 ; 0.0
+;; '(dotrace [expected-reward-fragment r p](expected-contribution-from-state [1,1] [1,1] vzero)) ; 0.7643305895969366 ; 0.7643305895969366
 
 
 
 
-;; Then the update to v[m,n] :=
-(defn update-val [v [m,n]]
-  (reduce + 
-          (for [c car-range d car-range]
-            (expected-contribution-from-state [m,n] [c,d] v))))
+;; ;; Then the update to v[m,n] :=
+;; (defn update-val [v [m,n]]
+;;   (reduce + 
+;;           (for [c car-range d car-range]
+;;             (expected-contribution-from-state [m,n] [c,d] v))))
 
-;; If you got no cars, you can't make anything:
-(update-val vzero [0,0]) ;  ; 0.0 ;  ; 0.0
-;; If you got one car in location one then you'll rent it out for $10 with probability
-(capped-poisson one-hire 1 1) ; 0.950212931632136
-(capped-poisson one-hire 1 0) ; 0.049787068367863944
+;; ;; If you got no cars, you can't make anything:
+;; (update-val vzero [0,0]) ;  ; 0.0 ;  ; 0.0
+;; ;; If you got one car in location one then you'll rent it out for $10 with probability
+;; (capped-poisson one-hire 1 1) ; 0.950212931632136
+;; (capped-poisson one-hire 1 0) ; 0.049787068367863944
 
-(update-val vzero [1,0]) ; 9.502129316321358
+;; (update-val vzero [1,0]) ; 9.502129316321358
 
 
 
 
-(capped-poisson two-hire 1 1) ; 0.9816843611112658 
-(capped-poisson two-hire 1 0) ; 0.01831563888873418
-(update-val vzero [0,1]) ; 9.81684361111267
+;; (capped-poisson two-hire 1 1) ; 0.9816843611112658 
+;; (capped-poisson two-hire 1 0) ; 0.01831563888873418
+;; (update-val vzero [0,1]) ; 9.81684361111267
 
-(update-val vzero [2,0]) ; 17.51064658160679
-(update-val vzero [2,2]) ; 36.41170824828273
+;; (update-val vzero [2,0]) ; 17.51064658160679
+;; (update-val vzero [2,2]) ; 36.41170824828273
 
-;; with twenty cars in each location we're looking at the summed expectation of the two poisson processes
-(update-val vzero [5,5]) ; 64.5507524929531
-(update-val vzero [10,10]) ; 69.95484595133537
-(update-val vzero [20,20]) ; 69.99999997645457
+;; ;; with twenty cars in each location we're looking at the summed expectation of the two poisson processes
+;; (update-val vzero [5,5]) ; 64.5507524929531
+;; (update-val vzero [10,10]) ; 69.95484595133537
+;; (update-val vzero [20,20]) ; 69.99999997645457
 
 
 
+;; (update-val vzero [1,1]) ; 19.318972927434007
 
-(* 10 (+ one-hire two-hire)) ; 70
+;; (+  (capped-poisson-expectation one-hire 1)(capped-poisson-expectation two-hire 1)) ; 1.9318972927434017
 
-(+ (reduce + (map * (range) (capped-poisson-distribution one-hire 20)))
-   (reduce + (map * (range) (capped-poisson-distribution two-hire 20)))) ; 6.9999999976454585
+;; (reduce + (for [c car-range d car-range]
+;;             (expected-contribution-from-state [1,1] [c,d] vzero))) ; 19.318972927434007
 
-(update-val vzero [1,1]) ; 19.318972927434007
-(+ (reduce + (map * (range) (capped-poisson-distribution one-hire 1)))
-   (reduce + (map * (range) (capped-poisson-distribution two-hire 1)))) ; 1.9318972927434017
+;; (println "time for longest update operation")
+;; (time (update-val vzero [max-cars,max-cars])) ; 69.99999997645457
 
-(reduce + (for [c car-range d car-range]
-            (expected-contribution-from-state [1,1] [c,d] vzero))) ; 19.318972927434007
+;; ;; Oh dear
 
-(println "time for longest update operation")
-(time (update-val vzero [max-cars,max-cars])) ; 69.99999997645457
 
-;; Oh dear
+;; (count (for [c car-range d car-range] (expected-contribution-from-state [1,1] [c,d] vzero))) ; 441
+;; (count (for [c car-range d car-range] (expected-contribution-from-state [2,2] [c,d] vzero))) ; 441
+;; (count (for [c car-range d car-range] (expected-contribution-from-state [20,20] [c,d] vzero))) ; 441
 
 
-(count (for [c car-range d car-range] (expected-contribution-from-state [1,1] [c,d] vzero))) ; 441
-(count (for [c car-range d car-range] (expected-contribution-from-state [2,2] [c,d] vzero))) ; 441
-(count (for [c car-range d car-range] (expected-contribution-from-state [20,20] [c,d] vzero))) ; 441
+;; '(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val vzero [i,j])])))
+;; '(vone [0,0]) ; 0.0 ; 0.0
+;; '(vone [1,1]) ; 19.33886081345325 ; 19.33886081345325
+;; '(vone [0,1]) ; 9.81684361111267 ; 9.81684361111267
 
+;; '(ps 1000 (sort vone))
+;; [[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[0 6] 38.05] [[0 7] 39.15] [[0 8] 39.66] [[0 9] 39.88] [[0 10] 39.96]
+;; [[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[1 6] 47.55] [[1 7] 48.65] [[1 8] 49.17] [[1 9] 49.38] [[1 10] 49.46]
+;; [[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[2 6] 55.56] [[2 7] 56.66] [[2 8] 57.17] [[2 9] 57.39] [[2 10] 57.47]
+;; [[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[3 6] 61.32] [[3 7] 62.43] [[3 8] 62.94] [[3 9] 63.16] [[3 10] 63.24]
+;; [[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[4 6] 64.85] [[4 7] 65.96] [[4 8] 66.47] [[4 9] 66.68] [[4 10] 66.77]
+;; [[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55] [[5 6] 66.7] [[5 7] 67.81] [[5 8] 68.32] [[5 9] 68.53] [[5 10] 68.61]
+;; [[6 0] 29.49] [[6 1] 39.31] [[6 2] 48.39] [[6 3] 56.01] [[6 4] 61.68] [[6 5] 65.39] [[6 6] 67.54] [[6 7] 68.65] [[6 8] 69.16] [[6 9] 69.37] [[6 10] 69.45]
+;; [[7 0] 29.83] [[7 1] 39.64] [[7 2] 48.73] [[7 3] 56.35] [[7 4] 62.01] [[7 5] 65.73] [[7 6] 67.87] [[7 7] 68.98] [[7 8] 69.49] [[7 9] 69.71] [[7 10] 69.79]
+;; [[8 0] 29.95] [[8 1] 39.76] [[8 2] 48.85] [[8 3] 56.47] [[8 4] 62.13] [[8 5] 65.84] [[8 6] 67.99] [[8 7] 69.1] [[8 8] 69.61] [[8 9] 69.82] [[8 10] 69.91]
 
-'(def vone (into {} (for [i car-range j car-range] [[i,j] (update-val vzero [i,j])])))
-'(vone [0,0]) ; 0.0 ; 0.0
-'(vone [1,1]) ; 19.33886081345325 ; 19.33886081345325
-'(vone [0,1]) ; 9.81684361111267 ; 9.81684361111267
+;; ;; (def vtwo (into {} (for [i car-range j car-range] [[i,j] (update-val vone [i,j])])))
+;; ;; (ps (sort vtwo))
 
-'(ps 1000 (sort vone))
-[[0 0] 0.0] [[0 1] 9.82] [[0 2] 18.9] [[0 3] 26.52] [[0 4] 32.19] [[0 5] 35.9] [[0 6] 38.05] [[0 7] 39.15] [[0 8] 39.66] [[0 9] 39.88] [[0 10] 39.96]
-[[1 0] 9.5] [[1 1] 19.32] [[1 2] 28.4] [[1 3] 36.02] [[1 4] 41.69] [[1 5] 45.4] [[1 6] 47.55] [[1 7] 48.65] [[1 8] 49.17] [[1 9] 49.38] [[1 10] 49.46]
-[[2 0] 17.51] [[2 1] 27.33] [[2 2] 36.41] [[2 3] 44.03] [[2 4] 49.7] [[2 5] 53.41] [[2 6] 55.56] [[2 7] 56.66] [[2 8] 57.17] [[2 9] 57.39] [[2 10] 57.47]
-[[3 0] 23.28] [[3 1] 33.1] [[3 2] 42.18] [[3 3] 49.8] [[3 4] 55.46] [[3 5] 59.18] [[3 6] 61.32] [[3 7] 62.43] [[3 8] 62.94] [[3 9] 63.16] [[3 10] 63.24]
-[[4 0] 26.81] [[4 1] 36.62] [[4 2] 45.71] [[4 3] 53.33] [[4 4] 58.99] [[4 5] 62.7] [[4 6] 64.85] [[4 7] 65.96] [[4 8] 66.47] [[4 9] 66.68] [[4 10] 66.77]
-[[5 0] 28.65] [[5 1] 38.47] [[5 2] 47.55] [[5 3] 55.17] [[5 4] 60.84] [[5 5] 64.55] [[5 6] 66.7] [[5 7] 67.81] [[5 8] 68.32] [[5 9] 68.53] [[5 10] 68.61]
-[[6 0] 29.49] [[6 1] 39.31] [[6 2] 48.39] [[6 3] 56.01] [[6 4] 61.68] [[6 5] 65.39] [[6 6] 67.54] [[6 7] 68.65] [[6 8] 69.16] [[6 9] 69.37] [[6 10] 69.45]
-[[7 0] 29.83] [[7 1] 39.64] [[7 2] 48.73] [[7 3] 56.35] [[7 4] 62.01] [[7 5] 65.73] [[7 6] 67.87] [[7 7] 68.98] [[7 8] 69.49] [[7 9] 69.71] [[7 10] 69.79]
-[[8 0] 29.95] [[8 1] 39.76] [[8 2] 48.85] [[8 3] 56.47] [[8 4] 62.13] [[8 5] 65.84] [[8 6] 67.99] [[8 7] 69.1] [[8 8] 69.61] [[8 9] 69.82] [[8 10] 69.91]
+;; ;; (def vthree (into {} (for [i car-range j car-range] [[i,j] (update-val vtwo [i,j])]))) ; #'user/vthree
+;; ;; (ps (sort vtwo)) ; ([[0 0] 31.99] [[0 1] 41.92] [[0 2] 51.62] [[0 3] 60.78] [[1 0] 41.64] [[1 1] 51.59] [[1 2] 61.35] [[1 3] 70.64] [[2 0] 50.18] [[2 1] 60.18] [[2 2] 70.01] [[2 3] 79.44] [[3 0] 56.93] [[3 1] 66.98] [[3 2] 76.9] [[3 3] 86.45])
 
-;; (def vtwo (into {} (for [i car-range j car-range] [[i,j] (update-val vone [i,j])])))
-;; (ps (sort vtwo))
+;; (defn jacobi [v] (into {} (for [i car-range j car-range] [[i,j] (update-val v [i,j])])))
 
-;; (def vthree (into {} (for [i car-range j car-range] [[i,j] (update-val vtwo [i,j])]))) ; #'user/vthree
-;; (ps (sort vtwo)) ; ([[0 0] 31.99] [[0 1] 41.92] [[0 2] 51.62] [[0 3] 60.78] [[1 0] 41.64] [[1 1] 51.59] [[1 2] 61.35] [[1 3] 70.64] [[2 0] 50.18] [[2 1] 60.18] [[2 2] 70.01] [[2 3] 79.44] [[3 0] 56.93] [[3 1] 66.98] [[3 2] 76.9] [[3 3] 86.45])
+;; ;; (def vseries (take 10 (iterate jacobi vzero)))
+;; ;; (ps vseries)
 
-(defn jacobi [v] (into {} (for [i car-range j car-range] [[i,j] (update-val v [i,j])])))
 
-;; (def vseries (take 10 (iterate jacobi vzero)))
-;; (ps vseries)
+;; (def inplace (fn [v [i,j]] (assoc v [i,j] (update-val v [i,j]))))
 
+;; ;; (inplace vzero [1,1]) ; {[2 2] 0, [0 0] 0, [1 0] 0, [2 3] 0, [3 3] 0, [1 1] 19.338860813453262, [3 0] 0, [1 3] 0, [0 3] 0, [0 2] 0, [2 0] 0, [3 1] 0, [2 1] 0, [1 2] 0, [3 2] 0, [0 1] 0} 
 
-(def inplace (fn [v [i,j]] (assoc v [i,j] (update-val v [i,j]))))
+;; (def states (for [i car-range j car-range] [i,j]))
 
-;; (inplace vzero [1,1]) ; {[2 2] 0, [0 0] 0, [1 0] 0, [2 3] 0, [3 3] 0, [1 1] 19.338860813453262, [3 0] 0, [1 3] 0, [0 3] 0, [0 2] 0, [2 0] 0, [3 1] 0, [2 1] 0, [1 2] 0, [3 2] 0, [0 1] 0} 
+;; (defn gauss-seidel [v] (reduce inplace v states))
+;; ;; (def vseries-gs (take 10 (iterate gauss-seidel vzero)))
+;; ;; (ps vseries-gs) ;
+;; ;; '({[2 2] 0, [0 0] 0, [1 0] 0, [2 3] 0, [3 3] 0, [1 1] 0, [3 0] 0, [1 3] 0, [0 3] 0, [0 2] 0, [2 0] 0, [3 1] 0, [2 1] 0, [1 2] 0, [3 2] 0, [0 1] 0}
+;; ;;  {[2 2] 42.61, [0 0] 0.0, [1 0] 10.22, [2 3] 52.73, [3 3] 79.79, [1 1] 20.24, [3 0] 32.54, [1 3] 39.07, [0 3] 27.11, [0 2] 19.06, [2 0] 21.35, [3 1] 45.27, [2 1] 31.77, [1 2] 30.13, [3 2] 62.05, [0 1] 9.82}
+;; ;;  {[2 2] 93.13, [0 0] 43.3, [1 0] 55.07, [2 3] 105.44, [3 3] 134.85, [1 1] 65.87, [3 0] 83.45, [1 3] 88.78, [0 3] 74.3, [0 2] 64.02, [2 0] 69.43, [3 1] 97.91, [2 1] 80.68, [1 2] 77.42, [3 2] 116.65, [0 1] 53.55}
+;; ;;  {[2 2] 140.3, [0 0] 89.74, [1 0] 101.68, [2 3] 153.18, [3 3] 180.31, [1 1] 112.58, [3 0] 130.4, [1 3] 136.57, [0 3] 121.94, [0 2] 110.91, [2 0] 116.33, [3 1] 144.6, [2 1] 127.63, [1 2] 124.49, [3 2] 162.68, [0 1] 100.09}
+;; ;;  {[2 2] 181.4, [0 0] 131.67, [1 0] 143.43, [2 3] 194.54, [3 3] 219.14, [1 1] 154.3, [3 0] 171.02, [1 3] 178.71, [0 3] 164.54, [0 2] 153.04, [2 0] 157.58, [3 1] 184.73, [2 1] 168.78, [1 2] 166.27, [3 2] 201.97, [0 1] 142.04}
+;; ;;  {[2 2] 216.75, [0 0] 168.03, [1 0] 179.56, [2 3] 230.07, [3 3] 252.44, [1 1] 190.37, [3 0] 205.88, [1 3] 215.05, [0 3] 201.42, [0 2] 189.54, [2 0] 193.1, [3 1] 219.14, [2 1] 204.21, [1 2] 202.34, [3 2] 235.65, [0 1] 178.41}
+;; ;;  {[2 2] 247.07, [0 0] 199.28, [1 0] 210.59, [2 3] 260.55, [3 3] 281.01, [1 1] 221.35, [3 0] 235.78, [1 3] 246.25, [0 3] 233.1, [0 2] 220.9, [2 0] 223.59, [3 1] 248.65, [2 1] 234.61, [1 2] 233.32, [3 2] 264.54, [0 1] 209.67}
+;; ;;  {[2 2] 273.09, [0 0] 226.1, [1 0] 237.22, [2 3] 286.7, [3 3] 305.53, [1 1] 247.94, [3 0] 261.44, [1 3] 273.02, [0 3] 260.29, [0 2] 247.81, [2 0] 249.75, [3 1] 273.97, [2 1] 260.69, [1 2] 259.9, [3 2] 289.32, [0 1] 236.49}
+;; ;;  {[2 2] 295.41, [0 0] 249.11, [1 0] 260.07, [2 3] 309.13, [3 3] 326.56, [1 1] 270.75, [3 0] 283.45, [1 3] 295.99, [0 3] 283.62, [0 2] 270.9, [2 0] 272.19, [3 1] 295.7, [2 1] 283.06, [1 2] 282.7, [3 2] 310.59, [0 1] 259.51}
+;; ;;  {[2 2] 314.56, [0 0] 268.85, [1 0] 279.67, [2 3] 328.38, [3 3] 344.6, [1 1] 290.32, [3 0] 302.33, [1 3] 315.69, [0 3] 303.63, [0 2] 290.72, [2 0] 291.44, [3 1] 314.34, [2 1] 302.26, [1 2] 302.27, [3 2] 328.83, [0 1] 279.25}
+;; ;;  )
 
-(def states (for [i car-range j car-range] [i,j]))
 
-(defn gauss-seidel [v] (reduce inplace v states))
-;; (def vseries-gs (take 10 (iterate gauss-seidel vzero)))
-;; (ps vseries-gs) ;
-;; '({[2 2] 0, [0 0] 0, [1 0] 0, [2 3] 0, [3 3] 0, [1 1] 0, [3 0] 0, [1 3] 0, [0 3] 0, [0 2] 0, [2 0] 0, [3 1] 0, [2 1] 0, [1 2] 0, [3 2] 0, [0 1] 0}
-;;  {[2 2] 42.61, [0 0] 0.0, [1 0] 10.22, [2 3] 52.73, [3 3] 79.79, [1 1] 20.24, [3 0] 32.54, [1 3] 39.07, [0 3] 27.11, [0 2] 19.06, [2 0] 21.35, [3 1] 45.27, [2 1] 31.77, [1 2] 30.13, [3 2] 62.05, [0 1] 9.82}
-;;  {[2 2] 93.13, [0 0] 43.3, [1 0] 55.07, [2 3] 105.44, [3 3] 134.85, [1 1] 65.87, [3 0] 83.45, [1 3] 88.78, [0 3] 74.3, [0 2] 64.02, [2 0] 69.43, [3 1] 97.91, [2 1] 80.68, [1 2] 77.42, [3 2] 116.65, [0 1] 53.55}
-;;  {[2 2] 140.3, [0 0] 89.74, [1 0] 101.68, [2 3] 153.18, [3 3] 180.31, [1 1] 112.58, [3 0] 130.4, [1 3] 136.57, [0 3] 121.94, [0 2] 110.91, [2 0] 116.33, [3 1] 144.6, [2 1] 127.63, [1 2] 124.49, [3 2] 162.68, [0 1] 100.09}
-;;  {[2 2] 181.4, [0 0] 131.67, [1 0] 143.43, [2 3] 194.54, [3 3] 219.14, [1 1] 154.3, [3 0] 171.02, [1 3] 178.71, [0 3] 164.54, [0 2] 153.04, [2 0] 157.58, [3 1] 184.73, [2 1] 168.78, [1 2] 166.27, [3 2] 201.97, [0 1] 142.04}
-;;  {[2 2] 216.75, [0 0] 168.03, [1 0] 179.56, [2 3] 230.07, [3 3] 252.44, [1 1] 190.37, [3 0] 205.88, [1 3] 215.05, [0 3] 201.42, [0 2] 189.54, [2 0] 193.1, [3 1] 219.14, [2 1] 204.21, [1 2] 202.34, [3 2] 235.65, [0 1] 178.41}
-;;  {[2 2] 247.07, [0 0] 199.28, [1 0] 210.59, [2 3] 260.55, [3 3] 281.01, [1 1] 221.35, [3 0] 235.78, [1 3] 246.25, [0 3] 233.1, [0 2] 220.9, [2 0] 223.59, [3 1] 248.65, [2 1] 234.61, [1 2] 233.32, [3 2] 264.54, [0 1] 209.67}
-;;  {[2 2] 273.09, [0 0] 226.1, [1 0] 237.22, [2 3] 286.7, [3 3] 305.53, [1 1] 247.94, [3 0] 261.44, [1 3] 273.02, [0 3] 260.29, [0 2] 247.81, [2 0] 249.75, [3 1] 273.97, [2 1] 260.69, [1 2] 259.9, [3 2] 289.32, [0 1] 236.49}
-;;  {[2 2] 295.41, [0 0] 249.11, [1 0] 260.07, [2 3] 309.13, [3 3] 326.56, [1 1] 270.75, [3 0] 283.45, [1 3] 295.99, [0 3] 283.62, [0 2] 270.9, [2 0] 272.19, [3 1] 295.7, [2 1] 283.06, [1 2] 282.7, [3 2] 310.59, [0 1] 259.51}
-;;  {[2 2] 314.56, [0 0] 268.85, [1 0] 279.67, [2 3] 328.38, [3 3] 344.6, [1 1] 290.32, [3 0] 302.33, [1 3] 315.69, [0 3] 303.63, [0 2] 290.72, [2 0] 291.44, [3 1] 314.34, [2 1] 302.26, [1 2] 302.27, [3 2] 328.83, [0 1] 279.25}
-;;  )
+;; (defn over-relax [v [i,j] omega]
+;;   (let [a (v [i,j])
+;;         d (- (update-val v [i,j]) a)]
+;;     (+ a (* omega d))))
 
+;; (over-relax vzero [1,1] 2.0) ; 38.63794585486803
+;; (over-relax vzero [max-cars,max-cars] 2.0) ; 139.90969190267063
 
-(defn over-relax [v [i,j] omega]
-  (let [a (v [i,j])
-        d (- (update-val v [i,j]) a)]
-    (+ a (* omega d))))
+;; (defn sor-inplace[omega]
+;;   (fn [v [i,j]] (assoc v [i,j] (over-relax v [i,j] omega))))
 
-(over-relax vzero [1,1] 2.0) ; 38.63794585486803
-(over-relax vzero [max-cars,max-cars] 2.0) ; 139.90969190267063
+;; (println "max-cars " max-cars "time for one iteration of SOR")
+;; (time (reduce (sor-inplace 2.0) vzero states)) ; {[8 8] 488.64794491928166, [7 6] 405.60685066600007, [8 7] 465.439818602753, [9 8] 524.4814419194406, [7 1] 243.95325035896056, [8 9] 509.56781008747976, [10 5] 780.5641706676074, [4 3] 216.4715621737366, [2 2] 99.20694580904238, [0 0] 0.0, [3 9] 263.4246708823297, [7 7] 428.8593462246185, [2 8] 185.4306453435772, [1 0] 22.026332922234843, [8 4] 384.9663530326139, [2 3] 123.71676447401296, [2 5] 158.2187349115731, [7 2] 282.2337966451467, [6 7] 389.8238628561444, [7 4] 353.280054372521, [8 3] 350.7903585485704, [0 6] 79.5446456808017, [3 3] 171.76619767295298, [10 9] 1128.719451342405, [5 4] 283.5116611586527, [10 8] 1042.3124418232783, [5 10] 391.9309938226934, [1 1] 42.444342467564375, [6 3] 288.9082683304982, [0 5] 74.59042211941289, [3 4] 195.73072814914374, [7 3] 320.81745569960276, [8 6] 440.42464161312864, [4 2] 184.44820106707658, [7 8] 450.19985372105594, [3 0] 89.02890044818609, [9 0] 263.2994251200674, [6 6] 368.5029017488134, [9 6] 472.94288426432587, [1 9] 126.4407692307316, [8 10] 527.790502765984, [5 3] 254.7164741176333, [9 9] 547.1197111891291, [9 3] 378.8080053567291, [4 7] 300.53588951602217, [4 10] 337.007300656361, [4 9] 327.0528715410701, [1 10] 128.00440995431464, [2 9] 190.7901028909222, [6 5] 345.3345391387207, [0 9] 84.67643316220833, [8 0] 240.13408664652263, [4 1] 152.3805395604327, [5 2] 220.51043831059548, [4 6] 283.94395069602774, [1 4] 97.84076227810002, [10 2] 454.95279262731293, [5 7] 347.8788790328758, [8 2] 310.08924418748467, [10 7] 954.2797425517917, [10 0] 284.8809071789987, [1 3] 82.78899097231258, [4 8] 314.91695413086705, [1 5] 108.46701071855921, [1 8] 124.13124150437437, [1 7] 120.7340604819374, [6 4] 319.5669757421653, [8 1] 269.77522022644297, [0 3] 54.31468422429797, [5 1] 186.40675829930385, [6 1] 216.34955220669616, [5 6] 328.71040831754624, [5 8] 364.90613415894006, [8 5] 413.89486627096636, [0 7] 82.3551521994013, [6 8] 409.116293917541, [10 1] 344.74214313328997, [5 5] 307.49511826924095, [7 9] 469.23219323656303, [2 7] 178.46789757080975, [5 9] 379.6137361111844, [2 4] 143.4276452189106, [3 6] 230.23366491078815, [7 10] 485.64715844207785, [10 6] 866.6917829064835, [9 2] 336.1158982022557, [4 5] 265.09974941359394, [9 1] 293.88915477426224, [9 7] 499.5708975310378, [10 4] 690.3307063667038, [10 10] 1212.0341710947473, [7 0] 215.3211600677964, [0 2] 38.252201724861024, [6 9] 426.0836115359365, [2 0] 51.582739890404966, [0 4] 66.45820120928073, [0 10] 85.10009931961852, [3 1] 113.20462928741743, [3 10] 270.5906321948022, [2 1] 73.82958275622735, ...}
 
-(defn sor-inplace[omega]
-  (fn [v [i,j]] (assoc v [i,j] (over-relax v [i,j] omega))))
 
-(println "max-cars " max-cars "time for one iteration of SOR")
-(time (reduce (sor-inplace 2.0) vzero states)) ; {[8 8] 488.64794491928166, [7 6] 405.60685066600007, [8 7] 465.439818602753, [9 8] 524.4814419194406, [7 1] 243.95325035896056, [8 9] 509.56781008747976, [10 5] 780.5641706676074, [4 3] 216.4715621737366, [2 2] 99.20694580904238, [0 0] 0.0, [3 9] 263.4246708823297, [7 7] 428.8593462246185, [2 8] 185.4306453435772, [1 0] 22.026332922234843, [8 4] 384.9663530326139, [2 3] 123.71676447401296, [2 5] 158.2187349115731, [7 2] 282.2337966451467, [6 7] 389.8238628561444, [7 4] 353.280054372521, [8 3] 350.7903585485704, [0 6] 79.5446456808017, [3 3] 171.76619767295298, [10 9] 1128.719451342405, [5 4] 283.5116611586527, [10 8] 1042.3124418232783, [5 10] 391.9309938226934, [1 1] 42.444342467564375, [6 3] 288.9082683304982, [0 5] 74.59042211941289, [3 4] 195.73072814914374, [7 3] 320.81745569960276, [8 6] 440.42464161312864, [4 2] 184.44820106707658, [7 8] 450.19985372105594, [3 0] 89.02890044818609, [9 0] 263.2994251200674, [6 6] 368.5029017488134, [9 6] 472.94288426432587, [1 9] 126.4407692307316, [8 10] 527.790502765984, [5 3] 254.7164741176333, [9 9] 547.1197111891291, [9 3] 378.8080053567291, [4 7] 300.53588951602217, [4 10] 337.007300656361, [4 9] 327.0528715410701, [1 10] 128.00440995431464, [2 9] 190.7901028909222, [6 5] 345.3345391387207, [0 9] 84.67643316220833, [8 0] 240.13408664652263, [4 1] 152.3805395604327, [5 2] 220.51043831059548, [4 6] 283.94395069602774, [1 4] 97.84076227810002, [10 2] 454.95279262731293, [5 7] 347.8788790328758, [8 2] 310.08924418748467, [10 7] 954.2797425517917, [10 0] 284.8809071789987, [1 3] 82.78899097231258, [4 8] 314.91695413086705, [1 5] 108.46701071855921, [1 8] 124.13124150437437, [1 7] 120.7340604819374, [6 4] 319.5669757421653, [8 1] 269.77522022644297, [0 3] 54.31468422429797, [5 1] 186.40675829930385, [6 1] 216.34955220669616, [5 6] 328.71040831754624, [5 8] 364.90613415894006, [8 5] 413.89486627096636, [0 7] 82.3551521994013, [6 8] 409.116293917541, [10 1] 344.74214313328997, [5 5] 307.49511826924095, [7 9] 469.23219323656303, [2 7] 178.46789757080975, [5 9] 379.6137361111844, [2 4] 143.4276452189106, [3 6] 230.23366491078815, [7 10] 485.64715844207785, [10 6] 866.6917829064835, [9 2] 336.1158982022557, [4 5] 265.09974941359394, [9 1] 293.88915477426224, [9 7] 499.5708975310378, [10 4] 690.3307063667038, [10 10] 1212.0341710947473, [7 0] 215.3211600677964, [0 2] 38.252201724861024, [6 9] 426.0836115359365, [2 0] 51.582739890404966, [0 4] 66.45820120928073, [0 10] 85.10009931961852, [3 1] 113.20462928741743, [3 10] 270.5906321948022, [2 1] 73.82958275622735, ...}
 
+;; ;; max-cars  20 time for one iteration of SOR"Elapsed time: 81160.131641 msecs"
+;; ;; max-cars  15 time for one iteration of SOR"Elapsed time: 16723.008293 msecs"
+;; ;; max-cars  12 time for one iteration of SOR"Elapsed time: 5072.422096 msecs"
+;; ;; max-cars  11 time for one iteration of SOR"Elapsed time: 3244.704042 msecs"
+;; ;; max-cars  10 time for one iteration of SOR"Elapsed time: 1954.167973 msecs"
+;; ;; max-cars  6 time for one iteration of SOR"Elapsed time: 161.526508 msecs"
+;; ;; max-cars  5 time for one iteration of SOR"Elapsed time: 70.51998 msecs"
 
+;; ;; timings pre-when statement
 
-;; max-cars  20 time for one iteration of SOR"Elapsed time: 81160.131641 msecs"
-;; max-cars  15 time for one iteration of SOR"Elapsed time: 16723.008293 msecs"
-;; max-cars  12 time for one iteration of SOR"Elapsed time: 5072.422096 msecs"
-;; max-cars  11 time for one iteration of SOR"Elapsed time: 3244.704042 msecs"
-;; max-cars  10 time for one iteration of SOR"Elapsed time: 1954.167973 msecs"
-;; max-cars  6 time for one iteration of SOR"Elapsed time: 161.526508 msecs"
-;; max-cars  5 time for one iteration of SOR"Elapsed time: 70.51998 msecs"
+;; ;; max-cars 20 time for one iteration of SOR"Elapsed time: 155415.417142 msecs"
+;; ;; max-cars 15 time for one iteration of SOR"Elapsed time: 32325.9033 msecs"
+;; ;; max cars 12 time for one iteration of SOR"Elapsed time: 9054.616065 msecs"
+;; ;; max-cars 11 time for one iteration of SOR"Elapsed time: 6523.300923 msecs"
+;; ;; max-cars 10 time for one iteration of SOR"Elapsed time: 4085.586055 msecs"
+;; ;; max-cars 6  time for one iteration of SOR"Elapsed time: 258.344699 msecs"
+;; ;; max-cars 5  time for one iteration of SOR"Elapsed time: 130.422911 msecs"
 
-;; timings pre-when statement
+;; (ps (map (fn[x] (Math/log x)) [20     15    12   11   10   6   5]))   ; (3.0    2.71 2.48  2.4  2.3 1.79 1.61)
+;; (ps (map (fn[x] (Math/log x)) [155415 32325 9054 6523 4085 258 130])) ; (11.95 10.38 9.11 8.78 8.32 5.55 4.87)
 
-;; max-cars 20 time for one iteration of SOR"Elapsed time: 155415.417142 msecs"
-;; max-cars 15 time for one iteration of SOR"Elapsed time: 32325.9033 msecs"
-;; max cars 12 time for one iteration of SOR"Elapsed time: 9054.616065 msecs"
-;; max-cars 11 time for one iteration of SOR"Elapsed time: 6523.300923 msecs"
-;; max-cars 10 time for one iteration of SOR"Elapsed time: 4085.586055 msecs"
-;; max-cars 6  time for one iteration of SOR"Elapsed time: 258.344699 msecs"
-;; max-cars 5  time for one iteration of SOR"Elapsed time: 130.422911 msecs"
-
-(ps (map (fn[x] (Math/log x)) [20     15    12   11   10   6   5]))   ; (3.0    2.71 2.48  2.4  2.3 1.79 1.61)
-(ps (map (fn[x] (Math/log x)) [155415 32325 9054 6523 4085 258 130])) ; (11.95 10.38 9.11 8.78 8.32 5.55 4.87)
-
-(/ (- 3.0 1.61) (- 11.95 4.87)) ; 0.1963276836158192
+;; (/ (- 3.0 1.61) (- 11.95 4.87)) ; 0.1963276836158192
                                      
-(/ 155415 32325.) ; 4.807888631090488
-(Math/pow 20/15 5) ; 4.21399176954732
+;; (/ 155415 32325.) ; 4.807888631090488
+;; (Math/pow 20/15 5) ; 4.21399176954732
 
 
-(/ 32325 130.) ; 248.65384615384616 
-(Math/pow 15/5 5) ; 243.0
+;; (/ 32325 130.) ; 248.65384615384616 
+;; (Math/pow 15/5 5) ; 243.0
 
-(/ 32325 4085.) ; 7.9130966952264385
-(Math/pow 15/10 5) ; 7.59375
+;; (/ 32325 4085.) ; 7.9130966952264385
+;; (Math/pow 15/10 5) ; 7.59375
 
-(/ 6523 4085.) ; 1.5968176254589963
-(Math/pow 11/10 5) ; 1.6105100000000006
+;; (/ 6523 4085.) ; 1.5968176254589963
+;; (Math/pow 11/10 5) ; 1.6105100000000006
 
-(/ 9054 6523.) ; 1.388011651080791
-(Math/pow 12/11 5) ; 1.545050946594558
-
-
-(/ 4085 130.) ; 31.423076923076923
-(Math/pow 10/5 5) ; 32.0
-
-(/ 258 130.) ; 1.9846153846153847
-(Math/pow 6/5 5) ; 2.4883199999999994
-
-;; Oh God I wrote an n^5 algorithm, actually why isn't it n^6 just to calculate the matrix?
-
-(defn sor[omega] (fn [v] (println ".") (reduce (sor-inplace omega) v states)))
-
-(def vseries-sor  (iterate (sor 1.5) vzero))
-
-(ps 20 (for [v vseries-sor] (v [0,19]))) ; (0 63.1 262.05 421.92 468.53 486.71 520.65 531.67 536.99 543.02 543.95 544.39 544.78 545.06 544.97 545.06 545.09 545.06 545.09 545.08)
-
-(def final-sor (nth vseries-sor 20))
-
-(ps 100 (sort (nth vseries-sor 20)))
+;; (/ 9054 6523.) ; 1.388011651080791
+;; (Math/pow 12/11 5) ; 1.545050946594558
 
 
-(def testm (jacobi (nth vseries-sor 20)))
-(print "a final jacobi update gives |delta|=: " (apply max (for [s states] (- (testm s)((nth vseries-sor 20) s)))))
+;; (/ 4085 130.) ; 31.423076923076923
+;; (Math/pow 10/5 5) ; 32.0
 
-(ps 100 (drop 100 (sort (nth vseries-sor 20)))) ; ([[4 16] 562.54] [[4 17] 567.36] [[4 18] 571.84] [[4 19] 575.9] [[4 20] 579.44] [[5 0] 447.44] [[5 1] 457.42] [[5 2] 467.28] [[5 3] 476.92] [[5 4] 486.2] [[5 5] 495.07] [[5 6] 503.51] [[5 7] 511.55] [[5 8] 519.19] [[5 9] 526.47] [[5 10] 533.4] [[5 11] 539.99] [[5 12] 546.27] [[5 13] 552.25] [[5 14] 557.93] [[5 15] 563.33] [[5 16] 568.45] [[5 17] 573.27] [[5 18] 577.74] [[5 19] 581.81] [[5 20] 585.35] [[6 0] 452.34] [[6 1] 462.31] [[6 2] 472.18] [[6 3] 481.81] [[6 4] 491.09] [[6 5] 499.96] [[6 6] 508.41] [[6 7] 516.44] [[6 8] 524.08] [[6 9] 531.36] [[6 10] 538.29] [[6 11] 544.89] [[6 12] 551.17] [[6 13] 557.14] [[6 14] 562.83] [[6 15] 568.23] [[6 16] 573.34] [[6 17] 578.16] [[6 18] 582.64] [[6 19] 586.7] [[6 20] 590.24] [[7 0] 456.39] [[7 1] 466.36] [[7 2] 476.23] [[7 3] 485.86] [[7 4] 495.14] [[7 5] 504.01] [[7 6] 512.46] [[7 7] 520.49] [[7 8] 528.13] [[7 9] 535.41] [[7 10] 542.34] [[7 11] 548.94] [[7 12] 555.22] [[7 13] 561.19] [[7 14] 566.88] [[7 15] 572.28] [[7 16] 577.39] [[7 17] 582.21] [[7 18] 586.69] [[7 19] 590.75] [[7 20] 594.29] [[8 0] 459.74] [[8 1] 469.71] [[8 2] 479.58] [[8 3] 489.21] [[8 4] 498.49] [[8 5] 507.36] [[8 6] 515.81] [[8 7] 523.84] [[8 8] 531.48] [[8 9] 538.76] [[8 10] 545.69] [[8 11] 552.29] [[8 12] 558.57] [[8 13] 564.54] [[8 14] 570.23] [[8 15] 575.63] [[8 16] 580.74] [[8 17] 585.56] [[8 18] 590.04] [[8 19] 594.1] [[8 20] 597.64] [[9 0] 462.51] [[9 1] 472.48] [[9 2] 482.35] [[9 3] 491.98] [[9 4] 501.26] [[9 5] 510.13] [[9 6] 518.58] [[9 7] 526.61] [[9 8] 534.25] [[9 9] 541.53] [[9 10] 548.46])
+;; (/ 258 130.) ; 1.9846153846153847
+;; (Math/pow 6/5 5) ; 2.4883199999999994
 
-;; five by five case
-[[0 0] 382.71] [[0 1] 392.67] [[0 2] 402.46] [[0 3] 411.83] [[0 4] 420.46] [[0 5] 428.01]
-[[1 0] 392.46] [[1 1] 402.42] [[1 2] 412.2]  [[1 3] 421.57] [[1 4] 430.2]  [[1 5] 437.76]
-[[2 0] 401.36] [[2 1] 411.32] [[2 2] 421.11] [[2 3] 430.48] [[2 4] 439.11] [[2 5] 446.66]
-[[3 0] 408.82] [[3 1] 418.78] [[3 2] 428.57] [[3 3] 437.94] [[3 4] 446.57] [[3 5] 454.12]
-[[4 0] 414.52] [[4 1] 424.48] [[4 2] 434.27] [[4 3] 443.63] [[4 4] 452.26] [[4 5] 459.82]
-[[5 0] 418.49] [[5 1] 428.45] [[5 2] 438.24] [[5 3] 447.61] [[5 4] 456.24] [[5 5] 463.79]
+;; ;; Oh God I wrote an n^5 algorithm, actually why isn't it n^6 just to calculate the matrix?
+
+;; (defn sor[omega] (fn [v] (println ".") (reduce (sor-inplace omega) v states)))
+
+;; (def vseries-sor  (iterate (sor 1.5) vzero))
+
+;; (ps 20 (for [v vseries-sor] (v [0,19]))) ; (0 63.1 262.05 421.92 468.53 486.71 520.65 531.67 536.99 543.02 543.95 544.39 544.78 545.06 544.97 545.06 545.09 545.06 545.09 545.08)
+
+;; (def final-sor (nth vseries-sor 20))
+
+;; (ps 100 (sort (nth vseries-sor 20)))
+
+
+;; (def testm (jacobi (nth vseries-sor 20)))
+;; (print "a final jacobi update gives |delta|=: " (apply max (for [s states] (- (testm s)((nth vseries-sor 20) s)))))
+
+;; (ps 100 (drop 100 (sort (nth vseries-sor 20)))) ; ([[4 16] 562.54] [[4 17] 567.36] [[4 18] 571.84] [[4 19] 575.9] [[4 20] 579.44] [[5 0] 447.44] [[5 1] 457.42] [[5 2] 467.28] [[5 3] 476.92] [[5 4] 486.2] [[5 5] 495.07] [[5 6] 503.51] [[5 7] 511.55] [[5 8] 519.19] [[5 9] 526.47] [[5 10] 533.4] [[5 11] 539.99] [[5 12] 546.27] [[5 13] 552.25] [[5 14] 557.93] [[5 15] 563.33] [[5 16] 568.45] [[5 17] 573.27] [[5 18] 577.74] [[5 19] 581.81] [[5 20] 585.35] [[6 0] 452.34] [[6 1] 462.31] [[6 2] 472.18] [[6 3] 481.81] [[6 4] 491.09] [[6 5] 499.96] [[6 6] 508.41] [[6 7] 516.44] [[6 8] 524.08] [[6 9] 531.36] [[6 10] 538.29] [[6 11] 544.89] [[6 12] 551.17] [[6 13] 557.14] [[6 14] 562.83] [[6 15] 568.23] [[6 16] 573.34] [[6 17] 578.16] [[6 18] 582.64] [[6 19] 586.7] [[6 20] 590.24] [[7 0] 456.39] [[7 1] 466.36] [[7 2] 476.23] [[7 3] 485.86] [[7 4] 495.14] [[7 5] 504.01] [[7 6] 512.46] [[7 7] 520.49] [[7 8] 528.13] [[7 9] 535.41] [[7 10] 542.34] [[7 11] 548.94] [[7 12] 555.22] [[7 13] 561.19] [[7 14] 566.88] [[7 15] 572.28] [[7 16] 577.39] [[7 17] 582.21] [[7 18] 586.69] [[7 19] 590.75] [[7 20] 594.29] [[8 0] 459.74] [[8 1] 469.71] [[8 2] 479.58] [[8 3] 489.21] [[8 4] 498.49] [[8 5] 507.36] [[8 6] 515.81] [[8 7] 523.84] [[8 8] 531.48] [[8 9] 538.76] [[8 10] 545.69] [[8 11] 552.29] [[8 12] 558.57] [[8 13] 564.54] [[8 14] 570.23] [[8 15] 575.63] [[8 16] 580.74] [[8 17] 585.56] [[8 18] 590.04] [[8 19] 594.1] [[8 20] 597.64] [[9 0] 462.51] [[9 1] 472.48] [[9 2] 482.35] [[9 3] 491.98] [[9 4] 501.26] [[9 5] 510.13] [[9 6] 518.58] [[9 7] 526.61] [[9 8] 534.25] [[9 9] 541.53] [[9 10] 548.46])
+
+;; ;; five by five case
+;; [[0 0] 382.71] [[0 1] 392.67] [[0 2] 402.46] [[0 3] 411.83] [[0 4] 420.46] [[0 5] 428.01]
+;; [[1 0] 392.46] [[1 1] 402.42] [[1 2] 412.2]  [[1 3] 421.57] [[1 4] 430.2]  [[1 5] 437.76]
+;; [[2 0] 401.36] [[2 1] 411.32] [[2 2] 421.11] [[2 3] 430.48] [[2 4] 439.11] [[2 5] 446.66]
+;; [[3 0] 408.82] [[3 1] 418.78] [[3 2] 428.57] [[3 3] 437.94] [[3 4] 446.57] [[3 5] 454.12]
+;; [[4 0] 414.52] [[4 1] 424.48] [[4 2] 434.27] [[4 3] 443.63] [[4 4] 452.26] [[4 5] 459.82]
+;; [[5 0] 418.49] [[5 1] 428.45] [[5 2] 438.24] [[5 3] 447.61] [[5 4] 456.24] [[5 5] 463.79]
 
 
 
-;; ten by ten case
-[[0 0] 404.5]  [[0 1] 414.47] [[0 2] 424.33] [[0 3] 433.96] [[0 4] 443.23] [[0 5] 452.07] [[0 6] 460.44] [[0 7] 468.31] [[0 8] 475.63] [[0 9] 482.27] [[0 10] 488.05]
-[[1 0] 414.31] [[1 1] 424.28] [[1 2] 434.14] [[1 3] 443.77] [[1 4] 453.04] [[1 5] 461.88] [[1 6] 470.25] [[1 7] 478.12] [[1 8] 485.44] [[1 9] 492.08] [[1 10] 497.86]
-[[2 0] 423.5]  [[2 1] 433.47] [[2 2] 443.34] [[2 3] 452.96] [[2 4] 462.23] [[2 5] 471.07] [[2 6] 479.44] [[2 7] 487.31] [[2 8] 494.63] [[2 9] 501.27] [[2 10] 507.05]
-[[3 0] 431.64] [[3 1] 441.61] [[3 2] 451.48] [[3 3] 461.1]  [[3 4] 470.37] [[3 5] 479.21] [[3 6] 487.58] [[3 7] 495.45] [[3 8] 502.77] [[3 9] 509.41] [[3 10] 515.19]
-[[4 0] 438.51] [[4 1] 448.48] [[4 2] 458.35] [[4 3] 467.97] [[4 4] 477.24] [[4 5] 486.08] [[4 6] 494.45] [[4 7] 502.32] [[4 8] 509.64] [[4 9] 516.28] [[4 10] 522.06]
-[[5 0] 444.13] [[5 1] 454.1]  [[5 2] 463.96] [[5 3] 473.59] [[5 4] 482.86] [[5 5] 491.7]  [[5 6] 500.07] [[5 7] 507.94] [[5 8] 515.26] [[5 9] 521.9]  [[5 10] 527.68]
-[[6 0] 448.62] [[6 1] 458.59] [[6 2] 468.45] [[6 3] 478.08] [[6 4] 487.35] [[6 5] 496.19] [[6 6] 504.56] [[6 7] 512.43] [[6 8] 519.75] [[6 9] 526.39] [[6 10] 532.17]
-[[7 0] 452.13] [[7 1] 462.11] [[7 2] 471.97] [[7 3] 481.6]  [[7 4] 490.87] [[7 5] 499.7]  [[7 6] 508.07] [[7 7] 515.95] [[7 8] 523.26] [[7 9] 529.9]  [[7 10] 535.69]
-[[8 0] 454.81] [[8 1] 464.78] [[8 2] 474.65] [[8 3] 484.27] [[8 4] 493.54] [[8 5] 502.38] [[8 6] 510.75] [[8 7] 518.62] [[8 8] 525.94] [[8 9] 532.58] [[8 10] 538.36]
+;; ;; ten by ten case
+;; [[0 0] 404.5]  [[0 1] 414.47] [[0 2] 424.33] [[0 3] 433.96] [[0 4] 443.23] [[0 5] 452.07] [[0 6] 460.44] [[0 7] 468.31] [[0 8] 475.63] [[0 9] 482.27] [[0 10] 488.05]
+;; [[1 0] 414.31] [[1 1] 424.28] [[1 2] 434.14] [[1 3] 443.77] [[1 4] 453.04] [[1 5] 461.88] [[1 6] 470.25] [[1 7] 478.12] [[1 8] 485.44] [[1 9] 492.08] [[1 10] 497.86]
+;; [[2 0] 423.5]  [[2 1] 433.47] [[2 2] 443.34] [[2 3] 452.96] [[2 4] 462.23] [[2 5] 471.07] [[2 6] 479.44] [[2 7] 487.31] [[2 8] 494.63] [[2 9] 501.27] [[2 10] 507.05]
+;; [[3 0] 431.64] [[3 1] 441.61] [[3 2] 451.48] [[3 3] 461.1]  [[3 4] 470.37] [[3 5] 479.21] [[3 6] 487.58] [[3 7] 495.45] [[3 8] 502.77] [[3 9] 509.41] [[3 10] 515.19]
+;; [[4 0] 438.51] [[4 1] 448.48] [[4 2] 458.35] [[4 3] 467.97] [[4 4] 477.24] [[4 5] 486.08] [[4 6] 494.45] [[4 7] 502.32] [[4 8] 509.64] [[4 9] 516.28] [[4 10] 522.06]
+;; [[5 0] 444.13] [[5 1] 454.1]  [[5 2] 463.96] [[5 3] 473.59] [[5 4] 482.86] [[5 5] 491.7]  [[5 6] 500.07] [[5 7] 507.94] [[5 8] 515.26] [[5 9] 521.9]  [[5 10] 527.68]
+;; [[6 0] 448.62] [[6 1] 458.59] [[6 2] 468.45] [[6 3] 478.08] [[6 4] 487.35] [[6 5] 496.19] [[6 6] 504.56] [[6 7] 512.43] [[6 8] 519.75] [[6 9] 526.39] [[6 10] 532.17]
+;; [[7 0] 452.13] [[7 1] 462.11] [[7 2] 471.97] [[7 3] 481.6]  [[7 4] 490.87] [[7 5] 499.7]  [[7 6] 508.07] [[7 7] 515.95] [[7 8] 523.26] [[7 9] 529.9]  [[7 10] 535.69]
+;; [[8 0] 454.81] [[8 1] 464.78] [[8 2] 474.65] [[8 3] 484.27] [[8 4] 493.54] [[8 5] 502.38] [[8 6] 510.75] [[8 7] 518.62] [[8 8] 525.94] [[8 9] 532.58] [[8 10] 538.36]
 
-;; full 20x20 case
-(for [i (partition (inc max-cars)  (sort (nth vseries-sor 20)))] (clojure.pprint/cl-format true "~{[~{[~{~2a ~1a~}] ~$~}]~} ~%" i))
+;; ;; full 20x20 case
+;; (for [i (partition (inc max-cars)  (sort (nth vseries-sor 20)))] (clojure.pprint/cl-format true "~{[~{[~{~2a ~1a~}] ~$~}]~} ~%" i))
 
-(for [i (partition (inc max-cars)  (sort (nth vseries-sor 20)))] (clojure.pprint/cl-format true "~{~$ ~}~%" (map (fn[[[a,b] x]] x) i)))
-407.18 417.15 427.02 436.65 445.93 454.80 463.25 471.28 478.92 486.20 493.13 499.73 506.01 511.98 517.67 523.07 528.18 533.00 537.48 541.54 545.08 
-417.00 426.97 436.84 446.47 455.75 464.62 473.07 481.10 488.74 496.02 502.95 509.55 515.83 521.80 527.49 532.89 538.00 542.82 547.30 551.36 554.90 
-426.23 436.21 446.07 455.70 464.99 473.86 482.30 490.33 497.98 505.25 512.18 518.78 525.06 531.04 536.72 542.12 547.24 552.05 556.53 560.60 564.14 
-434.48 444.45 454.32 463.95 473.23 482.10 490.55 498.58 506.22 513.50 520.43 527.02 533.30 539.28 544.97 550.37 555.48 560.30 564.78 568.84 572.38 
-441.54 451.51 461.38 471.01 480.29 489.16 497.61 505.64 513.28 520.56 527.49 534.09 540.37 546.34 552.03 557.43 562.54 567.36 571.84 575.90 579.44 
-447.44 457.42 467.28 476.92 486.20 495.07 503.51 511.55 519.19 526.47 533.40 539.99 546.27 552.25 557.93 563.33 568.45 573.27 577.74 581.81 585.35 
-452.34 462.31 472.18 481.81 491.09 499.96 508.41 516.44 524.08 531.36 538.29 544.89 551.17 557.14 562.83 568.23 573.34 578.16 582.64 586.70 590.24 
-456.39 466.36 476.23 485.86 495.14 504.01 512.46 520.49 528.13 535.41 542.34 548.94 555.22 561.19 566.88 572.28 577.39 582.21 586.69 590.75 594.29 
-459.74 469.71 479.58 489.21 498.49 507.36 515.81 523.84 531.48 538.76 545.69 552.29 558.57 564.54 570.23 575.63 580.74 585.56 590.04 594.10 597.64 
-462.51 472.48 482.35 491.98 501.26 510.13 518.58 526.61 534.25 541.53 548.46 555.06 561.34 567.31 573.00 578.40 583.51 588.33 592.81 596.87 600.42 
-464.80 474.77 484.64 494.27 503.55 512.42 520.87 528.90 536.54 543.82 550.75 557.35 563.63 569.60 575.29 580.69 585.80 590.62 595.10 599.16 602.70 
-466.69 476.66 486.53 496.16 505.44 514.31 522.76 530.79 538.43 545.71 552.64 559.24 565.52 571.49 577.18 582.58 587.69 592.51 596.99 601.05 604.59 
-468.24 478.22 488.08 497.71 507.00 515.87 524.31 532.34 539.99 547.26 554.19 560.79 567.07 573.05 578.73 584.13 589.25 594.06 598.54 602.61 606.15 
-469.52 479.49 489.36 498.99 508.27 517.14 525.59 533.62 541.26 548.54 555.47 562.07 568.35 574.32 580.01 585.41 590.52 595.34 599.82 603.88 607.42 
-470.56 480.53 490.40 500.03 509.31 518.18 526.63 534.66 542.30 549.58 556.51 563.11 569.39 575.36 581.05 586.45 591.56 596.38 600.86 604.92 608.46 
-471.40 481.37 491.24 500.87 510.15 519.02 527.47 535.50 543.15 550.42 557.35 563.95 570.23 576.20 581.89 587.29 592.40 597.22 601.70 605.76 609.31 
-472.07 482.05 491.91 501.54 510.83 519.70 528.14 536.17 543.82 551.10 558.02 564.62 570.90 576.88 582.56 587.96 593.08 597.89 602.37 606.44 609.98 
-472.60 482.57 492.44 502.07 511.36 520.23 528.67 536.70 544.35 551.62 558.55 565.15 571.43 577.41 583.09 588.49 593.61 598.42 602.90 606.97 610.51 
-473.00 482.98 492.84 502.47 511.76 520.63 529.07 537.10 544.75 552.03 558.95 565.55 571.83 577.81 583.49 588.89 594.01 598.82 603.30 607.37 610.91 
-473.30 483.27 493.14 502.77 512.05 520.92 529.37 537.40 545.04 552.32 559.25 565.84 572.12 578.10 583.79 589.19 594.30 599.12 603.60 607.66 611.20 
-473.50 483.47 493.34 502.97 512.25 521.12 529.57 537.60 545.24 552.52 559.45 566.05 572.33 578.30 583.99 589.39 594.50 599.32 603.80 607.86 611.40 
+;; (for [i (partition (inc max-cars)  (sort (nth vseries-sor 20)))] (clojure.pprint/cl-format true "~{~$ ~}~%" (map (fn[[[a,b] x]] x) i)))
+;; 407.18 417.15 427.02 436.65 445.93 454.80 463.25 471.28 478.92 486.20 493.13 499.73 506.01 511.98 517.67 523.07 528.18 533.00 537.48 541.54 545.08 
+;; 417.00 426.97 436.84 446.47 455.75 464.62 473.07 481.10 488.74 496.02 502.95 509.55 515.83 521.80 527.49 532.89 538.00 542.82 547.30 551.36 554.90 
+;; 426.23 436.21 446.07 455.70 464.99 473.86 482.30 490.33 497.98 505.25 512.18 518.78 525.06 531.04 536.72 542.12 547.24 552.05 556.53 560.60 564.14 
+;; 434.48 444.45 454.32 463.95 473.23 482.10 490.55 498.58 506.22 513.50 520.43 527.02 533.30 539.28 544.97 550.37 555.48 560.30 564.78 568.84 572.38 
+;; 441.54 451.51 461.38 471.01 480.29 489.16 497.61 505.64 513.28 520.56 527.49 534.09 540.37 546.34 552.03 557.43 562.54 567.36 571.84 575.90 579.44 
+;; 447.44 457.42 467.28 476.92 486.20 495.07 503.51 511.55 519.19 526.47 533.40 539.99 546.27 552.25 557.93 563.33 568.45 573.27 577.74 581.81 585.35 
+;; 452.34 462.31 472.18 481.81 491.09 499.96 508.41 516.44 524.08 531.36 538.29 544.89 551.17 557.14 562.83 568.23 573.34 578.16 582.64 586.70 590.24 
+;; 456.39 466.36 476.23 485.86 495.14 504.01 512.46 520.49 528.13 535.41 542.34 548.94 555.22 561.19 566.88 572.28 577.39 582.21 586.69 590.75 594.29 
+;; 459.74 469.71 479.58 489.21 498.49 507.36 515.81 523.84 531.48 538.76 545.69 552.29 558.57 564.54 570.23 575.63 580.74 585.56 590.04 594.10 597.64 
+;; 462.51 472.48 482.35 491.98 501.26 510.13 518.58 526.61 534.25 541.53 548.46 555.06 561.34 567.31 573.00 578.40 583.51 588.33 592.81 596.87 600.42 
+;; 464.80 474.77 484.64 494.27 503.55 512.42 520.87 528.90 536.54 543.82 550.75 557.35 563.63 569.60 575.29 580.69 585.80 590.62 595.10 599.16 602.70 
+;; 466.69 476.66 486.53 496.16 505.44 514.31 522.76 530.79 538.43 545.71 552.64 559.24 565.52 571.49 577.18 582.58 587.69 592.51 596.99 601.05 604.59 
+;; 468.24 478.22 488.08 497.71 507.00 515.87 524.31 532.34 539.99 547.26 554.19 560.79 567.07 573.05 578.73 584.13 589.25 594.06 598.54 602.61 606.15 
+;; 469.52 479.49 489.36 498.99 508.27 517.14 525.59 533.62 541.26 548.54 555.47 562.07 568.35 574.32 580.01 585.41 590.52 595.34 599.82 603.88 607.42 
+;; 470.56 480.53 490.40 500.03 509.31 518.18 526.63 534.66 542.30 549.58 556.51 563.11 569.39 575.36 581.05 586.45 591.56 596.38 600.86 604.92 608.46 
+;; 471.40 481.37 491.24 500.87 510.15 519.02 527.47 535.50 543.15 550.42 557.35 563.95 570.23 576.20 581.89 587.29 592.40 597.22 601.70 605.76 609.31 
+;; 472.07 482.05 491.91 501.54 510.83 519.70 528.14 536.17 543.82 551.10 558.02 564.62 570.90 576.88 582.56 587.96 593.08 597.89 602.37 606.44 609.98 
+;; 472.60 482.57 492.44 502.07 511.36 520.23 528.67 536.70 544.35 551.62 558.55 565.15 571.43 577.41 583.09 588.49 593.61 598.42 602.90 606.97 610.51 
+;; 473.00 482.98 492.84 502.47 511.76 520.63 529.07 537.10 544.75 552.03 558.95 565.55 571.83 577.81 583.49 588.89 594.01 598.82 603.30 607.37 610.91 
+;; 473.30 483.27 493.14 502.77 512.05 520.92 529.37 537.40 545.04 552.32 559.25 565.84 572.12 578.10 583.79 589.19 594.30 599.12 603.60 607.66 611.20 
+;; 473.50 483.47 493.34 502.97 512.25 521.12 529.57 537.60 545.24 552.52 559.45 566.05 572.33 578.30 583.99 589.39 594.50 599.32 603.80 607.86 611.40 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; OK, time to be a bit more grown up about all this
