@@ -633,7 +633,9 @@
 (defn nupdate-val [v [m,n] action]
   (+ (expected-reward [m,n] action)
      (* gamma
-        (reduce + (for [s states] (* (ptransition [m,n] s action) (v [m,n])))))))
+        (reduce + (for [s states] (* (ptransition [m,n] s action) (v s)))))))
+
+
 
 (nupdate-val vzero [0,0] 0)
 (nupdate-val vzero [1,0] 0)
