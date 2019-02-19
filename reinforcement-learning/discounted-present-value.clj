@@ -29,7 +29,7 @@
 ;; The discounted present value (with discount factor gamma) of a finite sequence is defined to be:
 (defn dpv-definition [gamma sq]
   (reduce + (map *
-                 (take (count sq) (iterate #(* gamma %) 1))
+                 (iterate #(* gamma %) 1)
                  sq)))
 
 ;; If your discount value is one, then the discounted present value of a finite sequence is just its sum:
