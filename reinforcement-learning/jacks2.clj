@@ -1,7 +1,7 @@
 ;; Jack's Car Rental from the reinforcement learning book
 
 ;; The maximal number of cars at each site
-(def max-cars 5)
+(def max-cars 20)
 ;; Jack is something of a short-termist
 (def gamma 0.9)
 
@@ -258,7 +258,7 @@
 (defn-memo expected-reward [[a,b] action]
   (assert (and (>= a action) (<= (+ b action) max-cars)))
   (let [[a,b] [(- a action) (+ b action)]]
-    (+ (* (abs action) 2) (expected-reward-from-state [a,b]))))
+    (+ (* (abs action) -2) (expected-reward-from-state [a,b]))))
 
 
 (defn update-val [v [m,n] action]
@@ -386,7 +386,16 @@
 
 lastmove ; 0.0015506759456229702
 
-(print "a final jacobi update gives |delta|=: " lastmove)
+(println "a final jacobi update gives |delta|=: " lastmove)
+
+(defn pvalue [vfn]
+  (doseq [i (reverse (partition (inc max-cars)  (sort vfn)))] (clojure.pprint/cl-format true "~{~$ ~}~%" (map (fn[[[a,b] x]] x) i))))
+
+(defn ppolicy [policy]
+  (doseq [i (reverse (partition (inc max-cars)  (sort policy)))] (clojure.pprint/cl-format true "~{~2D ~}~%" (map (fn[[[a,b] x]] x) i))))
+
+
+(pvalue final-sor)
 
 ;; ;; five by five case
 ;; [[0 0] 382.71] [[0 1] 392.67] [[0 2] 402.46] [[0 3] 411.83] [[0 4] 420.46] [[0 5] 428.01]
@@ -469,32 +478,35 @@ lastmove ; 0.0015506759456229702
 (optimal-action final-sor [5,1]) ; 4
 
 
-(defn sor[policy omega] (fn [v] (println (v [0,0])) (reduce (sor-inplace omega) v (for [s states][s (policy s)]))))
+(defn sor[policy omega] (fn [v] (reduce (sor-inplace omega) v (for [s states][s (policy s)]))))
 (defn policyof[v] (into {} (for [s states] [s (optimal-action v s)])))
 
-(defn pvalue [vfn]
-  (for [i (partition (inc max-cars)  (sort vfn))] (clojure.pprint/cl-format true "~{~$ ~}~%" (map (fn[[[a,b] x]] x) i))))
 
-(defn ppolicy [policy]
-  (for [i (partition (inc max-cars)  (sort policy))] (clojure.pprint/cl-format true "~{~2D ~}~%" (map (fn[[[a,b] x]] x) i))))
-
-
+(println "--------------------hello----------------------------")
 
 (def valuezero  (into {} (for [s states] [s 0])))
 (def policyzero (into {} (for [s states] [s 0])))
+
+(actions final-sor [1,1]) ; ([404.45998668491694 1] [403.36208923023344 -1] [402.4182186132667 0])
+
+
 
 (pvalue valuezero)
 (ppolicy policyzero)
 
 (def vszero (iterate (sor policyzero 1.5) valuezero))
 
-(ps 20 (for [v vszero] (v [0,0])))
+(take 10 (drop 30 (for [v vszero] (v [0,0]))))
 
-(def valueone (nth vszero 20))
+(def valueone (nth vszero 40))
+
+(pvalue valueone)
+
+(actions valueone [20,20])
+
 
 (def policyone (policyof valueone))
 
-(pvalue valueone)
 (ppolicy policyone)
 
 (def vsone (iterate (sor policyone 1.5) valueone))
@@ -503,9 +515,10 @@ lastmove ; 0.0015506759456229702
 
 (def valuetwo (nth vsone 20))
 
+(pvalue valuetwo)
+
 (def policytwo (policyof valuetwo))
 
-(pvalue valuetwo)
 (ppolicy policytwo)
 
 (def vstwo (iterate (sor policytwo 1.5) valuetwo))
@@ -515,9 +528,10 @@ lastmove ; 0.0015506759456229702
 
 (def valuethree (nth vstwo 20))
 
+(pvalue valuethree)
+
 (def policythree (policyof valuethree))
 
-(pvalue valuethree)
 (ppolicy policythree)
 
 (def vsthree (iterate (sor policythree 1.5) valuethree))
@@ -526,9 +540,10 @@ lastmove ; 0.0015506759456229702
 
 (def valuefour (nth vsthree 20))
 
+(pvalue valuefour)
+
 (def policyfour (policyof valuefour))
 
-(pvalue valuefour)
 (ppolicy policyfour)
 
 (def vsfour (iterate (sor policyfour 1.5) valuefour))
@@ -537,16 +552,25 @@ lastmove ; 0.0015506759456229702
 
 (def valuefive (nth vsfour 20))
 
+(pvalue valuefive)
+
 (def policyfive (policyof valuefive))
 
-(pvalue valuefive)
 (ppolicy policyfive)
 
 (def vsfive (iterate (sor policyfive 1.5) valuefive))
 
-(ps 20 (for [v vsfive] (v [0,0])))
+(take 20 (for [v vsfive] (v [0,0])))
 
+(def valuesix (nth vsfive 20))
 
+(pvalue valuesix)
+
+(def policysix (policyof valuesix))
+
+(ppolicy policysix)
+
+(= policyfive policysix) ; true
 
 
 
