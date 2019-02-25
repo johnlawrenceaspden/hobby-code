@@ -383,7 +383,8 @@ alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 # alias ack='ack-grep --text'
 
 
-GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
+# GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
+GITREPOLIST="$HOME/hobby-code/ $HOME/data"
 
 function vcstatuses
 {
