@@ -404,25 +404,26 @@ function vcstatuses
     popd #restore current directory
 }
 
+GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
+
 function gitguiall
 {
     pushd ~
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/solarflare2 ; do cd $i && git gui ; done
+    for i in  $GITREPOLIST ; do cd $i && git gui ; done
     popd
 }
 
 function gitpushall
 {
     pushd ~
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/solarflare2 ; do cd $i && git push ; done
+    for i in $GITREPOLIST ; do echo $i ; cd $i && git push ; done
     popd
 }
 
 function gitpullall
 {
     pushd ~
-    for i in ~/hobby-code/ ~/data ~/iqtest/ ~/cycling ~/cctool ~/solarflare2; do cd $i && git pull ; done
-    cd ~/iqtest ; git remote update ;
+    for i in $GITREPOLIST; do echo $i ; cd $i && git remote update ; git merge ; done
     popd
 }
 
