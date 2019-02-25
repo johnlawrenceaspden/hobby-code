@@ -382,14 +382,14 @@ alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 # text files by default. Therefore:
 # alias ack='ack-grep --text'
 
+
+GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
+
 function vcstatuses
 {
     pushd ~  #preserve current directory
 
-    i=~/silverline-sensor-server
-    echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/john-patch..john-patch ;
-
-    for i in  ~/iqtest ~/cycling ~/cctool ~/solarflare2 ~/hobby-code ~/data; do
+    for i in  $GITREPOLIST ; do
         echo "--" && echo "$i" && echo "--" && cd "$i" && git status -s && git log origin/master..master ;
     done ;
     # i=~/iqtest
@@ -404,7 +404,7 @@ function vcstatuses
     popd #restore current directory
 }
 
-GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
+
 
 function gitguiall
 {
