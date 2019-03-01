@@ -12,7 +12,7 @@
                  [com.cemerick/pomegranate "0.3.1"]
                  
                  [com.stuartsierra/component "0.3.1"]
-;;                 [simple-plotter "0.1.2"]
+                 [simple-plotter "0.1.2"]
                  ])
 
 ;; Examples of how to use pomegranate to load other libraries
