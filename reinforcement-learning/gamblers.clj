@@ -167,7 +167,23 @@ pi-optimal ; [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 0 21 22 23 24 25
 (println optv)
 (println pi-optimal)
 
+pi-optimal ; [nil 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 1 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 nil]
+
 (use 'simple-plotter.core)
 
+;; 10 FOR X = 1 TO 255
+;; 20 PLOT X, 88+80*SIN(X/128*PI)
+;; 30 NEXT X
 
+(do 
+  (create-window "optimal policy" 2000 1000 black white 0 100 0 50)
+  (let [pio (mapv (fn[n] (if n n 0)) pi-optimal)]
+    (doseq [n (range 101)]
+      (line n 0 n (pio n)))))
+
+
+(do
+  (create-window "value function for optimal policy" 2000 1000 black white 0 100 0 1.0)
+  (doseq [n (range 101)]
+    (line n 0 n (optv n))))
 
