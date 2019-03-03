@@ -24,7 +24,7 @@
 ;; everything is worthless
 (def v0 (vec (repeat 101 0 )))
 
-(defn update [v, n, stake]
+(defn bellman-update [v, n, stake]
   (if (#{0,100} n) 0 
       (let [win  (+ n stake)
             loss (- n stake)]
@@ -35,20 +35,19 @@
               (+ (* pwin (+ 1 (v win))) (* plose (v loss)))
               :else :fuuuck))))
 
-
 (defn available-actions [s]
   (if (#{0,100} s) (list 0)
       (range 1 (inc (min s (- 100 s))))))
 
 (defn sorted-actions [v n]
   (reverse (sort
-   (for [a (available-actions n)] [(update v n a) a]))))
+   (for [a (available-actions n)] [(bellman-update v n a) a]))))
 
 (defn optimal-action [v n]
   (second (first (sorted-actions v n))))
 
 (defn value-update [v n]
-  (update v n (optimal-action v n)))
+  (bellman-update v n (optimal-action v n)))
 
 (defn value-iterate [v]
   (mapv (fn [n] (value-update v n)) (range 0 101)))
