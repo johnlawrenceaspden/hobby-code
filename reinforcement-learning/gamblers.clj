@@ -1,13 +1,25 @@
 ;; Gambler's Problem
 
+;; boot repl
+;; (load-file "gamblers.clj")
+
+;; boot repl
+;; M-x cider-connect from emacs
+
+;; boot -f gamblers.clj
 (set-env! :dependencies '[[simple-plotter "0.1.2"]])
+
+;; comment out the set-env above and run with:
+;; cd ~/hobby-code/reinforcement-learning/ ; time java -cp /home/john/.m2/repository/org/clojure/clojure/1.7.0/clojure-1.7.0.jar:/home/john/.m2/repository/simple-plotter/simple-plotter/0.1.2/simple-plotter-0.1.2.jar clojure.main -i gamblers.clj
+
+
 (use 'simple-plotter.core)
 
 
 
 (def pwin 0.4)
 (def plose (- 1 pwin))
-;; time java -cp /home/john/.m2/repository/org/clojure/clojure/1.7.0/clojure-1.7.0.jar clojure.main -i gamblers.clj
+
 
 
 (defn abs[x] (if (< x 0) (- x) x))
