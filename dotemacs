@@ -24,7 +24,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ack realgud company undo-tree ggtags elpy clojure-mode cider))))
+    (cider ack realgud company undo-tree ggtags elpy clojure-mode))))
 
 
 ;; packages are normally enabled after this file has run, do it now instead
