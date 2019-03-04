@@ -5,6 +5,12 @@
 ;; (package-install-selected-packages)
 
 
+;; Sometimes its as well to kill off all the compiled versions of packages and recompile them
+;; e.g. when upgrading emacs
+;; helpful things to do are:
+;; find ~/.emacs.d -name '*.elc'
+;; find ~/.emacs.d -name '*.elc' | xargs rm
+;; (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
 
 (require 'package)
 
