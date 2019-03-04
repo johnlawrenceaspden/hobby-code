@@ -2,7 +2,7 @@
   :description ""
   :license ""
   :url ""
-  :plugins [[cider/cider-nrepl "0.12.0"]
+  :plugins [[cider/cider-nrepl "0.21.0"]
             [lein-ancient "0.6.8"] ;; lein ancient to find updated dependencies
             ] 
   :global-vars {*print-length* 150 *print-level* 100}
