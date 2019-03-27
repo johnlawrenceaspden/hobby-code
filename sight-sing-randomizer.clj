@@ -12,27 +12,6 @@
 ;; 6 1 2 1 6 7 5 6
 ;; 2 2 2 1 6 6 5 4 3 1
 ;; 2 6 5 4 3 2 1 2
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone)
-(tone) 
+
+(defn tone-set[]
+  (clojure.pprint/pprint (repeatedly 20 #(tone))))
