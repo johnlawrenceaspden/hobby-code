@@ -1,0 +1,175 @@
+2 ā, ab, abs: (away) from, out of, 72
+2 accipiō: to receive, get, accept, 26
+2 ad: to, toward; near, 188
+2 annus, -ī m.: year, 18
+2 at: but; mind you; but, you say, 27
+2 atque: and, and also, and even, 21
+2 autem: however, moreover, 81
+2 brevis, -e: short, brief, 15
+2 coniciō, -ere, -iēcī: throw together, throw, take oneself, 13
+2 cōnsilium, -iī n.: plan, advice; council, assembly, 23
+2 constituō, -ere, -uī, -ūtus: decide, establish, resolve, 36
+2 cum: with (+ abl.); when, since, although, 196
+2 dē: down from, from, about, concerning (+ abl.), 29
+2 deus, -ī m.: god, divinity, deity, 19
+2 dīcō, -ere, dīxī, dictus: say, speak, tell, call, name, 17
+2 dō, dare, dedī, datum: give, put, make; grant, allow, 42
+2 enim: for, indeed, in truth, 77
+2 et: and, also, even, 287
+2 faciō, -ere, fēcī, fectum: make, do, 89
+2 habitō (1): to inhabit, live, 18
+2 hic, haec, hoc: this, that; he, she, it, 222
+2 ibi: there, in that place, 21
+2 igitur: therefore, then, accordingly, 71
+2 ille, illa, illud: that (famous); he, she, it, 84
+2 in: in (+ abl.) , into (+ acc.), 272
+2 insula, -ae f.: island, 20
+2 ipse, ipsa, ipsum: -self; the very, 50
+2 is, ea, id: this, that; he, she, it, 230
+2 lītus, lītoris n.: shore, beach, 19
+2 māgnopere: greatly, very much, 15
+2 magnus, -a, -um: great, large, tall; mighty, important, 79
+2 mare, maris n.: sea, 15
+2 multus, -a, -um: much, many, abundant, 36
+2 omnis, omne: every, all, 96
+2 Perseus, -ī m.: Perseus, 26
+2 post: after, behind (+ acc.); afterward, next, 32
+2 postquam: after, when
+
+
+2 puer, puerī, m.: boy, 17
+2 quīdam, quaedam, quiddam: certain, a certain, 50
+2 rēx, rēgis m.: king; adj. ruling, royal, 44
+2 sē: himself, herself, itself, themselves, 115
+2 sum, esse, fuī, futūrum: to be, 422
+2 suus, -a, -um: his, her, its, their (own), 84
+2 tamen: nevertheless, however, 99
+2 tantus, -a, -um: so great, so much, so large, 55
+2 tempestās, -tātis f.: weather; storm, 17
+2 tempus, -poris n.: time, 31
+2 tum: then, at that time, 73
+2 videō, vidēre, vīdī, vīsum: to see, 50
+2 volō, velle, voluī: will, wish, be willing, 22
+
+4 audiō, audīre, audīvī, audītum: to hear, listen to, 22
+4 capiō, capere, cēpī, captum: to take, capture, seize, 14
+4 caput, capitis, n.: head; life, 20
+4 causa, -ae f.: reason, cause; case, 31
+4 dum: while, as long as, until, 35
+4 ē, ex: out from, from, out of (+ abl.), 108
+4 etiam: besides, also, even, 17
+4 homō, -inis m./f.: man, mortal, human, 21
+4 iam: now, already, soon, 29
+4 locus, -ī m.: place, region, situation; opportunity, 51
+4 manus, -ūs f.: hand, 16
+4 modus, -ī m.: way, manner; modo (adv.) only 38
+4 monstrum, -ī n.: monster, 26
+4 per: through, over, across, 23
+4 perveniō, -īre, -vēnī, -ventum: to come through, arrive 19
+4 prīmus -a -um: first, 16
+4 quaerō, -ere, quaesīvī, quaesītum: to seek, ask, inquire, 21
+4 quī, quae, quod (quis? quid?): who, which, that, 307
+4 referō, -ferre, -tulī, -lātum: report, bring back, 18
+4 rēs, reī, f.: thing, matter, affair, business, 83
+4 saxum, saxī n.: rock, 15
+4 species, -ēi f.: sight, look, appearance, aspect, 15
+4 statim: immediately, on the spot, at once, 28
+4 tandem: finally, at last, at length, in the end, 28
+4 ubi: where, when, 56
+4 ūnus, -a, -um: one, 14
+4 veniō, -īre, vēnī, ventus: come, go, 72
+
+6 animus, -ī m.: soul, spirit, breath, courage, pride, 18
+6 diēs, -ēī m./f.: day, time, season, 46
+6 dolor, -ōris m.: pain, grief, anger, passion, 17
+6 exspectō (1): look out for, wait for, await, 15
+6 fīlia, -iae f.: daughter, 2
+
+6 gerō, -ere, gessī, gestus: carry (on), wage, 18
+6 gravis, -e: heavy, serious, severe; venerable, 16
+6 iubeō, iubēre, iussī, iussum: to order, command, 17
+6 mittō, -ere, -mīsī, missum: to send, let go, 18
+6 parō (1): prepare, make (ready), 21
+6 perīculum, -ī n.: risk, danger, peril, 31
+6 subitō: immediately, straightaway, 19
+6 timor, -oris m.: fear, dread, anxiety, 15
+6 trādō, -dere, -didī, -ditum: to give over, hand down, 20
+
+8 conferō, -ferre: bring together, collect, carry, 18
+8 corpus, corporis, n.: body, 19
+8 mox: soon, 19
+8 nāvis, nāvis, f.: ship, boat, 63
+8 neque: and not (neque...neque = neither...nor), 27
+8 paucī, -ae, -a: little, few, scanty, 22
+8 regiō, -ōnis f.: region, district, 18
+8 regnum, -ī n.: (royal) power, kingdom, realm, 19
+8 salūs, -ūtis f.: safety, security, health, 15
+8 sed: but, moreover, however, 31
+8 sentiō, sentīre, sēnsī, sēnsum: to feel, perceive, 16
+8 sine: without (abl.), 19
+8 solvō, -ere, solvī, solūtum: to loosen, release, 20
+
+10 cognōscō, -ere, -nōvī, -nitum: to learn, perf. know, 22
+10 dīmittō, -ere, -mīsī, -missus: send away, let go, 8
+10 Hercules, -is m.: Hercules 121
+10 pars, partis, f.: part, share, 23
+10 redeō, -īre, -īvī: go back, return, come back, 19
+10 urbs, urbis, f.: city, 19
+
+12 habeō, -ēre, habuī, -itus: have, hold; consider, 34
+12 interficiō, -ere, -fēcī, -fectum: kill, slay, destroy, 15
+12 iter, itineris n.: way, road, journey, 19
+12 nōn: not, by no means, not at all, 40
+12 paulus, -a, -um: little, small, 16
+12 vīs, (vīs), f.: force, power, violence; pl. vīrēs, strength, 23
+12 vir, virī m.: man, male, 23
+
+
+14 bōs, bovis m. f.: cow, ox, bull (bobus-dat. abl.), 18
+14 proficīscor, -ī, -fectus: set out, depart, 19
+
+16 Eurystheus, -ī m.: Eurystheus, 23
+16 possum, posse, potuī: be able, can, avail, 46
+
+18 conficiō, -ere: to exhaust, finish, accomplish, 16
+18 labor, -ōris m.: labor, hardship, task, 22
+18 nūllus, -a, -um: none, no, no one, 24
+
+20 auxilium, -ī n.: help, aid, assistance, 19
+
+20 coepī, coepisse, coeptum: begin, 16
+20 ingēns (ingentis): huge, immense, vast, huge, 21
+20 ita: so, thus, 25
+
+22 progredior, -gredī, progressus sum: advance, 17
+22 reliquus, -a, um: remaining, left (over), 15
+22 sī: if (only), whether, in case that, 20
+22 spelunca, -ae f.: cave, 30
+22 summus, -a, -um: highest, greatest, top of, 29
+22 vinum, vinī n.: wine, 16
+
+24 īdem, eadem, idem: the same, 15
+24 ēgredior, -ī, -gressus: go out, disembark, 18
+
+26 flūmen, -inis n.: river, stream, 15
+26 ut: as, just as, when (+ ind.); (so) that, in order that, 112
+
+28 terra, -ae f.: land, earth, 22
+
+34 socius, -ī m.: ally, companion, comrade, 33
+
+36 intellegō, -ere, -lēxī, -lēctum: to realize, understand, 24
+
+40 nē: lest, that not, no, not, 22
+
+58 Iāson, -onis m.: Jason, 45
+
+62 Argonautae, -ārum m.: Argonauts, 18
+
+70 Mēdēa, -ae f.: Medea, 27
+
+88 Ulixēs, -is m.: Ulysses, 43
+
+92 Polyphēmus, -ī m.: Polyphemus, 19
+
+104 Circē, -ēs f.: Circe, 15
