@@ -35,8 +35,6 @@
 2 Perseus, -ī m.: Perseus, 26
 2 post: after, behind (+ acc.); afterward, next, 32
 2 postquam: after, when
-
-
 2 puer, puerī, m.: boy, 17
 2 quīdam, quaedam, quiddam: certain, a certain, 50
 2 rēx, rēgis m.: king; adj. ruling, royal, 44
@@ -50,7 +48,6 @@
 2 tum: then, at that time, 73
 2 videō, vidēre, vīdī, vīsum: to see, 50
 2 volō, velle, voluī: will, wish, be willing, 22
-
 4 audiō, audīre, audīvī, audītum: to hear, listen to, 22
 4 capiō, capere, cēpī, captum: to take, capture, seize, 14
 4 caput, capitis, n.: head; life, 20
@@ -78,13 +75,11 @@
 4 ubi: where, when, 56
 4 ūnus, -a, -um: one, 14
 4 veniō, -īre, vēnī, ventus: come, go, 72
-
 6 animus, -ī m.: soul, spirit, breath, courage, pride, 18
 6 diēs, -ēī m./f.: day, time, season, 46
 6 dolor, -ōris m.: pain, grief, anger, passion, 17
 6 exspectō (1): look out for, wait for, await, 15
 6 fīlia, -iae f.: daughter, 2
-
 6 gerō, -ere, gessī, gestus: carry (on), wage, 18
 6 gravis, -e: heavy, serious, severe; venerable, 16
 6 iubeō, iubēre, iussī, iussum: to order, command, 17
@@ -94,7 +89,6 @@
 6 subitō: immediately, straightaway, 19
 6 timor, -oris m.: fear, dread, anxiety, 15
 6 trādō, -dere, -didī, -ditum: to give over, hand down, 20
-
 8 conferō, -ferre: bring together, collect, carry, 18
 8 corpus, corporis, n.: body, 19
 8 mox: soon, 19
@@ -108,14 +102,12 @@
 8 sentiō, sentīre, sēnsī, sēnsum: to feel, perceive, 16
 8 sine: without (abl.), 19
 8 solvō, -ere, solvī, solūtum: to loosen, release, 20
-
 10 cognōscō, -ere, -nōvī, -nitum: to learn, perf. know, 22
 10 dīmittō, -ere, -mīsī, -missus: send away, let go, 8
 10 Hercules, -is m.: Hercules 121
 10 pars, partis, f.: part, share, 23
 10 redeō, -īre, -īvī: go back, return, come back, 19
 10 urbs, urbis, f.: city, 19
-
 12 habeō, -ēre, habuī, -itus: have, hold; consider, 34
 12 interficiō, -ere, -fēcī, -fectum: kill, slay, destroy, 15
 12 iter, itineris n.: way, road, journey, 19
@@ -123,53 +115,34 @@
 12 paulus, -a, -um: little, small, 16
 12 vīs, (vīs), f.: force, power, violence; pl. vīrēs, strength, 23
 12 vir, virī m.: man, male, 23
-
-
 14 bōs, bovis m. f.: cow, ox, bull (bobus-dat. abl.), 18
 14 proficīscor, -ī, -fectus: set out, depart, 19
-
 16 Eurystheus, -ī m.: Eurystheus, 23
 16 possum, posse, potuī: be able, can, avail, 46
-
 18 conficiō, -ere: to exhaust, finish, accomplish, 16
 18 labor, -ōris m.: labor, hardship, task, 22
 18 nūllus, -a, -um: none, no, no one, 24
-
 20 auxilium, -ī n.: help, aid, assistance, 19
-
 20 coepī, coepisse, coeptum: begin, 16
 20 ingēns (ingentis): huge, immense, vast, huge, 21
 20 ita: so, thus, 25
-
 22 progredior, -gredī, progressus sum: advance, 17
 22 reliquus, -a, um: remaining, left (over), 15
 22 sī: if (only), whether, in case that, 20
 22 spelunca, -ae f.: cave, 30
 22 summus, -a, -um: highest, greatest, top of, 29
 22 vinum, vinī n.: wine, 16
-
 24 īdem, eadem, idem: the same, 15
 24 ēgredior, -ī, -gressus: go out, disembark, 18
-
 26 flūmen, -inis n.: river, stream, 15
 26 ut: as, just as, when (+ ind.); (so) that, in order that, 112
-
 28 terra, -ae f.: land, earth, 22
-
 34 socius, -ī m.: ally, companion, comrade, 33
-
 36 intellegō, -ere, -lēxī, -lēctum: to realize, understand, 24
-
 40 nē: lest, that not, no, not, 22
-
 58 Iāson, -onis m.: Jason, 45
-
 62 Argonautae, -ārum m.: Argonauts, 18
-
 70 Mēdēa, -ae f.: Medea, 27
-
 88 Ulixēs, -is m.: Ulysses, 43
-
 92 Polyphēmus, -ī m.: Polyphemus, 19
-
 104 Circē, -ēs f.: Circe, 15
