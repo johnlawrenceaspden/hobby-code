@@ -1,0 +1,853 @@
+mē	me, myself	[sound:me.mp3]					Chapter-1
+quid (interrogativus, neutrum)	what	[sound:quid.mp3]					Chapter-1
+nihil (n. indeclinable)	nothing	[sound:nihil.mp3]					Chapter-1 Chapter-4
+nōn[sound:non.mp3]	not						Chapter-1
+saepe[sound:saepe.mp3]	often						Chapter-1
+sī[sound:si.mp3]	if						Chapter-1
+amō, amāre, amāvī, amātum[sound:amo.mp3]	to love, like						Chapter-1
+amābō tē	please (I will love you)	[sound:amabo.mp3]					Chapter-1
+cōgitō, cōgitāre, cōgitāvī, cōgitātum[sound:cogito.mp3]	to think, ponder, consider, plan						Chapter-1
+dēbeō, dēbēre, dēbuī, dēbitum[sound:debeo.mp3]	to owe; ought, must, should						Chapter-1
+dō, dare, dedī, datum[sound:do.mp3]	to give, offer				<div>unlike other first conj. verbs, the stem vowel of dō is long only in the 2nd pers. sg. indic. (<b>dās</b>) and sg. imperat. (<b>dā</b>).</div>		Chapter-1 marked
+errō, errāre, errāvī, errātum[sound:erro.mp3]	to wander; err, go astray; make a mistake, be mistaken						Chapter-1
+laudō, laudāre, laudāvī, laudātum[sound:laudo.mp3]	to praise						Chapter-1
+moneō, monēre, monuī, monitum[sound:moneo.mp3]	to remind, advise, warn						Chapter-1
+salveō, salvēre[sound:salveo.mp3]	to be well, be in good health (s___)						Chapter-1
+salvē, salvēte[sound:salve.mp3]	hello, greetings						Chapter-1
+cōnservō, cōnservāre, cōnservāvī, cōnservātum[sound:conservo.mp3]	to preserve, conserve, maintain (strong)						Chapter-1
+terreō, terrēre, terruī, territum[sound:terreo.mp3]	to frighten, terrify						Chapter-1
+valeō, valēre, valuī, valitūrum[sound:valeo.mp3]	to be strong, have power; be well						Chapter-1
+valē, valēte[sound:vale.mp3]	goodbye, farewell						Chapter-1
+videō, vidēre, vīdī, vīsum[sound:video.mp3]	to see, observe; understand						Chapter-1
+vocō, vocāre, vocāvī, vocātum	to call, summon	[sound:voco.mp3]					Chapter-1
+servō, servāre, servāvī, servātum[sound:servo.mp3]	to preserve, save, keep, guard						Chapter-1
+fāma, fāmae (f)[sound:fama.mp3]	rumor, report; fame, reputation				hāc fāmā ad Trevirōs perlatā		Chapter-2
+fōrma, fōrmae (f)[sound:forma.mp3]	form, shape; beauty						Chapter-2
+fortūna, fortūnae (f)[sound:fortuna.mp3]	fortune, luck						Chapter-2
+īra, īrae (f)[sound:ira.mp3]	ire, anger						Chapter-2
+nauta, nautae (m)[sound:nauta.mp3]	sailor						Chapter-2
+patria, patriae (f)[sound:patria.mp3]	fatherland, native land, (one's) country						Chapter-2
+<div>pecūnia, pecūniae (f)[sound:pecunia.mp3]</div>	money						Chapter-2
+<div>philosophia, philosophiae (f)[sound:philosophia.mp3]</div>	philosophy						Chapter-2
+poena, poenae (f)	penalty, punishment	[sound:poena.mp3]					Chapter-2
+poenās dare[sound:poenas dare.mp3]	to pay the penalty						Chapter-2
+<div>poēta, poētae (m)[sound:poeta.mp3]</div>	poet						Chapter-2
+<div>porta, portae (f)[sound:porta.mp3]</div>	gate, entrance						Chapter-2
+<div>puella, puellae (f)</div>	girl	[sound:puella.mp3]					Chapter-2
+rosa, rosae (f)[sound:rosa.mp3]	rose						Chapter-2
+sententia, sententiae (f)[sound:sententia.mp3]	feeling, thought, opinion;  vote, decision; sentence						Chapter-2
+<div>vīta, vītae (f)[sound:vita.mp3]</div>	life; mode of life						Chapter-2
+<div>antīqua, antīquae</div>	ancient, old-time (feminine nom/gen sg)	[sound:antiqua.mp3]					Chapter-2
+magna, magnae[sound:magna.mp3]	large, great; important (feminine nom/gen)						Chapter-2
+antīquus, antīqua, antīquum	ancient, old-time	[sound:ankidroid_audiorec1368457555.3gp]					Chapter-2
+magnus, magna, magnum	large, great; important	[sound:ankidroid_audiorec691301630.3gp]					Chapter-2
+mea, meae	my (fem nom/gen)	[sound:mea.mp3]					Chapter-2
+meus, mea, meum	my						Chapter-2
+multa, multae[sound:multa.mp3]	much, many (feminine nom/gen)						Chapter-2
+multus, multa, multum	much, many (all genders)						Chapter-2
+tua, tuae	your (fem sg and pl)	[sound:tua.mp3]					Chapter-2
+tuus, tua, tuum	your (thy)						Chapter-2
+et[sound:et.mp3]	and; even						Chapter-2
+et...et[sound:et et.mp3]	both...and						Chapter-2
+sed[sound:sed.mp3]	but						Chapter-2
+Ō[sound:o.mp3]	O! Oh!						Chapter-2
+sine (+abl)	without	[sound:sine.mp3]					Chapter-2
+est[sound:est.mp3]	is;.  (he/she/it) is						Chapter-2
+<div>ager, agrī (m)[sound:ager.mp3]</div>	field, farm						Chapter-3
+<div>agricola, agricolae (m)[sound:agricola.mp3]</div>	farmer						Chapter-3
+<div>amīca, amīcae (f)[sound:amica.mp3]</div>	friend (female)						Chapter-3
+<div>amīcus, amīcī (m)[sound:amicus.mp3]</div>	friend (male)						Chapter-3
+<div>fēmina, fēminae (f)[sound:femina.mp3]</div>	woman						Chapter-3
+<div>fīlia, fīliae (f)[sound:filia.mp3]</div>	daughter						Chapter-3
+<div>fīlius, fīliī (m)[sound:filius.mp3]</div>	son						Chapter-3
+<div>numerus, numerī (m)[sound:numerus.mp3]</div>	number						Chapter-3
+fīliābus	daughters (dat. and abl. pl)						Chapter-3
+<div>populus, populī (m)[sound:populus.mp3]</div>	the people, a people, a nation (not natio!)						Chapter-3
+<div>puer, puerī (m)[sound:puer.mp3]</div>	boy; boys, children (pl.)						Chapter-3
+<div>sapientia, sapientiae (f)</div>	wisdom	[sound:sapientia.mp3]					Chapter-3
+<div>vir, virī (m)[sound:vir.mp3]</div>	man, hero						Chapter-3
+<div>avārus, avāra, avārum[sound:avarus.mp3]</div>	greedy, avaricious						Chapter-3
+<div>paucī, paucae, pauca</div>	few, a few	[sound:pauci.mp3]					Chapter-3
+<div>Rōmānus, Rōmāna, Rōmānum[sound:romanus.mp3]</div>	Roman						Chapter-3
+<div>dē (+abl.)</div>	down from, from; concerning, about	[sound:de.mp3]					Chapter-3
+<div>in (+abl.)[sound:in.mp3]</div>	in, on						Chapter-3
+hodiē	today	[sound:hodie.mp3]					Chapter-3
+semper[sound:semper.mp3]	always						Chapter-3
+<div>habeō, habēre, habuī, habitum[sound:habeo.mp3]</div>	to have, hold, possess; consider, regard						Chapter-3
+<div>satiō, satiāre, satiāvī, satiātum[sound:satio.mp3]</div>	to satisfy, sate						Chapter-3
+<div>bāsium, bāsiī (n)</div>	kiss	[sound:basium.mp3]					Chapter-4
+<div>bellum, bellī (n)</div>	war	[sound:bellum.mp3]					Chapter-4
+<div>cōnsilium, cōnsiliī (n)</div>	plan, purpose; counsel, advice; judgement, wisdom	[sound:consilium.mp3]					Chapter-4
+<div>cūra, cūrae (f)</div>	care, attention, caution, anxiety	[sound:cura.mp3]					Chapter-4
+<div>dōnum, dōnī (n)</div>	gift, present	[sound:donum.mp3]					Chapter-4
+<div>exitium, exitiī (n)</div>	destruction, ruin	[sound:exitium.mp3]					Chapter-4
+<div>magister, magistrī (m)</div>	schoolmaster, teacher, master	[sound:magister.mp3]					Chapter-4
+<div>magistra, magistrae (f)</div>	schoolmistress, teacher, mistress	[sound:magistra.mp3]					Chapter-4
+<div>mora, morae (f)</div>	delay	[sound:mora.mp3]					Chapter-4
+<div>oculus, oculī (m)</div>	eye	[sound:oculus.mp3]					Chapter-4
+<div>officium, officiī (n)</div>	duty, service	[sound:officium.mp3]					Chapter-4
+ōtium, ōtiī	leisure, peace	[sound:otium.mp3]	n				Chapter-4
+<div>perīculum, perīculī (n)</div>	danger, risk	[sound:periculum.mp3]					Chapter-4
+<div>remedium, remediī (n)</div>	cure, remedy	[sound:remedium.mp3]					Chapter-4
+<div>bellus, bella, bellum</div>	pretty, handsome, charming	[sound:bellus.mp3]					Chapter-4
+<div>bonus, bona, bonum</div>	good, kind	[sound:bonus.mp3]					Chapter-4
+<div>hūmānus, hūmāna, hūmānum</div>	pertaining to man, human; humane, kind; refined, cultivated	[sound:humanus.mp3]					Chapter-4
+<div>malus, mala, malum</div>	bad, wicked, evil	[sound:malus.mp3]					Chapter-4
+<div>parvus, parva, parvum</div>	small, little	[sound:parvus.mp3]					Chapter-4
+<div>stultus, stulta, stultum</div>	foolish	[sound:stultus.mp3]					Chapter-4
+<div>stultus, stultī (m)</div>	a fool	[sound:stultus stulti.mp3]					Chapter-4
+<div>vērus, vēra, vērum</div>	true, real, proper	[sound:verus.mp3]					Chapter-4
+<div>iuvō, iuvāre, iūvī, iūtum</div>	to help, aid, assist; please	[sound:iuvo.mp3]					Chapter-4 leech
+<div>sum, esse, fuī, futūrum</div>	to be, exist	[sound:sum.mp3]					Chapter-4
+<div>adulēscentia, adulēscentiae (f)</div>	youth, young manhood, youthfulness	[sound:adulescentia.mp3]					Chapter-5
+<div>animus, animī (m)</div>	soul, spirit, mind	[sound:animus.mp3]					Chapter-5
+<div>animī, animōrum (m pl)</div>	high spirits, pride, courage	[sound:animi.mp3]					Chapter-5
+<div>caelum, caelī (n)</div>	sky, heaven	[sound:caelum.mp3]					Chapter-5
+<div>culpa, culpae (f)</div>	fault, blame	[sound:culpa.mp3]					Chapter-5
+<div>glōria, glōriae (f)</div>	glory, fame	[sound:gloria.mp3]					Chapter-5
+<div>verbum, verbī (n)</div>	word	[sound:verbum.mp3]					Chapter-5
+tē	you, yourself (singular acc.)	[sound:te.mp3]					Chapter-5
+<div>līber, lībera, līberum</div>	free	[sound:liber.mp3]					Chapter-5
+<div>noster, nostra, nostrum</div>	our, ours	[sound:noster.mp3]					Chapter-5
+<div>pulcher, pulchra, pulchrum</div>	beautiful, handsome, fine	[sound:pulcher.mp3]					Chapter-5
+<div>sānus, sāna, sānum</div>	sound, healthy, sane	[sound:sanus.mp3]					Chapter-5
+igitur	therefore, consequently (postpositive conj)	[sound:igitur.mp3]					Chapter-5
+-ne	<div>interrogative suffix attached to the first word of a sentence, typically the verb or another word on which the question hinges, to introduce a question whose answer is uncertain</div>	[sound:ne.mp3]					Chapter-5
+<div>propter (+acc.)</div>	on account of, because of (prep)	[sound:propter.mp3]					Chapter-5
+crās	tomorrow	[sound:cras.mp3]					Chapter-5
+heri	yesterday	[sound:heri.mp3]					Chapter-5
+quandō	when	[sound:quando.mp3]					Chapter-5
+<div>sī quandō</div>	if ever	[sound:si quando.mp3]					Chapter-5
+satis	enough, sufficient (-ly)	[sound:satis.mp3]					Chapter-5
+tum	then, at that time; thereupon, in the next place	[sound:tum.mp3]					Chapter-5
+<div>cēnō, cēnāre, cēnāvī, cēnātum</div>	to dine	[sound:ceno.mp3]					Chapter-5
+<div>culpō, culpāre, culpāvī, culpātum</div>	to blame, censure	[sound:culpo.mp3]					Chapter-5
+<div>remaneō, remanēre, remānsī, remānsum</div>	to remain, stay, stay behind, abide, continue (with re-)	[sound:remaneo.mp3]					Chapter-5
+<div>maneō, manēre, mānsī, mānsum</div>	to remain, stay, stay behind, abide, continue	[sound:maneo.mp3]					Chapter-5
+<div>superō, superāre, superāvī, superātum</div>	to be above, have the upper hand, surpass; overcome conquer	[sound:supero.mp3]					Chapter-5
+<div>dea, deae (f)</div>	goddess	[sound:dea.mp3]					Chapter-6
+<div>deus, deī (m)</div>	god	[sound:deus.mp3]					Chapter-6
+<div>discipula, discipulae (f)</div>	(female) learner, pupil, student	[sound:discipula.mp3]					Chapter-6
+<div>discipulus, discipulī (m)</div>	learner, pupil, student (m)	[sound:discipulus.mp3]					Chapter-6
+<div>īnsidiae, īnsidiārum (f)</div>	ambush, plot, treachery	[sound:insidiae.mp3]					Chapter-6
+<div>liber, librī (m)</div>	book	[sound:liber (1).mp3]					Chapter-6
+<div>tyrannus, tyrannī (m)</div>	absolute ruler, tyrant	[sound:tyrannus.mp3]					Chapter-6
+<div>vitium, vitiī (n)</div>	fault, vice, crime	[sound:vitium.mp3]					Chapter-6
+<div>Graecus, Graeca, Graecum</div>	Greek (adjective)	[sound:graecus.mp3]					Chapter-6
+<div>Graecus, Graecī (m)</div>	a Greek (noun)	[sound:graecus2.mp3]					Chapter-6
+perpetuus, perpetua, perpetuum	perpetual, lasting, uninterrupted, continuous	[sound:perpetuus.mp3]					Chapter-6
+<div>plēnus, plēna, plēnum</div>	full, abundant, generous	[sound:plenus.mp3]					Chapter-6
+<div>salvus, salva, salvum</div>	safe, sound	[sound:salvus.mp3]			Mars pater, tē precor, pastōrēs pecuaque salva servassis duisque bonam salūtem valētūdinem mihi		Chapter-6
+<div>secundus, secunda, secundum</div>	second; favourable	[sound:secundus.mp3]					Chapter-6
+<div>vester, vestra, vestrum</div>	your (pl.)	[sound:vester.mp3]					Chapter-6
+<div>-que</div>	(enclitic) and 	[sound:que.mp3]			(enclitic (suffixed) conjunction; appended to the second of two words to be joined)		Chapter-6
+ubi	where, when	[sound:ubi.mp3]					Chapter-6
+ibi	there	[sound:ibi.mp3]					Chapter-6
+nunc	now, at present	[sound:nunc.mp3]					Chapter-6
+quārē	(lit.) because of which thing; therefore, wherefore, why	[sound:quare.mp3]					Chapter-6
+<div>possum, posse, potuī</div>	to be able, can, could, have power	[sound:possum.mp3]					Chapter-6
+<div>tolerō, tolerāre, tolerāvī, tolerātum</div>	to bear, endure	[sound:tolero.mp3]					Chapter-6
+amor, amōris	love	[sound:amor.mp3]	m				Chapter-7
+carmen, carminis	song, poem	[sound:carmen.mp3]	n				Chapter-7
+<div>cīvitās, cīvitātis (f)</div>	state, citizenship	[sound:civitas.mp3]					Chapter-7
+<div>corpus, corporis (n)</div>	body	[sound:corpus.mp3]					Chapter-7
+<div>homō, hominis (m)</div>	human being, man	[sound:homo.mp3]					Chapter-7
+<div>labor, labōris (m)</div>	labour, work, toil; a work, production	[sound:labor.mp3]					Chapter-7
+<div>littera, litterae (f)</div>	a letter of the alphabet	[sound:littera.mp3]					Chapter-7
+<div>litterae, litterārum (f)</div>	a letter (epistle), literature	[sound:litterae.mp3]					Chapter-7
+mōs, mōris	habit, custom, manner	[sound:mos.mp3]	m				Chapter-7
+mōrēs, mōrum (m pl)	habits, morals, character	[sound:mores.mp3]					Chapter-7
+<div>nōmen, nōminis (n)</div>	name	[sound:nomen.mp3]					Chapter-7
+<div>pāx, pācis (f)</div>	peace	[sound:pax.mp3]					Chapter-7
+<div>rēgīna, rēgīnae (f)</div>	queen	[sound:regina.mp3]					Chapter-7
+<div>rēx, rēgis (m)</div>	king	[sound:rex.mp3]					Chapter-7
+<div>tempus, temporis (n)</div>	time; occasion, opportunity	[sound:tempus.mp3]					Chapter-7
+<div>terra, terrae (f)</div>	earth, ground, land, country	[sound:terra.mp3]					Chapter-7
+<div>uxor, uxōris (f)</div>	wife	[sound:uxor.mp3]					Chapter-7
+<div>virgō, virginis (f)</div>	maiden, virgin	[sound:virgo.mp3]					Chapter-7
+virtūs, virtūtis	manliness, courage; excellence, character, worth, virtue	[sound:virtus.mp3]	f				Chapter-7
+<div>novus, nova, novum</div>	new; strange	[sound:novus.mp3]					Chapter-7
+post (+ acc)	after, behind	[sound:post.mp3]					Chapter-7
+sub (+abl. w/ verbs of rest or +acc. w/ verbs of motion)	under, up under, close to; down to/into, to/at the foot of	[sound:sub.mp3]					Chapter-7
+<div>audeō, audēre, ausus sum</div>	to dare	[sound:audeo.mp3]					Chapter-7
+<div>necō, necāre, necāvī, necātum</div>	to murder, kill (n------)	[sound:neco.mp3]					Chapter-7
+<div>Cicerō, Cicerōnis (m)</div>	(Marcus Tullius) Cicero	[sound:cicero.mp3]					Chapter-8
+<div>cōpia, cōpiae (f)</div>	abundance, supply	[sound:copia.mp3]					Chapter-8
+<div>cōpiae, cōpiārum (f)</div>	supplies, troops, forces	[sound:copiae.mp3]					Chapter-8
+<div>frāter, frātris (m)</div>	brother	[sound:frater.mp3]					Chapter-8
+laus, laudis	praise, glory, fame (3rd declension)	[sound:laus.mp3]	f				Chapter-8
+lībertās, lībertātis	liberty	[sound:libertas.mp3]	f				Chapter-8
+ratiō, ratiōnis	reckoning, account; reason, judgement, consideration; system; manner, method	[sound:ratio.mp3]	f				Chapter-8
+<div>scrīptor, scrīptōris (m)</div>	writer, author	[sound:scriptor.mp3]					Chapter-8
+<div>soror, sorōris (f)</div>	sister	[sound:soror.mp3]					Chapter-8
+<div>victōria, victōriae (f)</div>	victory	[sound:victoria.mp3]					Chapter-8
+dum	while, as long as, at the same time that; until (+subjunctive)	[sound:dum.mp3]			“dum is in aliīs rēbus erat occupātus,” Cic. Rosc. Am. 32		Chapter-8
+ad (+ acc)	to, up to, near to	[sound:ad.mp3]			"in the sense of ""place to which"" with verbs of motion"		Chapter-8
+ex, ē (+ abl)	out of, from, from within; by reason of, on account of; of (following cardinal numerals)	[sound:ex.mp3]			<b>ex</b> before consonants or vowels,&nbsp;<b>ē</b> before consonants only		Chapter-8
+numquam	never	[sound:numquam.mp3]					Chapter-8
+tamen	nevertheless, yet, still, however, for all that	[sound:tamen.mp3]					Chapter-8
+<div>agō, agere, ēgī, āctum</div>	to drive, lead; do, act; pass, spend (life or time)	[sound:ago.mp3]		agitate, active, action	agere bōvum Rōmam; captivōs prae sē agentēs; quō agis tē?; in litōrem passim navēs agerunt; vērā glōriā rādīcēs ēgit		Chapter-8
+<div>grātiās agere (+dat)</div>	to thank someone; to give thanks to	[sound:gratiasagere.mp3]					Chapter-8
+<div>dēmōnstrō, dēmōnstrāre, dēmōnstrāvī, dēmōnstrātum</div>	to point out, show, demonstrate	[sound:demonstro.mp3]					Chapter-8
+<div>discō, discere, didicī</div>	to learn	[sound:disco.mp3]					Chapter-8
+<div>doceō, docēre, docuī, doctum</div>	to teach	[sound:doceo.mp3]		doctrine			Chapter-8
+dūcō, dūcere, dūxī, ductum	to lead, conduct, draw forward ; consider, regard ; prolong	[sound:duco.mp3]		ductile			Chapter-8
+<div>gerō, gerere, gessī, gestum</div>	to carry; carry on, manage, conduct, wage, accomplish, perform	[sound:gero.mp3]		belligerant (war-waging)			Chapter-8
+<div>scrībō, scrībere, scrīpsī, scrīptum</div>	to write, compose	[sound:scribo.mp3]					Chapter-8
+<div>trahō, trahere, trāxī, tractum</div>	to draw, drag; derive, acquire	[sound:traho.mp3]		attract, contract, retract, subtract, tractor			Chapter-8
+<div>vincō, vincere, vīcī, victum</div>	to conquer, overcome (vīcī)	[sound:vinco.mp3]					Chapter-8
+<div>locus, locī (m)</div>	place; passage in literature	[sound:locus.mp3]					Chapter-9
+<div>loca, locōrum (n pl)</div>	places, region	[sound:loca.mp3]					Chapter-9
+<div>locī, locōrum (m pl)</div>	passages in literature	[sound:loci.mp3]					Chapter-9
+morbus, morbī (m)	disease, sickness	[sound:morbus.mp3]					Chapter-9
+<div>studium, studiī (n)</div>	eagerness, zeal, pursuit, study	[sound:studium.mp3]					Chapter-9
+<div>hic, haec, hoc</div>	this; the latter	[sound:hic.mp3]			at times weakened to <i>he, she, it, they</i>		Chapter-9
+<div>ille, illa, illud</div>	that; the former; the famous; he, she, it, they	[sound:ille.mp3]					Chapter-9
+<div>iste, ista, istud</div>	that of yours, that; such (as you have, as you speak of); sometimes with contemptuous force, e.g., that dispicable, that wretched	[sound:iste.mp3]					Chapter-9
+<div>alius, alia, aliud</div>	another, other	[sound:alius.mp3]					Chapter-9
+<div>aliī . . . aliī</div>	some...others	[sound:alii.mp3]					Chapter-9
+<div>alter, altera, alterum</div>	the other (of two), second	[sound:alter.mp3]					Chapter-9
+<div>neuter, neutra, neutrum</div>	neither	[sound:neuter.mp3]					Chapter-9
+<div>nūllus, nūlla, nūllum</div>	not any, no, none	[sound:nullus.mp3]					Chapter-9
+<div>sōlus, sōla, sōlum</div>	alone, only, the only	[sound:solus.mp3]					Chapter-9
+<div>nōn sōlum . . . sed etiam</div>	not only . . . but also	[sound:nonsolum.mp3]					Chapter-9
+<div>tōtus, tōta, tōtum</div>	whole, entire	[sound:totus.mp3]					Chapter-9
+<div>ūllus, ūlla, ūllum</div>	any	[sound:ullus.mp3]					Chapter-9
+<div>ūnus, ūna, ūnum</div>	one, single, alone	[sound:unus.mp3]					Chapter-9
+<div>uter, utra, utrum</div>	either, which (of two)	[sound:uter.mp3]					Chapter-9
+enim (postpositive conj)	for, in fact, truly	[sound:enim.mp3]			(postpositive conj)		Chapter-9
+in (+ acc)	into, toward; against	[sound:in (1).mp3]					Chapter-9
+<b>nimis</b> or <b>nimium</b> (adv.)	too, too much, excessively; in a positive sense, esp. with adjectives and adverbs, exceedingly, very	[sound:nimis.mp3]					Chapter-9
+amīcitia, amīcitiae (f)	friendship	[sound:amicitia.mp3]					Chapter-10
+cupiditās, cupiditātis (f)	desire, longing, passion; cupidity, avarice	[sound:cupiditas.mp3]					Chapter-10
+hōra, hōrae (f)	hour, time	[sound:hora.mp3]					Chapter-10
+nātūra, nātūrae (f)	nature	[sound:natura.mp3]					Chapter-10
+senectūs, senectūtis	old age	[sound:senectus.mp3]	f				Chapter-10
+timor, timōris	fear (not metus)	[sound:timor.mp3]	m				Chapter-10
+vēritās, vēritātis (f)	truth	[sound:veritas.mp3]					Chapter-10
+via, viae (f)	way, road, street	[sound:via.mp3]					Chapter-10
+voluptās, voluptātis (f)	pleasure	[sound:voluptas.mp3]					Chapter-10
+beātus, beāta, beātum	blessed, happy, fortunate	[sound:beatus.mp3]					Chapter-10
+quoniam (conj.)	because, since, seeing that, inasmuch as	[sound:quoniam.mp3]			sed hi virī nimium errant, quoniam illa sunt incerta et ex fortūnā veniunt, nōn ex sapientiā 		Chapter-10
+cum (prep. + abl)	with	[sound:cum.mp3]			As a prefix, <b>cum</b> may appear as <b>com-, con-, cor-, col-, co-</b>, and means <i>with, together, completely</i>, or simply has an intensive force.		Chapter-10
+audiō, audīre, audīvī, audītum	to hear, listen to	[sound:audio.mp3]					Chapter-10
+capiō, capere, cēpī, captum	to take, capture, seize, get	[sound:capio.mp3]					Chapter-10
+dīco, dīcere, dīxī, dictum	to say, tell, speak; name, call	[sound:dico.mp3]					Chapter-10
+faciō, facere, fēcī, factum	to make, do, accomplish	[sound:facio.mp3]					Chapter-10
+fugiō, fugere, fūgī, fugitūrum	to flee, hurry away; escape; go into exile; avoid, shun	[sound:fugio.mp3]		fugitive, fugue, refuge			Chapter-10
+veniō, venīre, vēnī, ventum	to come	[sound:venio.mp3]					Chapter-10
+inveniō, invenīre, invēnī, inventum	to come upon, find	[sound:invenio.mp3]				aut viam inveniam aut faciam	Chapter-10
+vīvō, vīvere, vīxī, vīctum	to live	[sound:vivo.mp3]					Chapter-10
+caput, capitis	head; leader; beginning; life; heading; chapter	[sound:caput.mp3]	n				Chapter-11
+cōnsul, cōnsulis	consul	[sound:consul.mp3]	m				Chapter-11
+nēmō, nūllīus, nēminī, nēminem, nūllō or nūllā (m. or f.)	no one, nobody	[sound:nemo.mp3]					Chapter-11
+ego, meī	I	[sound:ego.mp3]					Chapter-11
+tū, tuī	you (nom/gen sg)	[sound:tu.mp3]					Chapter-11
+is, ea, id	he, she, it; this, that	[sound:is.mp3]					Chapter-11
+īdem, eadem, idem	the same	[sound:idem.mp3]					Chapter-11
+amīcus, amīca, amīcum	friendly	[sound:amicus (1).mp3]					Chapter-11
+cārus, cāra, cārum	dear	[sound:carus.mp3]					Chapter-11
+quod (conj)	because (conj)	[sound:quod.mp3]					Chapter-11
+neque, nec	and not, nor	[sound:neque.mp3]					Chapter-11
+<b>neque...neque</b> or <b>nec...nec</b>	neither...nor	[sound:neque_neque.mp3]					Chapter-11
+autem	however; moreover (postpositive conj.)	[sound:autem.mp3]					Chapter-11
+bene	well, satisfactorily, quite (adv. of <b>bonus</b>)	[sound:bene.mp3]					Chapter-11
+etiam	even, also	[sound:etiam.mp3]					Chapter-11
+intellegō, intellegere, intellēxī, intellēctum	to understand	[sound:intellego.mp3]					Chapter-11
+mittō, mittere, mīsī, missum	to send, let go	[sound:mitto.mp3]					Chapter-11
+sentiō, sentīre, sēnsī, sēnsum	to feel, perceive, think, experience	[sound:sentio.mp3]					Chapter-11
+adulēscēns, adulēscentis (m. and f.)	young man or woman	[sound:adulescens.mp3]					Chapter-12
+annus, annī (m)	year	[sound:annus.mp3]					Chapter-12
+Asia, Asiae (f)	Asia	[sound:asia.mp3]					Chapter-12
+Caesar, Caesaris (m)	Caesar	[sound:caesar.mp3]					Chapter-12
+māter, mātris (f)	mother	[sound:mater.mp3]					Chapter-12
+<b>medicus, medicī&nbsp;</b>and&nbsp;<b>medica, medicae</b>	doctor, physician	[sound:medicus.mp3][sound:medica.mp3]					Chapter-12
+pater, patris (m)	father	[sound:pater.mp3]					Chapter-12
+patientia, patientiae (f)	suffering; patience, endurance	[sound:patientia.mp3]					Chapter-12
+prīncipium, prīncipiī (n)	beginning	[sound:principium.mp3]					Chapter-12
+acerbus, acerba, acerbum	harsh, bitter, grievous	[sound:acerbus.mp3]					Chapter-12
+prō (prep. + abl.)	in front of, before, on behalf of, for the sake of, in return for, instead of, for, as	[sound:pro.mp3]					Chapter-12
+diū (adv)	long, for a long time (adv)	[sound:diu.mp3]					Chapter-12
+nūper (adv)	recently	[sound:nuper.mp3]					Chapter-12
+āmittō, āmittere, āmīsī, āmissum	to send away; lose, let go	[sound:amitto.mp3]					Chapter-12
+cadō, cadere, cecidī, cāsūrum	to fall	[sound:cado.mp3]			wheelock has cāsūrum, most others have cāsum, pronunciation here sounds like short a, weird!		Chapter-12
+creō, creāre, creāvī, creātum	to create	[sound:creo.mp3]					Chapter-12
+dīvitiae, dīvitiārum (f pl)	riches, wealth	[sound:divitiae.mp3]			superāre Crassum dīvitiīs		Chapter-13
+factum, factī (n)	deed, act, achievement	[sound:factum.mp3]					Chapter-13
+signum, signī (n)	sign, signal, indication; seal	[sound:signum.mp3]					Chapter-13
+ipse, ipsa, ipsum	myself, yourself, himself, herself, itself, the very, the actual	[sound:ipse.mp3]					Chapter-13
+<b>quisque</b>, <b>quidque</b>, (gen: <b>cuiusque</b>; dat. <b>cuique)</b>	each one, each person, each thing	[sound:quisque.mp3]					Chapter-13
+suī	himself, herself, itself, themselves	[sound:sui.mp3]					Chapter-13
+doctus, docta, doctum	taught, learned, skilled	[sound:doctus.mp3]					Chapter-13
+fortūnātus, fortūnāta, fortūnātum	fortunate, lucky, happy	[sound:fortunatus.mp3]					Chapter-13
+suus, sua, suum	his own, her own, its own, their own	[sound:suus.mp3]					Chapter-13
+nam	for&nbsp;(conj.)	[sound:nam.mp3]					Chapter-13
+ante (prep + acc)	before (in time or place), in front of; before, previously	[sound:ante.mp3]		"A.M = ante merīdiem/""before midday"""			Chapter-13
+per (prep + acc)	through; by (with intensive pronoun); as a prefix, through, thoroughly, completely, very	[sound:per.mp3]			<b>per-&nbsp;</b>assimilated to <b>pel- </b>before forms beginning with <b>l-</b>		Chapter-13
+ōlim	once (upon a time), long ago, formerly; some day, in the future	[sound:olim.mp3]					Chapter-13
+alō, alere, aluī, altum	to feed, nourish, nurse, suckle; rear, support, sustain, increase; cherish	[sound:alo.mp3]		alimony, aliment (food)			Chapter-13
+dīligō, dīligere, dīlēxī, dīlēctum	to esteem, love (milder than amō)	[sound:diligo.mp3]					Chapter-13
+iungō, iungere, iūnxī, iūnctum	to join	[sound:iungo.mp3]					Chapter-13
+stō, stāre, stetī, statum	to stand, stand still or firm	[sound:sto.mp3]					Chapter-13
+animal, animālis	a living creature, animal	[sound:animal.mp3]	n				Chapter-14
+aqua, aquae (f)	water	[sound:aqua.mp3]					Chapter-14
+ars, artis (f)	art, skill	[sound:ars.mp3]					Chapter-14
+auris, auris	ear	[sound:auris.mp3]	f				Chapter-14
+cīvis, cīvis (m and f)	citizen	[sound:civis.mp3]					Chapter-14
+iūs, iūris	right, justice, law	[sound:ius.mp3]	n		audēmus dēfendere jūra nostra		Chapter-14
+mare, maris	sea	[sound:mare.mp3]	n				Chapter-14
+mors, mortis	death	[sound:mors.mp3]	f				Chapter-14
+nūbēs, nūbis	cloud	[sound:nubes.mp3]	f				Chapter-14
+ōs, ōris	mouth, face	[sound:os.mp3]	n				Chapter-14
+pars, partis	part, share; direction	[sound:pars.mp3]	f				Chapter-14
+Rōma, Rōmae (f)	Rome	[sound:roma.mp3]					Chapter-14
+turba, turbae (f)	uproar, disturbance; mob, crowd, multitude	[sound:turba.mp3]					Chapter-14
+urbs, urbis	city	[sound:urbs.mp3]	f				Chapter-14
+vīs, vīs	force, power, violence	[sound:vis.mp3]	f		celeritās et vīs equōrum		Chapter-14
+vīrēs, vīrium (f, pl)	strength	[sound:vires.mp3]			nōn vīribus aut vēlōcitātibus aut celeritāte corpōrum rēs magnae geruntur		Chapter-14
+ab, ā (prep + abl)	away from, from; by (personal agent)	[sound:ab.mp3]			"<b>ā</b>&nbsp;before consonants (like Eng ""a"" vs ""an), <b>ab</b>&nbsp;before vowels or consonants  ;  <br> ā Rōmā, ā Jūliō, sed ab initiō"		Chapter-14
+trāns (prep. + acc.)	across	[sound:trans.mp3]					Chapter-14
+appellō, appellāre, appellāvī, appellātum	to speak to, address (as), call, name	[sound:appello.mp3]					Chapter-14
+currō, currere, cucurrī, cursum	to run, rush, move quickly	[sound:curro.mp3]					Chapter-14
+mūtō, mūtāre, mūtāvī, mūtātum	to change, alter; exchange	[sound:muto.mp3]					Chapter-14
+teneō, tenēre, tenuī, tentum	to hold, keep, possess; restrain	[sound:teneo.mp3]					Chapter-14
+vītō, vītāre, vītāvī, vītātum	to avoid, shun	[sound:vito.mp3]					Chapter-14
+Italia, Italiae (f)	Italy	[sound:italia.mp3]			Surely first I is long? Aeneid! Ī-*ta-li-/-am *fā-/-tō *pro-fu / gus Lā / *vī ni a / que *vē nit <br>Lewis and Short agree		Chapter-15
+memoria, memoriae (f)	memory, recollection	[sound:memoria.mp3]					Chapter-15
+tempestās, tempestātis	period of time, season; weather, storm	[sound:tempestas.mp3]	f				Chapter-15
+centum (indecl)	a hundred	[sound:centum.mp3]					Chapter-15
+mīlle (indecl)	thousand	[sound:mille.mp3]			mīlle passuum		Chapter-15
+mīlia, mīlium (n, pl, i-stem)	thousands	[sound:milia.mp3]					Chapter-15
+miser, misera, miserum	wretched, miserable, unfortunate	[sound:miser.mp3]					Chapter-15
+inter (prep + acc)	between, among	[sound:inter.mp3]					Chapter-15
+itaque (adv)	and so, therefore	[sound:itaque.mp3]					Chapter-15
+committō, committere, commīsī, commissum	to entrust, commit	[sound:committo.mp3]					Chapter-15
+exspectō, exspectāre, exspectāvī, exspectātum	to look for, expect, await	[sound:exspecto.mp3]					Chapter-15
+iaciō, iacere, iēcī, iactum	to throw, hurl	[sound:iacio.mp3]					Chapter-15
+timeō, timēre, timuī	to fear, be afraid (of)	[sound:timeo.mp3]				de re publicā valde timeo ;<br><br>timeō portūs omnēs	Chapter-15
+aetās, aetātis	period of life, life, age, an age, time	[sound:aetas.mp3]	f				Chapter-16
+audītor, audītōris (m)	hearer, listener, member of an audience	[sound:auditor.mp3]					Chapter-16
+clēmentia, clēmentiae (f)	mildness, gentleness, mercy	[sound:clementia.mp3]					Chapter-16
+mēns, mentis	mind, thought, intention	[sound:mens.mp3]	f				Chapter-16
+satura, saturae (f)	satire	[sound:satura.mp3]					Chapter-16
+ācer, ācris, ācre	sharp, keen, eager; severe, fierce	[sound:acer.mp3]					Chapter-16
+brevis, breve	brief, short, small	[sound:brevis.mp3]					Chapter-16
+celer, celeris, celere	swift, quick, rapid	[sound:celer.mp3]					Chapter-16
+difficilis, difficile	hard, difficult, troublesome	[sound:difficilis.mp3]					Chapter-16
+dulcis, dulce	sweet; pleasant, agreeable	[sound:dulcis.mp3]					Chapter-16
+facilis, facile	easy, agreeable	[sound:facilis.mp3]					Chapter-16
+fortis, forte	strong, brave	[sound:fortis.mp3]					Chapter-16
+<b>ingēns</b><br>gen. <b>ingentis</b>	huge	[sound:ingens.mp3]					Chapter-16
+iūcundus, iūcunda, iūcundum	pleasant, delightful, agreeable, pleasing	[sound:iucundus.mp3]					Chapter-16
+longus, longa, longum	long	[sound:longus.mp3]					Chapter-16
+omnis, omne	every, all	[sound:omnis.mp3]					Chapter-16
+<b>potēns</b>, gen <b>potentis</b>	able, powerful, mighty, strong	[sound:potens.mp3]					Chapter-16
+<b>senex</b>, gen. <b>senis</b> (adj and noun)	old, aged; old man	[sound:senex.mp3]					Chapter-16
+quam (adv)	how (adv)	[sound:quam.mp3]					Chapter-16
+regō, regere, rēxī, rēctum	to rule, guide, direct	[sound:rego.mp3]					Chapter-16
+duo, duae, duo	two	[sound:ankidroid_audiorec529426550.3gp]					Chapter-15
+trēs, tria	three	[sound:ankidroid_audiorec397678073.3gp]					
+quattuor	four	[sound:ankidroid_audiorec660863163.3gp]					
+quīnque	five	[sound:ankidroid_audiorec1017517931.3gp]					
+septem	seven	[sound:ankidroid_audiorec1820789641.3gp]					Chapter-15
+octō	eight	[sound:ankidroid_audiorec1888657165.3gp]					Chapter-15
+novem	nine	[sound:ankidroid_audiorec1519046258.3gp]					Chapter-15
+decem	ten	[sound:ankidroid_audiorec598964438.3gp]					Chapter-15
+prīmus, -a, -um	first	[sound:ankidroid_audiorec835315185.3gp]					Chapter-15
+secundus, alter	second	[sound:ankidroid_audiorec851036093.3gp]					Chapter-15
+tertius	third	[sound:ankidroid_audiorec201947937.3gp]					Chapter-15
+quārtus	fourth						Chapter-15
+quīntus	fifth	[sound:ankidroid_audiorec1248672578.3gp]					Chapter-15
+sextus	sixth	[sound:ankidroid_audiorec1338130329.3gp]					Chapter-15
+septimus	seventh	[sound:ankidroid_audiorec2067151030.3gp]					Chapter-15
+octāvus	eighth	[sound:ankidroid_audiorec370351564.3gp]					Chapter-15
+nōnus	ninth	[sound:ankidroid_audiorec2117114809.3gp]					Chapter-15
+decimus	tenth	[sound:ankidroid_audiorec-1478571547.3gp]					Chapter-15
+sex	six						
+ūndecim	eleven	[sound:ankidroid_audiorec857829717.3gp]					
+duodecim	twelve	[sound:ankidroid_audiorec440808055.3gp]					
+tredecim	thirteen	[sound:ankidroid_audiorec1757054410.3gp]					
+quattuordecim	fourteen	[sound:ankidroid_audiorec1388638474.3gp]					
+quīndecim	fifteen	[sound:ankidroid_audiorec1743101814.3gp]					
+sēdecim	sixteen	[sound:ankidroid_audiorec-39880226.3gp]					
+septendecim	seventeen	[sound:ankidroid_audiorec14800597.3gp]					
+duodēvīgintī	eighteen	[sound:ankidroid_audiorec1240416827.3gp]					
+ūndēvīgintī	nineteen	[sound:ankidroid_audiorec498639222.3gp]					
+libellus, libellī (m)	little book	[sound:libellus.mp3]					Chapter-17
+quī, quae, quod	who, which, what, that (rel pronoun)	[sound:qui.mp3]					Chapter-17
+caecus, caeca, caecum	blind	[sound:caecus.mp3]					Chapter-17
+levis, leve	light; easy; slight, trivial	[sound:levis.mp3]					Chapter-17
+aut	or	[sound:aut.mp3]<br />					Chapter-17
+aut...aut	either...or	[sound:aut_aut.mp3]					Chapter-17
+cito	quickly	[sound:cito.mp3]					Chapter-17
+quoque	also, too (adv) (tu _____?)	[sound:quoque.mp3]					Chapter-17
+admittō, admittere, admīsī, admissum	to admit, receive, let in	[sound:admitto.mp3]					Chapter-17
+coepī, coepisse, coeptum	began	[sound:coepi.mp3]			defective verb used in the perf. system only		Chapter-17
+cupiō, cupere, cupīvī, cupītum	to desire, wish, long for (c______)	[sound:cupio.mp3]					Chapter-17
+dēleō, dēlēre, dēlēvī, dēlētum	to destroy, wipe out, erase	[sound:deleo.mp3]					Chapter-17
+dēsīderō, dēsīderāre, dēsīderāvī, dēsīderātum	to desire, long for, miss (dē______)	[sound:desidero.mp3]			to pine for the stars, (dē sīderīs)		Chapter-17
+incipiō, incipere, incēpī, inceptum	to begin (in_______)	[sound:incipio.mp3]					Chapter-17
+nāvigō, nāvigāre, nāvigāvī, nāvigātum	to sail, navigate	[sound:navigo.mp3]					Chapter-17
+neglegō, neglegere, neglēxī, neglēctum	to neglect, disregard	[sound:neglego.mp3]					Chapter-17
+recitō, recitāre, recitāvī, recitātum	to read aloud, recite	[sound:recito.mp3]					Chapter-17
+flūmen, flūminis	river	[sound:flumen.mp3]	n				Chapter-18
+genus, generis	origin; kind, type, sort, class	[sound:genus.mp3]	n				Chapter-18
+hostis, hostis	an enemy (of one's country)	[sound:hostis.mp3]	m or f				Chapter-18
+lūdus, lūdī (m)	game, sport; school	[sound:ludus.mp3]					Chapter-18
+hostēs, hostium (m pl)	the enemy	[sound:hostes.mp3]					Chapter-18
+probitās, probitātis (f)	uprightness, honesty	[sound:probitas.mp3]					Chapter-18
+scientia, scientiae	knowledge	[sound:scientia.mp3]					Chapter-18
+clārus, clāra, clārum	clear, bright; renowned, famous, illustrious	[sound:clarus.mp3]					Chapter-18
+mortālis, mortāle	mortal	[sound:mortalis.mp3]					Chapter-18
+cūr	why	[sound:cur.mp3]					Chapter-18
+deinde	thereupon, next, then	[sound:deinde.mp3]					Chapter-18
+fluō, fluere, flūxī, flūxum	to flow	[sound:fluo.mp3]					Chapter-18
+legō, legere, lēgī, lēctum	to pick out, choose; read	[sound:lego.mp3]					Chapter-18
+misceō, miscēre, miscuī, mixtum	to mix up, stir up, disturb	[sound:misceo.mp3]					Chapter-18
+moveō, movēre, mōvī, mōtum	to move; arouse, affect	[sound:moveo.mp3]					Chapter-18
+videor, vidērī, vīsus sum	pass. of <b>videō</b>, to be seen, appear	[sound:videor.mp3]					Chapter-18
+argūmentum, argūmentī (n)	proof, evidence, argument	[sound:argumentum.mp3]					Chapter-19
+auctor, auctōris (m)	increaser; author, originator	[sound:auctor.mp3]					Chapter-19
+beneficium, beneficiī (n)	benefit, kindness; favor	[sound:beneficium.mp3]					Chapter-19
+familia, familiae (f)	household, family	[sound:familia.mp3]					Chapter-19
+Graecia, Graeciae (f)	Greece	[sound:graecia.mp3]					Chapter-19
+iūdex, iūdicis (m)	judge, juror	[sound:iudex.mp3]					Chapter-19
+iūdicium, iūdiciī (n)	judgement, decision, opinion; trial	[sound:iudicium.mp3]					Chapter-19
+scelus, sceleris	evil deed, crime, sin, wickedness	[sound:scelus.mp3]	n				Chapter-19
+quis? quae? quid?	who? what? (interrog)	[sound:quis.mp3]					Chapter-19
+quī? quae? quod?	what? which? what kind?	[sound:qui (1).mp3]					Chapter-19
+certus, certa, certum	definite, sure, certain, reliable	[sound:certus.mp3]					Chapter-19
+gravis, grave	heavy, weighty; serious, important; severe, grievous	[sound:gravis.mp3]					Chapter-19
+immortālis, immortāle	not subject to death, immortal	[sound:immortalis.mp3]					Chapter-19
+at (conj)	but; but, mind you; but, you say	[sound:at.mp3]					Chapter-19
+contrā (prep + acc)	against	[sound:contra.mp3]					Chapter-19
+iam	now, already, soon	[sound:iam.mp3]					Chapter-19
+dēlectō, dēlectāre, dēlectāvī, dēlectātum	to delight, charm, please	[sound:delecto.mp3]					Chapter-19 marked
+līberō, līberāre, līberāvī, līberātum	to free, liberate	[sound:libero.mp3]					Chapter-19
+parō, parāre, parāvī, parātum	to prepare, provide; get, obtain	[sound:paro.mp3]					Chapter-19
+nisi (conj)	if...not, unless; except	[sound:nisi.mp3]					Chapter-19
+coniūrātī, coniūrātōrum (m, pl)	conspirators	[sound:coniurati.mp3]			con-jūrō, to swear an oath together		Chapter-20
+cornū, cornūs (n)	horn	[sound:cornu.mp3]					Chapter-20
+frūctus, frūctūs (m)	fruit; profit, benefit, enjoyment	[sound:fructus.mp3]			gallinārum frūctūs erant ōva et pullī ; <br>vēr ostendit futūrōs frūctūs		Chapter-20
+genū, genūs (n)	knee	[sound:genu.mp3]					Chapter-20
+manus, manūs	hand; handwriting; band	[sound:manus.mp3]	f				Chapter-20
+metus, metūs	fear, dread, anxiety	[sound:metus.mp3]	m				Chapter-20
+mōns, montis	mountain	[sound:mons.mp3]	m		mons or mōns?		Chapter-20
+senātus, senātūs (m)	senate	[sound:senatus.mp3]					Chapter-20
+sēnsus, sēnsūs (m)	feeling, sense	[sound:sensus.mp3]					Chapter-20
+servitūs, servitūtis (f)	servitude, slavery	[sound:servitus.mp3]					Chapter-20
+spīritus, spīritūs	breath, breathing; spirit, soul (s------)	[sound:spiritus.mp3]	m	spīritus sanctus			Chapter-20
+versus, versūs (m)	line of verse	[sound:versus.mp3]					Chapter-20
+commūnis, commūne	common, general, of/for the community	[sound:communis.mp3]					Chapter-20
+dexter, dextra, dextrum	right, right-hand	[sound:dexter.mp3]					Chapter-20
+sinister, sinistra, sinistrum	left, left-hand; harmful, ill-omened	[sound:sinister.mp3]					Chapter-20
+careō, carēre, caruī, caritūrum (+ abl. of seperation)	to be without, be deprived of, want, lack; be free from	[sound:careo.mp3]			.	Īnfāns quī cibō caret magnā vōce vāgit	Chapter-20
+dēfendō, dēfendere, dēfendī, dēfēnsum	to ward off; defend, protect	[sound:defendo.mp3]					Chapter-20
+discēdō, discēdere, discessī, discessum	to go away, depart	[sound:discedo.mp3]			cf incēdō  prōcēdō recēdō excēdō		Chapter-20
+ōdī, ōdisse, ōsūrum	to hate	[sound:odi.mp3]			a defective verb having chiefly perf. system forms with pres. force		Chapter-20
+prohibeō, prohibēre, prohibuī, prohibitum	to keep (back), prevent, hinder, restrain, prohibit	[sound:prohibeo.mp3]					Chapter-20
+prōnūntiō, prōnūntiāre, prōnūntiāvī, prōnūntiātum	to proclaim, announce, declaim; pronounce	[sound:pronuntio.mp3]					Chapter-20
+casa, casae (f)	house, cottage, hut	[sound:casa.mp3]					Chapter-21
+causa, causae (f)	cause, reason; case, situation	[sound:causa.mp3]					Chapter-21
+causā	for the sake of, on account of (with preceding gen.)	[sound:causa2.mp3]			quod illī semper suī causā fēcerant		Chapter-21
+fenestra, fenestrae (f)	window	[sound:fenestra.mp3]					Chapter-21
+fīnis, fīnis	end, limit, boundary; purpose	[sound:finis.mp3]	m				Chapter-21
+fīnēs, fīnium (m pl)	boundaries, territory	[sound:fines.mp3]					Chapter-21
+gēns, gentis	clan, race, nation, people	[sound:gens.mp3]	f				Chapter-21
+mundus, mundī (m)	world, universe	[sound:mundus.mp3]					Chapter-21
+nāvis, nāvis	ship, boat	[sound:navis.mp3]	f				Chapter-21
+salūs, salūtis	health, safety; greeting	[sound:salus.mp3]	f				Chapter-21
+Trōia, Trōiae (f)	Troy	[sound:troia.mp3]					Chapter-21
+<b>vīcīnus, vīcīnī</b> (m) and <b>vīcīna, vīcīnae</b> (f)	neighbor	[sound:vicinus.mp3][sound:vicina.mp3]					Chapter-21
+vulgus, vulgī 	the common people, mob, rabble	[sound:vulgus.mp3]	n, sometimes m				Chapter-21
+asper, aspera, asperum	rough, harsh	[sound:asper.mp3]		asperity, exasperate			Chapter-21
+<b>atque</b> or <b>ac</b>	and also, and even, and in fact	[sound:atque.mp3]			both forms used before consonants, <b>atque</b> regularly before vowels or <b>h</b><br><br>indicates closer connection than et:<br>liberīs ac conjugibus		Chapter-21
+iterum (adv.)	again, a second time	[sound:iterum.mp3]					Chapter-21
+contineō, continēre, continuī, contentum	to hold together, contain, keep, enclose, restrain	[sound:contineo.mp3]					Chapter-21
+iubeō, iubēre, iussī, iussum	to bid, order, command	[sound:iubeo.mp3]		jussive			Chapter-21
+labōrō, labōrāre, labōrāvī, labōrātum	to labor; be in distress	[sound:laboro.mp3]					Chapter-21
+rapiō, rapere, rapuī, raptum	to seize, snatch, carry away (r____)	[sound:rapio.mp3]		raptor	violenter sīve celeriter capiō		Chapter-21
+relinquō, relinquere, relīquī, relictum	to leave behind, leave, abandon, desert (r------)	[sound:relinquo.mp3]					Chapter-21
+sciō, scīre, scīvī, scītum	to know (s____)	[sound:scio.mp3]					Chapter-21
+tangō, tangere, tetigī, tāctum	to touch	[sound:tango.mp3]			tāctum or tactum?		Chapter-21
+diēs, diēī	day	[sound:dies.mp3]	either m or f, sometimes both in the same sentence		diem dicunt, quā diē ad rīpam Rhodanī omnēs conveniant: is diēs erat a. d. V. Kal. Apr		Chapter-22
+ferrum, ferrī (n)	iron; sword	[sound:ferrum.mp3]					Chapter-22
+fidēs, fideī (f)	faith, trust, trustworthiness, fidelity; promise, guarantee, protection	[sound:fides.mp3]			why lose long vowel in gen?		Chapter-22
+ignis, ignis	fire	[sound:ignis.mp3]	m				Chapter-22
+modus, modī (m)	measure, bound, limit; manner, method, mode, way	[sound:modus.mp3]			is modus acnua Latīne appellātur		Chapter-22
+rēs, reī (f)	thing, matter, property, business, affair	[sound:res.mp3]					Chapter-22
+rēs pūblica, reī pūblicae (f)	state, commonwealth, republic	[sound:respublica.mp3]			often seen as a single word, <b>rēspūblica</b>		Chapter-22
+spēs, speī (f)	hope	[sound:spes.mp3]					Chapter-22
+aequus, aequa, aequum	level, even; calm; equal, just; favorable	[sound:aequus.mp3]					Chapter-22
+<b>fēlīx</b>, gen. <b>fēlīcis</b>	lucky, fortunate, happy&nbsp;(1 ending)	[sound:felix.mp3]					Chapter-22
+incertus, incerta, incertum	uncertain, unsure, doubtful	[sound:incertus.mp3]					Chapter-22
+Latīnus, Latīna, Latīnum	Latin	[sound:latinus.mp3]					Chapter-22
+medius, media, medium	middle; middle of	[sound:medius.mp3]		Mediterranean	<b>media urbs,</b> middle of the city<br><b> in mediās rēs</b> into the middle of things 		Chapter-22
+quondam (adv.)	formerly, once ; one day, someday (q_________)	[sound:quondam.mp3]			cum-dam, at a certain time		Chapter-22
+ultrā (adv. and prep. + acc)	on the other side of, beyond, more than	[sound:ultra.mp3]					Chapter-22
+prōtinus (adv.)	immediately. (p________)	[sound:protinus.mp3]					Chapter-22
+cernō, cernere, crēvī, crētum	to distinguish, discern, perceive	[sound:cerno.mp3]					Chapter-22
+ēripiō, ēripere, ēripuī, ēreptum (ē + rapiō)	to snatch away, take away; rescue	[sound:eripio.mp3]					Chapter-22
+inquit (defective verb)	he says or said	[sound:inquit.mp3]			placed after one or more words of a direct quotation but usually translated before the quote		Chapter-22
+tollō, tollere, sustulī, sublātum	to raise, lift up; take away, steal, remove, destroy	[sound:tollo.mp3]					Chapter-22
+arx, arcis	citadel, stronghold	[sound:arx.mp3]	f	ἀκρόπολις	In arcem trānscursō opus est		Chapter-23
+dux, ducis (m)	leader, guide; commander, general	[sound:dux.mp3]					Chapter-23
+equus, equī (m)	horse	[sound:equus.mp3]					Chapter-23
+hasta, hastae (f)	spear, lance	[sound:hasta.mp3]					Chapter-23
+īnsula, īnsulae (f)	island	[sound:insula.mp3]					Chapter-23
+lītus, lītoris	shore, seashore, coast, riverbank, beach; landing place	[sound:litus.mp3]	n				Chapter-23
+mīles, mīlitis (m)	soldier	[sound:miles.mp3]					Chapter-23
+ōrātor, ōrātōris (m)	orator, speaker	[sound:orator.mp3]					Chapter-23
+sacerdōs, sacerdōtis (m or f)	priest, priestess	[sound:sacerdos.mp3]			sacred talent		Chapter-23
+aliquis, aliquid	someone, somebody, anyone, anybody, something, anything	[sound:aliquis.mp3]			follows decl. of <b>quis, quid</b>, gen. <b>alicuius</b>, dat. <b>alicui</b>, etc	ex Africā semper aliquid novī	Chapter-23
+magnanimus, magnanima, magnanimum	great-hearted, brave, bold, noble in spirit, generous	[sound:magnanimus.mp3]					Chapter-23
+umquam (adv.)	ever, at any time (in questions or negative clauses)	[sound:umquam.mp3]					Chapter-23
+ēducō, ēducāre, ēducāvī, ēducātum	bring up, educate, train, rear	[sound:educo.mp3]			-úcāre, there is also ēdūcere, meaning to lead out, draw up, bring up, rear		Chapter-23
+gaudeō, gaudēre, gāvīsus sum	to be glad, rejoice	[sound:gaudeo.mp3]			semi-deponent; inward joy rather than display	gaudēre decet, laetārī nōn decet	Chapter-23
+ostendō, ostendere, ostendī, ostentum	to show; reveal; make clear, point out, display	[sound:ostendo.mp3]		ostentatious		ille diēs cum gloriā maximā sēsē nōbis ostendat	Chapter-23
+petō, petere, petīvī, petītum	to seek, aim at, beg, beseech	[sound:peto.mp3]					Chapter-23
+premō, premere, pressī, pressum	to press; press hard, pursue	[sound:premo.mp3]			spelled <b>-primō, -primere</b>&nbsp;in compounds		Chapter-23
+opprimō, opprimere, oppressī, oppressum	to press down, suppress, overwhelm, overpower, check	[sound:opprimo.mp3]					Chapter-23
+vertō, vertere, vertī, versum	to turn; change	[sound:verto.mp3]				versā pulvis inscrībitur hastā	Chapter-23
+āvertō, āvertere, āvertī, āversum	to turn away, avert	[sound:averto.mp3]					Chapter-23
+revertō, revertere, revertī, reversum	to turn back	[sound:reverto.mp3]					Chapter-23
+quisquis, quidquid	whoever, whatever	[sound:quisquis.mp3]				quisquis es, quicquid tibi nōmen est	Chapter-23
+Carthāgō, Carthāginis	Carthage (city in North Africa)	[sound:carthago.mp3]	f				Chapter-24
+fābula, fābulae (f)	story, tale; play	[sound:fabula.mp3]					Chapter-24
+imperātor, imperātōris (m)	general, commander-in-chief, emperor	[sound:imperator.mp3]					Chapter-24
+imperium, imperiī (n)	power to command, supreme power, authority, command, control	[sound:imperium.mp3]					Chapter-24
+perfugium, perfugiī (n)	place to flee to, refuge, shelter, asylum	[sound:perfugium.mp3]				perfugī sibi cōpiam comparāre	Chapter-24
+<b>servus, servī</b>&nbsp;(m) and <b>serva, servae </b>(f)	slave	[sound:servus.mp3][sound:serva.mp3]					Chapter-24
+sōlācium, sōlāciī (n)	solace, comfort, relief in sorrow	[sound:solacium.mp3]					Chapter-24
+vulnus, vulneris	wound	[sound:vulnus.mp3]	n				Chapter-24
+<b>re-</b> or (before words beginning with d) <b>red-</b>	again, back (prefix)	[sound:re.mp3]					Chapter-24
+ut (conj. + indic.)	as, just as, when	[sound:ut.mp3]					Chapter-24
+posteā	afterwards	[sound:postea.mp3]					Chapter-24
+accipiō, accipere, accēpī, acceptum	to take (to one's self), receive, accept	[sound:accipio.mp3]					Chapter-24
+excipiō, excipere, excēpī, exceptum	to take out, except	[sound:excipio.mp3]		exception		excipiō aliquem ē marī	Chapter-24
+recipiō, recipere, recēpī, receptum	to take back, regain; admit, receive	[sound:recipio.mp3]					Chapter-24
+pellō, pellere, pepulī, pulsum	to strike, push; drive out, banish	[sound:pello.mp3]					Chapter-24
+expellō, expellere, expulī, expulsum	to drive out, expel, banish	[sound:expello.mp3]					Chapter-24
+narrō, nārrāre, nārrāvī, nārrātum	to tell, report, narrate	[sound:narro.mp3]					Chapter-24
+quaerō, quaerere, quaesīvī, quaesītum	to seek, look for, strive for; ask, inquire, inquire into	[sound:quaero.mp3]					Chapter-24
+rīdeō, rīdēre, rīsī, rīsum	to laugh, laugh at	[sound:rideo.mp3]					Chapter-24
+lingua, linguae (f)	tongue; language	[sound:lingua.mp3]					Chapter-25
+<b>ferōx</b>, gen. <b>ferōcis</b>	fierce, savage	[sound:ferox.mp3]					Chapter-25
+fidēlis, fidēle	faithful, loyal	[sound:fidelis.mp3]					Chapter-25
+geminus, gemina, geminum	twin	[sound:geminus.mp3]					Chapter-25
+sapiēns, gen. sapientis	wise, judicious; a wise man/woman, philosopher	[sound:sapiens.mp3]					Chapter-25
+ultimus, ultima, ultimum	farthest, extreme; last, final	[sound:ultimus.mp3]					Chapter-25
+dehinc	then, next (adv.)	[sound:dehinc.mp3]					Chapter-25
+hīc (adv.)	here	[sound:hic (1).mp3]					Chapter-25
+āit, āiunt (defective verb)	he says, they say, assert	[sound:ait.mp3]			used in connection with proverbs and anecdotes		Chapter-25
+crēdo, crēdere, crēdidī, crēditum (+ acc)	to believe, trust	[sound:credo.mp3]					Chapter-25
+iaceō, iacēre, iacuī	to lie; lie prostrate; lie dead	[sound:iaceo.mp3]					Chapter-25
+negō, negāre, negāvī, negātum	to deny, say that...not	[sound:nego.mp3]					Chapter-25
+nesciō, nescīre, nescīvī, nescītum	to not know, be ignorant	[sound:nescio.mp3]					Chapter-25
+nūntiō, nūnitāre, nūntiāvī, nūntiātum	to announce, report, relate	[sound:nuntio.mp3]					Chapter-25
+patefaciō, patefacere, patefēcī, patefactum	to make open, open; disclose, expose	[sound:patefacio.mp3]					Chapter-25
+putō, putāre, putāvī, putātum	to reckon, suppose, judge, think, imagine	[sound:puto.mp3]					Chapter-25
+spērō, spērāre, spērāvī, spērātum	to hope for, hope (that)	[sound:spero.mp3]					Chapter-25
+suscipiō, suscipere, suscēpī, susceptum (sub + capiō)	to undertake	[sound:suscipio.mp3]					Chapter-25
+lūx, lūcis	light (noun)	[sound:lux.mp3]	f				Chapter-26
+mēnsa, mēnsae (f)	table; dining; dish, course	[sound:mensa.mp3]					Chapter-26
+mēnsa secunda	dessert	[sound:mensasecunda.mp3]					Chapter-26
+nox, noctis	night	[sound:nox.mp3]	f				Chapter-26
+somnus, somnī (m)	sleep	[sound:somnus.mp3]					Chapter-26
+<b>quīdam, quaedam, quiddam</b> (pron.) or <b>quoddam</b> (adj.)	as pronoun:&nbsp;<b>a certain one</b> or<b> thing, someone, something</b>; as adj: <b>a certain, some</b>	[sound:quidam.mp3]			gen. <b>cuiusdam</b>, dat. <b>cuidam</b>, etc		Chapter-26
+pudīcus, pudīca, pudīcum	modest, chaste	[sound:pudicus.mp3]					Chapter-26
+superbus, superba, superbum	arrogant, overbearing, haughty, proud	[sound:superbus.mp3]					Chapter-26
+trīstis, trīste	sad, sorrowful; joyless, grim, severe	[sound:tristis.mp3]					Chapter-26
+turpis, turpe	ugly; shameful, base, disgraceful	[sound:turpis.mp3]					Chapter-26
+urbānus, urbāna, urbānum	of the city, urban; urbane, elegant	[sound:urbanus.mp3]					Chapter-26
+prae (prep + abl.)	in front of, before	[sound:prae.mp3]					Chapter-26
+quam (conj. after comparatives)	<b>than</b>; adv. before superlatives: <b>as ... as possible</b>	[sound:quam (1).mp3]			when it precedes a superlative, it indicates that the person/thing modified has the greatest possible degree of a particular quality		Chapter-26
+tantum (adv.)	only (adv.)	[sound:tantum.mp3]					Chapter-26
+invītō, invītāre, invītāvī, invītātum	to entertain, invite, summon	[sound:invito.mp3]					Chapter-26
+cēna, cēnae (f)	dinner	[sound:cena.mp3]					Chapter-26
+forum, forī (n)	marketplace, forum	[sound:forum.mp3]					Chapter-26
+lēx, lēgis	law, statute	[sound:lex.mp3]	f				Chapter-26
+līmen, līminis	threshold	[sound:limen.mp3]	n				Chapter-26
+dēlectātiō, dēlectātiōnis (f)	delight, pleasure, enjoyment	[sound:delectatio.mp3]					Chapter-27
+nepōs, nepōtis (m)	grandson, descendant	[sound:nepos.mp3]					Chapter-27
+sōl, sōlis	sun	[sound:sol.mp3]	m				Chapter-27
+<b>dīligēns</b>, gen. <b>dīligentis</b>	diligent, careful	[sound:diligens.mp3]					Chapter-27
+dissimilis, dissimile	unlike, different	[sound:dissimilis.mp3]					Chapter-27
+gracilis, gracile	slender, thin	[sound:gracilis.mp3]					Chapter-27
+humilis, humile	lowly, humble	[sound:humilis.mp3]					Chapter-27
+maior, maius	greater; older (compar. adj.)	[sound:maior.mp3]					Chapter-27
+maiōrēs, maiōrum (m. pl.)	ancestors	[sound:maiores.mp3]					Chapter-27
+prīmus, prīma, prīmum	first, foremost, chief, principal	[sound:primus.mp3]					Chapter-27
+quot	how many, as many as (indec. adj.)	[sound:quot.mp3]					Chapter-27
+similis, simile (+ gen. or dat.)	similar (to), like, resembling	[sound:similis.mp3]					Chapter-27
+superus, supera, superum	above, upper	[sound:superus.mp3]					Chapter-27
+superī, superōrum (m. pl.)	the gods	[sound:superi.mp3]					Chapter-27
+ūtilis, ūtile	useful, advantageous	[sound:utilis.mp3]					Chapter-27
+pōnō, pōnere, posuī, positum	to put, place, set	[sound:pono.mp3]					Chapter-27
+probō, probāre, probāvī, probātum	to approve, recommend; test	[sound:probo.mp3]					Chapter-27
+arma, armōrum (n. pl.)	arms, weapons	[sound:arma.mp3]					Chapter-28
+cursus, cursūs (m.)	running, race; course	[sound:cursus.mp3]					Chapter-28
+lūna, lūnae (f.)	moon	[sound:luna.mp3]					Chapter-28
+occāsiō, occāsiōnis (f)	occasion, opportunity	[sound:occasio.mp3]					Chapter-28
+parēns, parentis (m/f)	parent	[sound:parens.mp3]					Chapter-28
+stēlla, stēllae (f)	star, planet	[sound:stella.mp3]					Chapter-28
+<b>vesper</b>, <b>vesperis</b> or <b>vesperī</b> (m)	evening; evening star	[sound:vesper.mp3]					Chapter-28
+mortuus, mortua, mortuum	dead	[sound:mortuus.mp3]					Chapter-28
+<b>prīnceps</b>, gen. <b>prīncipis</b>	<i>chief, foremost</i>; m./f. noun, <i>leader, emperor</i>	[sound:princeps.mp3]					Chapter-28
+ut (conj. + subjunct.)	<i>in order that, so that, that, in order to, so as to, to</i>; (+ indic.): <i>as</i>, <i>when</i>	[sound:ut (1).mp3]					Chapter-28
+nē (adv. and conj. with subjunct. of command and purpose)	not; in order that...not, that...not, in order not to	[sound:ne (1).mp3]					Chapter-28
+cēdō, cēdere, cessī, cessum	to go, withdraw; yield to, grant, submit	[sound:cedo.mp3]					Chapter-28
+dēdicō, dēdicāre, dēdicāvī, dēdicātum	to dedicate	[sound:dedico.mp3]					Chapter-28
+egeō, egēre, eguī (+ abl. or gen.)	to need, lack, want	[sound:egeo.mp3]					Chapter-28
+expleō, explēre, explēvī, explētum	to fill, fill up, complete	[sound:expleo.mp3]					Chapter-28
+praestō, praestāre, praestitī, praestitum	to excel; exhibit, show, offer, supply, furnish	[sound:praesto.mp3]					Chapter-28
+taceō, tacēre, tacuī, tacitum	to be silent, leave unmentioned	[sound:taceo.mp3]					Chapter-28
+fātum, fātī (n)	fate; death	[sound:fatum.mp3]					Chapter-29
+ingenium, ingeniī (n)	nature, innate talent	[sound:ingenium.mp3]					Chapter-29
+moenia, moenium (n. pl.)	walls of a city	[sound:moenia.mp3]					Chapter-29
+nāta, nātae (f.)	daughter (not fīlia)	[sound:nata.mp3]					Chapter-29
+ōsculum, ōsculī (n.)	kiss (starts with o)	[sound:osculum.mp3]					Chapter-29
+sīdus, sīderis	constellation, star	[sound:sidus.mp3]	n				Chapter-29
+dignus, digna, dignum (+ abl.)	worthy, worthy of	[sound:dignus.mp3]					Chapter-29
+dūrus, dūra, dūrum	hard, harsh, rough, stern, unfeeling, hardy, difficult	[sound:durus.mp3]					Chapter-29
+tantus, tanta, tantum	so large, so great, of <i>such a size</i>	[sound:tantus.mp3]					Chapter-29
+dēnique (adv.)	at last, finally, lastly	[sound:denique.mp3]					Chapter-29
+ita (adv. used with adj., verbs, and advs.)	so, thus&nbsp;(adv. used with adj., verbs, and advs.)	[sound:ita.mp3]					Chapter-29
+quidem (postpositive adv.)	indeed, certainly, at least, even	[sound:quidem.mp3]					Chapter-29
+nē...quidem	not...even	[sound:nequidem.mp3]					Chapter-29
+sīc (adv. most commonly used with verbs)	so, thus&nbsp;(adv. most commonly used with verbs)	[sound:sic.mp3]					Chapter-29
+tam (adv. with adjs. and advs.)	so, to such a degree	[sound:tam.mp3]					Chapter-29
+tam...quam	so...as	[sound:tamquam.mp3]					Chapter-29
+tamquam	as it were, as if, so to speak						Chapter-29
+vērō (adv.)	in truth, indeed, to be sure, however	[sound:vero.mp3]					Chapter-29
+condō, condere, condidī, conditum	to put together or into, store; found, establish	[sound:condo.mp3]					Chapter-29
+contendō, contendere, contendī, contentum	to strive, struggle, contend; hasten	[sound:contendo.mp3]					Chapter-29
+molliō, mollīre, mollīvī, mollītum	to soften; make calm or less hostile	[sound:mollio.mp3]					Chapter-29
+pugnō, pugnāre, pugnāvī, pugnātum	to fight	[sound:pugno.mp3]					Chapter-29
+respondeō, respondēre, respondī, respōnsum	to answer	[sound:respondeo.mp3]					Chapter-29
+surgō, surgere, surrēxī, surrēctum	to get up, arise	[sound:surgo.mp3]					Chapter-29
+honor, honōris	honor, esteem; public office	[sound:honor.mp3]	m.				Chapter-30
+cēterī, cēterae, cētera (pl.)	the remaining, the rest, the other, all the others	[sound:ceteri.mp3]					Chapter-30
+quantus, quanta, quantum	how large, how great, how <i>much</i>	[sound:quantus.mp3]					Chapter-30
+rīdiculus, rīdicula, rīdiculum	laughable, ridiculous	[sound:ridiculus.mp3]					Chapter-30
+vīvus, vīva, vīvum	alive, living	[sound:vivus.mp3]					Chapter-30
+fūrtim (adv.)	stealthily, secretly	[sound:furtim.mp3]					Chapter-30
+mox	soon (adv.)	[sound:mox.mp3]					Chapter-30
+prīmō	at first, at the beginning (adv.)	[sound:primo.mp3]					Chapter-30
+repente	suddenly (adv.)	[sound:repente.mp3]					Chapter-30
+unde	whence, from what or which place, from which, from whom	[sound:unde.mp3]					Chapter-30
+utrum...an	whether...or (conj.)	[sound:utrum.mp3]					Chapter-30
+bibō, bibere, bibī	to drink	[sound:bibo.mp3]					Chapter-30
+cognōscō, cognōscere, cognōvī, cognitum	to become acquainted with, learn, recognize; in perf. tenses, know	[sound:cognosco.mp3]					Chapter-30
+comprehendō, comprehendere, comprehendī, comprehēnsum	to grasp, sieze, arrest; comprehend, understand	[sound:comprehendo.mp3]					Chapter-30
+cōnsūmō, cōnsūmere, cōnsūmpsī, cōnsūmptum	to consume, use up	[sound:consumo.mp3]					Chapter-30
+dubitō, dubitāre, dubitāvī, dubitātum	to doubt, hesitate	[sound:dubito.mp3]					Chapter-30
+expōnō, expōnere, exposuī, expositum	to set forth, explain, expose	[sound:expono.mp3]					Chapter-30
+minuō, minuere, minuī, minūtum	to lessen, diminish	[sound:minuo.mp3]					Chapter-30
+rogō, rogāre, rogāvī, rogātum	to ask	[sound:rogo.mp3]					Chapter-30
+as, assis	<i>an as</i>, a small copper coin comparable to a penny	[sound:as.mp3]	m				Chapter-31
+auxilium, auxiliī (n.)	aid, help	[sound:auxilium.mp3]					Chapter-31
+digitus, digitī (m.)	finger, toe	[sound:digitus.mp3]					Chapter-31
+elephantus, elephantī (m and f)	elephant	[sound:elephantus.mp3]					Chapter-31
+exsilium, exsiliī (n.)	exile, banishment	[sound:exsilium.mp3]					Chapter-31
+invidia, invidiae (f.)	envy, jealousy, hatred	[sound:invidia.mp3]					Chapter-31
+rūmor, rūmōris (m.)	rumor, gossip	[sound:rumor.mp3]					Chapter-31
+vīnum, vīnī (n.)	wine	[sound:vinum.mp3]					Chapter-31
+mediocris, mediocre	ordinary, moderate, mediocre	[sound:mediocris.mp3]					Chapter-31
+cum (+ subjunct. or + indic.)	(+ subjunct.)<b> when, since, although</b>; (conj + indic.) <b>when</b>	[sound:cum (1).mp3]					Chapter-31
+apud (prep. + acc)	among, in the presence of, at the house of	[sound:apud.mp3]					Chapter-31
+semel (adv.)	a single time, once, once and for all, simultaneously	[sound:semel.mp3]					Chapter-31
+usque (adv.)	all the way, up (to), even (to), continuously, always	[sound:usque.mp3]					Chapter-31
+doleō, dolēre, doluī, dolitūrum	to grieve, suffer; hurt, give pain	[sound:doleo.mp3]					Chapter-31
+dormiō, dormīre, dormīvī, dormītum	to sleep	[sound:dormio.mp3]					Chapter-31
+ferō, ferre, tulī, lātum	to bring, bear, carry; suffer, endure, tolerate; say, report	[sound:fero.mp3]					Chapter-31
+adferō, adferre, attulī, allātum	to bring to	[sound:adfero.mp3]					Chapter-31
+cōnferō, cōnferre, contulī, collātum	to bring together, compare; confer, bestow	[sound:confero.mp3]					Chapter-31
+sē cōnferre	(idiom) to go, lit. to take/betake oneself	[sound:se_conferre.mp3]					Chapter-31
+offerō, offerre, obtulī, oblātum	to offer	[sound:offero.mp3]					Chapter-31
+referō, referre, rettulī, relātum	to carry back, bring back; answer, repeat, report	[sound:refero.mp3]					Chapter-31
+invideō, invidēre, invīdī, invīsum	to be envious (+ dat.), to look at with envy, envy, be jealous of	[sound:invideo.mp3]					Chapter-31
+occidō, occidere, occidī, occāsum	to fall down; die; set	[sound:occido.mp3]					Chapter-31
+custōdia, custōdiae (f.)	protection, custody; pl. guards	[sound:custodia.mp3]					Chapter-32
+exercitus, exercitūs (m.)	army	[sound:exercitus.mp3]					Chapter-32
+paupertās, paupertātis (f.)	poverty, humble circumstances	[sound:paupertas.mp3]					Chapter-32
+<b>dīves</b>, gen.&nbsp;<b>dīvitis</b> or <b>dītis</b>	rich, wealthy	[sound:dives.mp3]					Chapter-32
+<b>pār</b>, gen. <b>paris</b> (+ dat.)	equal, like	[sound:par.mp3]					Chapter-32
+<b>pauper</b>, gen. <b>pauperis</b>	of small means, poor	[sound:pauper.mp3]					Chapter-32
+dummodo, (conj. + subjunct.)	provided that, so long as	[sound:dummodo.mp3]					Chapter-32
+mālō, mālle, māluī	to want (something) more, instead; prefer	[sound:malo.mp3]					Chapter-32
+nōlō, nōlle, nōluī	to not...wish, be unwilling	[sound:nolo.mp3]					Chapter-32
+pateō, patēre, patuī	to be open, lie open; be accessible; be evident	[sound:pateo.mp3]					Chapter-32
+praebeō, praebēre, praebuī, praebitum	to offer, provide	[sound:praebeo.mp3]					Chapter-32
+prōmittō, prōmittere, prōmīsī, prōmissum	to send forth; promise	[sound:promitto.mp3]					Chapter-32
+volō, velle, voluī	to wish, want, be willing, will	[sound:volo.mp3]					Chapter-32
+initium, initiī (n.)	beginning, commencement	[sound:initium.mp3]					Chapter-33
+ops, opis (f.)	help, aid	[sound:ops.mp3]					Chapter-33
+opēs, opum (f. pl.)	power, resources, wealth	[sound:opes.mp3]					Chapter-33
+philosophus, philosophī (m.) and philosopha, philosophae (f.)	philosopher	[sound:philosophus.mp3][sound:philosopha.mp3]					Chapter-33
+plēbs, plēbis (f.)	the common people, populace, plebeians	[sound:plebs.mp3]					Chapter-33
+sāl, salis	salt; wit	[sound:sal.mp3]	m				Chapter-33
+speculum, speculī (n.)	mirror	[sound:speculum.mp3]					Chapter-33
+<b>quis, quid</b>, after <b>sī, nīsī, num, nē</b>	anyone, anything, someone, something	[sound:quis (1).mp3]					Chapter-33
+candidus, candida, candidum	shining, bright, white; beautiful	[sound:candidus.mp3]					Chapter-33
+merus, mera, merum	pure, undiluted	[sound:merus.mp3]					Chapter-33
+suāvis, suāve	sweet	[sound:suavis.mp3]					Chapter-33
+-ve (conj. suffixed to a word)	or&nbsp;(conj. suffixed to a word)	[sound:ve.mp3]			= aut before the word		Chapter-33
+heu (interj.)	ah!, alas!	[sound:heu.mp3]			a sound of grief or pain		Chapter-33
+subitō (adv.)	suddenly (starts with s)	[sound:subito.mp3]					Chapter-33
+recūsō, recūsāre, recūsāvī, recūsātum	to refuse	[sound:recuso.mp3]					Chapter-33
+trādo, trādere, trādidī, trāditum (trāns + dō)	to give over, surrender, hand down, transmit, teach	[sound:trado.mp3]					Chapter-33
+anima, animae (f.)	air (breathed by an animal), breath; soul, spirit	[sound:anima.mp3]					Chapter-34
+remissiō, remissiōnis (f.)	letting go, release; relaxation	[sound:remissio.mp3]					Chapter-34
+vōx, vōcis (f.)	voice, word	[sound:vox.mp3]					Chapter-34
+adversus, adversa, adversum	opposite, adverse	[sound:adversus.mp3]					Chapter-34
+tālis, tāle	such, of such a sort	[sound:talis.mp3]					Chapter-34
+vae	alas, woe to (often + dat. or acc.)	[sound:vae.mp3]					Chapter-34
+arbitror, arbitrārī, arbitrātus sum	to judge, think	[sound:arbitror.mp3]					Chapter-34
+cōnor, cōnārī, cōnātus sum	to try, attempt	[sound:conor.mp3]					Chapter-34
+crēscō, crēscere, crēvī, crētum	to increase	[sound:cresco.mp3]					Chapter-34
+ēgredior, ēgredī, ēgressus sum	to go out	[sound:egredior.mp3]					Chapter-34
+fateor, fatērī, fassus sum	to confess, admit	[sound:fateor.mp3]					Chapter-34
+hortor, hortārī, hortātus sum	to encourage, urge	[sound:hortor.mp3]					Chapter-34
+loquor, loquī, locūtus sum	to say, speak, tell	[sound:loquor.mp3]					Chapter-34
+mōlior, mōlīrī, mōlītus sum	to work at, build, undertake, plan	[sound:molior.mp3]					Chapter-34
+morior, morī, mortuus sum (fut. act. partic. moritūrus)	to die	[sound:morior.mp3]					Chapter-34
+nāscor, nāscī, nātus sum	to be born; spring forth, arise	[sound:nascor.mp3]					Chapter-34
+patior, patī, passus sum	to suffer, endure; permit	[sound:patior.mp3]					Chapter-34
+proficīscor, proficīscī, profectus sum	to set out, start	[sound:proficiscor.mp3]					Chapter-34
+rūsticor, rūsticārī, rūsticātus sum	to live in the country	[sound:rusticor.mp3]					Chapter-34
+sedeō, sedēre, sēdī, sessum	to sit	[sound:sedeo.mp3]					Chapter-34
+sequor, sequī, secūtus sum	to follow	[sound:sequor.mp3]					Chapter-34
+spectō, spectāre, spectāvī, spectātum	to look at, see	[sound:specto.mp3]					Chapter-34
+ūtor, ūtī, ūsus sum&nbsp;<b>(+ abl.)</b>	to use; enjoy, experience	[sound:utor.mp3]					Chapter-34
+aestās, aestātis (f.)	summer	[sound:aestas.mp3]					Chapter-35
+iānua, iānuae (f.)	door	[sound:ianua.mp3]					Chapter-35
+pectus, pectoris (n.)	breast, heart	[sound:pectus.mp3]					Chapter-35
+praemium, praemiī (n.)	reward, prize	[sound:praemium.mp3]					Chapter-35
+īrātus, īrāta, īrātum	angry	[sound:iratus.mp3]					Chapter-35
+antepōnō, antepōnere anteposuī, antepositum	to put before, prefer	[sound:antepono.mp3]					Chapter-35
+foveō, fovēre, fōvī, fōtum	to comfort, nurture, cherish	[sound:foveo.mp3]					Chapter-35
+ignōscō, ignōscere ignōvī, ignōtum + dat.	to grant pardon to, forgive	[sound:ignosco.mp3]					Chapter-35
+imperō, imperāre, imperāvī, imperātum + dat.	to give orders to, command	[sound:impero.mp3]					Chapter-35
+mīror, mīrārī, mīrātus sum	to marvel at, admire, wonder	[sound:miror.mp3]					Chapter-35
+noceō, nocēre, nocuī, nocitum + dat.	to do harm to, harm, injure	[sound:noceo.mp3]					Chapter-35
+nūbō, nūbere, nūpsī, nūptum	to cover, veil; + dat (of a bride) to be married to, marry	[sound:nubo.mp3]					Chapter-35
+parcō, parcere, pepercī, parsūrum + dat.	to be leniant to, spare	[sound:parco.mp3]					Chapter-35
+pāreō pārēre, pāruī + dat.	to be obedient to, obey	[sound:pareo.mp3]					Chapter-35
+persuādeō, persuādēre, persuāsī, persuāsum + dat.	to succeed in urging, persuade, convince	[sound:persuadeo.mp3]					Chapter-35
+placeō, placēre, placuī, placitum + dat.	to be pleasing to, please	[sound:placeo.mp3]					Chapter-35
+sapiō, sapere, sapīvī	to have good taste; have good sense, be wise	[sound:sapio.mp3]					Chapter-35
+serviō, servīre, servīvī, servītum + dat.	to be a slave to, serve	[sound:servio.mp3]					Chapter-35
+studeō, studēre, studuī + dat.	to direct one's zeal to, be eager for, study	[sound:studeo.mp3]					Chapter-35
+subrīdeō, subrīdēre, subrīsī, subrīsum	to smile (down) upon	[sound:subrideo.mp3]					Chapter-35
+cupīdō, cupīdinis	desire, passion	[sound:cupido.mp3]	f.				Chapter-36
+lēctor, lēctōris (m.) and lēctrīx, lēctrīcis (f.)	reader	[sound:lector.mp3][sound:lectrix.mp3]					Chapter-36
+vinculum, vinculī (n.)	bond, chain, fetter	[sound:vinculum.mp3]					Chapter-36
+cōtīdiē (adv.)	daily, every day	[sound:cotidie.mp3]					Chapter-36
+fortasse (adv.)	perhaps	[sound:fortasse.mp3]					Chapter-36
+accēdō, accēdere, accessī, accessum (ad + cēdo)	to come (to), approach	[sound:accedo.mp3]					Chapter-36
+carpō, carpere, carpsī, carptum	to harvest, pluck; seize	[sound:carpo.mp3]					Chapter-36
+cōgō, cōgere, coēgī, coāctum (cum + agō)	to drive or bring together, force, compel	[sound:cogo.mp3]					Chapter-36
+contemnō, contemnere, contempsī, contemptum	to despise, scorn	[sound:contemno.mp3]					Chapter-36
+contundō, contundere, contudī, contūsum	to beat, crush, bruise, destroy	[sound:contundo.mp3]					Chapter-36
+cūrō, cūrāre, cūrāvī, cūrātum	to care for, attend to; heal, take care	[sound:curo.mp3]					Chapter-36
+dēcernō, dēcernere, dēcrēvī, dēcrētum	to decide, settle, decree	[sound:decerno.mp3]					Chapter-36
+exigō, exigere, exēgī, exāctum (ex + agō)	to drive out, force out, exact; drive through, complete, perfect	[sound:exigo.mp3]					Chapter-36
+fīō, fierī, factus sum	to occur, happen; become; be made, be done	[sound:fio.mp3]					Chapter-36
+oblectō, oblectāre, oblectāvī, oblectātum	to please, amuse, delight; pass time pleasantly	[sound:oblecto.mp3]					Chapter-36
+ōrō, ōrāre, ōrāvī, ōrātum	to speak, plead; beg, beseech, entreat, pray	[sound:oro.mp3]					Chapter-36
+recreō, recreāre, recreāvī, recreātum	to restore, revive; refresh, cheer	[sound:recreo.mp3]					Chapter-36
+requīrō, requīrere, requīsīvī, requīsītum	to seek, ask for; miss, need, require	[sound:requiro.mp3]					Chapter-36
+serēnō, serēnāre, serēnāvī, serēnātum	to make clear, brighten; cheer up, soothe	[sound:sereno.mp3]					Chapter-36
+Athēnae, Athēnārum (f. pl.)	Athens	[sound:athenae.mp3]					Chapter-37
+domus, domūs (domī)	house, home	[sound:domus.mp3]	f.				Chapter-37
+humus, humī	ground, earth; soil	[sound:humus.mp3]	f.				Chapter-37
+iter, itineris	journey; route, road	[sound:iter.mp3]	n.				Chapter-37
+rūs, rūris	the country, countryside	[sound:rus.mp3]	n.				Chapter-37
+Syrācūsae, Syrācūsārum (f. pl.)	Syracuse	[sound:syracusae.mp3]					Chapter-37
+<b>absēns</b>, gen. <b>absentis</b>	absent, away	[sound:absens.mp3]					Chapter-37
+grātus, grāta, grātum	pleasing, agreeable; grateful	[sound:gratus.mp3]					Chapter-37
+idōneus, idōnea, idōneum	suitable, fit, appropriate	[sound:idoneus.mp3]					Chapter-37
+immōtus, immōta, immōtum	unmoved; unchanged; unrelenting	[sound:immotus.mp3]					Chapter-37
+forīs (adv.)	out of doors, outside	[sound:foris.mp3]					Chapter-37
+eō, īre, iī, itum	to go	[sound:eo.mp3]					Chapter-37
+abeō, abīre, abiī, abitum	to go away, depart, leave	[sound:abeo.mp3]					Chapter-37
+adeō, adīre, adiī, aditum	to go to, approach	[sound:adeo.mp3]					Chapter-37
+exeō, exīre, exiī, exitum	to go out, exit	[sound:exeo.mp3]					Chapter-37
+ineō, inīre, iniī, initum	to go in, enter; enter into, begin	[sound:ineo.mp3]					Chapter-37
+obeō, obīre, obiī, obitum	to go up against, meet; die	[sound:obeo.mp3]					Chapter-37
+pereō, perīre, periī, peritum	to pass away, be destroyed	[sound:pereo.mp3]					Chapter-37
+redeō, redīre, rediī, reditum	to go back, return	[sound:redeo.mp3]					Chapter-37
+interficiō, interficere, interfēcī, interfectum	to kill, murder	[sound:interficio.mp3]					Chapter-37
+licet, licēre, licuit, (impers., + dat. + inf.)	it is permitted (to someone to do something), one may	[sound:licet.mp3]					Chapter-37
+peregrīnor, peregrīnārī, peregrīnātus sum	to travel abroad, wander	[sound:peregrinor.mp3]					Chapter-37
+requiēscō, requiēscere, requiēvī, requiētum	to rest	[sound:requiesco.mp3]					Chapter-37
+soleō, solēre, solitus sum	to be accustomed	[sound:soleo.mp3]					Chapter-37
+arbor, arboris	tree	[sound:arbor.mp3]	f.				Chapter-38
+dignitās, dignitātis (f.)	merit, prestige, dignity	[sound:dignitas.mp3]					Chapter-38
+dolor, dolōris	pain, grief	[sound:dolor.mp3]	m.				Chapter-38
+odium, odiī (n.)	hatred	[sound:odium.mp3]					Chapter-38
+opus, operis	a work, task; deed, accomplishment	[sound:opus.mp3]	n.				Chapter-38
+ōrātiō, ōrātiōnis	speech	[sound:oratio.mp3]	f.				Chapter-38
+pēs, pedis	lower leg, foot	[sound:pes.mp3]	m.				Chapter-38
+sator, satōris (m.)	sower, planter; begetter, father; founder	[sound:sator.mp3]					Chapter-38
+fīrmus, fīrma, fīrmum	firm, strong; reliable	[sound:firmus.mp3]					Chapter-38
+īnfīrmus, īnfīrma, īnfīrmum	not strong, weak, feeble	[sound:infirmus.mp3]					Chapter-38
+mīrābilis, mīrābile	amazing, wondrous, remarkable	[sound:mirabilis.mp3]					Chapter-38
+prīstinus, prīstina, prīstinum	ancient; former, previous	[sound:pristinus.mp3]					Chapter-38
+sublīmis, sublīme	elevated, lofty; heroic, noble	[sound:sublimis.mp3]					Chapter-38
+etsī (et + sī)	even if, although	[sound:etsi.mp3]			conj. with indic. or subjunct. according to rules for sī		Chapter-38
+ergā (prep. + acc.)	toward	[sound:erga.mp3]					Chapter-38
+libenter (adv.)	with pleasure, gladly	[sound:libenter.mp3]					Chapter-38
+impediō, impedīre, impedīvī, impedītum	to impede, hinder, prevent	[sound:impedio.mp3]					Chapter-38
+metuō, metuere, metuī	to fear, dread; be afraid for <b>(+ dat.)</b>	[sound:metuo.mp3]					Chapter-38
+queror, querī, questus sum	to complain, lament	[sound:queror.mp3]					Chapter-38
+recognōscō, recognōscere, recognōvī, recognitum	to recognize, recollect	[sound:recognosco.mp3]					Chapter-38
+suspendō, suspendere, suspendī, suspēnsum	to hang up, suspend; interrupt	[sound:suspendo.mp3]					Chapter-38
+vēndō, vēndere, vēndidī, vēnditum	to sell	[sound:vendo.mp3]					Chapter-38
+aedificium, aedificiī (n.)	building, structure	[sound:aedificium.mp3]					Chapter-39
+iniūria, iniūriae (f.)	injustice, wrong	[sound:iniuria.mp3]					Chapter-39
+mulier, mulieris (f.)	woman	[sound:mulier.mp3]					Chapter-39
+trānsitus, trānsitūs (m.)	passing over, transit; transition	[sound:transitus.mp3]					Chapter-39
+ventus, ventī (m.)	wind	[sound:ventus.mp3]					Chapter-39
+cupidus, cupida, cupidum	desirous, eager, fond; + gen, desirous of, eager for	[sound:cupidus.mp3]					Chapter-39
+līberālis, līberāle	of, relating to a free person; worthy of a free man, decent, liberal; generous	[sound:liberalis.mp3]					Chapter-39
+necesse (indecl. adj. used as nom. or acc.)	necessary, inevitable	[sound:necesse.mp3]			often&nbsp;<b>necesse est</b>&nbsp;+ inf.,&nbsp;<i>it is necessary</i>&nbsp;<i>(to)</i>		Chapter-39
+<b>vetus</b>, gen. <b>veteris</b>	old	[sound:vetus.mp3]					Chapter-39
+quasi (adv. or conj.)	as if, as it were	[sound:quasi.mp3]			quam + sī		Chapter-39
+ambulō, ambulāre, ambulāvī, ambulātum	to walk	[sound:ambulo.mp3]					Chapter-39
+experior, experīrī, expertus sum	to try, test; experience	[sound:experior.mp3]					Chapter-39
+lībō, lībāre, lībāvī, lībātum	to pour a libation of, on; pour ritually; sip; touch gently	[sound:libo.mp3]					Chapter-39
+oportet, oportēre, oportuit,&nbsp;	(impers. + infin.) it is proper, right, necessary	[sound:oportet.mp3]					Chapter-39
+oppugnō, oppugnāre, oppugnāvī, oppugnātum	to fight against, attack, assault, assail	[sound:oppugno.mp3]					Chapter-39
+ōrnō, ōrnāre, ōrnāvī, ōrnātum	to equip, furnish, adorn	[sound:orno.mp3]					Chapter-39
+pernoctō, pernoctāre, pernoctāvī, pernoctātum	to spend or occupy the night	[sound:pernocto.mp3]					Chapter-39
+trānseō, trānsīre, trānsiī, trānsitum	to go accross, cross; pass over, ignore	[sound:transeo.mp3]					Chapter-39
+aes, aeris	bronze	[sound:aes.mp3]	n.				Chapter-40
+dominus, dominī (m.) and domina, dominae (f.)	master (of a household), lord; mistress, lady	[sound:dominus.mp3][sound:domina.mp3]					Chapter-40
+lacrima, lacrimae (f.)	tear	[sound:lacrima.mp3]					Chapter-40
+mēta, mētae (f.)	turning point, goal; limit, boundary	[sound:meta.mp3]					Chapter-40
+monumentum, monumentī (n.)	monument	[sound:monumentum.mp3]					Chapter-40
+nāsus, nāsī (m.)	nose	[sound:nasus.mp3]					Chapter-40
+saxum, saxī (n.)	rock, stone	[sound:saxum.mp3]					Chapter-40
+vultus, vultūs (m.)	countenance, face	[sound:vultus.mp3]					Chapter-40
+iūstus, iūsta, iūstum	just, right	[sound:iustus.mp3]					Chapter-40
+tot (indecl. adj.), tot ... quot	so many, as many; as many ... as	[sound:tot.mp3]					Chapter-40
+praeter (+ acc.)	besides, except; beyond, past	[sound:praeter.mp3]					Chapter-40
+nōnne&nbsp;	"interrog. adv. which introduces questions expecting the answer ""yes"""	[sound:nonne.mp3]					Chapter-40
+num	"interrog. adv.: (1) introduces questions which expect the answer ""no"";<div>(2) introduces indirect questions and means <i>whether</i></div>"	[sound:num.mp3]					Chapter-40
+omnīnō	<i>wholly, entirely, altogether</i>; with negatives <i>at all</i>	[sound:omnino.mp3]					Chapter-40
+postrēmum	after all, finally; for the last time	[sound:postremum.mp3]					Chapter-40
+quīn	indeed, in fact, furthermore	[sound:quin.mp3]					Chapter-40
+explicō, explicāre, explicāvī, explicātum	to unfold; explain; spread out, deploy	[sound:explico.mp3]					Chapter-40
+fatīgō, fatīgāre, fatīgāvī, fatīgātum	to weary, tire out	[sound:fatigo.mp3]					Chapter-40
+for, fārī, fātus sum	to speak (prophetically), talk, foretell	[sound:for.mp3]					Chapter-40
+opīnor, opīnārī, opīnātus sum	to suppose	[sound:opinor.mp3]					Chapter-40
+reperiō, reperīre, repperī, repertum	to find, discover, learn; get	[sound:reperio.mp3]					Chapter-40
+vereor, verērī, veritus sum	to show reverence for, respect; be afraid of, fear	[sound:vereor.mp3]					Chapter-40
+festīnō, festīnāre	hasten, make haste						
+lentē	slowly						
+peccō, peccāre	to sin			peccadillo, impeccable			
+vōlō, volāre	to fly			volatile, volley			
+bis	twice			bisect, bicycle			
+cito	quickly			citation, incite			
