@@ -1,29 +1,44 @@
+(def amo ["amō", "amāre", "amāvī", "amātum"])
 
+(amo 1) ; "amāre"
 
-["amō", "amāre", "amāvī", "amātum"]
+(defn remove-from-end [s end]
+  (assert (.endsWith s end))
+  (.substring s 0 (- (count s) (count end))))
 
-"am"
+(defn present-stem [verb] (remove-from-end (verb 1) "āre"))
+(defn perfect-stem [verb] (remove-from-end (verb 2) "ī"))
 
-(def pai1 ["ō","ās","at","āmus","ātis","ant"])
-(def iai1 ["ābam","ābās","ābat","ābāmus","ābātis","ābant"])
-(def fai1 ["ābō","ābis","ābit","ābimus","ābitis","ābunt"])
+(present-stem amo) ; "am"
+(perfect-stem amo) ; "amāv"
 
-                                        ; (def con ["","","","","",""])
+(def preai1 ["ō","ās","at","āmus","ātis","ant"])
+(def impai1 ["ābam","ābās","ābat","ābāmus","ābātis","ābant"])
+(def futai1 ["ābō","ābis","ābit","ābimus","ābitis","ābunt"])
 
-(def con ["ī","istī","it","imus","istis"," ērunt"])
-(def con ["erō","eris","erit","erimus","eritis","erunt"])
-(def con ["","","","","",""])
+(def perai1 ["ī","istī","it","imus","istis","ērunt"])
+(def fpeai1 ["erō","eris","erit","erimus","eritis","erint"])
+(def plpai1 ["eram","erās","erat","erāmus","erātis","erant"])
+
+; (def con ["","","","","",""])
+
 
 (def conjugate (fn [stem, endings]
-            (map (fn[stem ending] (str stem ending))
+            (mapv (fn[stem ending] (str stem ending))
                  (repeat stem) endings)))
 
-(conjugate "am" pai1) ; ("amō" "amās" "amat" "amāmus" "amātis" "amant")
-(conjugate "am" iai1) ; ("amābam" "amābās" "amābat" "amābāmus" "amābātis" "amābant")
-(conjugate "am" fai1) ; ("amābō" "amābis" "amābit" "amābimus" "amābitis" "amābunt")
+(every? identity
+        (list
+         (= (conjugate (present-stem amo) preai1) ["amō" "amās" "amat" "amāmus" "amātis" "amant"])
+         (= (conjugate (present-stem amo) impai1) ["amābam" "amābās" "amābat" "amābāmus" "amābātis" "amābant"])
+         (= (conjugate (present-stem amo) futai1) ["amābō" "amābis" "amābit" "amābimus" "amābitis" "amābunt"])
+         (= (conjugate (perfect-stem amo) perai1) ["amāvī" "amāvistī" "amāvit" "amāvimus" "amāvistis" "amāvērunt"])
+         (= (conjugate (perfect-stem amo) plpai1) ["amāveram" "amāverās" "amāverat" "amāverāmus" "amāverātis" "amāverant"])
+         (= (conjugate (perfect-stem amo) fpeai1) ["amāverō" "amāveris" "amāverit" "amāverimus" "amāveritis" "amāverint"])))
 
 
-("amō" "amās" "amat" "amāmus" "amātis" "amant")
+
+
 
 ;; http://rharriso.sites.truman.edu/latin-language/pronunciation-syllable-division-and-accent-2/
 
@@ -47,3 +62,6 @@
 
 (str/split "requiririsphonetichāquere" #"(?=qu|re|ph|ch)")
 (str/split "requiririsphonetichāquere" #"")
+
+
+;;  
