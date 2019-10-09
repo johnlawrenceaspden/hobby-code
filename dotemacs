@@ -1114,19 +1114,21 @@
 (defun accent-replace-whole-buffer ()
   "Corrects macrons from badly scanned latin"
   (interactive "*")
-  (dolist (ele (list ?â ?ä ?ê ?ë ?î ?ô ?ü ?ï))
+  (dolist (ele (list ?â ?ä ?ê ?ë ?é ?î ?ô ?ü ?û ?ï))
     (setq elt (char-to-string ele))
     (goto-char (point-min))
     (while (search-forward elt nil t 1)
       (replace-match
        (char-to-string
-    (pcase ele
-      (`?â ?ā)
-      (`?ä ?ā)
-      (`?ê ?ē)
-      (`?ë ?ē)
-      (`?î ?ī)
-      (`?ô ?ō)
-      (`?ü ?ū)
-      (`?ï ?ī)))))))
+        (pcase ele
+          (`?â ?ā)
+          (`?ä ?ā)
+          (`?ê ?ē)
+          (`?ë ?ē)
+          (`?é ?ē)
+          (`?î ?ī)
+          (`?ô ?ō)     
+          (`?ü ?ū)
+          (`?û ?ū)
+          (`?ï ?ī)))))))
 
