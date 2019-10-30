@@ -16,48 +16,6 @@
 # song=re.sub("\n", "", song)
 
 
-# prog="""
-# int func(int a, long b)
-# { 
-#     do_this; 
-#     do_that; 
-# }
-# int func(int a, long b)
-# { 
-#     do_this; 
-#     do_that; 
-# }
-
-# """
-
-# from pypeg2 import *
-
-# class Type(Keyword):
-#     grammar = Enum( K("int"), K("long") )
-
-# class Parameter:
-#     grammar = attr("typing", Type), name()
-
-# class Parameters(Namespace):
-#     grammar = optional(csl(Parameter))
-
-# class Instruction(str):
-#     grammar = word, ";"
-
-# block = "{", maybe_some(Instruction), "}"
-
-# class Function(List):
-#     grammar = attr("typing", Type), name(), \
-#             "(", attr("parms", Parameters), ")", block
-
-# program= maybe_some(Function)
-
-# f = parse(prog, program)
-
-# print(f)
-
-from pypeg2 import *
-
 song="""
 0 0 0 s1 1 1 0 b1 ( 1 1 )
 """
@@ -89,16 +47,16 @@ class Beat(List):
 print(parse("( 0 1 )", Beat))
 print(parse("1", Beat))
 
+
+piece=maybe_some(beat)
+
+print(parse("1 1 ( 0 0 1) (1 1) b1 0 0 s2", piece))
+
+
+
 class Piece(List):
     grammar = maybe_some(Beat)
 
-print(parse("1 1 ( 0 (0 1) )", Piece))
+print(parse("1 1 ( 0 0 1) (1 1) b1 0 0 s2", Piece))
 
     
-piece=maybe_some(beat)
-
-# parse("0 1", some(Note))
-# print(parse("(0 1)", subgroup))
-
-# s = parse(song, piece)
-# print(s)
