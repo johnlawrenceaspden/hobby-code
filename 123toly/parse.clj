@@ -21,9 +21,13 @@
   (insta/parser
     "S = B? (A B)* A?
      A = '0'+
-     B = '/'"))
+     B = #'[/\n]\n?'"))
 
 (bars "0000/0000/00000/0000")
+(bars "0000/0000
+000
+00/0000/
+000")
 (bars "0000")
 (bars "0000/")
 (bars "/0000/")
@@ -39,7 +43,7 @@
    NOTE=#'[,\\']?[#b]?[1234567]'
    REST=#'0'
    CONTINUATION='-'
-   BARLINE='/'
+   BARLINE=#'[/\n]\n?'
    TRIPLET='(' BEAT+ ')'
    DOTTED=(NOTE|REST|CONTINUATION) '.' (NOTE|REST)
 "
