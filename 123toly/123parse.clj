@@ -8,19 +8,121 @@
 
 (def notes
   (insta/parser
-
    "
    PIECE= BARLINE? (BAR BARLINE)* BAR?
    BAR =(BEAT|DOTTED)+
-   BEAT = NOTE|REST|TRIPLET|CONTINUATION
-   NOTE=#'[,\\']?[#b]?[1234567]'
-   REST=#'0'
-   CONTINUATION='-'
-   BARLINE=#'[/\n]\n?'
    TRIPLET='(' BEAT+ ')'
+
+   BEAT = NOTE|REST|TRIPLET|CONTINUATION
    DOTTED=(NOTE|REST|CONTINUATION) '.' (NOTE|REST)
+
+   DOT='.'
+   BARLINE=#'[/\n]\n?'
+   NOTE=#'[,\\']?[#b]?[1234567]'
+   REST='0'
+   CONTINUATION='-'
 "
    ))
+
+(def piece (notes "1-2.3(4(56))/,1'10-/"))
+
+(pprint piece)
+
+[:BAR
+  [:BEAT [:NOTE "1"]]
+  [:BEAT [:CONTINUATION "-"]]
+  [:BEAT [:NOTE "2"]]
+  [:BEAT [:NOTE "3"]]
+  [:BEAT [:TRIPLET "(" [:BEAT [:NOTE "4"]] [:BEAT [:NOTE "5"]] ")"]]]
+ [:BARLINE "/"]
+ [:BAR
+  [:BEAT
+   [:TRIPLET
+    "("
+    [:BEAT [:NOTE "6"]]
+    [:BEAT [:NOTE "7"]]
+    [:BEAT [:TRIPLET "(" [:BEAT [:NOTE "1"]] [:BEAT [:NOTE "2"]] ")"]]
+    ")"]]
+  [:BEAT [:NOTE ",1"]]
+  [:BEAT [:NOTE "'1"]]
+  [:BEAT [:NOTE "'1"]]]
+ [:BARLINE "/"]
+ [:BAR [:DOTTED [:NOTE "2"] "." [:NOTE "3"]] [:BEAT [:NOTE "4"]]]
+ [:BARLINE "/"]
+ [:BAR
+  [:BEAT [:REST "0"]]
+  [:BEAT [:REST "0"]]
+  [:BEAT [:NOTE "5"]]
+  [:BEAT [:REST "0"]]]
+ [:BARLINE "/"]
+ [:BAR
+  [:BEAT
+   [:TRIPLET
+    "("
+    [:BEAT [:NOTE "1"]]
+    [:BEAT [:NOTE "2"]]
+    [:BEAT [:NOTE "3"]]
+    [:BEAT [:NOTE "4"]]
+    ")"]]
+  [:BEAT
+   [:TRIPLET
+    "("
+    [:BEAT [:TRIPLET "(" [:BEAT [:NOTE "1"]] [:BEAT [:NOTE "2"]] ")"]]
+    [:BEAT [:TRIPLET "(" [:BEAT [:NOTE "3"]] [:BEAT [:NOTE "4"]] ")"]]
+    ")"]]]]
+
+
+;; triplet flattening
+
+[:BEAT [:NOTE "1"]]
+
+(defn triplet-flatten [duration stuff]
+  (let [type (first stuff)
+        contents (rest stuff)]
+    (cond (= type :BEAT) (concat [:BEAT :DURATION duration] contents)
+          (= type :TRIPLET) (
+          :else stuff)))
+
+(triplet-flatten 1 [:BEAT [:NOTE "1"]]) ; (:BEAT :DURATION 1 [:NOTE "1"])
+
+(triplet-flatten 1 [:TRIPLET "(" [:BEAT [:NOTE "1"]] [:BEAT [:NOTE "2"]] ")"])
+  
+  [:TRIPLET
+   "("
+   [:BEAT [:NOTE "1"]]
+   [:BEAT [:NOTE "2"]]
+   ")"]
+
+  [
+   (:BEAT :DURATION 1/2 [:NOTE "1"])
+   (:BEAT :DURATION 1/2 [:NOTE "2"])
+   ]
+  
+
+
+
+
+;; continuation combining
+;; bar flattening
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -80,7 +182,6 @@
 
 
 
-(def piece (notes "1-23(45)"))
 
 (pprint piece)
 
@@ -140,8 +241,14 @@ c4~ c4 d4 e4 f8 g8
  [:NOTE :DURATION 1/2 :PITCH "4"]
  [:NOTE :DURATION 1/2 :PITCH "5"]]
 
-  
+;; lilyponding
 
+[ "|"
+  "c2"
+  "d4"
+  "e4" 
+  "f8"
+  "g8"]
 
 
 
@@ -155,6 +262,23 @@ c4~ c4 d4 e4 f8 g8
 (notes "6633/2176/5671/23--")
 "ta ta ta ta | ta ta ta ta | ta ta ta ta | ta ta aa aa"
 "a4 a4 e4 e4 | d4 c4 b4 a4 | g4 a4 b4 c4 | d4 e8."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (notes "(311)(511)/(313)(543)/(422)(511)/(424)(654)")
 
