@@ -1,10 +1,16 @@
 # Makefile for controlling python virtual environments etc
 # See https://github.com/sio/Makefile.venv
 
-default: venv show-venv
-	$(VENV)/python hello.py
+default: venv show-venv hello
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
+
+hello: venv
+	$(VENV)/python hello.py
+
+generators: venv
+	$(VENV)/python generators.py
+
 
 include Makefile.venv
 
