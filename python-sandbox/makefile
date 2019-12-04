@@ -8,6 +8,9 @@ default: venv show-venv hello
 hello: venv
 	$(VENV)/python hello.py
 
+hello-pyparsing: venv
+	$(VENV)/python hello-pyparsing.py
+
 generators: venv
 	$(VENV)/python generators.py
 
@@ -22,6 +25,7 @@ flake8: $(VENV)/flake8
 
 pipreqs: $(VENV)/pipreqs
 	$(VENV)/pipreqs --force --ignore .venv . 
+
 Makefile.venv:
 	curl \
 		-o Makefile.fetched \
