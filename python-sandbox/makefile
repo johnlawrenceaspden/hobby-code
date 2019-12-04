@@ -8,12 +8,14 @@ default: venv show-venv
 
 include Makefile.venv
 
-check: $(VENV)/pyflakes
+pyflakes: $(VENV)/pyflakes
 	$(VENV)/pyflakes *.py
 
-codestyle: $(VENV)/flake8
+flake8: $(VENV)/flake8
 	$(VENV)/flake8 *.py
 
+pipreqs: $(VENV)/pipreqs
+	$(VENV)/pipreqs --force --ignore .venv . 
 Makefile.venv:
 	curl \
 		-o Makefile.fetched \
