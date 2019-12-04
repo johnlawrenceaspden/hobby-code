@@ -5,15 +5,13 @@ default: venv show-venv hello
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
 
-hello: venv
-	$(VENV)/python hello.py
 
-hello-pyparsing: venv
-	$(VENV)/python hello-pyparsing.py
+ALLPYS := $(patsubst %.py,%,$(wildcard *.py))
 
-generators: venv
-	$(VENV)/python generators.py
+$(ALLPYS): venv
+	$(VENV)/python $@.py
 
+.PHONY: $(ALLPYS)
 
 include Makefile.venv
 
