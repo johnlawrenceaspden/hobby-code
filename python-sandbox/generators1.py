@@ -15,7 +15,7 @@ def is_prime(number):
         if number % 2 == 0:
             return False
         for current in range(3, int(math.sqrt(number) + 1), 2):
-            if number % current == 0: 
+            if number % current == 0:
                 return False
         return True
     return False
@@ -27,7 +27,7 @@ def simple_generator_function():
     yield 2
     yield 3
 
-our_generator=simple_generator_function()
+our_generator = simple_generator_function()
 
 print(next(our_generator))
 print(next(our_generator))
@@ -37,7 +37,7 @@ try:
 except:
     print("boom")
 
-our_generator=simple_generator_function()
+our_generator = simple_generator_function()
 
 print(next(our_generator))
 print(next(our_generator))
@@ -47,7 +47,7 @@ try:
 except:
     print("boom")
 
-our_generator=simple_generator_function()
+our_generator = simple_generator_function()
 print(list(our_generator))
 
 
@@ -56,9 +56,9 @@ def get_primes(number):
     while True:
         if is_prime(number):
             yield number
-        number+=1
+        number += 1
 
-g=get_primes(3)
+g = get_primes(3)
 print(next(g))
 print(next(g))
 print(next(g))
@@ -77,15 +77,15 @@ def solve_number_10():
 solve_number_10()
 
 
-g=get_primes(3)
+g = get_primes(3)
 print(next(g))
-g=get_primes(10)
-print(next(g))
-print(next(g))
-g=get_primes(100)
+g = get_primes(10)
 print(next(g))
 print(next(g))
-g=get_primes(1000)
+g = get_primes(100)
+print(next(g))
+print(next(g))
+g = get_primes(1000)
 print(next(g))
 print(next(g))
 
@@ -94,17 +94,18 @@ def get_primes(number):
     while True:
         if is_prime(number):
             inval = yield number
-            if inval: number=inval
+            if inval:
+                number=inval
         number += 1
 
 
-#generator goes start-->yield, receive, yield, receive
+# generator goes start-->yield, receive, yield, receive
 # so whole execution path goes
 #                                         start-->yield,     receive-->yield,       receive-->yield
 # create, send (nowhere for value to go!),              send,                send,
-        
 
-g=get_primes(3)
+
+g = get_primes(3)
 print(next(g))
 print(g.send(10))
 print(next(g))
@@ -121,7 +122,7 @@ print(g.send(None))
 
 # Note that next(g) and g.send(None) are the same
 
-g=get_primes(3)
+g = get_primes(3)
 print(g.send(None))
 print(g.send(10))
 print(g.send(None))
