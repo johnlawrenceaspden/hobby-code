@@ -32,6 +32,9 @@ pyflakes: $(VENV)/pyflakes
 flake8: $(VENV)/flake8
 	$(VENV)/flake8 *.py
 
+fuckflake8:
+	$(VENV)/pip uninstall flake8
+
 pipreqs: $(VENV)/pipreqs
 	$(VENV)/pipreqs --force --ignore .venv . 
 
