@@ -1,3 +1,4 @@
 kivy
 kivy-examples
 ffpyplayer
+Pillow

@@ -1,4 +1,13 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
+
+import os
+# really? we communicate with kivy by modifying the environment??
+os.environ['KIVY_TEXT'] = 'pil'
+import kivy
+
+# See:
+# https://kivy.org/doc/stable/guide/basic.html
+
 from kivy.app import App #We need to import the bits of kivy we need as we need them as importing everything would slow the app down unnecessarily
 from kivy.uix.widget import Widget #this is a thing that you want the App to display
 from kivy.uix.label import Label #this will import the code for the label in which we want to display Hello World! 
