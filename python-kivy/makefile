@@ -2,7 +2,7 @@
 # See https://github.com/sio/Makefile.venv
 
 default: venv show-venv
-	KIVY_VIDEO=ffpyplayer $(VENV)/python hello.py
+	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
 
