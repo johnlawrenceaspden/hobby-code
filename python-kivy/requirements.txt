@@ -3,3 +3,4 @@ kivy-examples
 ffpyplayer
 Pillow
 buildozer
+Cython
