@@ -3,7 +3,8 @@
 
 # sudo apt-file update
 # apt-file search "javac "
-# sudo apt install openjdk-11-jdk
+# must be java 8
+# sudo apt install openjdk-8-jdk
 
 # this may not be true, uninstalled it and it still works
 # but certainly the first time it needed to be done to get past the 'missing cython' stage
