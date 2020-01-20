@@ -1,10 +1,24 @@
 # Makefile for controlling python virtual environments etc
 # See https://github.com/sio/Makefile.venv
 
+# sudo apt-file update
+# apt-file search "javac "
+# sudo apt install openjdk-11-jdk
+
+# this may not be true, uninstalled it and it still works
+# but certainly the first time it needed to be done to get past the 'missing cython' stage
+# even though cython was in the requirements.txt file 
+# must for some reason install system-wide cython
+# sudo apt install cython
+
+
 default: venv show-venv
 	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
+
+apkg:
+	$(VENV)/buildozer android debug deploy run
 
 include Makefile.venv
 
