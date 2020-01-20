@@ -17,7 +17,10 @@ import kivy.uix.boxlayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
-import kivy.uix.button
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+
+
 
 
 class LoginScreen(GridLayout):
@@ -26,8 +29,9 @@ class LoginScreen(GridLayout):
         super(LoginScreen, self).__init__(**kwargs)
         self.username = TextInput(multiline=False)
         self.password = TextInput(password=True, multiline=False)
-        self.button = kivy.uix.button.Button(text="Click Me.")
+        self.button = Button(text="Click Me.")
         self.button.bind(on_press=self.displayMessage)
+        self.subbox=kivy.uix.boxlayout.BoxLayout(orientation="vertical")
         self.label = Label(text="Not logged in.")
         self.ud =    Label(text="Not logged in.")
         self.pd =    Label(text="Not logged in.")
@@ -39,9 +43,11 @@ class LoginScreen(GridLayout):
         self.add_widget(Label(text='password'))
         self.add_widget(self.password)
         self.add_widget(self.button)
-        self.add_widget(self.label)
-        self.add_widget(self.ud)
-        self.add_widget(self.pd)
+        self.add_widget(self.subbox)
+        
+        self.subbox.add_widget(self.label)
+        self.subbox.add_widget(self.ud)
+        self.subbox.add_widget(self.pd)
 
     def displayMessage(self, btn):
         self.label.text = "that's close enough for government work"
