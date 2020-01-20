@@ -21,7 +21,7 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 
 
-
+clickcount=0
 
 class LoginScreen(GridLayout):
 
@@ -32,9 +32,9 @@ class LoginScreen(GridLayout):
         self.button = Button(text="Click Me.")
         self.button.bind(on_press=self.displayMessage)
         self.subbox=kivy.uix.boxlayout.BoxLayout(orientation="vertical")
-        self.label = Label(text="Not logged in.")
-        self.ud =    Label(text="Not logged in.")
-        self.pd =    Label(text="Not logged in.")
+        self.label = Label(text="Not logged in. ("+str(clickcount)+")")
+        self.ud =    Label(text="--")
+        self.pd =    Label(text="--")
 
         self.cols = 2
         #order of addition is significant for widget placement
@@ -50,7 +50,9 @@ class LoginScreen(GridLayout):
         self.subbox.add_widget(self.pd)
 
     def displayMessage(self, btn):
-        self.label.text = "that's close enough for government work"
+        global clickcount
+        clickcount+=1
+        self.label.text = "that's close enough for government work ("+str(clickcount)+")"
         self.ud.text=self.username.text
         self.pd.text=self.password.text
 
