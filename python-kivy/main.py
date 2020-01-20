@@ -21,6 +21,9 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.switch import Switch
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.floatlayout import FloatLayout
+ 
 
 clickcount=0
 
@@ -35,6 +38,8 @@ class LoginScreen(GridLayout):
         self.subbox=kivy.uix.boxlayout.BoxLayout(orientation="vertical")
         self.anchor=AnchorLayout(anchor_x='center', anchor_y='center')
 
+        self.floater=BoxLayout()
+        self.toggle=ToggleButton(text="togglebutton", font_size=20)
 
         self.label = Label(text="Not logged in. ("+str(clickcount)+")")
         self.ud =    Label(text="--")
@@ -51,12 +56,15 @@ class LoginScreen(GridLayout):
         self.add_widget(self.button)
         self.add_widget(self.subbox)
         self.add_widget(self.anchor)
+        self.add_widget(self.floater)
         
         self.subbox.add_widget(self.label)
         self.subbox.add_widget(self.ud)
         self.subbox.add_widget(self.pd)
 
         self.anchor.add_widget(self.sw)
+        
+        self.floater.add_widget(self.toggle)
 
     def displayMessage(self, btn):
         global clickcount
