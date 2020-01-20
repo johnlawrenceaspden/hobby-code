@@ -28,7 +28,9 @@ class LoginScreen(GridLayout):
         self.password = TextInput(password=True, multiline=False)
         self.button = kivy.uix.button.Button(text="Click Me.")
         self.button.bind(on_press=self.displayMessage)
-        self.label = kivy.uix.label.Label(text="Not logged in.")
+        self.label = Label(text="Not logged in.")
+        self.ud =    Label(text="Not logged in.")
+        self.pd =    Label(text="Not logged in.")
 
         self.cols = 2
         #order of addition is significant for widget placement
@@ -38,9 +40,13 @@ class LoginScreen(GridLayout):
         self.add_widget(self.password)
         self.add_widget(self.button)
         self.add_widget(self.label)
+        self.add_widget(self.ud)
+        self.add_widget(self.pd)
 
     def displayMessage(self, btn):
-        self.label.text = "that's close enough for government work" + "\n"+self.username.text+"\n"+self.password.text
+        self.label.text = "that's close enough for government work"
+        self.ud.text=self.username.text
+        self.pd.text=self.password.text
 
 
 
