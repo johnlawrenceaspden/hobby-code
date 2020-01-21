@@ -24,13 +24,7 @@ default: venv show-venv
 	echo source .venv/bin/activate
 
 bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk: main.py
-	echo yo
 	$(VENV)/buildozer android debug
-
-
-
-deploy: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
-	$(VENV)/buildozer android deploy run
 
 run: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
 	$(VENV)/buildozer android deploy run
