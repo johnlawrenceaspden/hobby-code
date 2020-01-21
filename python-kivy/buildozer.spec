@@ -65,7 +65,7 @@ orientation = portrait
 # author = © Copyright Info
 
 # change the major version of python used by the app
-osx.python_version = 3
+osx.python_version = 2
 
 # Kivy version to use
 osx.kivy_version = 1.9.1
@@ -94,13 +94,13 @@ fullscreen = 0
 #android.minapi = 21
 
 # (int) Android SDK version to use
-#android.sdk = 20
+android.sdk = 18
 
 # (str) Android NDK version to use
 #android.ndk = 17c
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
-#android.ndk_api = 21
+android.ndk_api = 18
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
