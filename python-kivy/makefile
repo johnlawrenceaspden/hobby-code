@@ -30,7 +30,7 @@ run: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
 	$(VENV)/buildozer android deploy run
 
 logcat: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
-	$(VENV)/buildozer android deploy run logcat
+	$(VENV)/buildozer android logcat | grep "python"
 
 include Makefile.venv
 
