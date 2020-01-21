@@ -12,13 +12,22 @@
 # must for some reason install system-wide cython
 # sudo apt install cython
 
+# a list of buildozer dependencies (https://buildozer.readthedocs.io/en/latest/installation.html#targeting-android)
+# sudo apt install git zip unzip openjdk-8-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev
+# and also (although requirements.txt should cover this) pip3 install --upgrade cython virtualenv
 
 default: venv show-venv
 	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
 
-apkg:   venv
+deploy: venv
+	$(VENV)/buildozer android deploy run
+
+run: venv
+	$(VENV)/buildozer android debug deploy run
+
+logcat: venv
 	$(VENV)/buildozer android debug deploy run logcat
 
 include Makefile.venv
