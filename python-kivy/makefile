@@ -16,19 +16,24 @@
 # sudo apt install git zip unzip openjdk-8-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev
 # and also (although requirements.txt should cover this) pip3 install --upgrade cython virtualenv
 
+# buildozer apparently needs to be run in a venv, so to get those sorts of things to run you need to activate the environment before using make
+
 default: venv show-venv
 	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
 
-deploy: venv
+bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk: venv main.py
+	$(VENV)/buildozer android debug
+
+deploy: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
 	$(VENV)/buildozer android deploy run
 
-run: venv
-	$(VENV)/buildozer android debug deploy run
+run: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
+	$(VENV)/buildozer android deploy run
 
-logcat: venv
-	$(VENV)/buildozer android debug deploy run logcat
+logcat: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
+	$(VENV)/buildozer android deploy run logcat
 
 include Makefile.venv
 
