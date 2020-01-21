@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-# tell it to use a different text renderer (from python image library), makes text worse.
-import os
-# really? we communicate with kivy by modifying the environment??
-os.environ['KIVY_TEXT'] = 'pil'
-import kivy
 
 # See:
 # https://kivy.org/doc/stable/guide/basic.html
