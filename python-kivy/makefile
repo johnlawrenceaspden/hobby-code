@@ -18,8 +18,8 @@ default: venv show-venv
 	echo to activate the virtual environment in a shell
 	echo source .venv/bin/activate
 
-apkg:
-	$(VENV)/buildozer android debug deploy run
+apkg:   venv
+	$(VENV)/buildozer android debug deploy run logcat
 
 include Makefile.venv
 

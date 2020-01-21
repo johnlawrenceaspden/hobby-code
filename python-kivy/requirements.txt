@@ -4,3 +4,4 @@ ffpyplayer
 Pillow
 buildozer
 cython
+pkgconfig
