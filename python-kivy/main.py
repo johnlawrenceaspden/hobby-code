@@ -28,19 +28,28 @@ class LoginScreen(GridLayout):
 
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical')
         self.username = TextInput(multiline=False)
         self.password = TextInput(password=True, multiline=False)
         self.button = Button(text="Click Me.")
         self.button.bind(on_press=playsound)
+        self.button2 = Button(text="Click Me Too")
+        self.button2.bind(on_press=playsound)
 
 
-        self.cols = 2
+        self.cols = 1
         #order of addition is significant for widget placement
-        self.add_widget(Label(text='User Name'))
-        self.add_widget(self.username)
-        self.add_widget(Label(text='password'))
-        self.add_widget(self.password)
-        self.add_widget(self.button)
+        self.add_widget(layout)
+        layout.add_widget(Label(text='User Name'))
+        layout.add_widget(self.username)
+        layout.add_widget(Label(text='password'))
+        layout.add_widget(self.password)
+        
+        self.buttonlayout = BoxLayout()
+        layout.add_widget(self.buttonlayout)
+
+        self.buttonlayout.add_widget(self.button)
+        self.buttonlayout.add_widget(self.button2)
 
 import time
 
@@ -52,7 +61,7 @@ def playsound(dummy):
         sound.play()
         print("sound state", sound.state)
         print("sleep")
-        time.sleep(4)
+        time.sleep(1)
         print("sleep")
 
         print("sound state", sound.state)
