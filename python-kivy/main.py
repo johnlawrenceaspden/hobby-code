@@ -29,27 +29,27 @@ class LoginScreen(GridLayout):
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
         layout = BoxLayout(orientation='vertical')
-        self.username = TextInput(multiline=False)
-        self.password = TextInput(password=True, multiline=False)
-        self.button = Button(text="Click Me.")
+        self.button = Button(text="Hard")
         self.button.bind(on_press=playsound)
-        self.button2 = Button(text="Click Me Too")
+        self.button2 = Button(text="Good")
         self.button2.bind(on_press=playsound)
+        self.button3 = Button(text="Easy")
+        self.button3.bind(on_press=playsound)
 
 
         self.cols = 1
         #order of addition is significant for widget placement
         self.add_widget(layout)
-        layout.add_widget(Label(text='User Name'))
-        layout.add_widget(self.username)
-        layout.add_widget(Label(text='password'))
-        layout.add_widget(self.password)
+        layout.add_widget(Label(text='Music'))
+        layout.add_widget(Label(text='Numbers\n135153151'))
+        layout.add_widget(Label(text='Rhythm\nta ta-di ta ta-di ta ta ta - aa '))
         
         self.buttonlayout = BoxLayout()
         layout.add_widget(self.buttonlayout)
 
         self.buttonlayout.add_widget(self.button)
         self.buttonlayout.add_widget(self.button2)
+        self.buttonlayout.add_widget(self.button3)
 
 import time
 
