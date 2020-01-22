@@ -13,8 +13,8 @@
 # sudo apt install cython
 
 # a list of buildozer dependencies (https://buildozer.readthedocs.io/en/latest/installation.html#targeting-android)
-# sudo apt install git zip unzip openjdk-8-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev
-# and also (although requirements.txt should cover this) pip3 install --upgrade cython virtualenv
+# sudo apt install git zip unzip openjdk-8-jdk python-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev
+# and also (although requirements.txt should cover this) pip install --upgrade cython virtualenv
 
 # buildozer apparently needs to be run in a venv, so to get those sorts of things to run you need to activate the environment before using make
 
