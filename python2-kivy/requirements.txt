@@ -1,0 +1,7 @@
+kivy
+kivy-examples
+ffpyplayer
+Pillow
+buildozer
+cython
+pkgconfig
