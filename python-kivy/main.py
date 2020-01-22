@@ -19,6 +19,8 @@ from kivy.uix.switch import Switch
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
  
+from kivy.core.audio import SoundLoader
+
 
 clickcount=0
 
@@ -28,6 +30,8 @@ class LoginScreen(GridLayout):
         super(LoginScreen, self).__init__(**kwargs)
         self.username = TextInput(multiline=False)
         self.password = TextInput(password=True, multiline=False)
+        self.button = Button(text="Click Me.")
+        self.button.bind(on_press=playsound)
 
 
         self.cols = 2
@@ -36,7 +40,16 @@ class LoginScreen(GridLayout):
         self.add_widget(self.username)
         self.add_widget(Label(text='password'))
         self.add_widget(self.password)
+        self.add_widget(self.button)
 
+
+
+def playsound(dummy):
+    sound = SoundLoader.load('mytest.wav')
+    if sound:
+        print("Sound found at %s" % sound.source)
+        print("Sound is %.3f seconds" % sound.length)
+        sound.play()
 
 
 class HelloWorldApp(App):
