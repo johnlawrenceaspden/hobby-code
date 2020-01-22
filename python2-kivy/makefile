@@ -1,3 +1,19 @@
+# Installation of Kivy for python2 on Debian 9.9
+sudo apt-get install python-pip
+
+python -m pip install --upgrade --user pip setuptools virtualenv
+
+python -m virtualenv ~/kivy_venv
+
+source ~/kivy_venv/bin/activate
+
+python -m pip install kivy
+
+
+
+
+
+
 # Makefile for controlling python virtual environments etc
 # See https://github.com/sio/Makefile.venv
 
@@ -17,6 +33,13 @@
 # and also (although requirements.txt should cover this) pip install --upgrade cython virtualenv
 
 # buildozer apparently needs to be run in a venv, so to get those sorts of things to run you need to activate the environment before using make
+
+
+
+
+
+
+PY=python
 
 default: venv show-venv
 	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
