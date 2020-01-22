@@ -42,15 +42,29 @@ class LoginScreen(GridLayout):
         self.add_widget(self.password)
         self.add_widget(self.button)
 
-
+import time
 
 def playsound(dummy):
-    sound = SoundLoader.load('mytest.wav')
+    sound = SoundLoader.load('mytest.ogg')
     if sound:
         print("Sound found at %s" % sound.source)
         print("Sound is %.3f seconds" % sound.length)
         sound.play()
+        print("sound state", sound.state)
+        print("sleep")
+        time.sleep(4)
+        print("sleep")
 
+        print("sound state", sound.state)
+        sound.stop()
+        sound.seek(0)
+        print("sound state", sound.state)
+        
+        sound.pitch=5/4
+        sound.play()
+        
+        print("sound state", sound.state)
+        
 
 class HelloWorldApp(App):
     def build(self):
