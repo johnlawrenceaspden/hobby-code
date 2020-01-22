@@ -28,28 +28,30 @@ class LoginScreen(GridLayout):
 
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
-        layout = BoxLayout(orientation='vertical')
-        self.button = Button(text="Hard")
-        self.button.bind(on_press=playsound)
-        self.button2 = Button(text="Good")
-        self.button2.bind(on_press=playsound)
-        self.button3 = Button(text="Easy")
-        self.button3.bind(on_press=playsound)
+        self.layout = BoxLayout(orientation='vertical')
+        
+        self.play_button = Button(text="Play")
+        self.play_button.bind(on_press=playsound)
+        
+        self.hard_button = Button(text="Hard")
+        self.good_button = Button(text="Good")
+        self.easy_button = Button(text="Easy")
 
 
         self.cols = 1
         #order of addition is significant for widget placement
-        self.add_widget(layout)
-        layout.add_widget(Label(text='Music'))
-        layout.add_widget(Label(text='Numbers\n135153151'))
-        layout.add_widget(Label(text='Rhythm\nta ta-di ta ta-di ta ta ta - aa '))
+        self.add_widget(self.layout)
+        self.layout.add_widget(self.play_button)
+        self.layout.add_widget(Label(text='Numbers\n1 (35) 1 (53) 1 5 1 -'))
+        self.layout.add_widget(Label(text='Music'))
+        self.layout.add_widget(Label(text='Rhythm\nta ta-di ta ta-di ta ta ta - aa '))
         
         self.buttonlayout = BoxLayout()
-        layout.add_widget(self.buttonlayout)
+        self.layout.add_widget(self.buttonlayout)
 
-        self.buttonlayout.add_widget(self.button)
-        self.buttonlayout.add_widget(self.button2)
-        self.buttonlayout.add_widget(self.button3)
+        self.buttonlayout.add_widget(self.hard_button)
+        self.buttonlayout.add_widget(self.good_button)
+        self.buttonlayout.add_widget(self.easy_button)
 
 import time
 
