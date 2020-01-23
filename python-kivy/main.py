@@ -13,7 +13,9 @@ from kivy.uix.label import Label
 
 class HelloWorldApp(App):
     def build(self):
-        root_widget = Label(text='Hello World!')
+        root_widget = Label()
+        root_widget.text = 'Hello world!'
+        root_widget.font_size='100sp'
         return root_widget
 
 HelloWorldApp().run()
