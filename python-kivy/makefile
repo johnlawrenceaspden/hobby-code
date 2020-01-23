@@ -19,6 +19,8 @@
 # buildozer apparently needs to be run in a venv, so to get those sorts of things to run you need to activate the environment before using make
 
 default: venv show-venv
+	@echo make run
+	@echo make runapp
 	@echo to activate the virtual environment in a shell
 	@echo source .venv/bin/activate
 
@@ -30,9 +32,6 @@ bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk: main.py
 
 runapp: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
 	$(VENV)/buildozer android deploy run logcat | grep "python"
-
-logcat: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
-	$(VENV)/buildozer android logcat | grep "python"
 
 include Makefile.venv
 
