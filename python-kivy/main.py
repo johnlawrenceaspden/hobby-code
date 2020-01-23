@@ -16,6 +16,10 @@ class HelloWorldApp(App):
         root_widget = Label()
         root_widget.text = 'Hello world!'
         root_widget.font_size='100sp'
+        root_widget.italic=True
+        root_widget.markup=True
+        root_widget.text = '[color=#ff0000]Hello[/color] [color=#00ff00]world![/color]'
+
         return root_widget
 
 HelloWorldApp().run()
