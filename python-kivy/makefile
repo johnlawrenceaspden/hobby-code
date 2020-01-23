@@ -19,15 +19,17 @@
 # buildozer apparently needs to be run in a venv, so to get those sorts of things to run you need to activate the environment before using make
 
 default: venv show-venv
-	KIVY_VIDEO=ffpyplayer $(VENV)/python main.py
-	echo to activate the virtual environment in a shell
-	echo source .venv/bin/activate
+	@echo to activate the virtual environment in a shell
+	@echo source .venv/bin/activate
+
+run:
+	$(VENV)/python main.py
 
 bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk: main.py
 	$(VENV)/buildozer android debug
 
-run: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
-	$(VENV)/buildozer android deploy run
+runapp: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
+	$(VENV)/buildozer android deploy run logcat | grep "python"
 
 logcat: venv bin/myapp__armeabi-v7a-0.1-armeabi-v7a-debug.apk
 	$(VENV)/buildozer android logcat | grep "python"
@@ -57,3 +59,5 @@ clean:
 	rm -rf __pycache__
 
 reallyclean:clean clean-venv
+	rm -rf .buildozer
+	rm -rf bin
