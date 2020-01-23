@@ -11,9 +11,9 @@ from kivy.app import App
 
 from kivy.uix.label import Label
 
-class YourApp(App):
+class HelloWorldApp(App):
     def build(self):
-        root_widget = Label(text='Hello world!')
+        root_widget = Label(text='Hello World!')
         return root_widget
 
-YourApp().run()
+HelloWorldApp().run()
