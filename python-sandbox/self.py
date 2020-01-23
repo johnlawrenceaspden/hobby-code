@@ -56,9 +56,9 @@ s.mult(2)         # self is implicitly passed in
 print( s.field )
 
 
-#With objects, explicit selfing
-s=State()
-State.__init__(s) #actually this will already have been called!
+#With objects, but with explicit selfing
+s=State.__new__(State) #can create an object without calling __init__, like this.
+State.__init__(s) 
 State.add(s,'added')
 State.mult(s,2)
 print(s.field)
