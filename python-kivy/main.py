@@ -13,8 +13,17 @@ from kivy.uix.label import Label
 
 import inspect
 
-def print_button_text(instance):
+def print_button_text(*args, **kwargs):
+    print("args->",args)
+    print("kwargs->", kwargs)
+    print("locals()->", locals())
+    instance=args[0]
+    print("locals()->", locals())
     print("from global", instance.text)
+    print("   ",inspect.getargspec(YourApp.print_button_text))
+    print("   ",inspect.getargspec(print_button_text))
+
+
 
 class YourApp(App):
     def build(self):
@@ -47,10 +56,17 @@ class YourApp(App):
         
         return root_widget
 
-    def print_button_text(self, instance):
+#    def print_button_text(self, instance):
+    def print_button_text(*args, **kwargs):
+        print("args->",args)
+        print("kwargs->", kwargs)
+        print("locals()->", locals())
+        self=args[0]
+        instance=args[1]
+        print("locals()->", locals())
         print("from app:", instance.text)
-        print(inspect.getargspec(self.print_button_text))
-        print(inspect.getargspec(print_button_text))
+        print("   ",inspect.getargspec(self.print_button_text))
+        print("   ",inspect.getargspec(print_button_text))
 
 
 
