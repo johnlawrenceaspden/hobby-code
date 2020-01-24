@@ -11,6 +11,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 
+import inspect
+
 def print_button_text(instance):
     print("from global", instance.text)
 
@@ -36,15 +38,20 @@ class YourApp(App):
         root_widget.add_widget(button_grid)
         root_widget.add_widget(clear_button)
 
- 
         for i,button in enumerate(button_grid.children[1:]):  # note use of the `children` property
             button.bind(on_press=self.print_button_text if i%2 else print_button_text)
 
+
+
+            
         
         return root_widget
 
     def print_button_text(self, instance):
         print("from app:", instance.text)
+        print(inspect.getargspec(self.print_button_text))
+        print(inspect.getargspec(print_button_text))
+
 
 
 
