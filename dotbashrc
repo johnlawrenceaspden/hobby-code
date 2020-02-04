@@ -406,7 +406,7 @@ function vcstatuses
     popd #restore current directory
 }
 
-
+alias vsync='vcstatuses && gitpullall && vcstatuses && gitpushall'
 
 function gitguiall
 {
