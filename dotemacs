@@ -19,7 +19,7 @@
 
 ;; There's also the melpa archive which gets bleeding edge stuff
 ;; If enabled, you may need to pin certain packages to the melpa-stable versions
-;;(add-to-list 'package-archives
+;; (add-to-list 'package-archives
 ;;             '("melpa" . "http://melpa.org/packages/") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
@@ -30,7 +30,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (cider ack realgud company undo-tree ggtags elpy clojure-mode))))
+    (transpose-frame cider ack realgud company undo-tree ggtags elpy clojure-mode))))
 
 
 ;; packages are normally enabled after this file has run, do it now instead
@@ -1131,4 +1131,5 @@
           (`?ü ?ū)
           (`?û ?ū)
           (`?ï ?ī)))))))
+
 
