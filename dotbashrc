@@ -170,7 +170,7 @@ alias sw='cd ~/hobby-code && mvn -f pom.xml clojure:swank'
 alias ssw='cd ~/hobby-code && mvn -f simple.pom.xml clojure:swank'
 
 alias lsrt='ls -al --color=auto --reverse --sort=time'
-alias go='xdg-open'
+alias go='xdg-open' # will pass to exo-open on xfce, gnome-open on gnome, etc
 
 function mktags
 {
