@@ -37,3 +37,8 @@ ln -s ~/hobby-code/e.bash ~/bin/e.bash
 echo replacing ~/bin/fix 
 mv ~/bin/fix ~/bin/old.fix
 ln -s ~/hobby-code/fix ~/bin/fix
+
+echo replacing ~/bin/twat.bash 
+mv ~/bin/twat.bash ~/bin/old.twat.bash
+ln -s ~/hobby-code/twat.bash ~/bin/twat.bash
+
