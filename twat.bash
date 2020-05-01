@@ -16,3 +16,7 @@ nmcli networking on
 nmcli radio wifi on
 #disown
 #sudo tail -f /var/log/syslog
+
+# mighty loop
+# while true; do if ping -q -c1 8.8.8.8; then sleep 1 ; else play -q -n synth 0.1 sin 880; sudo /home/john/hobby-code/twat.bash; sleep 15 ; fi ; done
+
