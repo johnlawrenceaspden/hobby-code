@@ -3,7 +3,7 @@ while true;
 	   then
 	       echo ping successful
 	   else
-               echo a packet went missing!
+               echo --------------- a packet went missing! ----------------------------------
                play -q -n synth 0.1 sin 880 vol 0.009 ; #very quiet beep, we're just doing some tests
                if ping -c1 -W1 -n -v 8.8.8.8; 
 	       then 
