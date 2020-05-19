@@ -6,7 +6,7 @@ sudo pkill -9 supplicant
 sudo rmmod ath9k
 sudo modprobe ath9k
 
-sudo /sbin/wpa_supplicant -B -u -s -c/etc/wpa_supplicant.conf -O /run/wpa_supplicant &
+sudo /sbin/wpa_supplicant -B -dd -u -s -c/etc/wpa_supplicant.conf -O /run/wpa_supplicant
 
 nmcli radio wifi on
 
