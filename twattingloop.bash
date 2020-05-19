@@ -23,5 +23,18 @@ while true;
 	           fi ;
 	       fi ;
 	   fi ;
+
+           if ip route | grep wlp2s0 | grep default;
+           then
+               echo wireless route present
+           else
+               echo -------------------- wireless route NOT present----------------------
+               play -q -n synth 0.1 sin 1320 vol 0.99 ; 
+	       sudo /home/john/hobby-code/twat.bash;
+               echo give it a while to recover before going back on watch
+	       sleep 10 ; 
+
+           fi
+           
         sleep 1 ; # all is well, back to sleep
        	done
