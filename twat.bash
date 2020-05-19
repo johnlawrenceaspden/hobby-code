@@ -1,5 +1,6 @@
 
 nmcli radio wifi off
+#nmcli networking off
 
 sleep 1
 sudo pkill -9 supplicant
@@ -8,6 +9,7 @@ sudo modprobe ath9k
 
 sudo /sbin/wpa_supplicant -B -dd -u -s -c/etc/wpa_supplicant.conf -O /run/wpa_supplicant
 
+#nmcli networking on
 nmcli radio wifi on
 
 
@@ -19,8 +21,7 @@ nmcli radio wifi on
 #nmcli connection down eduroam
 #nmcli connection up eduroam
 
-#nmcli networking off
-#nmcli networking on
+
 
 #sudo /sbin/wpa_supplicant -dd -u -s -O /run/wpa_supplicant &
 #disown
