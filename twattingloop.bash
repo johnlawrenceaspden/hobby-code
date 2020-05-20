@@ -1,30 +1,39 @@
 while true;
            echo =================================================================
            echo checking what network manager thinks
-
-           if nmcli d s | grep 60:BE:B5:07:5E:99 | grep connected;
+           nmcli d s
+           if nmcli d s | grep 60:BE:B5:07:5E:99 | grep disconnected;
            then
-               echo XT1032 Network up
-           else
                echo XT1032 Network down
                play -q -n synth 0.1 sin 880 vol 0.009 ;
+               #nmcli con down XT1032\ Network
+               nmcli con up   XT1032\ Network
+           else
+               echo XT1032 Network up
+
            fi
 
-           if nmcli d s | grep A0:28:ED:82:15:B8 | grep connected;
+           if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
            then
-               echo Nokia 2 Network up
-           else
                echo Nokia 2 Network down
                play -q -n synth 0.1 sin 880 vol 0.009 ;
+               #nmcli con down Nokia\ 2\ Network
+               nmcli con up   Nokia\ 2\ Network
+           else
+               echo Nokia 2 Network up
            fi
 
 
-           if nmcli d s | grep wlp2s0 | grep connected;
+           if nmcli d s | grep wlp2s0 | grep disconnected;
            then
-               echo Wifi Network up
-           else
                echo Wifi Network down
                play -q -n synth 0.1 sin 880 vol 0.009 ;
+               #nmcli con down eduroam\ roaming
+               nmcli con up   eduroam\ roaming
+
+           else
+               echo Wifi Network up
+               
            fi
            echo =================================================================
       
