@@ -1,4 +1,33 @@
-while true; 
+while true;
+           echo =================================================================
+           echo checking what network manager thinks
+
+           if nmcli d s | grep 60:BE:B5:07:5E:99 | grep connected;
+           then
+               echo XT1032 Network up
+           else
+               echo XT1032 Network down
+               play -q -n synth 0.1 sin 880 vol 0.009 ;
+           fi
+
+           if nmcli d s | grep A0:28:ED:82:15:B8 | grep connected;
+           then
+               echo Nokia 2 Network up
+           else
+               echo Nokia 2 Network down
+               play -q -n synth 0.1 sin 880 vol 0.009 ;
+           fi
+
+
+           if nmcli d s | grep wlp2s0 | grep connected;
+           then
+               echo Wifi Network up
+           else
+               echo Wifi Network down
+               play -q -n synth 0.1 sin 880 vol 0.009 ;
+           fi
+           echo =================================================================
+      
 	do if ping -c1 -W1 -n -v 8.8.8.8; 
 	   then
 	       echo ping successful
@@ -35,6 +64,8 @@ while true;
 	       sleep 10 ; 
 
            fi
+
+           
            
         sleep 1 ; # all is well, back to sleep
        	done
