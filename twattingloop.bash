@@ -1,4 +1,9 @@
 while true;
+           nmcli connection modify eduroam\ roaming ipv4.route-metric 500
+           nmcli connection modify eduroam\ strongest\ boat ipv4.route-metric 500
+           nmcli connection modify XT1032\ Network ipv4.route-metric 1000
+           nmcli connection modify Nokia\ 2\ Network ipv4.route-metric 1000
+      
            echo =================================================================
            echo checking what network manager thinks
            nmcli d s
@@ -35,6 +40,8 @@ while true;
                echo Wifi Network up
                
            fi
+           echo =================================================================
+           ip route | grep default
            echo =================================================================
       
 	do if ping -c1 -W1 -n -v 8.8.8.8; 
