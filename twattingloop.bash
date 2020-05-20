@@ -18,15 +18,15 @@ while true;
 
            fi
 
-           if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
-           then
-               echo Nokia 2 Network down
-               play -q -n synth 0.1 sin 880 vol 0.009 ;
-               #nmcli con down Nokia\ 2\ Network
-               nmcli con up   Nokia\ 2\ Network
-           else
-               echo Nokia 2 Network up
-           fi
+           # if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
+           # then
+           #     echo Nokia 2 Network down
+           #     play -q -n synth 0.1 sin 880 vol 0.009 ;
+           #     #nmcli con down Nokia\ 2\ Network
+           #     nmcli con up   Nokia\ 2\ Network
+           # else
+           #     echo Nokia 2 Network up
+           # fi
 
 
            if nmcli d s | grep wlp2s0 | grep disconnected;
@@ -74,7 +74,7 @@ while true;
                echo wireless route present
            else
                echo -------------------- wireless route NOT present----------------------
-               play -q -n synth 0.1 sin 1320 vol 0.99 ; 
+               play -q -n synth 0.1 sin 1320 vol 0.0099 ; 
 	       sudo /home/john/hobby-code/twat.bash;
                echo give it a while to recover before going back on watch
 	       sleep 10 ; 
