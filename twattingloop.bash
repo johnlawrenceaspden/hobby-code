@@ -18,21 +18,21 @@ while true;
 
            fi
 
-           # if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
-           # then
-           #     echo Nokia 2 Network down
-           #     play -q -n synth 0.1 sin 880 vol 0.009 ;
-           #     #nmcli con down Nokia\ 2\ Network
-           #     nmcli con up   Nokia\ 2\ Network
-           # else
-           #     echo Nokia 2 Network up
-           # fi
+           if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
+           then
+               echo Nokia 2 Network down
+               play -q -n synth 0.1 sin 220 vol 0.009 ;
+               #nmcli con down Nokia\ 2\ Network
+               nmcli con up   Nokia\ 2\ Network
+           else
+               echo Nokia 2 Network up
+           fi
 
 
            if nmcli d s | grep wlp2s0 | grep disconnected;
            then
                echo Wifi Network down
-               play -q -n synth 0.1 sin 880 vol 0.009 ;
+               play -q -n synth 0.1 sin 1320 vol 0.009 ;
                #nmcli con down eduroam\ roaming
                nmcli con up   eduroam\ roaming
 
@@ -49,19 +49,19 @@ while true;
 	       echo ping successful
 	   else
                echo --------------- a packet went missing! ----------------------------------
-               play -q -n synth 0.1 sin 880 vol 0.009 ; #very quiet beep, we're just doing some tests
+               play -q -n synth 0.1 sin 440 vol 0.009 ; #very quiet beep, we're just doing some tests
                if ping -c1 -W1 -n -v 8.8.8.8; 
 	       then 
 		   echo re-ping successful
 	       else
                    echo coincidence?
-                   play -q -n synth 0.1 sin 880 vol 0.09 ; 
+                   play -q -n synth 0.1 sin 440 vol 0.09 ; 
                    if ping -c1 -W1 -n -v 8.8.8.8; 
 	           then
                        echo re-re-ping successful
 	           else
                        echo enemy action! battle stations!
-		       play -q -n synth 0.1 sin 880 vol 0.99 ; 
+		       play -q -n synth 0.1 sin 440 vol 0.99 ; 
 		       sudo /home/john/hobby-code/twat.bash;
                        echo give it a while to recover before going back on watch
 		       sleep 10 ; 
