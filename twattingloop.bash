@@ -2,6 +2,34 @@ FIX=false
 CHECK_NOKIA=false
 CHECK_EDUROAM=false
 
+if nmcli d s | grep 60:BE:B5:07:5E:99 | grep disconnected;
+then
+    echo XT1032 Network down
+else
+    echo XT1032 Network up
+fi
+
+if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
+then
+    echo Nokia 2 Network down
+    CHECK_NOKIA=false
+else
+    echo Nokia 2 Network up
+    CHECK_NOKIA=true
+fi
+
+
+
+if nmcli d s | grep wlp2s0 | grep disconnected;
+then
+    echo Wifi Network down
+    CHECK_EDUROAM=false
+else
+    echo Wifi Network up
+    CHECK_EDUROAM=true
+fi
+
+
 while true;
            #nmcli connection modify eduroam\ roaming ipv4.route-metric 500
            #nmcli connection modify eduroam\ strongest\ boat ipv4.route-metric 500
