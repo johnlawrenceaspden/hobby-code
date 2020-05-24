@@ -1,4 +1,6 @@
 FIX=false
+CHECK_NOKIA=false
+CHECK_EDUROAM=false
 
 while true;
            #nmcli connection modify eduroam\ roaming ipv4.route-metric 500
@@ -21,31 +23,36 @@ while true;
                echo XT1032 Network up
            fi
 
-           if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
-           then
-               echo Nokia 2 Network down
-               play -q -n synth 0.1 sin 660 vol 0.009 ;
-               #nmcli con down Nokia\ 2\ Network
-               if $FIX ; then
-                   nmcli con up   Nokia\ 2\ Network
+           if $CHECK_NOKIA; then
+               if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
+               then
+                   echo Nokia 2 Network down
+                   play -q -n synth 0.1 sin 660 vol 0.009 ;
+                   #nmcli con down Nokia\ 2\ Network
+                   if $FIX ; then
+                       nmcli con up   Nokia\ 2\ Network
+                   fi
+               else
+                   echo Nokia 2 Network up
                fi
-           else
-               echo Nokia 2 Network up
            fi
 
 
-           if nmcli d s | grep wlp2s0 | grep disconnected;
-           then
-               echo Wifi Network down
-               play -q -n synth 0.1 sin 1320 vol 0.009 ;
-               #nmcli con down eduroam\ roaming
-               if $FIX; then
-                   nmcli con up   eduroam\ roaming
+           if $CHECK_EDUROAM ; then
+               if nmcli d s | grep wlp2s0 | grep disconnected;
+               then
+                   echo Wifi Network down
+                   play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   #nmcli con down eduroam\ roaming
+                   if $FIX; then
+                       nmcli con up   eduroam\ roaming
+                   fi
+               else
+                   echo Wifi Network up
+                   
                fi
-           else
-               echo Wifi Network up
-               
            fi
+           
            echo =================================================================
            ip route | grep default
            echo =================================================================
