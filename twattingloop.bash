@@ -108,7 +108,7 @@ while true;
 	           else
                        echo enemy action! battle stations!
 		       play -q -n synth 0.1 sin 440 vol 0.99 ;
-                       if $FIX ; then
+                       if $PANIC_FIX ; then
 		           sudo /home/john/hobby-code/twat.bash;
                            #nmcli con up   eduroam\ roaming
                            nmcli con up   XT1032\ Network
