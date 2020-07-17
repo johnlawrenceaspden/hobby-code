@@ -101,18 +101,22 @@ while true;
 		   echo re-ping successful
 	       else
                    echo coincidence?
-                   play -q -n synth 0.1 sin 440 vol 0.09 ; 
+                   play -q -n synth 0.1 sin 440 vol 0.018 ; 
                    if ping -c1 -W1 -n -v 8.8.8.8; 
 	           then
                        echo re-re-ping successful
 	           else
                        echo enemy action! battle stations!
-		       play -q -n synth 0.1 sin 440 vol 0.99 ;
+		       play -q -n synth 0.1 sin 440 vol 0.027 ;
                        if $PANIC_FIX ; then
 		           sudo /home/john/hobby-code/twat.bash;
                            #nmcli con up   eduroam\ roaming
-                           nmcli con up   XT1032\ Network
-                           nmcli con up   Nokia\ 2\ Network
+                           if $CHECK_XT1032; then
+                               nmcli con up   XT1032\ Network
+                           fi
+                           if $CHECK_NOKIA; then
+                               nmcli con up   Nokia\ 2\ Network
+                           fi
                            echo give it a while to recover before going back on watch
 		           sleep 10 ; 
                        fi
