@@ -46,6 +46,7 @@
 ;; start emacs server so that we can load files from the command line
 (server-start)
 
+(load-theme 'gtk-ide t)
 ;; ;;emacs color themes are in the package emacs-goodies-el on ubuntu
 ;;(require 'color-theme)
 ;;(color-theme-initialize)
