@@ -3,3 +3,5 @@
 
 (factorial 6)
 
+(println "Hello")
+
