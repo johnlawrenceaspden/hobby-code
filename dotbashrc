@@ -447,7 +447,7 @@ alias rts='~/data/timesheet.py'
 # getting a bit paranoid about hibernate and suspend. Copy the suspend log file to home directory for easy diffing with the new version if it breaks
 # also we lose xmodmap settings on hibernate and suspend so with any luck this should restore them
 alias hib='echo are you sure?'
-alias simonsayshib='cp /var/log/pm-suspend.log ~/pm-suspend.log && sync && sudo pm-hibernate && xmodmap ~/.xmodmaprc'
+alias simonsayshib='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspend.log ; sync ; xscreensaver-command -lock; sudo pm-hibernate ; xmodmap ~/.xmodmaprc ; date ; acpi -V'
 alias sus='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspend.log ; sync ; xscreensaver-command -lock ; sudo pm-suspend-hybrid ; xmodmap ~/.xmodmaprc ; date ; acpi -V'
 alias postmortem='diff /var/log/pm-suspend.log ~/pm-suspend.log >suspenddiff ; xxdiff successfulsuspenddiff suspenddiff'
 
