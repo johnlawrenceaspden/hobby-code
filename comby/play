@@ -1,0 +1,6 @@
+echo $SHELL
+comby 'printf(":[1] :[2]!")' 'printf("comby, :[1]!")' .c -stdin << EOF
+int main(void) {
+  printf("hello world!");
+}
+EOF
