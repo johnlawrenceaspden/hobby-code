@@ -1,0 +1,8 @@
+#!/bin/bash
+
+comby 'printf(":[1] :[2]!")' 'printf("comby, :[1]!")' .c -stdin <test.c
+
+comby \
+    'printf(":[1] :[2]!")' \
+    'printf("comby, :[1]!")'\
+    .c -stdin <test.c

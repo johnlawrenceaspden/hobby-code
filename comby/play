@@ -2,5 +2,6 @@ echo $SHELL
 comby 'printf(":[1] :[2]!")' 'printf("comby, :[1]!")' .c -stdin << EOF
 int main(void) {
   printf("hello world!");
+  if(du->fc == 2) printf(du->fc);
 }
 EOF
