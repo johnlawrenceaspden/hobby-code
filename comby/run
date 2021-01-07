@@ -3,6 +3,30 @@
 comby 'printf(":[1] :[2]!")' 'printf("comby, :[1]!")' .c -stdin <test.c
 
 comby \
-    'printf(":[1] :[2]!")' \
-    'printf("comby, :[1]!")'\
+    ':[[1]]->fc' \
+    'get_fc(:[1])'\
     .c -stdin <test.c
+
+comby \
+    ':[1]->fc' \
+    'get_fc(:[1])'\
+    .c -stdin <test.c
+
+
+comby \
+    ':[1.]->fc' \
+    'get_fc(:[1])'\
+    .c -stdin <test.c
+
+comby \
+    ':[hole~.]->fc' \
+    'get_fc(:[hole])'\
+    .c -stdin <test.c
+
+comby \
+    ':[hole.]->fc' \
+    'get_fc(:[hole])'\
+    .c -stdin <test.c
+
+
+comby -config fc.toml  -f .c -stdin <test.c

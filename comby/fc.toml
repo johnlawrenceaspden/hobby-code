@@ -1,0 +1,32 @@
+[001-arrow-getter]
+
+match=':[hole.]->fc'
+rewrite='get_fc(:[hole])'
+
+[002-arrow-getter]
+
+match='(:[hole.])->fc'
+rewrite='get_fc(:[hole])'
+
+
+[003-dot-getter]
+
+match=':[hole.].fc'
+rewrite='get_fc(&(:[hole]))'
+
+
+
+[my-second-pattern]
+# A multiline example.
+
+match='''
+function :[[fn]](:[1], :[2]) {
+  :[body]
+};'''
+
+rewrite='''
+function :[[fn]](:[2], :[1]) {
+  :[body]
+};'''
+
+rule='where :[fn] != "divide"'
