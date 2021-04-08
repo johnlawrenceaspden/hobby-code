@@ -100,19 +100,40 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
-shopt -s cmdhist                     #multiline commands are one history item
-export HISTIGNORE="ls:[bf]g:exit"  #ignore ls, bg, fg & exit in history
-export HISTFILESIZE=500000
-export HISTSIZE=500000
+# Eternal bash history.
+# ---------------------
+# Undocumented feature which sets the size to "unlimited".
+# https://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTFILESIZE=
+export HISTSIZE=
+# causes history to record time of command, not much use and visually distracting
+# export HISTTIMEFORMAT="[%F %T] "
+# export HISTTIMEFORMAT=
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
+# Force prompt to write history after every command.
+# http://superuser.com/questions/20900/bash-history-loss
+PROMPT_COMMAND="history -a"
 
-#see http://www.ukuug.org/events/linux2003/papers/bash_tips/
-shopt -s histappend
-#PROMPT_COMMAND='history -a ; history -n' #fix new window problem: every time you get a new prompt, update and reload history file
-PROMPT_COMMAND='history -a ;' #fix new window problem: just update. history -n to reload the combined history
+# in any individual shell history -r reloads the history that other shells have written
+# M-. gets the arguments of previous commands
 
-#Remember M-. gets the arguments of previous commands
+
+
+# # don't put duplicate lines in the history. See bash(1) for more options
+# export HISTCONTROL=ignoredups
+# shopt -s cmdhist                     #multiline commands are one history item
+# export HISTIGNORE="ls:[bf]g:exit"  #ignore ls, bg, fg & exit in history
+# export HISTFILESIZE=500000
+# export HISTSIZE=500000
+
+# #see http://www.ukuug.org/events/linux2003/papers/bash_tips/
+# shopt -s histappend
+# #PROMPT_COMMAND='history -a ; history -n' #fix new window problem: every time you get a new prompt, update and reload history file
+# PROMPT_COMMAND='history -a ;' #fix new window problem: just update. history -n to reload the combined history
+
+
 
 #show doc files for command
 function doc {  pushd "/usr/share/doc/$1" && ls ; }
