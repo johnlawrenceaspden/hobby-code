@@ -28,3 +28,5 @@ pgrep workrave
 if [[ $? != 0 ]] ; then
     workrave &
 fi
+
+redshift-gtk -t 5700:1000 
