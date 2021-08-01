@@ -12,7 +12,7 @@ void main(void){
     if(rand()%2 == 0){
       printf("win");
       wins++;
-      a*=1.7;
+      a*=1.5;
     } else {
       losses++;
       printf("lose");
