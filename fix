@@ -27,6 +27,15 @@ echo "starting workrave"
 pgrep workrave
 if [[ $? != 0 ]] ; then
     workrave &
+else
+    echo "workrave already running" ;
 fi
 
-redshift-gtk -t 5700:1000 
+# if redshift-gtk is not running then add it too
+echo "starting redshift-gtk"
+pgrep redshift
+if [[ $? != 0 ]] ; then
+    redshift-gtk -t 5700:1000 &
+else
+    echo "redshift already running" ;
+fi
