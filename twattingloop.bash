@@ -110,7 +110,9 @@ while true;
 		       play -q -n synth 0.1 sin 440 vol 0.027 ;
                        if $PANIC_FIX ; then
 		           sudo /home/john/hobby-code/twat.bash;
-                           #nmcli con up   eduroam\ roaming
+                           if $CHECK_EDUROAM; then
+                               nmcli con up   eduroam\ roaming
+                           fi
                            if $CHECK_XT1032; then
                                nmcli con up   XT1032\ Network
                            fi
@@ -118,7 +120,7 @@ while true;
                                nmcli con up   Nokia\ 2\ Network
                            fi
                            echo give it a while to recover before going back on watch
-		           sleep 10 ; 
+		           sleep 30 ; 
                        fi
 	           fi ;
 	       fi ;
