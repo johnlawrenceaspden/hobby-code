@@ -507,6 +507,9 @@ function mtd { mv "$@" ~/Desktop ; }
 alias sai='sudo apt-get install'
 alias uptimes='grep "Apr" /var/log/syslog | cut -d\  -f1,2,3 | cut -d: -f1,2 | uniq'
 
+# which doesn't work as well as one hopes, and yet it's what I always type, try various alternatives (type -a seems to do everything necessary)
+function which(){ type "$@"; /usr/bin/which "$@"; command -V "$@"; command -v "$@" ; alias "$@" ; echo ----- ; type -a "$@" ; }
+
 
 
 ### Solarflare
