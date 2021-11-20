@@ -512,88 +512,88 @@ function which(){ type "$@"; /usr/bin/which "$@"; command -V "$@"; command -v "$
 
 
 
-### Solarflare
+# ### Solarflare
 
-alias fw='cd ~/firmwaresrc'
-alias ct='cd ~/chip_test'
-alias hw='cd /projects/medford2/Work/jla/medford2'
-alias ej='cd /local/scratch/esnap_jla'
-alias qemu='cd /projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu'
-alias sc='cd ~/solar_capture'
+# alias fw='cd ~/firmwaresrc'
+# alias ct='cd ~/chip_test'
+# alias hw='cd /projects/medford2/Work/jla/medford2'
+# alias ej='cd /local/scratch/esnap_jla'
+# alias qemu='cd /projects/medford2/Work/jla/medford2/lom/dv/cosim/qemu'
+# alias sc='cd ~/solar_capture'
 
-export PATH=${PATH}:~/chip_test/scripts
-alias sgg="cd ~/solarflare2 && git gui &"
+# export PATH=${PATH}:~/chip_test/scripts
+# alias sgg="cd ~/solarflare2 && git gui &"
 
-    SFC_RUN_HW='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --farmi-lite --dutcfg min --qemu user '
-SFC_RUN_CMODEL='reset && time timeout  10m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --franky     --dutcfg min --qemu user '
+#     SFC_RUN_HW='reset && time timeout 120m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --farmi-lite --dutcfg min --qemu user '
+# SFC_RUN_CMODEL='reset && time timeout  10m /home/jla/chip_test/src/tools/cosim/esnap --chip medford2 --franky     --dutcfg min --qemu user '
 
-# add --qemu user after esnap to use a home-cooked version
-alias  sfc-run-hw-ptm="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest_medford2  trivial + ptm.agitator:fsdb=1^Z'
-alias sfc-run-hw-ptm2="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest_medford2  ptm.ptm_test:fsdb=1^Z'
-alias  sfc-run-hw-vdm="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.payload_send:count=20:fsdb=1^Z'
-alias sfc-run-hw-vdm2="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1:fsdb=1^Z'
-alias sfc-run-hw-vdm3="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.send_vdm:fsdb=1^Z'
+# # add --qemu user after esnap to use a home-cooked version
+# alias  sfc-run-hw-ptm="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest_medford2  trivial + ptm.agitator:fsdb=1^Z'
+# alias sfc-run-hw-ptm2="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest_medford2  ptm.ptm_test:fsdb=1^Z'
+# alias  sfc-run-hw-vdm="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.payload_send:count=20:fsdb=1^Z'
+# alias sfc-run-hw-vdm2="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1:fsdb=1^Z'
+# alias sfc-run-hw-vdm3="${SFC_RUN_HW}"' --runtime mcfw_cosim_eftest2_medford2 pcie_vdm.send_vdm:fsdb=1^Z'
 
-# commands for failing to run the C model on medford (not2)
-# ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 handwavium_eftest_medford
-# reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap  --chip medford --franky --dutcfg min --runtime mcfw_handwavium_eftest_medford pcie_vdm.pcie_vdm_stress_test^Z
+# # commands for failing to run the C model on medford (not2)
+# # ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 handwavium_eftest_medford
+# # reset && time timeout 1m /home/jla/chip_test/src/tools/cosim/esnap  --chip medford --franky --dutcfg min --runtime mcfw_handwavium_eftest_medford pcie_vdm.pcie_vdm_stress_test^Z
 
-alias  sfc-run-cmodel-ptm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medford2  trivial + ptm.agitator^Z'
-alias sfc-run-cmodel-ptm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medford2  ptm.ptm_test:update_count=100^Z'
-alias  sfc-run-cmodel-vdm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.payload_send:count=20^Z'
-alias sfc-run-cmodel-vdm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1^Z'
-alias sfc-run-cmodel-vdm3="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.send_vdm^Z'
+# alias  sfc-run-cmodel-ptm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medford2  trivial + ptm.agitator^Z'
+# alias sfc-run-cmodel-ptm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest_medford2  ptm.ptm_test:update_count=100^Z'
+# alias  sfc-run-cmodel-vdm="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.payload_send:count=20^Z'
+# alias sfc-run-cmodel-vdm2="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.pcie_vdm_stress_test:wait_for_response=1^Z'
+# alias sfc-run-cmodel-vdm3="${SFC_RUN_CMODEL}"'--runtime mcfw_octiron_eftest2_medford2 pcie_vdm.send_vdm^Z'
 
-alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
-alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
-alias sfc-show-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log'
-alias sfc-show-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log'
-alias sfc-show-msgs-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log | grep -i msg -A 60 '
-alias sfc-show-msgs-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log | grep -i msg -A 60 '
-
-
+# alias sfc-show-uart='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog | grep UART'
+# alias sfc-show-hwlog='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/hwlog'
+# alias sfc-show-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log'
+# alias sfc-show-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log'
+# alias sfc-show-msgs-pcie-transactions='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_transactions.log | grep -i msg -A 60 '
+# alias sfc-show-msgs-pcie-vip='reset && tail -c+1 --follow=name --retry /local/scratch/esnap_jla/pcie_vip_trans.log | grep -i msg -A 60 '
 
 
-#FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
-#alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
-alias sfc-make-fw-cmodel-vdm='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 octiron_eftest2_medford2'
-alias sfc-make-fw-cmodel-ptm='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 octiron_eftest_medford2 '
-
-alias sfc-make-fw-cosim-vdm='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 cosim_eftest2_medford2'
-alias sfc-make-fw-cosim-ptm='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 cosim_eftest_medford2'
-
-alias sfc-clean-fw='ssh furnace make -C /home/jla/firmwaresrc clean'
-
-alias sfc-make-chiptest='ssh furnace make -j -C ~/chip_test/build/ul_rhel6_x86_64/ '
-alias sfc-clean-chiptest='ssh furnace make -C ~/chip_test/build/ul_rhel6_x86_64/ clean'
-
-alias sfc-make-both='sfc-make-fw && sfc-make-chiptest'
-alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
 
 
-# alias ets='e ~/solarflare2/timesheet.py'
-# alias rts=~/solarflare2/timesheet.py
+# #FWTARGETS='WITH_FINGTON=1 RTL_BRANCH=misc octiron_eftest_medford2'  #'cosim_eftest_medford2'
+# #alias sfc-make-fw='ssh furnace make -j -C /home/jla/firmwaresrc '"${FWTARGETS}"
+# alias sfc-make-fw-cmodel-vdm='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 octiron_eftest2_medford2'
+# alias sfc-make-fw-cmodel-ptm='ssh furnace make -j8 -C /home/jla/firmwaresrc WITH_FINGTON=1 RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 octiron_eftest_medford2 '
 
-alias furnaces="mate-terminal --geometry=110x40+1200+10 --profile furnace \
---window --title=furnace \
---tab    --title=verdi \
---tab    --title=hwlog \
---tab    --title=uart \
---tab    --title=host"
+# alias sfc-make-fw-cosim-vdm='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 cosim_eftest2_medford2'
+# alias sfc-make-fw-cosim-ptm='ssh furnace make -j8 -C /home/jla/firmwaresrc RTL_BRANCH=all_pre_mbist WITH_NCSI=1 WITH_MCTP=1 cosim_eftest_medford2'
 
-alias anvils="mate-terminal --geometry=110x40+1200+10 --profile anvil \
---window --title=anvil \
---tab    --title=hwlog \
---tab    --title=uart \
---tab    --title=host"
+# alias sfc-clean-fw='ssh furnace make -C /home/jla/firmwaresrc clean'
 
-function xxdiffpcap {
-    A=$(mktemp --tmpdir "$1".XXX)
-    B=$(mktemp --tmpdir "$2".XXX)
-    tcpdump -xr "$1" >"$A"
-    tcpdump -xr "$2" >"$B"
-    xxdiff "$A" "$B"
-}
+# alias sfc-make-chiptest='ssh furnace make -j -C ~/chip_test/build/ul_rhel6_x86_64/ '
+# alias sfc-clean-chiptest='ssh furnace make -C ~/chip_test/build/ul_rhel6_x86_64/ clean'
+
+# alias sfc-make-both='sfc-make-fw && sfc-make-chiptest'
+# alias sfc-clean-both='sfc-clean-fw && sfc-clean-chiptest'
+
+
+# # alias ets='e ~/solarflare2/timesheet.py'
+# # alias rts=~/solarflare2/timesheet.py
+
+# alias furnaces="mate-terminal --geometry=110x40+1200+10 --profile furnace \
+# --window --title=furnace \
+# --tab    --title=verdi \
+# --tab    --title=hwlog \
+# --tab    --title=uart \
+# --tab    --title=host"
+
+# alias anvils="mate-terminal --geometry=110x40+1200+10 --profile anvil \
+# --window --title=anvil \
+# --tab    --title=hwlog \
+# --tab    --title=uart \
+# --tab    --title=host"
+
+# function xxdiffpcap {
+#     A=$(mktemp --tmpdir "$1".XXX)
+#     B=$(mktemp --tmpdir "$2".XXX)
+#     tcpdump -xr "$1" >"$A"
+#     tcpdump -xr "$2" >"$B"
+#     xxdiff "$A" "$B"
+# }
 
 
 
