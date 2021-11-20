@@ -9,7 +9,7 @@
 #[ -z "$PS1" ] && return
 
 # This is not the right place to set the PATH. Do that in ~/.profile
-export PATH=${PATH}:~/bin
+export PATH=${PATH}:~/bin:~/.local/bin
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
