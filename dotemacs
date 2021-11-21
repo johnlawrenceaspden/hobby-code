@@ -505,7 +505,10 @@
 ;; nervously give this a try
 (global-auto-revert-mode)
 
-
+;; i am going to regret this....
+(add-hook 'elpy-mode-hook (lambda ()
+                            (add-hook 'before-save-hook
+                                      'elpy-black-fix-code nil t)))
 
 
 
