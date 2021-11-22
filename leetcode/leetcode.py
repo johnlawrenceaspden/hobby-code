@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+from typing import Optional
 import sys
 
 print(sys.version)
 
 
 # Definition for singly-linked list.
-class ListNode(object):
+class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
@@ -15,23 +16,67 @@ class ListNode(object):
         return str(self.val) + ((", " + self.next.__repr__()) if (self.next) else "")
 
 
-# a3=ListNode(3)
-# a2=ListNode(4,next=a3)
-# a=ListNode(2,next=a2)
+assert repr(ListNode(2, next=ListNode(4, next=ListNode(3)))) == "2, 4, 3"
 
 
+# Seriously, linked-list shenanigans in Python? Oh well, I can write lisp in any syntax
+
+
+def cons(v, nodelist):
+    return ListNode(val=v, next=nodelist)
+
+
+def car(lst):
+    return lst.val
+
+
+def cdr(lst):
+    return lst.next
+
+
+assert car(cdr(ListNode(2, next=ListNode(4, next=ListNode(3))))) == 4
+assert (car(cdr(cons(0, cons(1, None))))) == 1
+
+# take a nice sensible python list and turn it into the above abortion
 def makeList(nodelist):
     a = None
     for v in reversed(nodelist):
-        a = ListNode(v, next=a)
+        a = cons(v, a)
     return a
 
 
-# l1= makeList([2,4,3])
-# l2= makeList([5,6,4])
+def reverse(l1):
+    a = None
+    while l1:
+        a = cons(car(l1), a)
+        l1 = cdr(l1)
+    return a
 
 
-class TreeNode(object):
+def compare(l1, l2):
+    while l1 and l2:
+        # print(l1, ":", l2)
+
+        if car(l1) != car(l2):
+            return False
+        l1 = cdr(l1)
+        l2 = cdr(l2)
+
+    if not (l1) and not (l2):
+        return True
+    else:
+        return False
+
+
+assert compare(cons(4, makeList([1, 2])), makeList([4, 1, 2]))
+assert compare(cons(4, makeList([])), makeList([4]))
+assert compare(reverse(reverse(makeList([2, 4, 3]))), reverse(makeList([3, 4, 2])))
+assert compare(reverse(makeList([2, 4, 3])), makeList([3, 4, 2]))
+assert compare(makeList([5, 6, 4]), makeList([5, 6, 4]))
+assert not compare(makeList([5, 6, 4]), makeList([5, 5, 4]))
+
+
+class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
@@ -50,68 +95,60 @@ def preorderTraversal(root):
 
 print(preorderTraversal(t))
 
+##########################################################################################
 print("end of boilerplate")
 
 
-# end of useful boilerplate
-
-pairs = {"(": ")", "[": "]", "{": "}", "<": ">"}
-openings = pairs.keys()
-closings = pairs.values()
-
-
-def cancels(b, a):
-    return pairs[b] == a
-
-
-def isV(s):
-    prefix = ""
-    while s:
-        # print(s, ":", prefix, ":", s[0])
-        if s[0] in openings:
-            prefix = prefix + s[0]
-            s = s[1:]
-        elif s[0] in closings:
-            if prefix and cancels(prefix[-1], s[0]):
-                prefix = prefix[:-1]
-                s = s[1:]
-            else:
-                return False
+def merge(l1, l2):
+    a = None
+    while l1 and l2:
+        if l1.val < l2.val:
+            a = cons(l1.val, a)
+            l1 = l1.next
         else:
-            s = s[1:]
-    if prefix:
-        return False
-    else:
-        return True
+            a = cons(l2.val, a)
+            l2 = l2.next
+        # print(a, ":", l1, ":", l2)
+
+    while l1:
+        a = cons(l1.val, a)
+        l1 = l1.next
+        # print(a, ":", l1, ":", l2)
+
+    while l2:
+        a = cons(l2.val, a)
+        l2 = l2.next
+        # print(a, ":", l1, ":", l2)
+
+    a = reverse(a)
+    return a
 
 
 class Solution:
-    def isValid(self, s: str) -> bool:
-        return isV(s)
+    def mergeTwoLists(
+        self, l1: Optional[ListNode], l2: Optional[ListNode]
+    ) -> Optional[ListNode]:
+        return merge(l1, l2)
 
 
 # test cases
 
-inputs = {
-    "()[]{}": True,
-    "<()[]{}>": True,
-    "()": True,
-    "()[]{}": True,
-    "(<)>[]{}": False,
-    "(]": False,
-    "([)]": False,
-    "{[]}": True,
-    "[": False,
-    "]": False,
-    "<>": True,
-    "": True,
-    "a": True,
-    "<a>()": True,
-}
+inputs = [
+    ([], [], []),
+    ([], [0], [0]),
+    ([0], [], [0]),
+    ([0], [1], [0, 1]),
+    ([0], [1, 2], [0, 1, 2]),
+    ([0, 2], [1], [0, 1, 2]),
+    ([1, 2, 3], [1, 3, 4], [1, 1, 2, 3, 3, 4]),
+    ([1, 2, 4], [1, 3, 4], [1, 1, 2, 3, 4, 4]),
+]
 
-
-for (i, v) in inputs.items():
-    print(i, " -> ", repr(v))
-    retval = Solution().isValid(i)
-    print(i, " -> ", repr(retval))
-    assert retval == v
+for i in inputs:
+    l1 = makeList(i[0])
+    l2 = makeList(i[1])
+    r = makeList(i[2])
+    print(l1, l2, " -> ", repr(r))
+    retval = Solution().mergeTwoLists(l1, l2)
+    print(l1, l2, " -> ", repr(retval))
+    assert compare(retval, r)
