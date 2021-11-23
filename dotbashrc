@@ -470,7 +470,8 @@ alias rts='~/data/timesheet.py'
 alias hib='echo are you sure?'
 alias simonsayshib='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspend.log ; sync ; xscreensaver-command -lock; sudo pm-hibernate ; xmodmap ~/.xmodmaprc ; date ; acpi -V'
 #alias sus='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspend.log ; sync ; xscreensaver-command -lock ; sudo pm-suspend-hybrid ; xmodmap ~/.xmodmaprc ; date ; acpi -V'
-alias sus='xscreensaver-command -lock ; sudo pm-suspend'
+#alias sus='xscreensaver-command -lock ; sudo pm-suspend'
+alias sus='xscreensaver-command -lock ; systemctl suspend'
 alias postmortem='diff /var/log/pm-suspend.log ~/pm-suspend.log >suspenddiff ; xxdiff successfulsuspenddiff suspenddiff'
 
 
