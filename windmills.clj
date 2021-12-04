@@ -13,8 +13,8 @@
 
 (defn make-rect [i j squaresize colour]
   {:tag :rect
-   :attrs {:x (str i)
-           :y (str j)
+   :attrs {:x (str (* i squaresize))
+           :y (str (* j squaresize))
            :width  (str squaresize)
            :height (str squaresize)
            :style (str "fill:", colour, ";stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")}})
@@ -32,8 +32,8 @@
            :height "100%"
            :version "1.1"
            :xmlns "http://www.w3.org/2000/svg"}
-   :content (concat (make-composite-rectangle 20 30 3 3 "green")
-                    (make-composite-rectangle 80 90 4 5 "red") )})
+   :content (concat #_(make-composite-rectangle 20 30 3 3 "green")
+                    (make-composite-rectangle 20 30 4 5 "red") )})
 
 ;; The library clojure.contrib.lazy-xml will turn the nested map into xml:
 
