@@ -32,6 +32,11 @@
            :height (str squaresize)
            :style (str "fill:", colour, ";stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")}})
 
+(defn adjust-list [rectlist]
+  (let [hmin (apply min (map first  rectlist))
+        vmin (apply min (map second rectlist))]
+    (for [[a b c] rectlist] [(- a hmin) (- b vmin) c]))) 
+
 (defn make-svg [objects]
   {:tag :svg
    :attrs {:width "100%"
@@ -40,9 +45,11 @@
            :xmlns "http://www.w3.org/2000/svg"}
    :content (for [[i j c] (adjust-list objects)] (make-rect i j c))})
 
-
 (defn svg-file [filename objects]
   (spit (str filename ".svg") (with-out-str (clojure.xml/emit (make-svg objects)))))
+
+
+
 
 (svg-file "windmill" (list [0 0 "red"]))
 
@@ -79,10 +86,6 @@
 
 
 
-(defn adjust-list [rectlist]
-  (let [hmin (apply min (map first  rectlist))
-        vmin (apply min (map second rectlist))]
-    (for [[a b c] rectlist] [(- a hmin) (- b vmin) c]))) 
         
 (adjust-list cross)
 
@@ -111,6 +114,33 @@
 (make-composite-rectangle 0 0 3 1 "red")
 (make-composite-rectangle 0 0 -3 -1 "red")
 
+
+(svg-file "windmill" 
+          (concat (list [0 0 "red"])
+                  (make-composite-rectangle  1  0   7  1 "white")
+                  (make-composite-rectangle -1  0  -7  1 "white")
+                  (make-composite-rectangle  0  1   1  7 "green")
+                  (make-composite-rectangle  0 -1  -1 -7 "green")))
+
+
+(svg-file "windmill" 
+          (concat (list [0 0 "red"])
+                  (make-composite-rectangle  1  0   7  -2 "white")
+                  (make-composite-rectangle -1  0  -7   2 "white")
+                  (make-composite-rectangle  0  1   2   7 "green")
+                  (make-composite-rectangle  0 -1  -2  -7 "green")))
+
+
+(svg-file "windmill" 
+          (concat (make-composite-rectangle  -1 -1 3 3 "red")
+                  (make-composite-rectangle  2  0   6  -2 "white")
+                  (make-composite-rectangle -2  0  -6   2 "white")
+                  (make-composite-rectangle  0  2   2   6 "green")
+                  (make-composite-rectangle  0 -2  -2  -6 "green")))
+
+
+
+
 (svg-file "windmill" 
           (concat (list [0 0 "red"])
                   (make-composite-rectangle  1 0   2  2 "white")
@@ -118,6 +148,15 @@
                   (make-composite-rectangle  -1 1   2 2 "green")
                   (make-composite-rectangle  1 -1  -2 -2 "green")))
 
+
+
+(defn make-windmill [s n p]
+               (let [ss (quot s 2)]
+               (concat (make-composite-rectangle [(- ss)(- ss) s s "red"])
+                       (make-composite-rectangle  1 0   2  2 "white")
+                       (make-composite-rectangle -1 0  -2 -2 "white")
+                       (make-composite-rectangle  -1 1   2 2 "green")
+                       (make-composite-rectangle  1 -1  -2 -2 "green"))))
 
 
 
