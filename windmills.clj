@@ -2,7 +2,7 @@
 
 ;; Fermats' Christmas Theorem: Windmills
 
-;; Sorry for the delay, had COVID, I'm fine, don't worry!
+;; Sorry for the delay, I had COVID. I'm fine, don't worry!
 
 ;; Let's pick an arbitrary number of the form 4n+1, say 29
 
@@ -10,15 +10,13 @@
 ;; blocks, in this case, a 1x1 square and four 1x7 blocks
 
 ;; 29 = 1*1 + 4 * (1 * 7)
-(defn square [n] (* n n))
+(+ (* 1 1) (* 4 (* 1 7))) ; 29
 
-(+ (square 1) (* 4 (* 1 7))) ; 29
-
-;; Lets draw that:
+;; Let's draw that:
 
 ;; I'm not going to explain how the svg making thing works, but see:
 ;; http://www.learningclojure.com/2010/10/generating-xml-to-make-svg-vector.html
-;; if you're curious.
+;; if you're curious about the details 
 
 (require 'clojure.xml)
 
@@ -32,10 +30,14 @@
            :height (str squaresize)
            :style (str "fill:", colour, ";stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")}})
 
+
+;; SVG coordinates have 0,0 in the top left corner, whereas I like my origin in the middle,
+;; and with the vertical component increasing as we go up, so this is a coordinate transform
+;; That converts my system to SVG's system.
 (defn adjust-list [rectlist]
   (let [hmin (apply min (map first  rectlist))
-        vmin (apply min (map second rectlist))]
-    (for [[a b c] rectlist] [(- a hmin) (- b vmin) c]))) 
+        vmax (apply max (map second rectlist))]
+    (for [[a b c] rectlist] [(- a hmin) (- vmax b) c]))) 
 
 (defn make-svg [objects]
   {:tag :svg
@@ -60,7 +62,7 @@
 ;; With this drawing code in hand we can diagram 29 = 1 * 1 + 4 * (1 * 7)
 
 ;; As this windmill shape:
-(svg-file "windmill" 
+(svg-file "windmill-29-1" 
           (concat (make-composite-rectangle  0  0   1   1 "red")
                   (make-composite-rectangle  1  0   7   1 "white")
                   (make-composite-rectangle -1  0  -7  -1 "white")
@@ -71,7 +73,7 @@
 
 ;; Or alternatively we could show it as 29 = 1*1 + 4 * (1 * 7) 
 
-(svg-file "windmill" 
+(svg-file "windmill-29-2" 
           (concat (make-composite-rectangle  0  0   1   1 "red")
                   (make-composite-rectangle  1  0   1   7 "white")
                   (make-composite-rectangle -1  0  -1  -7 "white")
@@ -81,7 +83,7 @@
 
 ;; Now we notice that there's a 3x3 square in the middle, so what about:
 
-(svg-file "windmill" 
+(svg-file "windmill-29-3" 
           (concat (make-composite-rectangle  -1  -1     3   3 "red")
                   (make-composite-rectangle   1   2     1   5 "white")
                   (make-composite-rectangle  -1  -2    -1  -5 "white")
@@ -94,7 +96,7 @@
 
 ;; 29 = 3*3 + 4 * ( 5 * 1 )
 
-(svg-file "windmill" 
+(svg-file "windmill-29-4" 
           (concat (make-composite-rectangle  -1  -1   3   3 "red")
                   (make-composite-rectangle   1   2  -5   1 "white")
                   (make-composite-rectangle  -1  -2   5  -1 "white")
@@ -105,14 +107,18 @@
 
 ;; 29 = 5*5 + 4 * ( 1 * 1)
 
-(svg-file "windmill" 
+(svg-file "windmill-29-5" 
           (concat (make-composite-rectangle  -2  -2   5   5 "red")
                   (make-composite-rectangle  -3   2  -1   1 "white")
                   (make-composite-rectangle   3  -2   1   1 "white")
                   (make-composite-rectangle  -2  -3   1  -1 "green")
                   (make-composite-rectangle   2   3   1   1 "green")))
 
-;; Now notice that 4*1*1 is also equal to 2*2*1*1, =  (2*1)*(2*1)
+;; Notice now that our diagram is one big odd square, and four little squares
+
+;; Four little squares can be combined into one big even square
+
+;; 4*1*1 is also equal to 2*2*1*1, =  (2*1)*(2*1) = 2*2
 
 ;; so 29 = 5*5+2*2
 
@@ -121,52 +127,4 @@
 ;; 29 = 25 + 4 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(svg-file "windmill" 
-          (concat (list [0 0 "red"])
-                  (make-composite-rectangle  1  0   7  -2 "white")
-                  (make-composite-rectangle -1  0  -7   2 "white")
-                  (make-composite-rectangle  0  1   2   7 "green")
-                  (make-composite-rectangle  0 -1  -2  -7 "green")))
-
-
-(svg-file "windmill" 
-          (concat (make-composite-rectangle  -1 -1 3 3 "red")
-                  (make-composite-rectangle  2  0   6  -2 "white")
-                  (make-composite-rectangle -2  0  -6   2 "white")
-                  (make-composite-rectangle  0  2   2   6 "green")
-                  (make-composite-rectangle  0 -2  -2  -6 "green")))
-
-
-
-
-(svg-file "windmill" 
-          (concat (list [0 0 "red"])
-                  (make-composite-rectangle  1 0   2  2 "white")
-                  (make-composite-rectangle -1 0  -2 -2 "white")
-                  (make-composite-rectangle  -1 1   2 2 "green")
-                  (make-composite-rectangle  1 -1  -2 -2 "green")))
-
-
-
-(defn make-windmill [s n p]
-               (let [ss (quot s 2)]
-               (concat (make-composite-rectangle [(- ss)(- ss) s s "red"])
-                       (make-composite-rectangle  1 0   2  2 "white")
-                       (make-composite-rectangle -1 0  -2 -2 "white")
-                       (make-composite-rectangle  -1 1   2 2 "green")
-                       (make-composite-rectangle  1 -1  -2 -2 "green"))))
-
+;; These windmill drawings form the core of the proof of the Christmas Theorem
