@@ -113,10 +113,10 @@
 
 (svg-file "windmill" 
           (concat (list [0 0 "red"])
-                  (make-composite-rectangle 1 0   2 2 "white")
-                  (make-composite-rectangle 0 1   2 2 "green")
-                  (make-composite-rectangle -1 0 -2 -2 "white")
-                  (make-composite-rectangle 0 -1 -2 -2 "green")))
+                  (make-composite-rectangle  1 0   2  2 "white")
+                  (make-composite-rectangle -1 0  -2 -2 "white")
+                  (make-composite-rectangle  -1 1   2 2 "green")
+                  (make-composite-rectangle  1 -1  -2 -2 "green")))
 
 
 
