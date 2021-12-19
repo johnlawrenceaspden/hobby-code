@@ -127,4 +127,9 @@
 ;; 29 = 25 + 4 
 
 
-;; These windmill drawings form the core of the proof of the Christmas Theorem
+;; These windmill drawings form the core of the proof of the Christmas Theorem. Try the technique out on some other numbers!
+
+
+;; Note, to convert the svg files to png for posting on blogger, can do:
+;; for i in `seq 1 5` ; do rsvg-convert windmill-29-$i.svg -o windmill-29-$i.png; done
+;; although they come out really fuzzy
