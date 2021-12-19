@@ -382,26 +382,26 @@
   (elpy-shell-send-region-or-buffer))
 
 
-;; ;; Clojure
-;; ;; keyboard macro of the gods:
-;; ;; evaluates the expression on the line BELOW, and pastes the result afterwards
+;; Clojure
+;; keyboard macro of the gods:
+;; evaluates the expression on the line BELOW, and pastes the result afterwards
 
-;; ;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
-;; (fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
+;(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\; left ?\C-k ?\; ?  ?\C-u ?\C-x ?\C-e])
+(fset 'clj-eval-paste [down ?\C-a ?\C-\M-f ?  ?\;  ?  ?\C-u ?\C-x ?\C-e])
 
-;; (fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
+(fset 'clj-eval-paste-below [down ?\C-a ?\C-\M-f ?  ?\C-m  ?  ?\C-u ?\C-x ?\C-e ])
 
 
-;; ;; set it to be the last keyboard macro, which means that it's executable with f4
-;; (defun restore-eval-paste ()
-;;   (interactive)
-;;   (setq last-kbd-macro 'clj-eval-paste))
+;; set it to be the last keyboard macro, which means that it's executable with f4
+(defun restore-eval-paste ()
+  (interactive)
+  (setq last-kbd-macro 'clj-eval-paste))
 
-;; (restore-eval-paste)
+(restore-eval-paste)
 
-;; (defun restore-eval-paste-below ()
-;;    (interactive)
-;;    (setq last-kbd-macro 'clj-eval-paste-below))
+(defun restore-eval-paste-below ()
+   (interactive)
+   (setq last-kbd-macro 'clj-eval-paste-below))
 
 
 ;; this one takes .clj.html to blogger in clipboard use htmlize-buffer
