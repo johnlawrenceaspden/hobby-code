@@ -251,9 +251,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Note, to convert the svg files to png for posting on blogger, can do:
-;; for i in `seq 1 5` ; do rsvg-convert windmill-29-$i.svg -o windmill-29-$i.png; done
-;; although they come out really fuzzy
+;; for i in windmill-37*svg; do rsvg-convert -z 2 "$i" -o "${i%svg}png"; done
 
+;; -z 2 (zoom factor 2 prevents the fuzzyness that affected the last post)
 
 
 ;; Test Cases
