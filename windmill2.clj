@@ -3,7 +3,10 @@
 ;; Fermats' Christmas Theorem: Principled Windmills
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Here's a bunch of code from the last post to make svg files of arrangements of coloured squares
+;; Here's a bunch of code to make svg files of arrangements of coloured squares
+;; I'm using this to draw the windmills
+;; It's safe to ignore this if you're not interested in how to create such svg files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'clojure.xml)
 
@@ -15,9 +18,10 @@
            :style (str "fill:", colour, ";stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")}})
 
 (defn adjust-list [rectlist]
-  (let [hmin (apply min (map first  rectlist))
-        vmax (apply max (map second rectlist))]
-    (for [[a b c] rectlist] [(- a hmin) (- vmax b) c]))) 
+  (if (empty? rectlist) rectlist
+      (let [hmin (apply min (map first  rectlist))
+            vmax (apply max (map second rectlist))]
+        (for [[a b c] rectlist] [(- a hmin) (- vmax b) c]))))
 
 (defn make-svg [objects]
   {:tag :svg :attrs { :version "1.1"  :xmlns "http://www.w3.org/2000/svg"}
@@ -32,17 +36,35 @@
 (defn make-composite-rectangle [h v hsquares vsquares colour]
   (for [i (orange hsquares) j (orange vsquares)] [(+ i h) (+ j v) colour]))
 
+(defn hjoin
+  ([sql1 sql2] (hjoin sql1 sql2 1))
+  ([sql1 sql2 sep]
+   (cond (empty? sql1) sql2
+         (empty? sql2) sql1
+         :else (let [xmax1 (apply max (map first sql1))
+                     xmin2 (apply min (map first sql2))
+                     shift  (+ 1 sep (- xmax1 xmin2))]
+                 (concat sql1 (for [[h v c] sql2] [(+ shift h) v c]))))))
+
+(defn hcombine [& sqllist] (reduce hjoin '() sqllist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; end of drawing code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Let's do another example in a more principled way
 
 ;; We'll think in terms of triples [s, p, n]
-;; Where s is the size of the red square, p (parallel ) is the width of the arms , and n (normal) is the length of the arms.
+
+;; Where s is the size of the red square, p (parallel) is the width of the arms , and n (normal) is
+;; the length of the arms.
 
 ;; As we do our windmill transformations s*s + 4 * p * n should always stay the same
 (defn total [[s p n]]
   (+ (* s s) (* 4 p n)))
+
+
+(total [1 1 1]) ; 5
 
 ;; And here's a function to draw the windmill that represents such a triple
 
@@ -56,14 +78,49 @@
                       (make-composite-rectangle  ds2     (- s2) (- n)  p     "green")
                       (make-composite-rectangle  is2     s2     n      (- p) "green"))))
 
-(make-windmill 1 1 1) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"])
+(make-windmill [1 1 1]) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"])
 
 (svg-file "windmill" (make-windmill [1 1 1]))
-(svg-file "windmill" (make-windmill [1 1 2]))
-(svg-file "windmill" (make-windmill [1 2 1]))
-(svg-file "windmill" (make-windmill [3 0 0]))
-(svg-file "windmill" (make-windmill [3 1 3]))
-(svg-file "windmill" (make-windmill [3 3 1]))
+
+;; (svg-file "windmill" (make-windmill [1 1 2]))
+;; (svg-file "windmill" (make-windmill [1 2 1]))
+;; (svg-file "windmill" (make-windmill [3 0 0]))
+;; (svg-file "windmill" (make-windmill [3 1 3]))
+;; (svg-file "windmill" (make-windmill [3 3 1]))
+
+(hjoin '() '()) ; ()
+(hjoin (make-windmill [1 1 1]) '()) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"]) ; ()
+(hjoin (make-windmill [1 1 1])(make-windmill [1 1 1])) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"] [4 0 "red"] [4 1 "white"] [4 -1 "white"] [3 0 "green"] [5 0 "green"])
+
+(svg-file "windmill" (hjoin (make-windmill [1 1 1]) (make-windmill [1 2 1])))
+
+(svg-file "windmill" (reduce hjoin '() (list
+                                        (make-windmill [1 1 1])
+                                        (make-windmill [1 2 1])
+                                        (make-windmill [1 3 1]))))
+
+
+(svg-file "windmill" (hcombine
+                      (make-windmill [1 1 1])
+                      (make-windmill [1 2 1])
+                      (make-windmill [1 3 1])))
+
+(svg-file "windmill" (hcombine))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;; So with this new way of representing things:
