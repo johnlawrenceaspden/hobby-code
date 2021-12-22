@@ -3,9 +3,9 @@
 ;; Fermats' Christmas Theorem: Principled Windmills
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Here's a bunch of code to make svg files of arrangements of coloured squares
-;; I'm using this to draw the windmills
-;; It's safe to ignore this if you're not interested in how to create such svg files
+;; Here's a bunch of code to make svg files of arrangements of coloured squares.
+;; I'm using this to draw the windmills.
+;; It's safe to ignore this if you're not interested in how to create such svg files.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'clojure.xml)
@@ -89,10 +89,6 @@
 
 ;; So with this new way of representing things:
 
-
-
-
-
 ;; Consider 37 = 4 * 9 + 1
 
 ;; Our first triple will be
@@ -102,7 +98,7 @@
 (total [1 1 9]) ; 37
 
 ;; And its windmill looks like:
-(svg-file "windmill" (make-windmill [1 1 9]))
+(svg-file "windmill-37-1" (make-windmill [1 1 9]))
 
 ;; We can't change the size of the red square here, so the other thing we can do is to rotate the arms
 
@@ -110,14 +106,14 @@
 
 (total [1 9 1]) ; 37
 
-(svg-file "windmill" (make-windmill [1 9 1]))
+(svg-file "windmill-37-2" (make-windmill [1 9 1]))
 
 ;; Now we can change the size of the red square, it can increase to three, and that means that we have to shorten the arms by two
 ;; [1 9 1] -> [3 1 7]
 
 (total [3 1 7]) ; 37
 
-(svg-file "windmill" (make-windmill [3 1 7]))
+(svg-file "windmill-37-3" (make-windmill [3 1 7]))
 
 ;; Note that this also changes the colour of the arms, but that doesn't matter, the only reason the
 ;; arms are two different colours is to make it easier to see what's going on.  If it bothers you
@@ -130,7 +126,7 @@
 
 (total [3 7 1]) ; 37
 
-(svg-file "windmill" (make-windmill [3 7 1]))
+(svg-file "windmill-37-4" (make-windmill [3 7 1]))
 
 ;; Now, swapping the arms just moves us back a step, but we can increase the size of the red square to five
 ;; and shorten the arms by two
@@ -138,9 +134,9 @@
 
 (total [5 1 3]) ; 37
 
-(svg-file "windmill" (make-windmill [5 1 3]))
+(svg-file "windmill-37-5" (make-windmill [5 1 3]))
 
-;; Again, the only change to red is to put it back, so let's rotate arms
+;; Again, the only way to change the size of the red square is to put it back, so let's rotate arms
 
 ;; I'm going to call changing the size of the red square the red transformation
 ;; and rotating the arms the green transformation
@@ -152,7 +148,7 @@
 
 (total [5 3 1]) ; 37
 
-(svg-file "windmill" (make-windmill [5 3 1 ]))
+(svg-file "windmill-37-6" (make-windmill [5 3 1]))
 
 ;; Now, the green transformation just puts us back a step, and it looks like we can't increase the size
 ;; of the red square, so are we stuck?
@@ -164,7 +160,7 @@
 
 ;; [5 3 1] -> [1 3 3]
 
-(svg-file "windmill" (make-windmill [1 3 3]))
+(svg-file "windmill-37-7" (make-windmill [1 3 3]))
 
 ;; It's kind of annoying that this flips the shape! But it's obviously still the same total number
 ;; of squares, so just like with the colour flip I'm going to ignore that for now rather than
@@ -180,14 +176,14 @@
 
 ;; that means that the new red square is size one, five less two squares on either edge
 
-;; that means that the red square has changed from size twenty five to size one
+;; that means that the red square has changed from size twenty-five to size one
 
 ;; that leaves twenty-four spare squares, to be distributed between the four arms
 
 ;; which is six spare squares per arm
 
-;; since we're just moving the boundary of the square, that doesn't change p, the width of the arm
-;; parallel to the square
+;; since we're just moving the boundary of the square, or alternatively extending the arms into the
+;; square, that doesn't change p, the width of the arm parallel to the square
 
 ;; so we add the six squares in rows of p.
 
@@ -209,7 +205,8 @@
 (svg-file "windmill" (make-windmill [5 3 1 ])) ; nil
 (svg-file "windmill" (make-windmill (red [5 3 1] -2))) ; nil
 
-(svg-file "windmill" (make-windmill [1 3 3]))
+
+(svg-file "windmill-37-7" (make-windmill [1 3 3]))
 
 
 ;; Now we have a real problem. The only red transformation we can make is to go back a step, but
@@ -220,14 +217,15 @@
 
 ;; But every problem is an opportunity, as they say:
 
-(svg-file "windmill"
+;; We can split up the rectangle
+(svg-file "windmill-37-split"
           (make-composite-rectangle 0 0 1 1 "red")
           (make-composite-rectangle 0 0 3 3 "green")
           (make-composite-rectangle 0 0 3 3 "green")
           (make-composite-rectangle 0 0 3 3 "white")
           (make-composite-rectangle 0 0 3 3 "white"))
 
-(svg-file "windmill"
+(svg-file "windmill-37-recombine"
           (make-composite-rectangle 0 0 1 1 "red")
           (concat
            (make-composite-rectangle 0 0 3 3 "green")
@@ -238,7 +236,7 @@
 ;; The green transformation fails if and only if the arms are squares, and if the arms are squares, we can
 ;; combine them to form one big even square
 
-(svg-file "windmill"
+(svg-file "windmill-37-final"
           (make-composite-rectangle 0 0 1 1 "red")
           (concat
            (make-composite-rectangle 0 0 6 6 "green")))
