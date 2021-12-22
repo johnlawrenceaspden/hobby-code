@@ -212,12 +212,45 @@
 (svg-file "windmill" (make-windmill [1 3 3]))
 
 
+;; Now we have a real problem. The only red transformation we can make is to go back a step, but
+;; the green transformation does nothing useful here:
+
+(green [1 3 3]) ; [1 3 3]
 
 
+;; But every problem is an opportunity, as they say:
+
+(svg-file "windmill"
+          (make-composite-rectangle 0 0 1 1 "red")
+          (make-composite-rectangle 0 0 3 3 "green")
+          (make-composite-rectangle 0 0 3 3 "green")
+          (make-composite-rectangle 0 0 3 3 "white")
+          (make-composite-rectangle 0 0 3 3 "white"))
+
+(svg-file "windmill"
+          (make-composite-rectangle 0 0 1 1 "red")
+          (concat
+           (make-composite-rectangle 0 0 3 3 "green")
+           (make-composite-rectangle 3 3 3 3 "green")
+           (make-composite-rectangle 0 3 3 3 "white")
+           (make-composite-rectangle 3 0 3 3 "white")))
+
+;; The green transformation fails if and only if the arms are squares, and if the arms are squares, we can
+;; combine them to form one big even square
+
+(svg-file "windmill"
+          (make-composite-rectangle 0 0 1 1 "red")
+          (concat
+           (make-composite-rectangle 0 0 6 6 "green")))
+
+;; So 37 = 1*1 + 6*6
+
+;; Which is what we're trying to show, thirty-seven is the sum of one odd and one even square
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; end of blog post
-
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Note, to convert the svg files to png for posting on blogger, can do:
 ;; for i in `seq 1 5` ; do rsvg-convert windmill-29-$i.svg -o windmill-29-$i.png; done
