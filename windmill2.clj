@@ -12,7 +12,7 @@
 
 (def squaresize 10)
 
-(defn make-rect [i j colour]
+(defn make-svg-rect [i j colour]
   {:tag :rect
    :attrs {:x (str (* i squaresize)) :y (str (* j squaresize)) :width  (str squaresize) :height (str squaresize)
            :style (str "fill:", colour, ";stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1")}})
@@ -25,16 +25,10 @@
 
 (defn make-svg [objects]
   {:tag :svg :attrs { :version "1.1"  :xmlns "http://www.w3.org/2000/svg"}
-   :content (for [[i j c] (adjust-list objects)] (make-rect i j c))})
+   :content (for [[i j c] (adjust-list objects)] (make-svg-rect i j c))})
 
-(defn svg-file [filename objects]
+(defn svg-file-from-rectlist [filename objects]
   (spit (str filename ".svg") (with-out-str (clojure.xml/emit (make-svg objects)))))
-
-(defn orange [n]
-  (if (< n 0) (range 0 n -1) (range 0 n 1)))
-
-(defn make-composite-rectangle [h v hsquares vsquares colour]
-  (for [i (orange hsquares) j (orange vsquares)] [(+ i h) (+ j v) colour]))
 
 (defn hjoin
   ([sql1 sql2] (hjoin sql1 sql2 1))
@@ -48,6 +42,16 @@
 
 (defn hcombine [& sqllist] (reduce hjoin '() sqllist))
 
+(defn svg-file [filename & objects]
+  (svg-file-from-rectlist filename (apply hcombine objects)))
+
+
+(defn orange [n] (if (< n 0) (range 0 n -1) (range 0 n 1)))
+
+(defn make-composite-rectangle [h v hsquares vsquares colour]
+  (for [i (orange hsquares) j (orange vsquares)] [(+ i h) (+ j v) colour]))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; end of drawing code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,14 +63,7 @@
 ;; Where s is the size of the red square, p (parallel) is the width of the arms , and n (normal) is
 ;; the length of the arms.
 
-;; As we do our windmill transformations s*s + 4 * p * n should always stay the same
-(defn total [[s p n]]
-  (+ (* s s) (* 4 p n)))
-
-
-(total [1 1 1]) ; 5
-
-;; And here's a function to draw the windmill that represents such a triple
+;; Here's a function to draw the windmill that represents such a triple
 
 (defn make-windmill [[s p n]]
             (let [ s2 (quot s 2)
@@ -82,48 +79,19 @@
 
 (svg-file "windmill" (make-windmill [1 1 1]))
 
-;; (svg-file "windmill" (make-windmill [1 1 2]))
-;; (svg-file "windmill" (make-windmill [1 2 1]))
-;; (svg-file "windmill" (make-windmill [3 0 0]))
-;; (svg-file "windmill" (make-windmill [3 1 3]))
-;; (svg-file "windmill" (make-windmill [3 3 1]))
+;; As we do our windmill transformations s*s + 4 * p * n should always stay the same
+(defn total [[s p n]]
+  (+ (* s s) (* 4 p n)))
 
-(hjoin '() '()) ; ()
-(hjoin (make-windmill [1 1 1]) '()) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"]) ; ()
-(hjoin (make-windmill [1 1 1])(make-windmill [1 1 1])) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"] [4 0 "red"] [4 1 "white"] [4 -1 "white"] [3 0 "green"] [5 0 "green"])
-
-(svg-file "windmill" (hjoin (make-windmill [1 1 1]) (make-windmill [1 2 1])))
-
-(svg-file "windmill" (reduce hjoin '() (list
-                                        (make-windmill [1 1 1])
-                                        (make-windmill [1 2 1])
-                                        (make-windmill [1 3 1]))))
-
-
-(svg-file "windmill" (hcombine
-                      (make-windmill [1 1 1])
-                      (make-windmill [1 2 1])
-                      (make-windmill [1 3 1])))
-
-(svg-file "windmill" (hcombine))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(total [1 1 1]) ; 5
 
 
 
 ;; So with this new way of representing things:
+
+
+
+
 
 ;; Consider 37 = 4 * 9 + 1
 
@@ -151,8 +119,9 @@
 
 (svg-file "windmill" (make-windmill [3 1 7]))
 
-;; Note that this also changes the colour of the arms, but that doesn't matter, the only reason the arms are two different colours is to make it easier to see what's going on.
-;; If it bothers you just go and change white to green in the windmill code!
+;; Note that this also changes the colour of the arms, but that doesn't matter, the only reason the
+;; arms are two different colours is to make it easier to see what's going on.  If it bothers you
+;; just go and change white to green in the windmill code!
 
 
 ;; From [3 1 7] the only change we can make to the size of the red square is to put it back to one
@@ -185,23 +154,27 @@
 
 (svg-file "windmill" (make-windmill [5 3 1 ]))
 
-;; The green transformation just puts us back a step, and it looks like we can't increase the size
+;; Now, the green transformation just puts us back a step, and it looks like we can't increase the size
 ;; of the red square, so are we stuck?
 
 ;; No! If you stare at the diagram for long enough, you'll see that we can *reduce* the size of the
-;; red square instead of increasing it, and in fact that's our only possible move.
+;; red square instead of increasing it, growing the arms inward until the red shape is square again.
+
+;; And in fact that's our only possible move.
 
 ;; [5 3 1] -> [1 3 3]
 
 (svg-file "windmill" (make-windmill [1 3 3]))
 
 ;; It's kind of annoying that this flips the shape! But it's obviously still the same total number
-;; of squares, so just like with the colour flip I'm going to ignore that for now!
+;; of squares, so just like with the colour flip I'm going to ignore that for now rather than
+;; introduce unnecessary complexity to the drawing code
 
-;; I'm going to call both reducing and increasing the size of the red square
-;; "red transformations", and the red transformation is going to need a parameter to say how much to change the size of the square
+;; I'm going to call both reducing and increasing the size of the red square a "red transformation",
+;; and the red transformation is going to need a parameter to say how much to change the size of the
+;; square
 
-;; Let's say, as above, that we want to shift the boundary of the red square in two places
+;; Let's say, as above, that we want to shift the boundaries of the big red square in by two small unit squares
 
 ;; so say delta = -2
 
@@ -213,7 +186,8 @@
 
 ;; which is six spare squares per arm
 
-;; since we're just moving the boundary of the square, that doesn't change p, the width of the arm parallel to the square
+;; since we're just moving the boundary of the square, that doesn't change p, the width of the arm
+;; parallel to the square
 
 ;; so we add the six squares in rows of p.
 
@@ -228,17 +202,19 @@
         lengthchange (/ sparesperarm p)]
     [news (+ n lengthchange) p]))
 
-(total [5 3 2]) ; 49 ; 49 ; 49 ; 37 ; 37 ; 37 ; 37 ; 37
-(red [5 3 1] -2) ; [1 3 3] ; [9 -11/3 3] ; [1 3 3] ; [3 7/3 3] ; [3 7/3 3] ; [3 1 7] ; [3 1 4]
-(total (red [5 3 1] -2)) ; 37 ; 37N ; 37 ; 37N ; 37 ; 25 ; 25
+(total [5 3 1]) ; 37
+(red [5 3 1] -2) ; [1 3 3]
+(total (red [5 3 1] -2)) ; 37
 
-(svg-file "windmill" (make-windmill [5 3 1 ])) ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil
-(svg-file "windmill" (make-windmill (red [5 3 1] -2))) ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil ; nil
+(svg-file "windmill" (make-windmill [5 3 1 ])) ; nil
+(svg-file "windmill" (make-windmill (red [5 3 1] -2))) ; nil
+
+(svg-file "windmill" (make-windmill [1 3 3]))
 
 
 
 
-
+;; end of blog post
 
 
 
@@ -246,3 +222,38 @@
 ;; Note, to convert the svg files to png for posting on blogger, can do:
 ;; for i in `seq 1 5` ; do rsvg-convert windmill-29-$i.svg -o windmill-29-$i.png; done
 ;; although they come out really fuzzy
+
+
+
+;; Test Cases
+(svg-file "windmill" (make-windmill [1 1 1]))
+
+(svg-file "windmill" (make-windmill [1 1 2]))
+(svg-file "windmill" (make-windmill [1 2 1]))
+(svg-file "windmill" (make-windmill [3 0 0]))
+(svg-file "windmill" (make-windmill [3 1 3]))
+(svg-file "windmill" (make-windmill [3 3 1]))
+
+(hjoin '() '()) ; ()
+(hjoin (make-windmill [1 1 1]) '()) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"]) ; ()
+(hjoin (make-windmill [1 1 1])(make-windmill [1 1 1])) ; ([0 0 "red"] [0 1 "white"] [0 -1 "white"] [-1 0 "green"] [1 0 "green"] [4 0 "red"] [4 1 "white"] [4 -1 "white"] [3 0 "green"] [5 0 "green"])
+
+(svg-file "windmill" (hjoin (make-windmill [1 1 1]) (make-windmill [1 2 1])))
+
+(svg-file "windmill" (reduce hjoin '() (list
+                                        (make-windmill [1 1 1])
+                                        (make-windmill [1 2 1])
+                                        (make-windmill [1 3 1]))))
+
+
+(svg-file "windmill" (hcombine
+                      (make-windmill [1 1 1])
+                      (make-windmill [1 2 1])
+                      (make-windmill [1 3 1])))
+
+(svg-file "windmill" (hcombine))
+
+
+(svg-file "windmill")
+(svg-file "windmill" '())
+(svg-file "windmill" (make-composite-rectangle 0 0 1 1 "white" ) (make-windmill [1 1 1]) '() (make-windmill [1 1 1]) )
