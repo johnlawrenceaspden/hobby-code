@@ -95,12 +95,19 @@
 ;; And when we're decreasing it, we decrease by the size of the red square less the parallel length
 
 
+17=1+4.4
 
 
 
+(svg-file "windmill" (make-windmill [1 1 9]) (make-windmill [1 9 1]) (make-windmill [3 1 7])(make-windmill [3 7 1])(make-windmill [5 1 3])(make-windmill [5 3 1])(make-windmill [1 3 3]))
 
+25 = 6*4 +1 
 
+(svg-file "windmill" (make-windmill [1 1 6]) (make-windmill [1 6 1]) (make-windmill [3 1 4]) (make-windmill [3 4 1]) (make-windmill [5 0 0]))
 
+33 = 1 + 4.8
+
+(svg-file "windmill" (make-windmill [1 1 8]) (make-windmill [1 8 1]) (make-windmill [3 6 1]) (make-windmill [5 1 2]) (make-windmill [5 2 1]) (make-windmill [1 4 2]) (make-windmill [1 2 4]) (make-windmill [3 2 3]) (make-windmill [3 3 2]))
 
 
 
