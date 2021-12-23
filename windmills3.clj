@@ -64,29 +64,197 @@
 ;; end of drawing code
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;; So far so good, but the red transform is a bit manual for my taste. It's easy to see how to do it
+;; by eye, but I want to automate that.
+
 ;; Let's go over our sequence of shapes for 37 again
 (svg-file "windmill" (make-windmill [1 1 9]) (make-windmill [1 9 1]) (make-windmill [3 1 7])(make-windmill [3 7 1])(make-windmill [5 1 3])(make-windmill [5 3 1])(make-windmill [1 3 3]))
 
-;; Notice that the red transform, actually works in two different ways
+;; The red transform has a way of flipping the shapes and exchanging the white and green colours, which I'm going to ignore.
 
-;; When we're increasing the size of the red square, which we do if the parallel length is larger than the square,
-;; then we need to take the spare squares from the parallel length
-(defn red-parallel [[s p n] delta]
+;; There may be a more principled way of drawing the triples so that the associated windmills are
+;; more consistent with each other, but I don't want to get distracted. I'm already deep down one
+;; rabbit hole, and so I'm going to avoid this branch tunnel, or at least save it for later.
+
+;; So, automating the red transform:
+
+;; Notice that the red transform actually works in two different ways
+
+;; Sometimes to keep the same shape, we need to add the spare squares to the parallel length of the blades, (or remove them)
+(defn red-parallel-swap [[s p n] delta]
   (let [news  (+ s (* 2 delta))
         spare (- ( * s s ) (* news news))
         sparesperarm (/ spare 4)
         lengthchange (/ sparesperarm n)]
     [news n ( + p lengthchange)]))
 
-;; But when we're decreasing the size of the red square, which we do if the parallel length is less than the size of the square,
-;; then the spare squares should be added to the normal length
+(defn red-parallel [[s p n] delta]
+  (let [news  (+ s (* 2 delta))
+        spare (- ( * s s ) (* news news))
+        sparesperarm (/ spare 4)
+        lengthchange (/ sparesperarm n)]
+    [news ( + p lengthchange) n]))
+
 
 (defn red-normal [[s p n] delta]
   (let [news  (+ s (* 2 delta))
         spare (- ( * s s ) (* news news))
         sparesperarm (/ spare 4)
         lengthchange (/ sparesperarm p)]
+    [news p (+ n lengthchange) ]))
+
+(defn red-normal-swap [[s p n] delta]
+  (let [news  (+ s (* 2 delta))
+        spare (- ( * s s ) (* news news))
+        sparesperarm (/ spare 4)
+        lengthchange (/ sparesperarm p)]
     [news (+ n lengthchange) p ]))
+
+(defn t [[s p n] transform delta]
+  (let [[ns np nn :as new] (transform [s p n] delta)]
+    (assert (> ns 0))
+    (assert (> np 0))
+    (assert (> nn 0))
+    (println [s p n] "->" new )
+    (svg-file "windmill" (make-windmill [s p n]) (make-windmill new))))
+
+(red-parallel [1 3 1] 1) ; [3 1 1]
+
+(t [1 1 1] red-parallel 1)
+(t [1 2 1] red-parallel 1)
+(t [1 3 1] red-parallel 1)
+(t [1 5 1] red-parallel-swap 1)
+(t [1 7 1] red-parallel-swap 1)
+(t [1 8 1] red-parallel-swap 1)
+
+(let [[s p n] [1 5 1] delta 1]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+(let [[s p n] [1 7 1] delta 1]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+(let [[s p n] [3 7 1] delta 1]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+(let [[s p n] [5 7 1] delta 1]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+(let [[s p n] [5 7 2] delta 2]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+(let [[s p n] [5 7 3] delta 2]
+  (println [s p n] (red-parallel [s p n] delta))
+  (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red-parallel [s p n] delta))))
+
+
+
+
+(svg-file "windmill" (make-windmill [1 9 1]) (make-windmill [3 7 1]))
+
+;; And sometimes we need to add the squares to the normal length (or remove them)
+
+
+(red-normal [5 3 1] -2) ; [1 3 3]
+
+(svg-file "windmill" (make-windmill [5 3 1])(make-windmill [1 3 3]))
+
+;; And how do we choose delta??
+
+;; By eye it's always obvious what to do, but it's not so obvious to a computer,
+;; There are actually six different cases to consider, depending on the relative sizes of s, n and p!
+
+;; So let's go through them one by one
+
+;; Let's fix s to be 7, and n to be 3, and vary p
+
+;; When p is small, we can shrink the red square by extending the blades normally into the square
+
+(svg-file "windmill" (make-windmill [7 1 3]) (make-windmill [5 9 1]))
+
+;; How much do we shrink the square? By p on every side, so for this to work, 2p must be less than s
+;; If it doesn't work, let's just give the triple back unmodified because we can't work out what to do
+
+(defn red [[s p n]]
+  (cond (< (* 2 p) s) (let [delta (- p)]
+                        (red-normal [s p n] delta))
+        :else [s p n]))
+
+(red [7 1 3]) ; [5 9 1]
+
+(let [[s p n][7 1 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n])) (make-windmill (red (red [s p n])))))
+
+;; increasing p
+(let [[s p n][7 2 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; increasing p
+(let [[s p n][7 3 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; increasing p so it's too big to do this
+(let [[s p n][7 4 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; so what should we do in this case, where 2p>s?
+;; well, we do the same thing, but we can't extend the blades in as far, delta must be p - s
+;; this should be ok as long as p isn't actually bigger than s
+(defn red [[s p n]]
+  (cond (< (* 2 p) s) (let [delta (- p)]
+                        (red-normal [s p n] delta))
+        (< p s (* 2 p))(let [delta (- p s)]
+                        (red-normal [s p n] delta))
+        :else [s p n]))
+
+
+(let [[s p n][7 4 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+;; looks good, you can see that the shapes are the same, even though there's a quarter-turn rotation
+
+;; so increasing p more
+(let [[s p n][7 5 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n])) (make-windmill (red (red [s p n])))))
+;; still good
+
+(let [[s p n][7 6 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n])) (make-windmill (red (red [s p n])))))
+
+[7 5 3] ; [7 5 3]
+(red [7 5 3]) ; [3 5 5]
+
+[7 6 3]
+(red [7 6 3]) ; [5 4 6]
+
+(red (red [7 6 3])) ; [3 7 4]
+
+(total [7 6 3])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;; And how big should delta be?
 
