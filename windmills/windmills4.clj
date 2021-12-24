@@ -96,7 +96,7 @@
 
 ;; [1 1 1] is in fact the only triple that can represent 5, can you see why?
 
-(svg-file "windmill" (make-windmill [1 1 1]))
+(svg-file "windmills4-1" (make-windmill [1 1 1]))
 
 ;; This triple is a fixed point of the red transform (crosses always are)
 (red   [1 1 1]) ; [1 1 1]
@@ -117,7 +117,7 @@
     (make-composite-rectangle 0 n n n "white")
     (make-composite-rectangle n 0 n n "white"))))
 
-(svg-file "windmill" (victory [1 1 1]))
+(svg-file "windmills4-2" (victory [1 1 1]))
 
 ;; We see that 5 = 1*1 + 2*2
 
@@ -139,7 +139,7 @@
 
 ;; If we look at this 'orbit' of the triple [1 1 2] as windmills, we see:
 
-(apply svg-file "windmill" (map make-windmill '([1 1 2] [1 2 1])))
+(apply svg-file "windmills4-3" (map make-windmill '([1 1 2] [1 2 1])))
 
 ;; We see a thin cross, a red fixed point, connected to a square, also a red fixed point
 
@@ -163,11 +163,11 @@
 ;; We've found a green fixed point, a square-bladed windmill
 
 ;; Our orbit is:
-(apply svg-file "windmill" (map make-windmill '([1 1 3] [1 3 1][3 1 1])))
+(apply svg-file "windmills4-4" (map make-windmill '([1 1 3] [1 3 1][3 1 1])))
 
 ;; We've got a red fixed point, connected by a green step and then a red step to a green fixed point
 
-(svg-file "windmill" (victory [3 1 1]))
+(svg-file "windmills4-5" (victory [3 1 1]))
 
 ;; The green fixed point gives us our decomposition into odd and even squares
 
@@ -188,11 +188,11 @@
 (green [1 2 2]) ; [1 2 2]  ;; square blades!
 
 ;; Our orbit is:
-(apply svg-file "windmill" (map make-windmill '([1 1 4] [1 4 1][3 1 2] [3 2 1] [1 2 2])))
+(apply svg-file "windmills4-6" (map make-windmill '([1 1 4] [1 4 1][3 1 2] [3 2 1] [1 2 2])))
 
 ;; A red fixed point connected to a green fixed point by four steps. green,red,green,red
 
-(svg-file "windmill" (victory [1 2 2]))
+(svg-file "windmills4-7" (victory [1 2 2]))
 
 ;; 17 = 1*1 + 4*4
 
@@ -209,7 +209,7 @@
 (red [3 3 1]) ; [3 3 1]
 
 ;; Our orbit is:
-(apply svg-file "windmill" (map make-windmill '([1 1 5] [1 5 1][3 1 3] [3 3 1])))
+(apply svg-file "windmills4-8" (map make-windmill '([1 1 5] [1 5 1][3 1 3] [3 3 1])))
 
 ;; A red fixed point connected to a red fixed point by three steps. green,red,green
 
@@ -219,7 +219,7 @@
 
 ;; Look:
 
-(svg-file "windmill"
+(svg-file "windmills4-9"
        (concat
         (make-composite-rectangle 0 0 3 3 "red")
         (make-composite-rectangle 3 0 1 3 "green")
