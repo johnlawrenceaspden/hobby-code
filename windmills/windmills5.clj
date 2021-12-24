@@ -242,6 +242,249 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(apply svg-file "windmill" (map make-windmill '([1 1 1])))
+
+
+case, [1 1 1] representing 5=4.1+1
+
+;; [1 1 1] is in fact the only triple that can represent 5
+
+
+
+
+;; So it's a fixed point of both the red and the green transforms
+;; and it's orbit is just '([1 1 1])
+
+
+
+;; It's a fixed point of the red transform because it's a cross
+;; Because it's arms and square are only one wide, I'm going to call it a 'thin cross'.
+
+;; We can always find a thin cross for any number of form 4n+1, almost by definition
+
+
+(make-thin-cross 5) ; [1 1 1]
+
+
+
+;; If we have a square-bladed windmill then we can transform it into an odd and an even square
+(defn victory [[s n p]]
+  (assert (= n p))
+  (hjoin
+   (make-composite-rectangle 0 0 s s "red")
+   (concat
+    (make-composite-rectangle 0 0 n n "green")
+    (make-composite-rectangle n n n n "green")
+    (make-composite-rectangle 0 n n n "white")
+    (make-composite-rectangle n 0 n n "white"))))
+
+(svg-file "windmill" (victory [1 1 1]))
+
+
+;; Let's look at the next candidate number, 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Let's take a triple at random
+
+[7 3 8]
+
+;; It so happens that this triple represents 145
+
+(total [7 3 8]) ; 145
+
+(svg-file "windmill" (make-windmill [7 3 8]))
+
+;; The red transform connects it to another triple
+(red [7 3 8]) ; [1 12 3]
+
+;; And so does the green
+(green [7 3 8]) ; [7 8 3]
+
+;; so our triple is not a fixed point of either transform.
+
+;; And there are some things to notice here.
+
+;; Firstly, the red and green transforms connect it to two different triples.
+
+;; That's got to be true, because the red transform always changes the size of the red square (unless it's a fixed point)
+;; And the green transform never does.
+
+;; And we should also notice that the green transform is self-inverse, i.e., if we do it again, we get our original triple back
+;; That's obvious, because all the green transform does is to swap n and p
+(green (green [7 3 8])) ; [7 3 8]
+
+;; But more interestingly, the red transform is self-inverse too
+(red (red [7 3 8])) ; [7 3 8]
+
+;; It has to be, because of the way we constructed it.
+
+;; There's only one thing to do (at most!), and you can always reverse it.
+;; Think about this, play with it, until you're sure it's true.
+
+(svg-file "windmill" (make-windmill (green (green [7 3 8]))) (make-windmill (green [7 3 8]))(make-windmill [7 3 8])(make-windmill (red [7 3 8]))(make-windmill (red (red [7 3 8]))))
+
+;; That means that there's never any point to doing the either transform twice.
+
+;; In order to make progress, to explore the space of triples, we need to do red, then green, then red, then green, .....
+;; In this process, we'll find that every triple is associated with a sequence of triples, which we'll call its orbit
+
+;; Heres part of the orbit of [7 3 8]
+(svg-file "windmill"
+          (make-windmill [7 3 8])
+          (make-windmill (red [7 3 8]))
+          (make-windmill (green (red [7 3 8])))
+          (make-windmill (red (green (red [7 3 8]))))
+          (make-windmill (green (red (green (red [7 3 8])))))
+          (make-windmill (red (green (red (green (red [7 3 8])))))))
+
+
+
+;; So a natural question is, can this process go on forever, always finding new triples?
+
+;; The answer to that question is an easy no, because there are only so many triples for each number
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; We can make up triples where s=n=p at will, they're always fixed points of both red and green, so they're never connected to anything else
+
+(let [[s n p] [3 3 3]]
+  (svg-file "windmill"  (make-windmill [s n p]) (victory [s n p])))
+
+(total [3 3 3]) ; 45
+
+(let [[s n p] [5 5 5]]
+  (svg-file "windmill"  (make-windmill [s n p]) (victory [s n p])))
+
+(total [5 5 5]) ; 125
+
+;; So we know that numbers that are like 5, 45, 125 can be expressed as sums of odd and even squares.
+   
+
+
+
+
+
+
+;; So let's write an iterator to describe the orbit of a triple
+
+;; We'll look at the green then red then green then red case.... We could also go the other way, red first then green then...
+
+(defn iteraterg [triple orbit]
+  (let [rtriple (red triple)
+        rgtriple (green rtriple)]
+    [ rgtriple (cons rtriple (cons triple orbit))]))
+
+
+
+(iteraterg [1 1 1] '())
+
+
+(cons rtriple (cons triple orbit))
+
+
+
+
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; end of blog post
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
