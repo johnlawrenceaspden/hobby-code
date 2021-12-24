@@ -222,11 +222,49 @@
 ;; Now p=s+n, and we can't make any of our previous ideas work.
 
 ;; We could increase the red square to fill the whole shape now, but the result wouldn't be a windmill, and there's nothing
-;; else we can do, so we'll leave this case as a fixed point
+;; else we can do, so we'll leave this case as a fixed point.
+
+;; I'll call this special symmetric windmill a 'square', for obvious reasons.
+
+;; what if p is even larger than s+n?
+
+(let [[s p n][7 11 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; now there is something we can do, we can increase size of the square by n
+;; this takes s+n squares from the parallel length
+
+(svg-file "windmill" (make-windmill [7 11 3]) (make-windmill [13 3 1]))
+
+;; Again we need to swap normal and parallel
+
+;; So our final transformation is
+
+;; s-> s+2n, p->n, n-> p-(s+n)
+;; And this is the final case, it will work whenever p > n+s
+
+(defn red [[s p n]]
+  (cond (< p (/ s 2))   [(- s (* 2 p))       (+ n (- s p)) p]
+        (< (/ s 2) p s) [(- s (* 2 (- s p))) p (+ n (- s p))]
+        (< s p (+ n s)) [(+ s (* 2 (- p s))) p (- n (- p s))]
+        (< (+ n s) p)   [(+ s (* 2 n))       n (- p (+ n s))]
+        :else [s p n]))
 
 
+(let [[s p n][7 11 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
 
+;; increase p
+(let [[s p n][7 12 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
 
+;; increase p 
+(let [[s p n][7 13 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; increase p 
+(let [[s p n][7 14 3]] (svg-file "windmill" (make-windmill [s p n]) (make-windmill (red [s p n]))))
+
+;; And we're done, this will work however large p is!
+
+;; That was very fiddly and took me several goes and a bit of paper to get right. But it correctly captures the four different cases that
+;; are so easy to do by eye, and also the two cases where it fails, the squares and crosses.
 
 
 
