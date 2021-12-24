@@ -275,10 +275,9 @@
 ;; Another way of saying that is that although this program is not generally safe to run on arbitrary triples:
 
 (defn calculate-orbit
-  ([triple transform] (calc-orbit triple transform '()))
+  ([triple transform] (calculate-orbit triple transform '()))
   ([triple transform orbit]
    (let [new (transform triple)]
-     (println new)
      (if ( = new triple) (reverse (cons triple orbit))
          (recur new (if (= transform green) red green) (cons triple orbit))))))
 
@@ -297,19 +296,19 @@
 
 ;; Here we show that 5 = 2*2 + 1*1
 
-(fermat-christmas 9) ; ([1 1 2] [1 2 1])
+(christmas 9) ; ([1 1 2] [1 2 1])
 
 (apply svg-file "windmill" (map make-windmill (christmas 9))) ; nil
 
 ;; 9 = 3*3
 
-(fermat-christmas 85) ; ([1 1 21] [1 21 1] [3 1 19] [3 19 1] [5 1 15] [5 15 1] [7 1 9] [7 9 1] [9 1 1])
+(christmas 85) ; ([1 1 21] [1 21 1] [3 1 19] [3 19 1] [5 1 15] [5 15 1] [7 1 9] [7 9 1] [9 1 1])
 
 (apply svg-file "windmill" (map make-windmill (christmas 85)))
 
 ;; 85 = 9*9+2*2    (even though it's not prime!)
 
-(fermat-christmas 201) ; ([1 1 50] [1 50 1] [3 1 48] [3 48 1] [5 1 44] [5 44 1] [7 1 38] [7 38 1] [9 1 30] [9 30 1] [11 1 20] [11 20 1] [13 1 8] [13 8 1] [3 8 6] [3 6 8] [9 6 5] [9 5 6] [1 5 10] [1 10 5] [11 5 4] [11 4 5] [3 12 4] [3 4 12] [5 4 11] [5 11 4] [13 4 2] [13 2 4] [9 15 2] [9 2 15] [5 22 2] [5 2 22] [1 25 2] [1 2 25] [3 2 24] [3 24 2] [7 2 19] [7 19 2] [11 2 10] [11 10 2] [9 10 3] [9 3 10] [3 16 3] [3 3 16])
+(christmas 201) ; ([1 1 50] [1 50 1] [3 1 48] [3 48 1] [5 1 44] [5 44 1] [7 1 38] [7 38 1] [9 1 30] [9 30 1] [11 1 20] [11 20 1] [13 1 8] [13 8 1] [3 8 6] [3 6 8] [9 6 5] [9 5 6] [1 5 10] [1 10 5] [11 5 4] [11 4 5] [3 12 4] [3 4 12] [5 4 11] [5 11 4] [13 4 2] [13 2 4] [9 15 2] [9 2 15] [5 22 2] [5 2 22] [1 25 2] [1 2 25] [3 2 24] [3 24 2] [7 2 19] [7 19 2] [11 2 10] [11 10 2] [9 10 3] [9 3 10] [3 16 3] [3 3 16])
 
 (apply svg-file "windmill" (map make-windmill (christmas 201)))
 
