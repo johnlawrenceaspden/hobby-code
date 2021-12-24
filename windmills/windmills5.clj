@@ -337,5 +337,8 @@
 ;; Note, to convert the svg files to png for posting on blogger, can do:
 ;; for i in windmills5*svg; do rsvg-convert -z 2 "$i" -o "${i%svg}png"; done
 
+;; but the last one's too big so don't zoom
+;; rsvg-convert windmills5-4.svg -o windmills5-4.png
+
 ;; -z 2 (zoom factor 2 prevents the fuzzyness that affected the last post)
 
