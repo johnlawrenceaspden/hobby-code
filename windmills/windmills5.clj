@@ -229,7 +229,7 @@
 
 ;; But we never get more than two free connections.
 
-;; We can't go on for ever, so we either have to join our two free connections to make a loop, or we
+;; We can't go on for ever, so we eventually either have to join our two free connections to make a loop, or we
 ;; have to be part of a chain which connects two fixed points of type 2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -244,7 +244,7 @@
 
 ;; Because for every number of the form 4n+1
 
-;; We can make one, and only one, thin cross, a red fixed point
+;; We can make one, and only one thin cross, a red fixed point
 
 ;; The existence of this thin cross implies and is implied by the fact that the number is divisible by one.
 
@@ -268,7 +268,7 @@
 
 ;; If we find a square, then we've shown that our number is itself an odd square
 
-;; And if we find an fat cross, then we've shown that our number has a factorization, of the form s*(s+4n) for some n
+;; And if we find a fat cross, then we've shown that our number has a factorization, of the form s*(s+4n) for some n
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -281,7 +281,7 @@
      (if ( = new triple) (reverse (cons triple orbit))
          (recur new (if (= transform green) red green) (cons triple orbit))))))
 
-;; Because it might go into an infinite loop
+;; Because it might go into an infinite loop, 
 
 
 ;; This program *is* safe to run, because starts at a red fixed point and so it must follow a chain and end at another fixed point
@@ -292,25 +292,25 @@
 
 (christmas 5) ; ([1 1 1])
 
-(apply svg-file "windmill" (map make-windmill (christmas 5)))
+(apply svg-file "windmills5-1" (map make-windmill (christmas 5)))
 
 ;; Here we show that 5 = 2*2 + 1*1
 
 (christmas 9) ; ([1 1 2] [1 2 1])
 
-(apply svg-file "windmill" (map make-windmill (christmas 9))) ; nil
+(apply svg-file "windmills5-2" (map make-windmill (christmas 9))) ; nil
 
 ;; 9 = 3*3
 
 (christmas 85) ; ([1 1 21] [1 21 1] [3 1 19] [3 19 1] [5 1 15] [5 15 1] [7 1 9] [7 9 1] [9 1 1])
 
-(apply svg-file "windmill" (map make-windmill (christmas 85)))
+(apply svg-file "windmills5-3" (map make-windmill (christmas 85)))
 
 ;; 85 = 9*9+2*2    (even though it's not prime!)
 
 (christmas 201) ; ([1 1 50] [1 50 1] [3 1 48] [3 48 1] [5 1 44] [5 44 1] [7 1 38] [7 38 1] [9 1 30] [9 30 1] [11 1 20] [11 20 1] [13 1 8] [13 8 1] [3 8 6] [3 6 8] [9 6 5] [9 5 6] [1 5 10] [1 10 5] [11 5 4] [11 4 5] [3 12 4] [3 4 12] [5 4 11] [5 11 4] [13 4 2] [13 2 4] [9 15 2] [9 2 15] [5 22 2] [5 2 22] [1 25 2] [1 2 25] [3 2 24] [3 24 2] [7 2 19] [7 19 2] [11 2 10] [11 10 2] [9 10 3] [9 3 10] [3 16 3] [3 3 16])
 
-(apply svg-file "windmill" (map make-windmill (christmas 201)))
+(apply svg-file "windmills5-4" (map make-windmill (christmas 201)))
 
 ;; 201 = 3*(3 + 4*16) = 3*67
 
