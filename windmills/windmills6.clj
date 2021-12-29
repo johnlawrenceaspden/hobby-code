@@ -119,38 +119,192 @@
 
 ;; The Christmas Theorem is proved,
 
-;; But I'm interested in these transforms for their own sake now,
+;; But I'm interested in these transforms for their own sake now, my questions are things like:
+
+;; If n is a prime, and we start at a thin cross, then do we end up exploring the whole space of triples before
+;; we get to the square bladed windmill?
+
+;; If not, what does the rest of the space look like, can we get loops? are there green-green chains?
+
+;; A green to green chain would imply two more ways to break the number down into sums of squares.
+;; Are there prime numbers which can be represented in three different ways as sums of odd and even squares? Five? Seven? 
 
 ;; Here's a function which takes a triple, and follows it through the red-green-red-green cycle
 ;; until it goes somewhere it's been before (which must always happen because our space of triples is finite)
 
 (defn calc-orbit-one-way
-  ([triple transform] (println "-----") (calc-orbit triple transform (list triple) (set (list triple))))
+  ([triple transform] (calc-orbit triple transform (list triple) (set (list triple))))
   ([triple transform orbit visited]
    (let [new (transform triple)]
-     (println triple transform "->" new orbit visited  )
+     ;(println triple transform "->" new orbit visited  )
      (if (visited new)
        (reverse orbit)
        (recur new (if (= transform green) red green) (cons new orbit) (conj visited new))))))
 
 
-;; We can go in either direction
-(calc-orbit [1 1 2] green) ; ([1 1 2] [1 2 1])
-(calc-orbit [1 1 2] red) ; ([1 1 2])
+;; We can go in either direction and get different answers
+(calc-orbit-one-way [1 1 2] green) ; ([1 1 2] [1 2 1])
+(calc-orbit-one-way [1 1 2] red) ; ([1 1 2])
+
+;; Although sometimes they are the same answer
+(calc-orbit-one-way [1 1 1] green) ; ([1 1 1])
+(calc-orbit-one-way [1 1 1] red) ; ([1 1 1])
+
+;; Here's a slightly less trivial example
+(calc-orbit-one-way [2 3 4] green) ; ([2 3 4] [2 4 3] [6 4 1] [6 1 4] [4 9 1] [4 1 9] [2 12 1] [2 1 12])
+(calc-orbit-one-way [2 3 4] red) ; ([2 3 4] [4 3 3])
+
+;; Since there's at least a theoretical possibility of looping, we can prime our second calculation with the result of the first calculation
+;; Saying, add the new triples to the exisiting orbit, and stop whenever you get somewhere that we've been before
+(def g234 (calc-orbit-one-way [2 3 4] green)) ; #'user/g234
+(calc-orbit-one-way [2 3 4] red g234 (set g234)) ; ([2 1 12] [2 12 1] [4 1 9] [4 9 1] [6 1 4] [6 4 1] [2 4 3] [2 3 4] [4 3 3])
 
 
-(calc-orbit [1 1 1] green) ; ([1 1 1])
-(calc-orbit [1 1 1] red) ; ([1 1 1])
-
-;; In this case, 
-
-
-;; 
+;; This gives us a function which will get the entire orbit of a triple
 (defn calc-whole-orbit [triple]
-  (let [g (calc-orbit triple green )
-        r (calc-orbit triple red   )]
-    (assert (= (first g) (first r)))
-    (concat (reverse (rest g)) r)))
+  (let [go (calc-orbit-one-way triple green )
+        ro (calc-orbit-one-way triple red  go (set go) )]
+    ro))
+
+
+(calc-whole-orbit [1 1 2]) ; ([1 2 1] [1 1 2])
+
+(calc-whole-orbit [1 1 1]) ; ([1 1 1])
+
+(calc-whole-orbit [2 3 4]) ; ([2 1 12] [2 12 1] [4 1 9] [4 9 1] [6 1 4] [6 4 1] [2 4 3] [2 3 4] [4 3 3])
+
+(calc-whole-orbit [4 1 9]) ; ([4 3 3] [2 3 4] [2 4 3] [6 4 1] [6 1 4] [4 9 1] [4 1 9] [2 12 1] [2 1 12])
+
+(calc-whole-orbit (make-thin-cross 85)) ; ([9 1 1] [7 9 1] [7 1 9] [5 15 1] [5 1 15] [3 19 1] [3 1 19] [1 21 1] [1 1 21])
+
+
+(defn red-fixed-point? [triple] (= (red triple) triple))
+
+(defn green-fixed-point? [triple] (= (green triple) triple))
+
+(map red-fixed-point? (calc-whole-orbit (make-thin-cross 85))) ; (false false false false false false false false true)
+(map green-fixed-point? (calc-whole-orbit (make-thin-cross 85))) ; (false false false false false false false false true)
+
+(defn classify-triple [[s p n :as triple]]
+  (cond (and (red-fixed-point? triple) (green-fixed-point? triple)) :dual-fixed-point
+        (red-fixed-point? triple)                                   :red-fixed-point
+        (green-fixed-point? triple)                                 :green-fixed-point
+        :else                                                       :-))
+
+
+(defn classify-triple [[s p n :as triple]]
+  (cond (and (red-fixed-point? triple) (green-fixed-point? triple)) :dual-fixed-point
+        ;;(red-fixed-point? triple)                                   :red-fixed-point
+        (= s p 1)     :thin-cross
+        (= s p)       :fat-cross
+        (= (+ s n) p) :square
+        (= n p)       :square-blades
+        :else                                                       :-))
+
+(defn add-flag [condition flag set]
+  (if condition (conj set flag) set))
+
+
+
+(defn classify-triple [[s p n :as triple]]
+  (->> #{}
+       (add-flag (= s p 1)  :thin-cross)
+       (add-flag (and (= s p) (> s 1) ) :fat-cross)
+       (add-flag (= (+ s n) p) :square)
+       (add-flag (= n p) :square-blades)))
+
+(calc-whole-orbit (make-thin-cross 85)) ; ([9 1 1] [7 9 1] [7 1 9] [5 15 1] [5 1 15] [3 19 1] [3 1 19] [1 21 1] [1 1 21])
+
+(map classify-triple (calc-whole-orbit (make-thin-cross 85))) ; (#{:square-blades} #{} #{} #{} #{} #{} #{} #{} #{:fat-cross :thin-cross :red-fixed-point :cross})
+
+(map classify-triple (calc-whole-orbit (make-thin-cross 85))) ; (:green-fixed-point :- :- :- :- :- :- :- :red-fixed-point)
+
+(map classify-triple (calc-whole-orbit [1 18 2])) ; (:- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :-)
+
+(for [x (calc-whole-orbit [1 18 2])] (classify-triple x)) ; (:- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :- :-)
+
+(for [x (calc-whole-orbit [1 18 2]) :when (not= :- (classify-triple x))] (classify-triple x)) ; ()
+(for [x (calc-whole-orbit (make-thin-cross 85)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:green-fixed-point :red-fixed-point)
+
+
+(for [x (calc-whole-orbit (make-thin-cross 5)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:dual-fixed-point) ; (:dual-fixed-point)
+(for [x (calc-whole-orbit (make-thin-cross 9)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:square :thin-cross) ; (:red-fixed-point :red-fixed-point)
+(for [x (calc-whole-orbit (make-thin-cross 13)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:green-fixed-point :thin-cross) ; (:green-fixed-point :red-fixed-point)
+(for [x (calc-whole-orbit (make-thin-cross 17)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:green-fixed-point :thin-cross) ; (:green-fixed-point :red-fixed-point)
+(for [x (calc-whole-orbit (make-thin-cross 21)) :when (not= :- (classify-triple x))] (classify-triple x)) ; (:fat-cross :thin-cross) ; (:red-fixed-point :red-fixed-point)
+
+
+(for [x (calc-whole-orbit (make-thin-cross 21))] (classify-triple x)) ; (#{:fat-cross} #{} #{} #{:thin-cross})
+(for [x (calc-whole-orbit (make-thin-cross 21)) :when (not (empty? (classify-triple x)))] (classify-triple x)) ; (#{:fat-cross} #{:thin-cross})
+
+(for [n (range 5 100 4)]
+  [n (for [x (calc-whole-orbit (make-thin-cross n)) :when (seq (classify-triple x))] (classify-triple x))])
+
+
+
+
+
+
+
+
+(defn classify-orbit [orbit]
+  (let [h (first orbit)
+        t (last orbit)]
+        (cond
+          (= h t) :point
+          (and (red-fixed-point? h)   (red-fixed-point? t)  ) :red-red
+          (and (green-fixed-point? h) (green-fixed-point? t)) :green-green
+          (or (and (red-fixed-point? h) (green-fixed-point? t))
+              (and (red-fixed-point? h) (green-fixed-point? t))):red-green
+          :else :loop)))
+
+
+ (defn classify-orbit [orbit]
+  (let [h (first orbit)
+        t (last orbit)
+        rh (red-fixed-point? h)
+        gh (green-fixed-point? h)
+        rt (red-fixed-point? t)
+        gt (green-fixed-point? t)]
+    (cond (= h t) :point
+          (and rh rt) :red-red
+          (and gh gt) :green-green
+          (or (and rh gt)
+              (and rh gt)):red-green
+          :else :loop)))
+        
+
+
+(classify-orbit (calc-whole-orbit (make-thin-cross 85))) ; :loop 
+(classify-orbit (calc-whole-orbit [1 18 2])) ; :loop 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
