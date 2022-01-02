@@ -491,6 +491,9 @@ alias ideasus='~/.screenlayout/ideaspace-standard-asus.sh && fix'
 alias net='~/.screenlayout/netbookalone.sh && fix'
 alias kem='~/.screenlayout/kemurilondonoffice.sh && fix'
 
+# how I expect feh to behave
+alias feh='feh --edit --version-sort --auto-zoom --fullscreen --recursive --slideshow-delay=30 --no-jump-on-resort --draw-filename --draw-actions'
+
 
 # relies on apt-get install cdargs to provide bash directory bookmarking
 # creates ca,cv,cb: ca adds the current directory, cv=cb cds to bookmark with completion, in case of complexity edit ~/.cdargs
