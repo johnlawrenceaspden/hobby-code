@@ -6,3 +6,7 @@ from django.http import HttpResponse
 
 def index(request):
     return HttpResponse("Hello, World!")
+
+
+def secret(request):
+    return HttpResponse("Secrets!")
