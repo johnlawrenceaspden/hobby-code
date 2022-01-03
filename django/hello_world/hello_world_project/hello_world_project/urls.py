@@ -22,4 +22,5 @@ urlpatterns = [
     path("", views.index, name="homepage"),
     path("geeks_view", views.geeks_view, name="homepage"),
     path("secret", views.secret, name="secret page"),
+    path("template", views.template_view, name="template"),
 ]
