@@ -12,7 +12,8 @@ def index(request):
     output = ", </br>".join([q.question_text for q in latest_question_list])
     template = loader.get_template("polls/index.html")
     context = {"latest_question_list": latest_question_list}
-    return HttpResponse(output + template.render(context, request))
+    return render(request, "polls/index.html", context)
+    # return HttpResponse(output + template.render(context, request))
 
 
 def detail(request, question_id):
