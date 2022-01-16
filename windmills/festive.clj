@@ -132,7 +132,7 @@ early-ones ;; (5 13 17 25 29 37 41 45 53 61 65 65 73 85 85 89 97 101 109 113 ...
 ;; It looks as though, at least for the first thousand candidates, if a number is both prime, and of form 4*n+1,
 ;; then it is expressible as an even square plus an odd square.
 
-;; Albert Girard, in 1625, presumably after a fair amount of dicking about with bits of paper,
+;; Albert Girard, in 1632, presumably after a fair amount of dicking about with bits of paper,
 ;; conjectured that this might be so for all candidate primes.
 
 ;; On December 25th 1640, Pierre de Fermat wrote to his friend Marin Mersenne that he had proved
