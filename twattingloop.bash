@@ -1,3 +1,9 @@
+FIX=true
+PANIC_FIX=true
+
+# First check what we've already got, so we only try to bring back up connections that have gone
+# down since we started
+
 CHECK_NOKIA=false
 CHECK_EDUROAM=false
 CHECK_XT1032=false
@@ -31,6 +37,8 @@ else
     CHECK_EDUROAM=true
 fi
 
+
+# now loop watchfully
 
 while true;
            #nmcli connection modify eduroam\ roaming ipv4.route-metric 500
