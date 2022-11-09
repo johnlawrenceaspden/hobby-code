@@ -84,9 +84,9 @@ while true;
                then
                    echo Wifi Network down
                    play -q -n synth 0.1 sin 1320 vol 0.009 ;
-                   #nmcli con down eduroam\ roaming
+                   #nmcli con down eduroam
                    if $FIX; then
-                       nmcli con up   eduroam\ roaming
+                       nmcli con up   eduroam
                    fi
                else
                    echo Wifi Network up
@@ -119,7 +119,7 @@ while true;
                        if $PANIC_FIX ; then
 		           sudo /home/john/hobby-code/twat.bash;
                            if $CHECK_EDUROAM; then
-                               nmcli con up   eduroam\ roaming
+                               nmcli con up   eduroam
                            fi
                            if $CHECK_XT1032; then
                                nmcli con up   XT1032\ Network
