@@ -6,6 +6,7 @@ PANIC_FIX=true
 
 CHECK_NOKIA=false
 CHECK_EDUROAM=false
+CHECK_PICTUREHOUSE=false
 CHECK_XT1032=false
 
 if nmcli d s | grep 60:BE:B5:07:5E:99 | grep disconnected;
@@ -32,9 +33,18 @@ if nmcli d s | grep wlp2s0 | grep disconnected;
 then
     echo Wifi Network down
     CHECK_EDUROAM=false
+    CHECK_PICTUREHOUSE=false
 else
-    echo Wifi Network up
-    CHECK_EDUROAM=true
+    if nmcli d s | grep wlp2s0 | grep eduroam;
+    then
+        echo eduroam up
+        CHECK_EDUROAM=true
+    fi
+    if nmcli d s | grep wlp2s0 | grep Picturehouse;
+    then
+        echo picturehouse up
+        CHECK_PICTUREHOUSE=true
+    fi
 fi
 
 
@@ -93,6 +103,22 @@ while true;
                    
                fi
            fi
+
+           if $CHECK_PICTUREHOUSE ; then
+               if nmcli d s | grep wlp2s0 | grep disconnected;
+               then
+                   echo Wifi Network down
+                   play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   #nmcli con down eduroam
+                   if $FIX; then
+                       nmcli con up 'Picturehouse Free Wi-Fi'
+                   fi
+               else
+                   echo Wifi Network up
+                   
+               fi
+           fi
+
            
            echo =================================================================
            ip route | grep default
@@ -120,6 +146,9 @@ while true;
 		           sudo /home/john/hobby-code/twat.bash;
                            if $CHECK_EDUROAM; then
                                nmcli con up   eduroam
+                           fi
+                           if $CHECK_PICTUREHOUSE; then
+                               nmcli con up 'Picturehouse Free Wi-Fi'
                            fi
                            if $CHECK_XT1032; then
                                nmcli con up   XT1032\ Network
