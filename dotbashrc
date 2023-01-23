@@ -516,6 +516,9 @@ alias uptimes='grep "Apr" /var/log/syslog | cut -d\  -f1,2,3 | cut -d: -f1,2 | u
 function which(){ type "$@"; /usr/bin/which "$@"; command -V "$@"; command -v "$@" ; alias "$@" ; echo ----- ; type -a "$@" ; }
 
 
+function getlast(){ find ~/Downloads -maxdepth 1 -type f -printf '%T@ %p\n' | sort -rn | cut -d' ' -f2- | head -n 1 | xargs -I{} mv {} . ; }
+
+
 
 # ### Solarflare
 
