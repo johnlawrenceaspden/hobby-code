@@ -1,5 +1,10 @@
-FIX=true
-PANIC_FIX=true
+FIX=${FIX:-true}
+PANIC_FIX=${PANIC_FIX:-true}
+BEEP=${BEEP:-true}
+
+echo BEEP is $BEEP
+echo FIX is $FIX
+echo PANIC_FIX is $PANIC_FIX
 
 # First check what we've already got, so we only try to bring back up connections that have gone
 # down since we started
@@ -64,7 +69,9 @@ while true;
                if nmcli d s | grep 60:BE:B5:07:5E:99 | grep disconnected;
                then
                    echo XT1032 Network down
-                   play -q -n synth 0.1 sin 880 vol 0.009 ;
+                   if $BEEP ; then 
+                       play -q -n synth 0.1 sin 880 vol 0.009 ;
+                   fi
                    #nmcli con down XT1032\ Network
                    if $FIX; then
                        nmcli con up   XT1032\ Network
@@ -78,7 +85,9 @@ while true;
                if nmcli d s | grep A0:28:ED:82:15:B8 | grep disconnected;
                then
                    echo Nokia 2 Network down
-                   play -q -n synth 0.1 sin 660 vol 0.009 ;
+                   if $BEEP ; then
+                       play -q -n synth 0.1 sin 660 vol 0.009 ;
+                   fi
                    #nmcli con down Nokia\ 2\ Network
                    if $FIX ; then
                        nmcli con up   Nokia\ 2\ Network
@@ -93,7 +102,9 @@ while true;
                if nmcli d s | grep wlp2s0 | grep disconnected;
                then
                    echo Wifi Network down
-                   play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   if $BEEP ; then
+                       play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   fi
                    #nmcli con down eduroam
                    if $FIX; then
                        nmcli con up   eduroam
@@ -108,7 +119,9 @@ while true;
                if nmcli d s | grep wlp2s0 | grep disconnected;
                then
                    echo Wifi Network down
-                   play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   if $BEEP ; then
+                       play -q -n synth 0.1 sin 1320 vol 0.009 ;
+                   fi
                    #nmcli con down eduroam
                    if $FIX; then
                        nmcli con up 'Picturehouse Free Wi-Fi'
@@ -129,19 +142,25 @@ while true;
 	       echo ping successful
 	   else
                echo --------------- a packet went missing! ----------------------------------
-               play -q -n synth 0.1 sin 440 vol 0.009 ; #very quiet beep, we're just doing some tests
+               if $BEEP ; then
+                   play -q -n synth 0.1 sin 440 vol 0.009 ; #very quiet beep, we're just doing some tests
+               fi
                if ping -c1 -W1 -n -v 8.8.8.8; 
 	       then 
 		   echo re-ping successful
 	       else
                    echo coincidence?
-                   play -q -n synth 0.1 sin 440 vol 0.018 ; 
+                   if $BEEP ; then
+                       play -q -n synth 0.1 sin 440 vol 0.018 ;
+                   fi
                    if ping -c1 -W1 -n -v 8.8.8.8; 
 	           then
                        echo re-re-ping successful
 	           else
                        echo enemy action! battle stations!
-		       play -q -n synth 0.1 sin 440 vol 0.027 ;
+		       if $BEEP ; then
+                           play -q -n synth 0.1 sin 440 vol 0.027 ;
+                       fi
                        if $PANIC_FIX ; then
 		           sudo /home/john/hobby-code/twat.bash;
                            if $CHECK_EDUROAM; then
@@ -168,7 +187,9 @@ while true;
            #     echo wireless route present
            # else
            #     echo -------------------- wireless route NOT present----------------------
-           #     play -q -n synth 0.1 sin 1320 vol 0.0099 ;
+           #     if $BEEP ; then
+           #         play -q -n synth 0.1 sin 1320 vol 0.0099 ;
+           #     fi
            #     if $FIX; then
 	   #         sudo /home/john/hobby-code/twat.bash;
            #         echo give it a while to recover before going back on watch
