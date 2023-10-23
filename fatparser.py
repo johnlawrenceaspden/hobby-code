@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import datetime
 import numpy as np
 import pandas as pd
+import io
+import re
+
+# plt.ion() #for interactive mode, plt.show will update graph and return
 
 # Just cut and paste spreadsheet data here, it will deal with missing values
 data_copied_from_fatods = """
@@ -38,24 +42,14 @@ data_copied_from_fatods = """
 14/05/23	
 """
 
-data = data_copied_from_fatods
-
-# throw away everything that is not a pair
-d = [l.split() for l in data.splitlines() if len(l.split()) == 2]
-# print(d)
-
-d2 = [(datetime.datetime.strptime(date, "%d/%m/%y"), float(w)) for (date, w) in d]
-# print(d2)
-
-df = pd.DataFrame(
-    {
-        "date": np.array([a for (a, b) in d2]),
-        "weight": [b for (a, b) in d2],
-    }
-)
+df=pd.read_csv(io.StringIO(data_copied_from_fatods.replace('\t',',')), names=["date", "weight","temperature", "T4", "NDT"])
 
 plt.plot(df.date, df.weight, label="weight", linewidth=3)
+plt.plot(df.date, df.temperature, label="temperature")
+plt.plot(df.date, df.T4, label="temperature")
+plt.plot(df.date, df.NDT, label="NDT")
 
 
 plt.title("The Heart Attack Diet")
 plt.show()
+
