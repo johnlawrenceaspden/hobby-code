@@ -35,7 +35,7 @@ fi
 echo "starting redshift-gtk"
 pgrep redshift
 if [[ $? != 0 ]] ; then
-    redshift-gtk -t 5700:1000 &
+    redshift-gtk -t 3000:1000 &
 else
     echo "redshift already running" ;
 fi
