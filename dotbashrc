@@ -486,9 +486,9 @@ export MANPAGER=less
 
 # reset everything nicely in various settings
 alias eng='~/.screenlayout/engineering.sh && fix'
-alias ide='~/.screenlayout/ideaspace-huge-samsung-low-res.sh && fix'
+alias idesamsung='~/.screenlayout/ideaspace-huge-samsung-low-res.sh && fix'
 alias lap='~/.screenlayout/laptopalone.sh && fix'
-alias ideasus='~/.screenlayout/ideaspace-standard-asus.sh && fix'
+alias ide='~/.screenlayout/ideaspace-standard-asus.sh && fix'
 alias net='~/.screenlayout/netbookalone.sh && fix'
 alias kem='~/.screenlayout/kemurilondonoffice.sh && fix'
 
