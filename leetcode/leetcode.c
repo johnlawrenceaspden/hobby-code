@@ -69,6 +69,26 @@ int main(void)
     twoSumTest(nums, sizeof(nums)/sizeof(int), target);
   }
 
+
+  {
+    int nums[]={2,7,11,15};
+    int target=4;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+  {
+    int nums[]={3,2,4};
+    int target=6;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+  {
+    int nums[]={3,3};
+    int target=6;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+
   
   return 0;
 }
