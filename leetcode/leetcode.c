@@ -3,11 +3,6 @@
 #include<assert.h>
 #include<stdlib.h>
 
-int comparator(const void *p, const void *q) 
-{ 
-  return (*(int*)p-*(int*)q);
-} 
-
 void aiprint(int *array, int arraysize)
 {
   printf("{");
@@ -17,6 +12,11 @@ void aiprint(int *array, int arraysize)
   printf("%d}", array[arraysize-1]);
 }
 
+
+int comparator(const void *p, const void *q) 
+{ 
+  return (*(int*)p-*(int*)q);
+} 
 
 
 /**
@@ -39,17 +39,18 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
     if (*i + *j > target){ j--;}
     else {i++;}
     //printf("%d + %d = %d\n", *i, *j, *i + *j);
-
   }
   int a=*i;
   int b=*j;
   free(newnums);
 
   int* p1=nums;
-  int* p2=nums;
-  for( ;*p1!=a; p1++);
-  for( ;*p2!=b; p2++);
-  
+  int* p2=nums+numsSize-1;
+  for( ;*p1!=a; p1++); //{printf("%d->",*p1);}
+  //printf("%d\n",*p1);
+  for( ;*p2!=b; p2--); //{printf("%d->",*p2);}
+  //printf("%d\n",*p2);
+    
   int* retval=(int*) malloc(2*sizeof(int));
   *returnSize=2;
   retval[0]=p1-nums;
