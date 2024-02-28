@@ -2,6 +2,7 @@
 #include<malloc.h>
 #include<assert.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
 /**
  * Note: The returned array must be malloced, assume caller calls free().
@@ -100,7 +101,6 @@ int arrval_comparator(const void *p, const void *q)
  * Note: The returned array must be malloced, assume caller calls free().
  */
 int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
-  printf("---\n");
   
   int* retval=(int*) malloc(2*sizeof(int));
   *returnSize=2;
@@ -147,12 +147,11 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
   // Christ knows why but this line won the speed competition
   //  if(numsSize>1000000) retval[0]=-1;
   
-  printf("---\n");
   return retval;
 }
 
 
-void twoSumTest(int*nums, int numsize, int target)
+void twoSumTest_general(int*nums, int numsize, int target, bool allowfail)
 {
   int* retval;
   int returnSize;
@@ -164,12 +163,22 @@ void twoSumTest(int*nums, int numsize, int target)
 
   int a=*(nums+retval[0]);
   int b=*(nums+retval[1]);
-  int c = a+b;
-  printf("%d + %d = %d\n",a,b,c);
+
+  printf("%d + %d = %d\n",a,b,a+b);
   free(retval);
-  if(target==a+b) printf("yay\n"); else assert("BOO!\n");
+  if (target==a+b) {printf("yay\n");}
+  if (!allowfail) {assert(target==a+b);} else {printf("failure (as expected)\n");}
 }
 
+void twoSumTest(int*nums, int numsize, int target)
+{
+  twoSumTest_general(nums, numsize, target, false);
+}
+
+void twoSumTestAllowFail(int*nums, int numsize, int target)
+{
+  twoSumTest_general(nums, numsize, target, true);
+}
 
 
 int main(void)
@@ -185,7 +194,7 @@ int main(void)
   {
     int nums[]={2,7,11,15};
     int target=3;
-    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+    twoSumTestAllowFail(nums, sizeof(nums)/sizeof(int), target);
   }
 
   
