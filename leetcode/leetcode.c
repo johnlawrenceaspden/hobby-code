@@ -151,7 +151,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
 
   // Christ knows why but adding this line while attempting to extract the biggest testcase won the speed competition.
   // if(numsSize>1000000) retval[0]=-1;
-  // Actually I think there's a bit of randomness in the submission code, this program executes in anything from 0-3ms according to the submission results. 0ms wins outright.
+  // Actually I think there's a bit of randomness in the submission code, this program executes in anything from 0-8ms according to the submission results, with 3ms seeming common. 0ms wins outright.
 
   
   return retval;
