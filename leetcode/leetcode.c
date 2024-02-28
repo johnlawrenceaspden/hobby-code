@@ -14,8 +14,12 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize);
 void aiprint(int *array, int arraysize)
 {
   printf("{");
-  for(int i=0; i<arraysize-1; i++){
+  for(int i=0; i<arraysize-1 ; i++){
     printf("%d,", array[i]);
+    if(i==20){
+      printf("...,");
+      break;
+    }
   }
   printf("%d}", array[arraysize-1]);
 }
@@ -116,8 +120,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
   
   arrval_t* i = arr ; 
   arrval_t* j = arr + numsSize-1; 
-  //printf("%d + %d = %d\n", *i, *j, *i + *j);
-  for(;;){
+  while(j>i){
     int sum = i->val+j->val;
     if (sum==target) break;
     else if (sum>target) j--;
@@ -128,6 +131,7 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
   
   free(arr);
 
+  // Christ knows why but this line won the speed competition
   //  if(numsSize>1000000) retval[0]=-1;
   
   printf("---\n");
@@ -140,7 +144,7 @@ void twoSumTest(int*nums, int numsize, int target)
   int* retval;
   int returnSize;
   printf("---\n");
-  //aiprint(nums, numsize);
+  aiprint(nums, numsize);
   printf(" => %d\n", target);
   retval = twoSum(nums, numsize, target, &returnSize);
   aiprint(retval, returnSize); printf("\n");
@@ -159,6 +163,19 @@ int main(void)
 {
   printf("yo\n");
 
+  {
+    int nums[]={2,7,11,15};
+    int target=4;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+  {
+    int nums[]={2,7,11,15};
+    int target=3;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+  
   {
     int nums[]={2,7,11,15};
     int target=9;
