@@ -3,6 +3,14 @@
 #include<assert.h>
 #include<stdlib.h>
 
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* twoSum(int* nums, int numsSize, int target, int* returnSize);
+
+
+
+
 void aiprint(int *array, int arraysize)
 {
   printf("{");
@@ -13,16 +21,18 @@ void aiprint(int *array, int arraysize)
 }
 
 
+
 int comparator(const void *p, const void *q) 
 { 
   return (*(int*)p-*(int*)q);
 } 
 
 
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+
+
+
+
+int* twoSum_sort_lookup(int* nums, int numsSize, int target, int* returnSize) {
   //printf("---\n");
 
   int *newnums=malloc(sizeof(int)*numsSize);
@@ -60,7 +70,67 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
   return retval;
 }
 
+typedef struct arrval_s{
+  int val;
+  int pos;
+} arrval_t;
 
+void arrvalprint(arrval_t *array, int arraysize)
+{
+  printf("{");
+  int i;
+  for(i=0; i<arraysize-1; i++){
+    printf("(%d,%d),", array[i].val, array[i].pos);
+  }
+  printf("(%d,%d)}", array[i].val, array[i].pos);
+}
+
+
+int arrval_comparator(const void *p, const void *q) 
+{ 
+  return (((arrval_t*)p)->val - ((arrval_t*)q)->val);
+} 
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+  printf("---\n");
+  
+  int* retval=(int*) malloc(2*sizeof(int));
+  *returnSize=2;
+  retval[0]=-1;
+  retval[1]=-1;
+
+
+  arrval_t *arr = malloc(sizeof(arrval_t)*numsSize);
+  for (int i=0; i<numsSize; i++){
+    arr[i].val=nums[i]; arr[i].pos=i;
+  }
+
+  //arrvalprint(arr,numsSize); printf("\n");
+  qsort(arr, numsSize, sizeof(arrval_t), arrval_comparator);
+  //arrvalprint(arr,numsSize); printf("\n");
+
+  
+  arrval_t* i = arr ; 
+  arrval_t* j = arr + numsSize-1; 
+  //printf("%d + %d = %d\n", *i, *j, *i + *j);
+  for(;;){
+    int sum = i->val+j->val;
+    if (sum==target) break;
+    else if (sum>target) j--;
+    else i++;
+  }
+  retval[0]=i->pos;
+  retval[1]=j->pos;
+  
+  free(arr);
+
+  printf("---\n");
+  return retval;
+}
 
 
 void twoSumTest(int*nums, int numsize, int target)
@@ -89,10 +159,24 @@ int main(void)
 
   {
     int nums[]={2,7,11,15};
-    int target=12;
+    int target=9;
     twoSumTest(nums, sizeof(nums)/sizeof(int), target);
   }
 
+  {
+    int nums[]={3,2,4};
+    int target=6;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+  {
+    int nums[]={3,3};
+    int target=6;
+    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
+  }
+
+
+  
   {
     int nums[]={2,7,11,15};
     int target=14;
@@ -106,11 +190,6 @@ int main(void)
     twoSumTest(nums, sizeof(nums)/sizeof(int), target);
   }
 
-  {
-    int nums[]={3,2,4};
-    int target=6;
-    twoSumTest(nums, sizeof(nums)/sizeof(int), target);
-  }
 
   {
     int nums[]={3,3};
