@@ -1,0 +1,70 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 20.12.1 ] */
+/* [wxMaxima: input   start ] */
+x+y+z=1;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x^2+y^2+z^2=2;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x^3+y^3+z^3=3;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^2-(x^2+y^2+z^2));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x*y+y*z+z*x=-1/2;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^3-(x^3+y^3+z^3)-6*x*y*z);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+z+y)*(x*y+y*z+z*x)-3*x*y*z);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^3-(x^3+y^3+z^3)-6*x*y*z-3*((x+z+y)*(x*y+y*z+z*x)-3*x*y*z));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^3-(x^3+y^3+z^3)+3*x*y*z-3*((x+z+y)*(x*y+y*z+z*x)));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x*y*z=1/6;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand((x+y+z)^5-(x^5+y^5+z^5)-20*(x*y*z)*(x*y+y*z+z*x)-20*(x*y*z)*(x^2+y^2+z^2));
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 20.12.1"$
