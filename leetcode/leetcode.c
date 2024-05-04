@@ -5,46 +5,68 @@
 #include<stdbool.h>
 #include<string.h>
 
-char* maximumOddBinaryNumber(char* s);
-
-char* maximumOddBinaryNumber(char* s){
-  int ones=0;
-  int zeros=0;
-  char* p=s;
-  char c;
-  while(c=*p++)
-    {if('0'==c) zeros++; else ones++;}
-  char* res = malloc(ones+zeros+1);
-  p=res;
-  ones--;
-  while(ones--) *p++='1';
-  while(zeros--) *p++='0';
-  *p++='1';
-  *p=0;
-  return res;
+void printia(int* a, int n)
+{
+  int i; 
+  for (i=0; i<n-1; i++) printf("%d,", a[i]);
+  printf("%d\n", a[i]);
 }
 
 
+void merge (int* nums1, int nums1Size, int m, int* nums2, int nums2Size, int n){
+  int *merge=calloc(nums1Size,sizeof(int));
+  int i=0,j=0;
+  //printia(nums1,nums1Size);
+  //printia(nums2,nums2Size);
+  while(i+j<m+n && i<m && j<n){
+    //printia(merge, nums1Size);
+    //printf("%d,%d:%d %d ->", i,j,nums1[i],nums2[j] );
+
+    if(nums1[i]<nums2[j]){
+      merge[i+j]=nums1[i];
+      i++;
+    }else{
+      merge[i+j]=nums2[j];
+      j++;
+    }
+    //printia(merge, nums1Size);
+  }
+  while(i<m){
+      merge[i+j]=nums1[i];
+      i++;
+  }
+  while(j<n){
+      merge[i+j]=nums2[j];
+      j++;
+  }
+
+  //printia(merge, nums1Size);
+  for(int i=0; i<nums1Size; i++) nums1[i]=merge[i];
+}
 
 
-
-
-
-
-void Test(char* s, char* r)
+void Test(int* nums1, int nums1Size, int m, int* nums2, int nums2Size, int n)
 {
-  char*res = maximumOddBinaryNumber(s);
-  printf("%s->%s(expected %s)\n",s,res,r);
-  assert(strcmp(res,r)==0);
+  printia(nums1,nums1Size);
+  printia(nums2,nums2Size);
+
+  merge(nums1, nums1Size, m, nums2, nums2Size, n);
+  printia(nums1,nums1Size);
 }
 
 
 int main(void)
 {
   printf("yo\n");
+  int nums1[]={1,2,3,0,0,0};
+  int m=3;
+  int nums2[]={2,5,6};
+  int n=3;
+  int nums1Size=sizeof(nums1)/sizeof(int);
+  int nums2Size=sizeof(nums2)/sizeof(int);
+  
 
-  Test("010","001");
-  Test("0101","1001");
+  Test(nums1, nums1Size, m, nums2, nums2Size, n);
 
   return 0;
 }
