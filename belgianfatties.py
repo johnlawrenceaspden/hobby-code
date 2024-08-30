@@ -28,7 +28,7 @@ age = [
     70,
     80,
 ]
-met = [
+m_met = [
     0.496,
     0.696,
     0.797,
@@ -58,7 +58,7 @@ met = [
     1.623,
     1.613,
 ]
-kilog = [
+m_kilog = [
     3.20,
     10.00,
     12.00,
@@ -89,14 +89,78 @@ kilog = [
     61.22,
 ]
 
-bmi = [(k / m / m) for k, m in zip(kilog, met)]
+f_met = [
+    0.483,
+    0.690,
+    0.780,
+    0.850,
+    0.910,
+    0.974,
+    1.032,
+    1.096,
+    1.139,
+    1.200,
+    1.248,
+    1.275,
+    1.327,
+    1.386,
+    1.447,
+    1.475,
+    1.500,
+    1.544,
+    1.562,
+    1.570,
+    1.577,
+    1.579,
+    1.555,
+    1.536,
+    1.516,
+    1.514,
+    1.506,
+]
+f_kilog = [
+    2.91,
+    9.30,
+    11.40,
+    12.45,
+    14.18,
+    15.50,
+    16.74,
+    18.45,
+    19.82,
+    22.44,
+    24.24,
+    26.25,
+    30.54,
+    34.65,
+    38.10,
+    41.30,
+    44.44,
+    49.08,
+    53.10,
+    54.46,
+    55.08,
+    55.14,
+    56.65,
+    58.45,
+    56.73,
+    53.72,
+    51.52,
+]
 
-print([(a, round(b, 1)) for b, a in zip(bmi, age)])
+
+m_bmi = [(k / m / m) for k, m in zip(m_kilog, m_met)]
+
+print([(a, round(b, 1)) for b, a in zip(m_bmi, age)])
+
+f_bmi = [(k / m / m) for k, m in zip(f_kilog, f_met)]
+
+print([(a, round(b, 1)) for b, a in zip(f_bmi, age)])
 
 
 import pandas as pd
 
-df = pd.DataFrame(list(zip(age, bmi)), columns=["age", "bmi"])
+df = pd.DataFrame(list(zip(age, m_bmi, f_bmi)), columns=["age", "m_bmi", "f_bmi"])
 
 
 import matplotlib.pyplot as plt
@@ -104,4 +168,5 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots()  # Create the figure and axes object
 
 # Plot the first x and y axes:
-df.plot(x="age", y="bmi", ax=ax)
+df.plot(x="age", y="m_bmi", ax=ax)
+df.plot(x="age", y="f_bmi", ax=ax)
