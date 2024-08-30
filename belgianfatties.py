@@ -170,3 +170,5 @@ fig, ax = plt.subplots()  # Create the figure and axes object
 # Plot the first x and y axes:
 df.plot(x="age", y="m_bmi", ax=ax)
 df.plot(x="age", y="f_bmi", ax=ax)
+
+plt.show()
