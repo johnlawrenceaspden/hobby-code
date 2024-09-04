@@ -1,4 +1,6 @@
-age = [
+#!/usr/bin/env python3
+
+m_age = [
     0,
     1,
     2,
@@ -89,6 +91,36 @@ m_kilog = [
     61.22,
 ]
 
+f_age = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    20,
+    25,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80,
+]
+
 f_met = [
     0.483,
     0.690,
@@ -148,19 +180,22 @@ f_kilog = [
     51.52,
 ]
 
+print(mf)
+print(ff)
 
 m_bmi = [(k / m / m) for k, m in zip(m_kilog, m_met)]
 
-print([(a, round(b, 1)) for b, a in zip(m_bmi, age)])
+print([(a, round(b, 1)) for b, a in zip(m_bmi, m_age)])
 
 f_bmi = [(k / m / m) for k, m in zip(f_kilog, f_met)]
 
-print([(a, round(b, 1)) for b, a in zip(f_bmi, age)])
+print([(a, round(b, 1)) for b, a in zip(f_bmi, f_age)])
 
 
 import pandas as pd
 
-df = pd.DataFrame(list(zip(age, m_bmi, f_bmi)), columns=["age", "m_bmi", "f_bmi"])
+mf = pd.DataFrame(list(zip(m_age, m_bmi)), columns=["m_age", "m_bmi"])
+ff = pd.DataFrame(list(zip(f_age, f_bmi)), columns=["f_age", "f_bmi"])
 
 
 import matplotlib.pyplot as plt
@@ -168,7 +203,7 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots()  # Create the figure and axes object
 
 # Plot the first x and y axes:
-df.plot(x="age", y="m_bmi", ax=ax)
-df.plot(x="age", y="f_bmi", ax=ax)
-
+mf.plot(x="m_age", y="m_bmi", ax=ax, label="boys", color="blue")
+ff.plot(x="f_age", y="f_bmi", ax=ax, label="girls", color="pink")
+plt.title("BMI of Rich Belgians before 1830")
 plt.show()
