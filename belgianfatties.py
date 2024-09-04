@@ -180,8 +180,6 @@ f_kilog = [
     51.52,
 ]
 
-print(mf)
-print(ff)
 
 m_bmi = [(k / m / m) for k, m in zip(m_kilog, m_met)]
 
@@ -196,6 +194,9 @@ import pandas as pd
 
 mf = pd.DataFrame(list(zip(m_age, m_bmi)), columns=["m_age", "m_bmi"])
 ff = pd.DataFrame(list(zip(f_age, f_bmi)), columns=["f_age", "f_bmi"])
+
+print(mf)
+print(ff)
 
 
 import matplotlib.pyplot as plt
