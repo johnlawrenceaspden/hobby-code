@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
+import matplotlib.pyplot as plt
+from collections import Counter
+
 
 cells = 100
 
-a = [5] * cells
+a = [3] * cells
 b = ["A"] * cells
 
 print(a)
 
 # a[0]=100
 
-print(a)
+print(b)
 
 import random
 
@@ -51,15 +54,23 @@ for j in range(10):
         a, b = react(a, b)
     print(a)
     print(b)
+    print( sorted(list(Counter(a).items())))
+    print( sorted(list(Counter(b).items())))
 
+    
 print("--------------------")
 
 print(sorted(a))
 print(sorted(b))
 
-from collections import Counter
+
 
 print(sum(a))
-print( sorted(list(Counter(a).items())))
-print( sorted(list(Counter(b).items())))
 
+
+w=Counter(a)
+plt.bar(w.keys(), w.values())
+w=Counter(b)
+plt.bar(w.keys(), w.values())
+
+plt.show()
