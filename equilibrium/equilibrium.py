@@ -5,8 +5,10 @@ from collections import Counter
 
 cells = 100
 
-a = [3] * cells
+a = [50] * cells
 b = ["A"] * cells
+
+atobcost=50
 
 print(a)
 
@@ -37,25 +39,32 @@ def diffuse(a):
     return a
 
 def react(a, b):
-    for i in range(cells):
-        i = random.randrange(0, cells)
-        if b[i]=="A" and a[i]>=5:
-            b[i]="B"
-            a[i]=a[i]-5
-        elif b[i]=="B":
-            b[i]="A"
-            a[i]=a[i]+5
+    i = random.randrange(0, cells)
+    if b[i]=="A" and a[i]>=atobcost:
+        b[i]="B"
+        a[i]=a[i]-atobcost
+    elif b[i]=="B":
+        b[i]="A"
+        a[i]=a[i]+atobcost
     return a, b
 
 
 for j in range(10):
-    for i in range(100):
+    for i in range(10):
         a = diffuse(a)
+    for i in range(1):
         a, b = react(a, b)
     print(a)
     print(b)
     print( sorted(list(Counter(a).items())))
     print( sorted(list(Counter(b).items())))
+    plt.subplot(1,2,1)
+    w=Counter(a)
+    plt.bar(w.keys(), w.values())
+    plt.subplot(1,2,2)
+    w=Counter(b)
+    plt.bar(w.keys(), w.values())
+    plt.show()
 
     
 print("--------------------")
@@ -67,10 +76,3 @@ print(sorted(b))
 
 print(sum(a))
 
-
-w=Counter(a)
-plt.bar(w.keys(), w.values())
-w=Counter(b)
-plt.bar(w.keys(), w.values())
-
-plt.show()
