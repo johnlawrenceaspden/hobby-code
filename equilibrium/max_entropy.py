@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import random
+import matplotlib.pyplot as plt
 from collections import Counter
 
 
 print("hello")
 
-dice = [1] * 20
+dice = [3] * 200000
 
 
 def change(n):
@@ -17,6 +18,17 @@ def change(n):
     return n
 
 
-for i in range(20):
+l = []
+for i in range(40):
+    l.append(sum(dice) / len(dice))
+    print(sum(dice) / len(dice), sorted(list(Counter(dice).items())))
     dice = [change(d) for d in dice]
-    print(dice, sum(dice) / len(dice), sorted(list(Counter(dice).items())))
+
+
+plt.subplot(1, 2, 1)
+w = Counter(dice)
+plt.bar(w.keys(), w.values())
+plt.subplot(1, 2, 2)
+w = Counter(dice)
+plt.plot(l)
+plt.show()
