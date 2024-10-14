@@ -7,7 +7,7 @@ from collections import Counter
 
 print("hello")
 
-dice = [100] * 200
+dice = [10] * 20000
 
 
 def change(n):
@@ -47,23 +47,10 @@ def exchange_floor(dice):
 
 
 def exchange_floor_no_topology(dice):
+    random.shuffle(dice)
     ld = len(dice)
     for i in range(ld - 1):
-        i1 = random.randint(0, ld - 1)
-        i2 = random.randint(0, ld - 1)
-        if i1 != i2:
-            a = random.choice([-1, 1])
-            b = dice[i1] + a
-            c = dice[i2] - a
-            if b >= 0 and c >= 0:
-                dice[i1] = b
-                dice[i2] = c
-    return dice
-
-
-def exchange_floor(dice):
-    ld = len(dice)
-    for i in range(ld - 1):
+        # print(dice)
         i1 = i
         i2 = i + 1
         if i1 != i2:
@@ -88,7 +75,7 @@ for i in range(400):
     e = sum([info(x / c.total()) for x in c.values()])
     entropy.append(e)
     print(i, sum(dice) / len(dice), e)
-    dice = exchange_floor(dice)
+    dice = exchange_floor_no_topology(dice)
 
 
 print("max entropy of six", math.log2(6), "bits")
