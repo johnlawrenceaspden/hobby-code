@@ -30,6 +30,16 @@ p2;sum((p1)*x^n,n,0,6); ev(p2, x=1/10); float(%); sum((p1)*x^n,n,0,20), x=1/10; 
 /* [wxMaxima: input   end   ] */
 
 
+/* [wxMaxima: input   start ] */
+p1:(n+1)*(n+1);p2:((1-x)^-2+2*x*(1-x)^-3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); ev(p2, x=1/10); float(%); sum((p1)*x^n,n,0,20), x=1/10; float(%); 
+/* [wxMaxima: input   end   ] */
+
+
 
 /* Old versions of Maxima abort on loading files that end in a comment. */
 "Created with wxMaxima 22.12.0"$
