@@ -1,0 +1,35 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 22.12.0 ] */
+/* [wxMaxima: input   start ] */
+p1:(1); p2:1/(1-x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); sum((p1)*x^n,n,0,20), x=1/10; float(%); ev(p2, x=1/10); float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+dp1:(n-1)*p1; dp2:diff(p2,x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); ev(p2, x=1/10); float(%); sum((p1)*x^n,n,0,20), x=1/10; float(%); 
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:(n+2)*(n+1);p2:(2/(1-x)^3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); ev(p2, x=1/10); float(%); sum((p1)*x^n,n,0,20), x=1/10; float(%); 
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 22.12.0"$
