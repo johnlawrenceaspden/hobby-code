@@ -11,7 +11,22 @@ p2;sum((p1)*x^n,n,0,6); sum((p1)*x^n,n,0,20), x=1/10; float(%); ev(p2, x=1/10); 
 
 
 /* [wxMaxima: input   start ] */
-dp1:(n-1)*p1; dp2:diff(p2,x);
+dp1:(n+1)*subst([n=n+1],p1); dp2:diff(p2,x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+dp1;dp2;sum((dp1)*x^n,n,0,6); sum((dp1)*x^n,n,0,20), x=1/10; float(%); ev(dp2, x=1/10); float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ddp1:(n+1)*subst([n=n+1],dp1); ddp2:diff(dp2,x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ddp1;ddp2;sum((ddp1)*x^n,n,0,6); sum((ddp1)*x^n,n,0,20), x=1/10; float(%); ev(ddp2, x=1/10); float(%);
 /* [wxMaxima: input   end   ] */
 
 
@@ -37,6 +52,81 @@ p1:(n+1)*(n+1);p2:((1-x)^-2+2*x*(1-x)^-3);
 
 /* [wxMaxima: input   start ] */
 p2;sum((p1)*x^n,n,0,6); ev(p2, x=1/10); float(%); sum((p1)*x^n,n,0,20), x=1/10; float(%); 
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:n;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+(n+1)*subst([n=n+1],p1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x*sum((ddp1)*x^n,n,0,inf);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:((n+1)^2); p2:1/(1-x)^2+2*x/(1-x)^3;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); sum((p1)*x^n,n,0,20), x=1/10; float(%); ev(p2, x=1/10); float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:((n+1)*(n+2)*(n+3)); p2:6/(1-x)^4;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;sum((p1)*x^n,n,0,6); sum((p1)*x^n,n,0,20), x=1/10; float(%); ev(p2, x=1/10); float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:(n*n*n); p2:(x/(1-x)^2+6*x^2/(1-x)^3+6*x^3/(1-x)^4);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1;p2;sum((p1)*x^n,n,0,6); sum((p1)*x^n,n,0,20), x=1/10; float(%); ev(p2, x=1/10); float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+factor(ratsimp(p2));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(%,x=1/10);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+factor(%);
 /* [wxMaxima: input   end   ] */
 
 
