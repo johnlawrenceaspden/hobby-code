@@ -9,8 +9,7 @@ fn factorial(n:i128) ->i128{
 }
 
 fn main(){
-    println!("yo {}",factorial(12));
-    println!("yo {}",factorial(13));
-    println!("yo {}",factorial(33));
-    println!("yo {}",factorial(34));
+    for n in 1..{
+        println!("{} yo {}",n,factorial(n));
+    }
 }
