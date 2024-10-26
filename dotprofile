@@ -1,1 +1,2 @@
 # .profile is a bit redundant these days apparently, and you should put things in .bashrc
+. "$HOME/.cargo/env"
