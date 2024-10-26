@@ -42,7 +42,7 @@
  '(custom-safe-themes
    '("5f4dfda04fbf7fd55228266c8aab73953d3087cea7fd06dd7f8ff1e4a497c739" "39a854967792547c704cbff8ad4f97429f77dfcf7b3b4d2a62679ecd34b608da" "fe349b21bb978bb1f1f2db05bc87b2c6d02f1a7fe3f27584cd7b6fbf8e53391a" "b5cff93c3c6ed12d09ce827231b0f5d4925cfda018c9dcf93a2517ce3739e7f1" default))
  '(package-selected-packages
-   '(rust-mode pylint ess clojure-mode-extra-font-locking clojure-mode cider ctrlf transpose-frame ack realgud undo-tree ggtags elpy color-theme-modern))
+   '(flycheck-rust rust-mode pylint ess clojure-mode-extra-font-locking clojure-mode cider ctrlf transpose-frame ack realgud undo-tree ggtags elpy color-theme-modern))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
