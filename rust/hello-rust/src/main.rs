@@ -1,6 +1,10 @@
 use ferris_says::say;
 use std::io::{stdout, BufWriter};
 
+/* Block Comment */
+// line comment
+/// weird comment
+
 fn main() {
     println!("Hello, world!");
     let stdout=stdout();
