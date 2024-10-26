@@ -1,6 +1,5 @@
 use ferris_says::say;
-use std::io::BufWriter;
-use std::io::stdout;
+use std::io::{stdout, BufWriter};
 
 fn main() {
     println!("Hello, world!");
