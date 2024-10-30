@@ -8,13 +8,6 @@
 // }
 
 use std::any::type_name_of_val;
-use std::any::type_name;
-// fn main() {
-//     let mut my_number = 32.90;
-//     println!("{}", type_name_of_val(&my_number));
-// }
-
-
 
 fn p<T: std::fmt::Debug>(v: &T) {
     println!("{} {:?}", std::any::type_name::<T>(), v);
