@@ -1,7 +1,13 @@
 // you can run me with rustc hello.rs && ./hello
 
 /* Playing with the tutorial at
-   https:doc.rust-lang.org/rust-by-example/hello/comment.html */
+   https://doc.rust-lang.org/rust-by-example/hello/comment.html
+
+   must read:
+   https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
+   https://dev.to/doziestar/rusts-ownership-system-memory-safety-without-garbage-collection-gp3
+
+*/
 
 
 // to print the type of a thing
