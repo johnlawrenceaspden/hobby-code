@@ -429,6 +429,7 @@ function vcstatuses
 
 alias vsync='vcstatuses && gitpullall && vcstatuses && gitpushall'
 alias vstat='vcstatuses'
+alias gg='git gui'
 
 function gitguiall
 {
