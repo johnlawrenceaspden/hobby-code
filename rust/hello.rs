@@ -13,22 +13,40 @@
 
 
 // to print the type of a thing
-// println!("{} {:?}",type_name_of_val(a),a);
+// println!("{} {:?}",type_name_of_val(&a),a);
 
 #[allow(unused_imports)]
 use std::any::type_name_of_val;
 
-//call this as p(a)
+// call this as p(&a)
 #[allow(dead_code)]
-fn p<T: std::fmt::Debug>(v: T) {
-    println!("{} {:?}", std::any::type_name_of_val(&v), v);
+fn p<T: std::fmt::Debug>(v: &T) {
+    println!("{} {:?}", std::any::type_name_of_val(&*v), v);
+}
+
+fn doom(s:&mut String){
+    s.push_str(" and even more doom");
 }
 
 fn main(){
     println!("hello");
 
-    let mut m = 32.90;
-    m=m+0.1;
+    //but Strings have a part on the heap, and so they get moved and borrowed
 
-    p(m);
+    let mut m = String::from("impending");
+    let m2 = &mut m;
+    m2.push_str(" doom");
+    m.push_str(" and more doom");
+
+    let r1 = &m;
+    let r2 = &m;
+
+    println!("{}, {}", r1, r2);
+
+    doom(&mut m);
+
+    println!("{}, {}", m, m);
+    
+    p(&m);
+    
 }
