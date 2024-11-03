@@ -1156,6 +1156,8 @@
           (`?û ?ū)
           (`?ï ?ī)))))))
 
+;; Prevent undo tree files from polluting your git repo
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
