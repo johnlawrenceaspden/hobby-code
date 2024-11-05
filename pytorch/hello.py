@@ -34,11 +34,14 @@ os.chdir("/home/john/hobby-code/pytorch")
 print(os.getcwd())
 
 # Read the original image
-img = cv2.imread("1nealclose.png")
+# rotate 20 degrees clockwise like so to line up ridge with horizontal
+# convert -rotate 20 1nealclose.png 1nealclose+20.png
+
+img = cv2.imread("1nealclose+20.png")
 # # Convert to grayscale
 # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-img_gray = cv2.imread("1nealclose.png", cv2.IMREAD_GRAYSCALE)
+img_gray = cv2.imread("1nealclose+20.png", cv2.IMREAD_GRAYSCALE)
 
 # Display original image
 cv2.imshow("Original", img)
@@ -55,22 +58,22 @@ img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
 sobelx = cv2.Sobel(
     src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=5
 )  # Sobel Edge Detection on the X axis
-# cv2.imshow("Sobel X", sobelx)
+cv2.imshow("Sobel X", sobelx)
 
 sobely = cv2.Sobel(
     src=img_blur, ddepth=cv2.CV_64F, dx=0, dy=1, ksize=5
 )  # Sobel Edge Detection on the Y axis
-# cv2.imshow("Sobel Y", sobely)
+cv2.imshow("Sobel Y", sobely)
 
-sobelxy = cv2.Sobel(
-    src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=4, ksize=5
-)  # Combined X and Y Sobel Edge Detection
-# cv2.imshow("SobelX Y using Sobel() function", sobelxy)
+# sobelxy = cv2.Sobel(
+#     src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=4, ksize=5
+# )  # Combined X and Y Sobel Edge Detection
+# # cv2.imshow("SobelX Y using Sobel() function", sobelxy)
 
-sobelxy = cv2.Sobel(
-    src=img_blur, ddepth=cv2.CV_64F, dx=4, dy=-1, ksize=5
-)  # Combined X and Y Sobel Edge Detection
-# cv2.imshow("SobelX Y using Sobel() function", sobelxy)
+# sobelxy = cv2.Sobel(
+#     src=img_blur, ddepth=cv2.CV_64F, dx=4, dy=1, ksize=5
+# )  # Combined X and Y Sobel Edge Detection
+# # cv2.imshow("SobelX Y using Sobel() function", sobelxy)
 
 
 # Canny Edge Detection
