@@ -23,25 +23,29 @@ import matplotlib
 # or it seems to pick up the venv if you do e hello.py from a directory with the venv already activated
 
 # and then restart the python interpreter virtual envs/restart-python-process
+
+
 # (pyvenv-restart-python)
 import cv2
 import os
 
 print(os.getcwd())
+os.chdir("/home/john/hobby-code/pytorch")
+print(os.getcwd())
 
 # Read the original image
-try:
-    img_gray = cv2.imread("test.jpg", cv2.IMREAD_GRAYSCALE)
-except:
-    img = cv2.imread("pytorch/test.jpg")
+img_gray = cv2.imread("1nealclose.png", cv2.IMREAD_GRAYSCALE)
 
 # Display original image
 cv2.imshow("Original", img_gray)
 
 # # Convert to grayscale
 # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
 # # Blur the image for better edge detection
 img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
+# img_blur = img_gray
 
 cv2.imshow("Original Blur", img_blur)
 
@@ -57,18 +61,18 @@ sobelxy = cv2.Sobel(
 )  # Combined X and Y Sobel Edge Detection
 # Display Sobel Edge Detection Images
 cv2.imshow("Sobel X", sobelx)
-cv2.waitKey(0)
+# cv2.waitKey(0)
 cv2.imshow("Sobel Y", sobely)
-cv2.waitKey(0)
+# cv2.waitKey(0)
 cv2.imshow("SobelX Y using Sobel() function", sobelxy)
-cv2.waitKey(0)
+# cv2.waitKey(0)
 
-# # Canny Edge Detection
-# edges = cv2.Canny(
-#     image=img_blur, threshold1=100, threshold2=200
-# )  # Canny Edge Detection
-# # Display Canny Edge Detection Image
-# cv2.imshow("Canny Edge Detection", edges)
+# Canny Edge Detection
+edges = cv2.Canny(
+    image=img_blur, threshold1=100, threshold2=200
+)  # Canny Edge Detection
+# Display Canny Edge Detection Image
+cv2.imshow("Canny Edge Detection", edges)
 # cv2.waitKey(0)
 
 while True:
