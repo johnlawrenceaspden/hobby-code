@@ -2,6 +2,7 @@
 
 # source ./bin/activate
 # pip install validators matplotlib torch requests
+#
 
 import torch
 import validators
@@ -23,60 +24,60 @@ import matplotlib
 
 # and then restart the python interpreter virtual envs/restart-python-process
 # (pyvenv-restart-python)
+import cv2
+import os
 
-print(torch.cuda.is_available() and "yay, we have cuda" or "bugger, no cuda")
+print(os.getcwd())
 
+# Read the original image
+try:
+    img_gray = cv2.imread("test.jpg", cv2.IMREAD_GRAYSCALE)
+except:
+    img = cv2.imread("pytorch/test.jpg")
 
-def p(x):
-    print(x, type(x))
+# Display original image
+cv2.imshow("Original", img_gray)
 
+# # Convert to grayscale
+# img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# # Blur the image for better edge detection
+img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
 
-# ----------------
+cv2.imshow("Original Blur", img_blur)
 
+# Sobel Edge Detection
+sobelx = cv2.Sobel(
+    src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=5
+)  # Sobel Edge Detection on the X axis
+sobely = cv2.Sobel(
+    src=img_blur, ddepth=cv2.CV_64F, dx=0, dy=1, ksize=5
+)  # Sobel Edge Detection on the Y axis
+sobelxy = cv2.Sobel(
+    src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=1, ksize=5
+)  # Combined X and Y Sobel Edge Detection
+# Display Sobel Edge Detection Images
+cv2.imshow("Sobel X", sobelx)
+cv2.waitKey(0)
+cv2.imshow("Sobel Y", sobely)
+cv2.waitKey(0)
+cv2.imshow("SobelX Y using Sobel() function", sobelxy)
+cv2.waitKey(0)
 
-import torch
-from PIL import Image
-import torchvision.transforms as transforms
-import numpy as np
-import json
-import requests
-import matplotlib.pyplot as plt
-import warnings
+# # Canny Edge Detection
+# edges = cv2.Canny(
+#     image=img_blur, threshold1=100, threshold2=200
+# )  # Canny Edge Detection
+# # Display Canny Edge Detection Image
+# cv2.imshow("Canny Edge Detection", edges)
+# cv2.waitKey(0)
 
-warnings.filterwarnings("ignore")
+while True:
+    res = cv2.waitKey(0)
+    print(
+        "Waiting for ESC (27): You pressed %d (0x%x), LSB: %d (%s)"
+        % (res, res, res % 256, repr(chr(res % 256)) if res % 256 < 128 else "?")
+    )
+    if res == 27:
+        break
 
-# This is an IPython magic command to display in a notebook
-# %matplotlib inline
-
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-print(f"Using {device} for inference")
-
-resnet50 = torch.hub.load(
-    "NVIDIA/DeepLearningExamples:torchhub", "nvidia_resnet50", pretrained=True
-)
-utils = torch.hub.load(
-    "NVIDIA/DeepLearningExamples:torchhub", "nvidia_convnets_processing_utils"
-)
-
-resnet50.eval().to(device)
-
-uris = [
-    "http://images.cocodataset.org/test-stuff2017/000000024309.jpg",
-    "http://images.cocodataset.org/test-stuff2017/000000028117.jpg",
-    "http://images.cocodataset.org/test-stuff2017/000000006149.jpg",
-    "http://images.cocodataset.org/test-stuff2017/000000004954.jpg",
-]
-
-batch = torch.cat([utils.prepare_input_from_uri(uri) for uri in uris]).to(device)
-
-with torch.no_grad():
-    output = torch.nn.functional.softmax(resnet50(batch), dim=1)
-
-results = utils.pick_n_best(predictions=output, n=5)
-
-for uri, result in zip(uris, results):
-    img = Image.open(requests.get(uri, stream=True).raw)
-    img.thumbnail((256, 256), Image.LANCZOS)
-    plt.imshow(img)
-    plt.show()
-    print(result)
+cv2.destroyAllWindows()
