@@ -11,7 +11,7 @@ import cv2
 import os
 import numpy as np
 import copy
-
+import math
 
 # ModuleNotFoundError: No module named 'torch'
 # torch is installed in a venv rather than system-wide
@@ -31,6 +31,9 @@ import copy
 
 
 # (pyvenv-restart-python)
+
+TAU = np.pi * 2
+DEGREE = TAU / 360
 
 print(os.getcwd())
 os.chdir("/home/john/hobby-code/pytorch")
@@ -85,9 +88,10 @@ cv2.imshow("Canny Edge Detection GPT", gpt_edges)
 # how would I find straight lines in an image in opencv2
 
 
-lines = cv2.HoughLines(edges, 1, np.pi / 180, 150)
+lines = cv2.HoughLines(gpt_edges, 1, (TAU / 2) / 180, 150)
 
 hough_lines_img = copy.deepcopy(img)
+
 
 if lines is not None:
     for rho, theta in lines[:, 0]:
@@ -101,22 +105,28 @@ if lines is not None:
         x2 = int(x0 - 1000 * (-b))
         y2 = int(y0 - 1000 * (a))
 
+        # Check if the line is horizontal (if the angle theta is near 0 or pi)
+        if abs(theta - TAU / 4) < 10 * DEGREE or abs(theta - 3 / 4 * TAU) < 10 * DEGREE:
+            cv2.line(hough_lines_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
         # Draw the line on the original image
-        cv2.line(hough_lines_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
 
 cv2.imshow("Hough Lines", hough_lines_img)
 
 
 hough_lines_p = cv2.HoughLinesP(
-    edges, 1, np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10
+    gpt_edges, 1, (TAU / 2) / 180, threshold=50, minLineLength=10, maxLineGap=10
 )
 
 
 hough_lines_p_img = copy.deepcopy(img)
 if hough_lines_p is not None:
     for x1, y1, x2, y2 in hough_lines_p[:, 0]:
-        cv2.line(hough_lines_p_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        if (
+            abs(math.atan((y2 - y1) / (x2 - x1)) - 1 / 4 * TAU) < 4 * DEGREE
+            or abs(math.atan((y2 - y1) / (x2 - x1)) - 0 * TAU) < 4 * DEGREE
+        ):
+            cv2.line(hough_lines_p_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
 cv2.imshow("Hough Lines P", hough_lines_p_img)
 
