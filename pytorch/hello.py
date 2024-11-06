@@ -7,6 +7,10 @@
 import torch
 import validators
 import matplotlib
+import cv2
+import os
+import numpy as np
+
 
 # ModuleNotFoundError: No module named 'torch'
 # torch is installed in a venv rather than system-wide
@@ -26,8 +30,6 @@ import matplotlib
 
 
 # (pyvenv-restart-python)
-import cv2
-import os
 
 print(os.getcwd())
 os.chdir("/home/john/hobby-code/pytorch")
@@ -39,9 +41,10 @@ print(os.getcwd())
 
 img = cv2.imread("1nealclose+20.png")
 # # Convert to grayscale
-# img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-img_gray = cv2.imread("1nealclose+20.png", cv2.IMREAD_GRAYSCALE)
+# or this also works
+# img_gray = cv2.imread("1nealclose+20.png", cv2.IMREAD_GRAYSCALE)
 
 # Display original image
 cv2.imshow("Original", img)
@@ -52,18 +55,18 @@ cv2.imshow("Original", img)
 img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
 # img_blur = img_gray
 
-# cv2.imshow("Original Blur", img_blur)
+cv2.imshow("Original Blur", img_blur)
 
 # Sobel Edge Detection
 sobelx = cv2.Sobel(
     src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=0, ksize=5
 )  # Sobel Edge Detection on the X axis
-cv2.imshow("Sobel X", sobelx)
+# cv2.imshow("Sobel X", sobelx)
 
 sobely = cv2.Sobel(
     src=img_blur, ddepth=cv2.CV_64F, dx=0, dy=1, ksize=5
 )  # Sobel Edge Detection on the Y axis
-cv2.imshow("Sobel Y", sobely)
+# cv2.imshow("Sobel Y", sobely)
 
 
 # Canny Edge Detection
@@ -71,6 +74,32 @@ edges = cv2.Canny(
     image=img_blur, threshold1=100, threshold2=200
 )  # Canny Edge Detection
 cv2.imshow("Canny Edge Detection", edges)
+
+# GPT's version
+# Also works but there's more noise
+gpt_edges = cv2.Canny(img_blur, 50, 150, apertureSize=3)
+cv2.imshow("Canny Edge Detection GPT", gpt_edges)
+
+
+lines = cv2.HoughLines(gpt_edges, 1, np.pi / 180, 150)
+
+if lines is not None:
+    for rho, theta in lines[:, 0]:
+        # Calculate the line's start and end points
+        a = np.cos(theta)
+        b = np.sin(theta)
+        x0 = a * rho
+        y0 = b * rho
+        x1 = int(x0 + 1000 * (-b))
+        y1 = int(y0 + 1000 * (a))
+        x2 = int(x0 - 1000 * (-b))
+        y2 = int(y0 - 1000 * (a))
+
+        # Draw the line on the original image
+        cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+
+cv2.imshow("Detected Lines", img)
 
 
 while True:
