@@ -10,6 +10,7 @@ import matplotlib
 import cv2
 import os
 import numpy as np
+import copy
 
 
 # ModuleNotFoundError: No module named 'torch'
@@ -80,8 +81,13 @@ cv2.imshow("Canny Edge Detection", edges)
 gpt_edges = cv2.Canny(img_blur, 50, 150, apertureSize=3)
 cv2.imshow("Canny Edge Detection GPT", gpt_edges)
 
+# https://chatgpt.com/
+# how would I find straight lines in an image in opencv2
 
-lines = cv2.HoughLines(gpt_edges, 1, np.pi / 180, 150)
+
+lines = cv2.HoughLines(edges, 1, np.pi / 180, 150)
+
+hough_lines_img = copy.deepcopy(img)
 
 if lines is not None:
     for rho, theta in lines[:, 0]:
@@ -96,10 +102,23 @@ if lines is not None:
         y2 = int(y0 - 1000 * (a))
 
         # Draw the line on the original image
-        cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        cv2.line(hough_lines_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
 
-cv2.imshow("Detected Lines", img)
+cv2.imshow("Hough Lines", hough_lines_img)
+
+
+hough_lines_p = cv2.HoughLinesP(
+    edges, 1, np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10
+)
+
+
+hough_lines_p_img = copy.deepcopy(img)
+if hough_lines_p is not None:
+    for x1, y1, x2, y2 in hough_lines_p[:, 0]:
+        cv2.line(hough_lines_p_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+cv2.imshow("Hough Lines P", hough_lines_p_img)
 
 
 while True:
