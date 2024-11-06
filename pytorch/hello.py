@@ -65,22 +65,13 @@ sobely = cv2.Sobel(
 )  # Sobel Edge Detection on the Y axis
 cv2.imshow("Sobel Y", sobely)
 
-# sobelxy = cv2.Sobel(
-#     src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=4, ksize=5
-# )  # Combined X and Y Sobel Edge Detection
-# # cv2.imshow("SobelX Y using Sobel() function", sobelxy)
-
-# sobelxy = cv2.Sobel(
-#     src=img_blur, ddepth=cv2.CV_64F, dx=4, dy=1, ksize=5
-# )  # Combined X and Y Sobel Edge Detection
-# # cv2.imshow("SobelX Y using Sobel() function", sobelxy)
-
 
 # Canny Edge Detection
 edges = cv2.Canny(
     image=img_blur, threshold1=100, threshold2=200
 )  # Canny Edge Detection
 cv2.imshow("Canny Edge Detection", edges)
+
 
 while True:
     res = cv2.waitKey(0)
