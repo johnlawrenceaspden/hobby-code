@@ -406,7 +406,7 @@ alias gitkall='git fsck --lost-found | awk "{ print \$3 ; }" | xargs gitk --all'
 
 
 # GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/iqtest/ $HOME/cycling $HOME/cctool $HOME/solarflare2"
-GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/ankiexport"
+GITREPOLIST="$HOME/hobby-code/ $HOME/data $HOME/midsummer"
 
 function vcstatuses
 {
@@ -430,6 +430,7 @@ function vcstatuses
 alias vsync='vcstatuses && gitpullall && vcstatuses && gitpushall'
 alias vstat='vcstatuses'
 alias gg='git gui'
+alias gs='git status'
 
 function gitguiall
 {
