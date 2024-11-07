@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-# source ./bin/activate
-# pip install validators matplotlib torch requests
-#
+# python -m venv venv
+# source venv/bin/activate
+# pip install torch validators matplotlib opencv-python numpy requests
+# ./hello.py
+
 
 import torch
 import validators
