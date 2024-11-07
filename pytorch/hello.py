@@ -34,6 +34,7 @@ import math
 
 TAU = np.pi * 2
 DEGREE = TAU / 360
+TOL = 3 * DEGREE
 
 print(os.getcwd())
 os.chdir("/home/john/hobby-code/pytorch")
@@ -93,6 +94,10 @@ lines = cv2.HoughLines(gpt_edges, 1, (TAU / 2) / 180, 150)
 hough_lines_img = copy.deepcopy(img)
 
 
+def quasiparallel(theta, phi, tolerance):
+    return abs(theta - phi) < tolerance or abs(theta - TAU - phi) < tolerance
+
+
 if lines is not None:
     for rho, theta in lines[:, 0]:
         # Calculate the line's start and end points
@@ -105,10 +110,10 @@ if lines is not None:
         x2 = int(x0 - 1000 * (-b))
         y2 = int(y0 - 1000 * (a))
 
-        # Check if the line is horizontal (if the angle theta is near 0 or pi)
-        if abs(theta - TAU / 4) < 10 * DEGREE or abs(theta - 3 / 4 * TAU) < 10 * DEGREE:
+        # Check if the line is horizontal or vertical
+        if quasiparallel(theta, TAU / 4, TOL) or quasiparallel(theta, 0, TOL):
+            # Draw the line on the original image
             cv2.line(hough_lines_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        # Draw the line on the original image
 
 
 cv2.imshow("Hough Lines", hough_lines_img)
@@ -122,10 +127,8 @@ hough_lines_p = cv2.HoughLinesP(
 hough_lines_p_img = copy.deepcopy(img)
 if hough_lines_p is not None:
     for x1, y1, x2, y2 in hough_lines_p[:, 0]:
-        if (
-            abs(math.atan((y2 - y1) / (x2 - x1)) - 1 / 4 * TAU) < 4 * DEGREE
-            or abs(math.atan((y2 - y1) / (x2 - x1)) - 0 * TAU) < 4 * DEGREE
-        ):
+        theta = math.atan2((y2 - y1), (x2 - x1))
+        if quasiparallel(theta, TAU / 4, TOL) or quasiparallel(theta, 0, TOL):
             cv2.line(hough_lines_p_img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
 cv2.imshow("Hough Lines P", hough_lines_p_img)
