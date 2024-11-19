@@ -116,6 +116,8 @@
 
 ;; make the set-fill-column key, which I never use, go away and stop interfering with C-x C-f for find-file
 (global-set-key (kbd "C-x f") 'find-file)
+;; and similarly all I ever want is C-x b not C-x C-b so make both run the good command
+(global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
 ;; disable bell function
 ;(setq ring-bell-function 'ignore)
