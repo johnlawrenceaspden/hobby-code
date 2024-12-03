@@ -377,12 +377,12 @@
 (define-key global-map (kbd "C-x 8") 'swap-windows)
 
 
-(defun my-restart-python-console ()
-  "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloading modules even when they are changed"
-  (interactive)
-  (kill-process "Python")
-  (sleep-for 0.05)
-  (elpy-shell-send-region-or-buffer))
+;; (defun my-restart-python-console ()
+;;   "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloading modules even when they are changed"
+;;   (interactive)
+;;   (kill-process "Python")
+;;   (sleep-for 0.05)
+;;   (elpy-shell-send-region-or-buffer))
 
 
 ;; Clojure
@@ -509,9 +509,9 @@
 (global-auto-revert-mode)
 
 ;; i am going to regret this....
-(add-hook 'elpy-mode-hook (lambda ()
-                            (add-hook 'before-save-hook
-                                      'elpy-black-fix-code nil t)))
+;; (add-hook 'elpy-mode-hook (lambda ()
+;;                            (add-hook 'before-save-hook
+;;                                     'elpy-black-fix-code nil t))) 
 
 
 
