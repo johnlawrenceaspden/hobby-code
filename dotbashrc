@@ -476,7 +476,7 @@ alias hib='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspen
 #alias sus='xscreensaver-command -lock ; sudo pm-suspend'
 #alias sus='xscreensaver-command -lock ; systemctl suspend -i'
 #alias sus='date && xscreensaver-command -lock ; systemctl hybrid-sleep && date'
-alias sus='for i in {1..10}; do date; echo sleeping....$i ; xscreensaver-command -lock ; systemctl hybrid-sleep; date; sleep 60s; play -q -n synth 0.1 sin 880 vol 1; sleep 60s; echo and repeat...$i; done'
+alias sus='for i in {1..10}; do date; echo sleeping....$i ; xscreensaver-command -lock ; acpi -V | grep Battery; systemctl hybrid-sleep; date; sleep 60s; play -q -n synth 0.1 sin 880 vol 10; sleep 60s; echo and repeat...$i; done'
 #alias sus='xscreensaver-command -lock ; systemctl suspend'
 
 alias postmortem='diff /var/log/pm-suspend.log ~/pm-suspend.log >suspenddiff ; xxdiff successfulsuspenddiff suspenddiff'
