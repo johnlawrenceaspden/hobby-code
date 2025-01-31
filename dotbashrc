@@ -465,8 +465,7 @@ alias mgg="cd ~/midsummer && git gui &"
 
 alias e='~/bin/e.bash'
 alias eds='e ~/data/stuff.org'
-alias ets='e ~/data/timesheet.py'
-alias rts='~/data/timesheet.py'
+alias ets='e ~/midsummer/timesheet.py'
 
 
 # getting a bit paranoid about hibernate and suspend. Copy the suspend log file to home directory for easy diffing with the new version if it breaks
