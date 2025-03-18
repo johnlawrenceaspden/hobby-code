@@ -7,3 +7,5 @@
 	default = tracking
 [core]
 	excludesfile = /home/john/gitignore
+[difftool]
+	prompt = false
