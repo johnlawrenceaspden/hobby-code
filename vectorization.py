@@ -53,6 +53,7 @@ tensor_small = np.random.rand(10, 15, 2, 2)
 tensor_medium = np.random.rand(60, 50, 2, 2)
 tensor_large = np.random.rand(100, 200, 2, 2)
 tensor_vlarge = np.random.rand(1000, 1002, 2, 2)
+tensor_vvlarge = np.random.rand(4000, 4000, 2, 2)
 v = np.random.rand(2)  # 2D vector
 
 # Verify both functions produce the same result
@@ -72,6 +73,11 @@ print("Results match:", np.allclose(result_slow, result_fast))
 result_slow = vAvslow(tensor_vlarge, v)
 result_fast = vAv(tensor_vlarge, v)
 print("Results match:", np.allclose(result_slow, result_fast))
+
+result_slow = vAvslow(tensor_vvlarge, v)
+result_fast = vAv(tensor_vvlarge, v)
+print("Results match:", np.allclose(result_slow, result_fast))
+
 
 # Benchmark function
 def benchmark(func, tensor, v, name):
@@ -97,6 +103,10 @@ print("\nVLarge tensor benchmarks:")
 benchmark(vAvslow, tensor_vlarge, v, "vAvslow")
 benchmark(vAv, tensor_vlarge, v, "vAv")
 
+print("\nVVLarge tensor benchmarks:")
+benchmark(vAvslow, tensor_vvlarge, v, "vAvslow")
+benchmark(vAv, tensor_vvlarge, v, "vAv")
+
 
 
 # Calculate speedup
@@ -117,5 +127,6 @@ compare_speedup(tensor_small, v)
 compare_speedup(tensor_medium, v)
 compare_speedup(tensor_large, v)
 compare_speedup(tensor_vlarge, v)
+compare_speedup(tensor_vvlarge, v)
 
 
