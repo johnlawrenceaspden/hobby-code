@@ -458,6 +458,8 @@ alias dgg="cd ~/data && git gui &"
 alias hgg="cd ~/hobby-code && git gui &"
 alias agg="cd ~/ankiexport && git gui &"
 alias mgg="cd ~/midsummer && git gui &"
+alias mgk='cd ~/midsummer && gitk --all &'
+
 
 #alias cljmkclasspath='cd ~/hobby-code && lein classpath > LEIN_CLASSPATH && cd -'
 #alias cljnoport='LEIN_CLASSPATH=`cat ~/hobby-code/LEIN_CLASSPATH` && echo $LEIN_CLASSPATH && rlwrap java -classpath $LEIN_CLASSPATH clojure.main'
