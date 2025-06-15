@@ -5,9 +5,6 @@
 ;; (package-install-selected-packages)
 
 
-
-
-
 ;; Sometimes its as well to kill off all the compiled versions of packages and recompile them
 ;; e.g. when upgrading emacs
 ;; helpful things to do are:
@@ -19,14 +16,39 @@
 
 (require 'package)
 
-;; Add both archives, one at a time
+;; Add MELPA Stable and MELPA archives alongside the default GNU archive
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
+
+;; packages are normally enabled after this file has run, do it now instead
+;; then we can require as normal
+(package-initialize)
+;; don't do it twice
+(setq package-enable-at-startup nil) 
+
+
+;; Set archive priorities (Emacs 27+)
 ;; Prefer melpa-stable unless package is only available in melpa
 (setq package-archive-priorities
       '(("melpa-stable" . 10)
-        ("melpa" . 0)))
+        ("gnu"          . 5)
+        ("melpa"        . 0)))
+
+
+;; Bootstrap use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; Example: enable elpy using use-package
+(use-package elpy
+  :init
+  (elpy-enable))
+
 
 
 (custom-set-variables
@@ -43,19 +65,13 @@
                        elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(package-selected-packages
    '(ack bar-cursor bm browse-kill-ring cider clojure-mode clojure-mode-extra-font-locking
-         color-theme-modern ctrlf elpy eproject ess flycheck-rust folding ggtags helm helm-core
+         color-theme-modern ctrlf eproject ess flycheck-rust folding ggtags helm helm-core
          initsplit lsp-mode magit popup pylint realgud rust-mode seq session tabbar transpose-frame
          undo-tree))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
 ;; (package-install-selected-packages)
-
-;; packages are normally enabled after this file has run, do it now instead
-;; then we can require as normal
-(package-initialize)
-;; don't do it twice
-(setq package-enable-at-startup nil) 
 
 ;; start emacs server so that we can load files from the command line
 (server-start)
@@ -339,10 +355,6 @@
   (indent-region (point-min) (point-max)))
 
 
-;; without this, need to do elpy-mode for every python file
-(elpy-enable)
-
-
 ;; Swap windows with C-x 8
 ;; stolen from Steve Yegge at http://steve.yegge.googlepages.com/my-dot-emacs-file
 (defun swap-windows ()
@@ -502,10 +514,6 @@
 ;; nervously give this a try
 (global-auto-revert-mode)
 
-;; i am going to regret this....
-;; (add-hook 'elpy-mode-hook (lambda ()
-;;                            (add-hook 'before-save-hook
-;;                                     'elpy-black-fix-code nil t))) 
 
 
 
