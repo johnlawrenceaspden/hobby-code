@@ -1181,3 +1181,10 @@
 
 ;; can stop elpy using company for everything with this:
 ;;(customize-variable 'elpy-modules)
+
+(defun my-python-mode-setup ()
+  ;; Keybindings for indent shifting
+  (local-set-key (kbd "C-,") 'python-indent-shift-left)
+  (local-set-key (kbd "C-.") 'python-indent-shift-right))
+
+(add-hook 'python-mode-hook #'my-python-mode-setup)
