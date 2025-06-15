@@ -111,12 +111,9 @@
  '(compilation-search-path '(nil "~/Roof-Scan"))
  '(custom-enabled-themes '(gtk-ide))
  '(custom-safe-themes
-   '("cfc78b5d7914401997c8f4c9b446a90efa8966ebd8faa41ffb16b5c13a65e802" default))
+   '("b5cff93c3c6ed12d09ce827231b0f5d4925cfda018c9dcf93a2517ce3739e7f1" "cfc78b5d7914401997c8f4c9b446a90efa8966ebd8faa41ffb16b5c13a65e802" default))
  '(package-selected-packages
-   '(ack bar-cursor bm browse-kill-ring cider clojure-mode clojure-mode-extra-font-locking
-         color-theme-modern ctrlf eproject ess flycheck-rust folding ggtags helm helm-core
-         initsplit magit popup pylint realgud rust-mode seq session tabbar transpose-frame
-         undo-tree))
+   '( browse-kill-ring color-theme-modern ))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
