@@ -15,10 +15,19 @@
 ;; find ~/.emacs.d -name '*.elc' | xargs rm
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
 
+
+
 (require 'package)
 
-(add-to-list 'package-archives
-	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+;; Add both archives, one at a time
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; Prefer melpa-stable unless package is only available in melpa
+(setq package-archive-priorities
+      '(("melpa-stable" . 10)
+        ("melpa" . 0)))
+
 
 ;; There's some issue with not being able to connect to https archives
 ;; If you get this then replacing the defaults with http versions fixes it
