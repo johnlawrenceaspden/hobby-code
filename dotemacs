@@ -47,8 +47,19 @@
 ;; Example: enable elpy using use-package
 (use-package elpy
   :init
+  (setq elpy-modules
+        '(elpy-module-eldoc
+          ;; elpy-module-flymake ; <- removed or commented to disable flymake
+          elpy-module-pyvenv
+          elpy-module-highlight-indentation
+          elpy-module-yasnippet
+          elpy-module-django
+          elpy-module-sane-defaults))
   (elpy-enable))
 
+(use-package lsp-mode
+  :custom
+  (lsp-diagnostic-package :none))
 
 
 (custom-set-variables
@@ -60,13 +71,10 @@
  '(custom-enabled-themes '(gtk-ide))
  '(custom-safe-themes
    '("cfc78b5d7914401997c8f4c9b446a90efa8966ebd8faa41ffb16b5c13a65e802" default))
- '(elpy-modules
-   '(elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation
-                       elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(package-selected-packages
    '(ack bar-cursor bm browse-kill-ring cider clojure-mode clojure-mode-extra-font-locking
          color-theme-modern ctrlf eproject ess flycheck-rust folding ggtags helm helm-core
-         initsplit lsp-mode magit popup pylint realgud rust-mode seq session tabbar transpose-frame
+         initsplit magit popup pylint realgud rust-mode seq session tabbar transpose-frame
          undo-tree))
  '(python-shell-interpreter "python3"))
 
