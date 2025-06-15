@@ -21,18 +21,18 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 
-;; packages are normally enabled after this file has run, do it now instead
-;; then we can require as normal
+;; packages are normally enabled after this file has run, do it now instead 
+;; Set this before package-initialize to avoid double loading
+(setq package-enable-at-startup nil)
 (package-initialize)
-;; don't do it twice
-(setq package-enable-at-startup nil) 
+
 
 
 ;; Set archive priorities (Emacs 27+)
-;; Prefer melpa-stable unless package is only available in melpa
+;; Prefer gnu versions, then melpa-stable and then melpa for packages that aren't in either of the previous
 (setq package-archive-priorities
-      '(("melpa-stable" . 10)
-        ("gnu"          . 5)
+      '(("gnu"          . 15)
+        ("melpa-stable" . 10)
         ("melpa"        . 0)))
 
 
