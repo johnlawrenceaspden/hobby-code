@@ -34,11 +34,13 @@
 (setq use-package-always-ensure t)
 
 ;; Example: enable elpy using use-package
+
 (use-package elpy
   :init
   (setq elpy-modules
         '(elpy-module-eldoc
-          ;; elpy-module-flymake ; <- removed or commented to disable flymake
+          ;; elpy-module-flymake   ; disable flymake
+          ;; elpy-module-company   ; disable company-mode
           elpy-module-pyvenv
           elpy-module-highlight-indentation
           elpy-module-yasnippet
@@ -46,9 +48,26 @@
           elpy-module-sane-defaults))
   (elpy-enable))
 
+;; Attempt to banish the hated ghost of company mode by turning it off whenever elpy is activated.
+(add-hook 'elpy-mode-hook (lambda () (company-mode -1)))
+
+
 (use-package lsp-mode
   :custom
   (lsp-diagnostic-package :none))
+
+
+;; Disable Flycheck entirely
+(use-package flycheck
+  :ensure t
+  :init
+  (setq-default flycheck-disabled-checkers '(python-pylint python-flake8))
+  :config
+  (global-flycheck-mode -1))  ;; turn off globally
+
+;; And disable flycheck specifically in elpy or lsp buffers, because one cannot be too careful and these fucking things keep turning it on
+(add-hook 'elpy-mode-hook (lambda () (flycheck-mode -1)))
+(add-hook 'lsp-mode-hook (lambda () (flycheck-mode -1)))
 
 
 
