@@ -48,8 +48,8 @@
           ;; elpy-module-company   ; disable company-mode
           elpy-module-pyvenv
           elpy-module-highlight-indentation
-          elpy-module-yasnippet
-          elpy-module-django
+          ;; elpy-module-yasnippet
+          ;; elpy-module-django
           elpy-module-sane-defaults))
   (elpy-enable))
 
