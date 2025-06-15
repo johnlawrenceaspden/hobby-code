@@ -65,10 +65,11 @@
                        elpy-module-yasnippet elpy-module-django
                        elpy-module-sane-defaults))
  '(package-selected-packages
-   '(ack browse-kill-ring cider clojure-mode
+   '(ack bar-cursor bm browse-kill-ring cider clojure-mode
          clojure-mode-extra-font-locking color-theme-modern ctrlf elpy
-         ess flycheck-rust ggtags lsp-mode magit pylint realgud
-         rust-mode seq transpose-frame undo-tree))
+         eproject ess flycheck-rust folding ggtags helm helm-core
+         initsplit lsp-mode magit popup pylint realgud rust-mode seq
+         session tabbar transpose-frame undo-tree))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
