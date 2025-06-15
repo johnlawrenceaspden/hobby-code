@@ -54,22 +54,15 @@
  '(compilation-search-path '(nil "~/Roof-Scan"))
  '(custom-enabled-themes '(gtk-ide))
  '(custom-safe-themes
-   '("5f4dfda04fbf7fd55228266c8aab73953d3087cea7fd06dd7f8ff1e4a497c739"
-     "39a854967792547c704cbff8ad4f97429f77dfcf7b3b4d2a62679ecd34b608da"
-     "fe349b21bb978bb1f1f2db05bc87b2c6d02f1a7fe3f27584cd7b6fbf8e53391a"
-     "b5cff93c3c6ed12d09ce827231b0f5d4925cfda018c9dcf93a2517ce3739e7f1"
-     default))
+   '("cfc78b5d7914401997c8f4c9b446a90efa8966ebd8faa41ffb16b5c13a65e802" default))
  '(elpy-modules
-   '(elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv
-                       elpy-module-highlight-indentation
-                       elpy-module-yasnippet elpy-module-django
-                       elpy-module-sane-defaults))
+   '(elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation
+                       elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(package-selected-packages
-   '(ack bar-cursor bm browse-kill-ring cider clojure-mode
-         clojure-mode-extra-font-locking color-theme-modern ctrlf elpy
-         eproject ess flycheck-rust folding ggtags helm helm-core
-         initsplit lsp-mode magit popup pylint realgud rust-mode seq
-         session tabbar transpose-frame undo-tree))
+   '(ack bar-cursor bm browse-kill-ring cider clojure-mode clojure-mode-extra-font-locking
+         color-theme-modern ctrlf elpy eproject ess flycheck-rust folding ggtags helm helm-core
+         initsplit lsp-mode magit popup pylint realgud rust-mode seq session tabbar transpose-frame
+         undo-tree))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
@@ -84,22 +77,7 @@
 ;; start emacs server so that we can load files from the command line
 (server-start)
 
-;; install package color-theme-modern
-(setq custom-safe-themes t)
-(load-theme 'gtk-ide t)
 
-
-;; ;;emacs color themes are in the package emacs-goodies-el on ubuntu
-;;(require 'color-theme)
-;;(color-theme-initialize)
-;; ;;here are the ones I find usable
-;; ;(color-theme-billw)
-;;(color-theme-gtk-ide)
-;; ;(color-theme-katester)
-;; ;(color-theme-midnight)
-;; ;(color-theme-retro-green)
-;; ;(color-theme-retro-orange)
-;; ;(color-theme-scintilla)
 
 ;;lisp editing is better with flashing brackets
 (show-paren-mode)
