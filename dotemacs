@@ -1,32 +1,13 @@
-;; ; -*- mode: lisp-interaction; -*-
+;; disable annoying startup things
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-buffer-menu t)
 
-;; To reinstall packages, use
-;; (package-refresh-contents)
-;; (package-install-selected-packages)
-
-
-;; Sometimes its as well to kill off all the compiled versions of packages and recompile them
-;; e.g. when upgrading emacs
-;; helpful things to do are:
-;; find ~/.emacs.d -name '*.elc'
-;; find ~/.emacs.d -name '*.elc' | xargs rm
-;; (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
-
-
-
+;; Add the melpa package archives, using the most stable versions of things before bleeding edge versions if possible
 (require 'package)
 
 ;; Add MELPA Stable and MELPA archives alongside the default GNU archive
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-
-;; packages are normally enabled after this file has run, do it now instead 
-;; Set this before package-initialize to avoid double loading
-(setq package-enable-at-startup nil)
-(package-initialize)
-
-
 
 ;; Set archive priorities (Emacs 27+)
 ;; Prefer gnu versions, then melpa-stable and then melpa for packages that aren't in either of the previous
@@ -34,6 +15,14 @@
       '(("gnu"          . 15)
         ("melpa-stable" . 10)
         ("melpa"        . 0)))
+
+
+
+
+;; packages are normally enabled after this file has run, do it now instead 
+;; Set this before package-initialize to avoid double loading
+(setq package-enable-at-startup nil)
+(package-initialize)
 
 
 ;; Bootstrap use-package
@@ -60,6 +49,34 @@
 (use-package lsp-mode
   :custom
   (lsp-diagnostic-package :none))
+
+
+
+
+
+
+;; use-package is the preferred way of installing add-on packages these days,
+;; trying it for elpy and lsp, but lots of other things are loaded below the old way with package-selected-packages
+
+;; To reinstall packages, use
+;; (package-refresh-contents)
+;; (package-install-selected-packages)
+
+
+;; Sometimes its as well to kill off all the compiled versions of packages and recompile them
+;; e.g. when upgrading emacs
+;; helpful things to do are:
+;; find ~/.emacs.d -name '*.elc'
+;; find ~/.emacs.d -name '*.elc' | xargs rm
+;; (byte-recompile-directory (expand-file-name "~/.emacs.d/elpa") 0)
+
+
+
+
+
+
+
+
 
 
 (custom-set-variables
