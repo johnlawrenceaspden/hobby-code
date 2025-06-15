@@ -465,10 +465,9 @@
 ;; A function to make python debug statements
 ;; Select the variable you want with point at the start, and then do M-x python-debug-selection and it will turn into
 ;; print(f"variable {variable}")
-(fset 'python-debug-selection (kmacro "M-w p r i n t ( f \" Y <backspace> C-y SPC { C-e } \" )"))
 
-
-
+(fset 'python-debug-selection
+   (kbd "M-w p r i n t ( f \" C-y SPC { C-e } \" )"))
 
 ;; ;; turn off ESS's wretched perversion of the underscore key and the bastard comment bastard thing
 ;; (add-hook 'ess-mode-hook
