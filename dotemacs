@@ -17,6 +17,7 @@
         ("melpa"        . 0)))
 
 
+(set-face-foreground 'font-lock-doc-face "grey50")
 
 
 ;; packages are normally enabled after this file has run, do it now instead 
@@ -55,6 +56,8 @@
 
 ;; Attempt to banish the hated ghost of company mode by turning it off whenever elpy is activated.
 (add-hook 'elpy-mode-hook (lambda () (company-mode -1)))
+
+(setq company-idle-delay nil)
 
 
 (use-package lsp-mode
