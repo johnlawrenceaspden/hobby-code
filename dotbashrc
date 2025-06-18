@@ -457,8 +457,9 @@ function gitpullall
 alias dgg="cd ~/data && git gui &"
 alias hgg="cd ~/hobby-code && git gui &"
 alias agg="cd ~/ankiexport && git gui &"
-alias mgg="cd ~/midsummer && git gui &"
-alias mgk='cd ~/midsummer && gitk --all &'
+alias mgg='echo "cd ~/midsummer && git gui & or john-things?"'
+#alias mgg="cd ~/midsummer && git gui &"
+#alias mgk='cd ~/midsummer && gitk --all &'
 
 
 #alias cljmkclasspath='cd ~/hobby-code && lein classpath > LEIN_CLASSPATH && cd -'
