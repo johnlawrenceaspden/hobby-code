@@ -1,4 +1,4 @@
-# ;; -*- mode: emacs-lisp; -*-
+;; -*- mode: emacs-lisp; -*-
 ;; disable annoying startup things
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-buffer-menu t)
