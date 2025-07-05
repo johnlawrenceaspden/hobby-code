@@ -36,5 +36,5 @@ if $USE_CLIENT ; then
     emacsclient --no-wait "$@";
 else
     echo "starting emacs: make tea...";
-    emacs --geometry 100x100 --fullscreen --no-splash "$@" & disown;
+    emacs --geometry 100x30 --fullscreen --no-splash "$@" & disown;
 fi
