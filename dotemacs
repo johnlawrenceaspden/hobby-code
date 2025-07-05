@@ -116,8 +116,7 @@
  '(custom-enabled-themes '(gtk-ide))
  '(custom-safe-themes
    '("b5cff93c3c6ed12d09ce827231b0f5d4925cfda018c9dcf93a2517ce3739e7f1" "cfc78b5d7914401997c8f4c9b446a90efa8966ebd8faa41ffb16b5c13a65e802" default))
- '(package-selected-packages
-   '( browse-kill-ring color-theme-modern ))
+ '(package-selected-packages '(browse-kill-ring color-theme-modern))
  '(python-shell-interpreter "python3"))
 
 ;; you can install all the packages in package-selected-packages with
