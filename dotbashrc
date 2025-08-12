@@ -481,13 +481,13 @@ alias hib='date; pkill firefox; acpi -V ; cp /var/log/pm-suspend.log ~/pm-suspen
 
 if [[ "$HOSTNAME" == "dell-3520" ]]; then
     # hybrid-sleep with loop and beeping, since the 3520 is prone to coming awake in my nerd-bag due to its plastic case
-    alias sus='for i in {1..10}; do date; echo sleeping....$i ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl hybrid-sleep; date; acpi -V | grep Battery; sleep 60s; play -q -n synth 0.1 sin 880 vol 10; sleep 60s; echo and repeat...$i; done'
+    alias sus='for i in {1..10}; do date; echo sleeping....$i ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl -i hybrid-sleep; date; acpi -V | grep Battery; sleep 60s; play -q -n synth 0.1 sin 880 vol 10; sleep 60s; echo and repeat...$i; done'
 elif [[ "$HOSTNAME" == "dell-3530" ]]; then
     # ordinary hybrid-sleep with battery info
-    alias sus='date; echo sleeping.... ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl hybrid-sleep; date; acpi -V | grep Battery'
+    alias sus='date; echo sleeping.... ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl -i hybrid-sleep; date; acpi -V | grep Battery'
 else
     # simpler suspend command that works on all machines, even without hybrid sleep ability
-    alias sus='xscreensaver-command -lock ; systemctl suspend'
+    alias sus='xscreensaver-command -lock ; systemctl -i suspend'
 fi
 
 
