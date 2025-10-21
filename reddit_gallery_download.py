@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+# example usage
+# python ~/hobby-code/reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/" asteroid_images
+
+
+
+
 import requests
 import os
 import sys
