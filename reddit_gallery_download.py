@@ -9,6 +9,7 @@
 import requests
 import os
 import sys
+import urllib.parse
 
 def get_gallery_image_urls(reddit_post_url):
     """
@@ -59,10 +60,21 @@ if __name__ == "__main__":
         print("Usage: reddit_gallery_download.py <reddit_post_url> [output_folder]")
         sys.exit(1)
     post_url = sys.argv[1]
-    outdir = sys.argv[2] if len(sys.argv) >= 3 else "images"
+    # outdir = sys.argv[2] if len(sys.argv) >= 3 else "images"
+    if len(sys.argv) >= 3:
+        outdir = sys.argv[2]
+    else:
+        parsed = urllib.parse.urlparse(post_url)
+        # Get last non-empty part of the path
+        parts = [p for p in parsed.path.split("/") if p]
+        outdir = parts[-1] if parts else "images"
+
     urls = get_gallery_image_urls(post_url)
     if not urls:
         print("No images found.")
     else:
         download_images(urls, outdir)
         print("Done. Downloaded", len(urls), "images to", outdir)
+
+
+
