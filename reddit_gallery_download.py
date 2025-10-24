@@ -20,7 +20,7 @@ def get_gallery_image_urls(reddit_post_url):
         reddit_post_url += "/"
     json_url = reddit_post_url + ".json"
     headers = {
-        "User-Agent": "gallery-downloader-script/0.1"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.90 Safari/537.36"
     }
     resp = requests.get(json_url, headers=headers)
     resp.raise_for_status()
