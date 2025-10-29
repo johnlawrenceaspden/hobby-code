@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
+"""
+Reddit Gallery Downloader — robust, resumable, and user-friendly.
 
-# example usage
-# python ~/hobby-code/reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/" asteroid_images
+Usage:
+    python reddit_gallery_download.py "https://www.reddit.com/gallery/1occk95"
+    python reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/" asteroid_images
+"""
 
 import requests
 import os
@@ -9,18 +13,46 @@ import sys
 import urllib.parse
 import time
 
+
+# ----------------------------- Core Logic -----------------------------------
+
 def get_gallery_image_urls(reddit_post_url):
     """
     Given a Reddit post URL, fetch JSON and extract full image URLs if it’s a gallery.
+    Handles both /r/... and /gallery/... URLs.
     """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/118.0.5993.90 Safari/537.36"
+        )
+    }
+
+    # --- Handle /gallery/<id> shortcuts ---
+    if "/gallery/" in reddit_post_url:
+        try:
+            # Extract post ID (e.g., 1occk95)
+            parts = reddit_post_url.strip("/").split("/")
+            post_id = parts[-1] if parts[-1] else parts[-2]
+            api_url = f"https://api.reddit.com/api/info/?id=t3_{post_id}"
+            resp = requests.get(api_url, headers=headers, timeout=10)
+            resp.raise_for_status()
+            data = resp.json()
+            post_data = data["data"]["children"][0]["data"]
+            permalink = post_data.get("permalink")
+            if permalink:
+                reddit_post_url = urllib.parse.urljoin("https://www.reddit.com", permalink)
+                print(f"↪️  Resolved gallery link to: {reddit_post_url}")
+            else:
+                print("⚠️  Could not resolve permalink, continuing with original URL.")
+        except Exception as e:
+            print(f"⚠️  Error resolving /gallery/ link via API: {e}")
+
     if not reddit_post_url.endswith("/"):
         reddit_post_url += "/"
+
     json_url = reddit_post_url + ".json"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/118.0.5993.90 Safari/537.36"
-    }
 
     try:
         resp = requests.get(json_url, headers=headers, timeout=10)
@@ -37,7 +69,6 @@ def get_gallery_image_urls(reddit_post_url):
         return [], None, None
 
     subreddit = post.get("subreddit", "unknown_subreddit")
-    post_name = post.get("name") or post.get("id")
     post_title_slug = (
         post.get("title", "")
         .strip()
@@ -47,7 +78,7 @@ def get_gallery_image_urls(reddit_post_url):
         [:80]
     )
 
-    # Handle galleries
+    # --- Handle galleries ---
     if "media_metadata" in post:
         media = post["media_metadata"]
         image_urls = []
@@ -56,15 +87,17 @@ def get_gallery_image_urls(reddit_post_url):
             ext = mime.split("/")[-1].replace("jpeg", "jpg")
             url = f"https://i.redd.it/{media_id}.{ext}"
             image_urls.append(url)
-        return image_urls, subreddit, post_name or post_title_slug
+        return image_urls, subreddit, post_title_slug
 
-    # Handle single-image posts
+    # --- Handle single-image posts ---
     if "url_overridden_by_dest" in post and post["url_overridden_by_dest"].startswith("https://i.redd.it/"):
-        return [post["url_overridden_by_dest"]], subreddit, post_name or post_title_slug
+        return [post["url_overridden_by_dest"]], subreddit, post_title_slug
 
     print("ℹ️ No gallery or image found in post.")
-    return [], subreddit, post_name or post_title_slug
+    return [], subreddit, post_title_slug
 
+
+# -------------------------- Download Helpers --------------------------------
 
 def safe_download(url, outdir, retries=3):
     """Download a single image with resume support."""
@@ -91,7 +124,11 @@ def safe_download(url, outdir, retries=3):
 
     for attempt in range(1, retries + 1):
         try:
-            headers["Range"] = f"bytes={downloaded_size}-" if downloaded_size > 0 else None
+            if downloaded_size > 0:
+                headers["Range"] = f"bytes={downloaded_size}-"
+            else:
+                headers.pop("Range", None)
+
             print(f"⬇️  Downloading {fname} (attempt {attempt})... starting at {downloaded_size} bytes")
 
             with requests.get(url, headers=headers, stream=True, timeout=30) as r:
@@ -139,30 +176,29 @@ def download_images(urls, outdir="images"):
             success += 1
     print(f"✅ Done. Successfully downloaded {success}/{len(urls)} images.")
 
+
+# ------------------------------ Entry Point ---------------------------------
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: reddit_gallery_download.py <reddit_post_url> [output_folder]")
         sys.exit(1)
 
     post_url = sys.argv[1]
-    urls, subreddit, _ = get_gallery_image_urls(post_url)
+    urls, subreddit, post_title_slug = get_gallery_image_urls(post_url)
 
-    # Determine post_name as the last non-empty part of the path
-    parsed = urllib.parse.urlparse(post_url)
-    path_parts = [p for p in parsed.path.split("/") if p]
-    post_name = path_parts[-1] if path_parts else "post"
+    if not subreddit:
+        subreddit = "unknown_subreddit"
+    if not post_title_slug:
+        post_title_slug = "post"
 
     if len(sys.argv) >= 3:
         outdir = sys.argv[2]
     else:
-        outdir = os.path.join(subreddit, post_name)
+        outdir = os.path.join(subreddit, post_title_slug)
 
     if not urls:
         print("No images found.")
         sys.exit(1)
 
     download_images(urls, outdir)
-
-
-
-
