@@ -130,27 +130,23 @@ if __name__ == "__main__":
         sys.exit(1)
 
     post_url = sys.argv[1]
-    urls, subreddit, postname = get_gallery_image_urls(post_url)
+    urls, subreddit, _ = get_gallery_image_urls(post_url)
+
+    # Determine post_name as the last non-empty part of the path
+    parsed = urllib.parse.urlparse(post_url)
+    path_parts = [p for p in parsed.path.split("/") if p]
+    post_name = path_parts[-1] if path_parts else "post"
 
     if len(sys.argv) >= 3:
         outdir = sys.argv[2]
     else:
-        # Build directory as subreddit/postname
-        if subreddit and postname:
-            outdir = os.path.join(subreddit, postname)
-        else:
-            parsed = urllib.parse.urlparse(post_url)
-            parts = [p for p in parsed.path.split("/") if p]
-            outdir = os.path.join(parts[1], parts[-1]) if len(parts) >= 2 else "images"
+        outdir = os.path.join(subreddit, post_name)
 
     if not urls:
         print("No images found.")
         sys.exit(1)
 
     download_images(urls, outdir)
-
-
-
 
 
 
