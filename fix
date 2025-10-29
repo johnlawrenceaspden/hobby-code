@@ -36,9 +36,7 @@ fi
 
 # if redshift-gtk is not running then add it too
 echo "starting redshift-gtk"
-pgrep redshift
-if [[ $? != 0 ]] ; then
-    redshift-gtk -l 52.2:0.11 -t 6500:2000 &
-else
-    echo "redshift already running" ;
-fi
+pkill redshift
+redshift-gtk -l manual:52.2:0.11 -t 6500:3500 &
+#redshift-gtk -l manual:52.2053:0.1218 -t 5500:3500 -g 0.8 -v &
+
