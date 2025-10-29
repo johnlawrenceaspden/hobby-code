@@ -27,14 +27,25 @@ def get_gallery_image_urls(reddit_post_url):
         resp.raise_for_status()
         data = resp.json()
     except Exception as e:
-        print("Error fetching Reddit JSON:", e)
-        return []
+        print("❌ Error fetching Reddit JSON:", e)
+        return [], None, None
 
     try:
         post = data[0]["data"]["children"][0]["data"]
     except (KeyError, IndexError, TypeError):
-        print("Unexpected JSON structure — cannot find post data.")
-        return []
+        print("❌ Unexpected JSON structure — cannot find post data.")
+        return [], None, None
+
+    subreddit = post.get("subreddit", "unknown_subreddit")
+    post_name = post.get("name") or post.get("id")
+    post_title_slug = (
+        post.get("title", "")
+        .strip()
+        .replace(" ", "_")
+        .replace("/", "_")
+        .replace("\\", "_")
+        [:80]
+    )
 
     # Handle galleries
     if "media_metadata" in post:
@@ -45,14 +56,14 @@ def get_gallery_image_urls(reddit_post_url):
             ext = mime.split("/")[-1].replace("jpeg", "jpg")
             url = f"https://i.redd.it/{media_id}.{ext}"
             image_urls.append(url)
-        return image_urls
+        return image_urls, subreddit, post_name or post_title_slug
 
     # Handle single-image posts
     if "url_overridden_by_dest" in post and post["url_overridden_by_dest"].startswith("https://i.redd.it/"):
-        return [post["url_overridden_by_dest"]]
+        return [post["url_overridden_by_dest"]], subreddit, post_name or post_title_slug
 
-    print("No gallery or image found in post.")
-    return []
+    print("ℹ️ No gallery or image found in post.")
+    return [], subreddit, post_name or post_title_slug
 
 def safe_download(url, outdir, retries=3):
     """Download a single image, skipping if already complete."""
@@ -70,17 +81,17 @@ def safe_download(url, outdir, retries=3):
                 expected_size = int(head.headers["Content-Length"])
                 actual_size = os.path.getsize(path)
                 if actual_size == expected_size:
-                    print(f"Skipping {fname} (already downloaded, {actual_size} bytes).")
+                    print(f"✅ Skipping {fname} (already downloaded, {actual_size} bytes).")
                     return True
                 else:
-                    print(f"File {fname} incomplete ({actual_size}/{expected_size}), re-downloading.")
+                    print(f"⚠️  File {fname} incomplete ({actual_size}/{expected_size}), re-downloading.")
         except Exception as e:
-            print(f"Could not verify existing file {fname}: {e}")
+            print(f"⚠️  Could not verify existing file {fname}: {e}")
 
     # Attempt download with retries
     for attempt in range(1, retries + 1):
         try:
-            print(f"Downloading {fname} (attempt {attempt})...")
+            print(f"⬇️  Downloading {fname} (attempt {attempt})...")
             with requests.get(url, headers=headers, stream=True, timeout=30) as r:
                 r.raise_for_status()
                 total_size = int(r.headers.get("Content-Length", 0))
@@ -91,18 +102,18 @@ def safe_download(url, outdir, retries=3):
                             f.write(chunk)
                 # Verify file size
                 if total_size > 0 and os.path.getsize(tmp_path) != total_size:
-                    print(f"Incomplete download for {fname}, retrying...")
+                    print(f"❌ Incomplete download for {fname}, retrying...")
                     continue
                 os.rename(tmp_path, path)
-                print(f"Finished {fname} ({os.path.getsize(path)} bytes)")
+                print(f"✅ Finished {fname} ({os.path.getsize(path)} bytes)")
                 return True
         except KeyboardInterrupt:
-            print("\nInterrupted by user — exiting cleanly.")
+            print("\n🛑 Interrupted by user — exiting cleanly.")
             sys.exit(0)
         except Exception as e:
-            print(f"Error downloading {fname}: {e}")
+            print(f"❌ Error downloading {fname}: {e}")
             time.sleep(2)
-    print(f"Failed to download {fname} after {retries} attempts.")
+    print(f"❌ Failed to download {fname} after {retries} attempts.")
     return False
 
 def download_images(urls, outdir="images"):
@@ -111,7 +122,7 @@ def download_images(urls, outdir="images"):
     for url in urls:
         if safe_download(url, outdir):
             success += 1
-    print(f"Done. Successfully downloaded {success}/{len(urls)} images.")
+    print(f"✅ Done. Successfully downloaded {success}/{len(urls)} images.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -119,18 +130,27 @@ if __name__ == "__main__":
         sys.exit(1)
 
     post_url = sys.argv[1]
+    urls, subreddit, postname = get_gallery_image_urls(post_url)
+
     if len(sys.argv) >= 3:
         outdir = sys.argv[2]
     else:
-        parsed = urllib.parse.urlparse(post_url)
-        parts = [p for p in parsed.path.split("/") if p]
-        outdir = parts[-1] if parts else "images"
+        # Build directory as subreddit/postname
+        if subreddit and postname:
+            outdir = os.path.join(subreddit, postname)
+        else:
+            parsed = urllib.parse.urlparse(post_url)
+            parts = [p for p in parsed.path.split("/") if p]
+            outdir = os.path.join(parts[1], parts[-1]) if len(parts) >= 2 else "images"
 
-    urls = get_gallery_image_urls(post_url)
     if not urls:
         print("No images found.")
         sys.exit(1)
+
     download_images(urls, outdir)
+
+
+
 
 
 
