@@ -65,56 +65,71 @@ def get_gallery_image_urls(reddit_post_url):
     print("ℹ️ No gallery or image found in post.")
     return [], subreddit, post_name or post_title_slug
 
+
 def safe_download(url, outdir, retries=3):
-    """Download a single image, skipping if already complete."""
+    """Download a single image with resume support."""
     os.makedirs(outdir, exist_ok=True)
     fname = url.split("/")[-1]
     path = os.path.join(outdir, fname)
+    tmp_path = path + ".part"
 
     headers = {"User-Agent": "RedditDownloader/1.0"}
 
-    # Check existing file
+    # Check if file already complete
     if os.path.exists(path):
-        try:
-            head = requests.head(url, headers=headers, timeout=10)
-            if head.status_code == 200 and "Content-Length" in head.headers:
-                expected_size = int(head.headers["Content-Length"])
-                actual_size = os.path.getsize(path)
-                if actual_size == expected_size:
-                    print(f"✅ Skipping {fname} (already downloaded, {actual_size} bytes).")
-                    return True
-                else:
-                    print(f"⚠️  File {fname} incomplete ({actual_size}/{expected_size}), re-downloading.")
-        except Exception as e:
-            print(f"⚠️  Could not verify existing file {fname}: {e}")
+        head = requests.head(url, headers=headers, timeout=10)
+        if head.status_code == 200 and "Content-Length" in head.headers:
+            expected_size = int(head.headers["Content-Length"])
+            actual_size = os.path.getsize(path)
+            if actual_size == expected_size:
+                print(f"✅ Skipping {fname} (already complete, {actual_size} bytes).")
+                return True
+        print(f"⚠️  File {fname} exists but is incomplete, resuming...")
 
-    # Attempt download with retries
+    # Determine how much we already have
+    downloaded_size = os.path.getsize(tmp_path) if os.path.exists(tmp_path) else 0
+
     for attempt in range(1, retries + 1):
         try:
-            print(f"⬇️  Downloading {fname} (attempt {attempt})...")
+            headers["Range"] = f"bytes={downloaded_size}-" if downloaded_size > 0 else None
+            print(f"⬇️  Downloading {fname} (attempt {attempt})... starting at {downloaded_size} bytes")
+
             with requests.get(url, headers=headers, stream=True, timeout=30) as r:
-                r.raise_for_status()
-                total_size = int(r.headers.get("Content-Length", 0))
-                tmp_path = path + ".part"
-                with open(tmp_path, "wb") as f:
+                if r.status_code not in (200, 206):
+                    print(f"❌ Server did not support resume (status {r.status_code}). Restarting download.")
+                    downloaded_size = 0
+                    open(tmp_path, "wb").close()  # reset
+                    continue
+
+                mode = "ab" if downloaded_size > 0 else "wb"
+                total_size = int(r.headers.get("Content-Length", 0)) + downloaded_size
+                with open(tmp_path, mode) as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-                # Verify file size
-                if total_size > 0 and os.path.getsize(tmp_path) != total_size:
-                    print(f"❌ Incomplete download for {fname}, retrying...")
-                    continue
-                os.rename(tmp_path, path)
-                print(f"✅ Finished {fname} ({os.path.getsize(path)} bytes)")
-                return True
+
+            final_size = os.path.getsize(tmp_path)
+            if total_size > 0 and final_size < total_size:
+                print(f"⚠️  Incomplete ({final_size}/{total_size}), retrying...")
+                downloaded_size = final_size
+                time.sleep(2)
+                continue
+
+            os.rename(tmp_path, path)
+            print(f"✅ Finished {fname} ({final_size} bytes)")
+            return True
+
         except KeyboardInterrupt:
             print("\n🛑 Interrupted by user — exiting cleanly.")
             sys.exit(0)
         except Exception as e:
             print(f"❌ Error downloading {fname}: {e}")
+            downloaded_size = os.path.getsize(tmp_path) if os.path.exists(tmp_path) else 0
             time.sleep(2)
+
     print(f"❌ Failed to download {fname} after {retries} attempts.")
     return False
+
 
 def download_images(urls, outdir="images"):
     print(f"📁 Downloading {len(urls)} image(s) to '{outdir}'...")
