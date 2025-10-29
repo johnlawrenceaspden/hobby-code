@@ -3,7 +3,8 @@ import requests
 import time
 import sys
 
-SUBREDDIT = "dalle2"
+SUBREDDIT = sys.argv[1] if len(sys.argv) > 1 else "dalle2"
+
 LIMIT = 100   # posts per page (max 100)
 after = None
 count = 0
