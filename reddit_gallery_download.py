@@ -177,7 +177,46 @@ def download_images(urls, outdir="images"):
     print(f"✅ Done. Successfully downloaded {success}/{len(urls)} images.")
 
 
+
+
 # ------------------------------ Entry Point ---------------------------------
+
+def resolve_reddit_post_from_image(image_url):
+    """
+    Try to find the Reddit post that contains a given i.redd.it image.
+    Returns (subreddit, title_slug) if found, else (direct_links, image_id).
+    """
+    try:
+        image_id = os.path.splitext(os.path.basename(image_url))[0]
+        headers = {"User-Agent": "RedditDownloader/1.0"}
+
+        # Use Reddit search API to find the post that references this image
+        search_url = f"https://api.reddit.com/search/?q=url:{image_id}&restrict_sr=0"
+        resp = requests.get(search_url, headers=headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+
+        children = data.get("data", {}).get("children", [])
+        if not children:
+            return "direct_links", image_id
+
+        post = children[0]["data"]
+        subreddit = post.get("subreddit", "direct_links")
+        title_slug = (
+            post.get("title", "")
+            .strip()
+            .replace(" ", "_")
+            .replace("/", "_")
+            .replace("\\", "_")
+            [:80]
+        )
+
+        return subreddit, title_slug
+    except Exception as e:
+        print(f"⚠️  Could not resolve subreddit/title for {image_url}: {e}")
+        image_id = os.path.splitext(os.path.basename(image_url))[0]
+        return "direct_links", image_id
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -185,7 +224,13 @@ if __name__ == "__main__":
         sys.exit(1)
 
     post_url = sys.argv[1]
-    urls, subreddit, post_title_slug = get_gallery_image_urls(post_url)
+
+    # --- Handle direct image URLs (i.redd.it) ---
+    if post_url.startswith("https://i.redd.it/"):
+        urls = [post_url]
+        subreddit, post_title_slug = resolve_reddit_post_from_image(post_url)
+    else:
+        urls, subreddit, post_title_slug = get_gallery_image_urls(post_url)
 
     if not subreddit:
         subreddit = "unknown_subreddit"
@@ -202,3 +247,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     download_images(urls, outdir)
+
+
+
+
