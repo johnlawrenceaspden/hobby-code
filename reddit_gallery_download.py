@@ -3,6 +3,8 @@
 Reddit Gallery Downloader — robust, resumable, and user-friendly.
 
 Usage:
+    python reddit_gallery_download.py https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
+    python reddit_gallery_download.py https://i.redd.it/o9fu9uw82rvf1.png
     python reddit_gallery_download.py "https://www.reddit.com/gallery/1occk95"
     python reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/" asteroid_images
 """
@@ -219,8 +221,6 @@ def resolve_reddit_post_from_image(image_url):
 
 from urllib.parse import urlparse, parse_qs, unquote
 
-# ------------------------------ Entry Point ---------------------------------
-
 def normalize_media_redirect(url):
     """If URL is a Reddit media redirect (/media?url=...), extract the real link."""
     parsed = urlparse(url)
@@ -233,17 +233,22 @@ def normalize_media_redirect(url):
     return url
 
 
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: reddit_gallery_download.py <reddit_post_url> [output_folder]")
         sys.exit(1)
 
+    # --- Always normalize first ---
     post_url = normalize_media_redirect(sys.argv[1])
 
     # --- Handle direct image URLs (i.redd.it) ---
     if post_url.startswith("https://i.redd.it/"):
         urls = [post_url]
         subreddit, post_title_slug = resolve_reddit_post_from_image(post_url)
+
+    # --- Handle normal Reddit posts or galleries ---
     else:
         urls, subreddit, post_title_slug = get_gallery_image_urls(post_url)
 
@@ -262,6 +267,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     download_images(urls, outdir)
+
 
 
 
