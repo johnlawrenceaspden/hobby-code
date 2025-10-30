@@ -217,13 +217,28 @@ def resolve_reddit_post_from_image(image_url):
         image_id = os.path.splitext(os.path.basename(image_url))[0]
         return "direct_links", image_id
 
+from urllib.parse import urlparse, parse_qs, unquote
+
+# ------------------------------ Entry Point ---------------------------------
+
+def normalize_media_redirect(url):
+    """If URL is a Reddit media redirect (/media?url=...), extract the real link."""
+    parsed = urlparse(url)
+    if "reddit.com" in parsed.netloc and parsed.path == "/media":
+        qs = parse_qs(parsed.query)
+        if "url" in qs:
+            real_url = unquote(qs["url"][0])
+            print(f"↪️  Resolved media redirect to: {real_url}")
+            return real_url
+    return url
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: reddit_gallery_download.py <reddit_post_url> [output_folder]")
         sys.exit(1)
 
-    post_url = sys.argv[1]
+    post_url = normalize_media_redirect(sys.argv[1])
 
     # --- Handle direct image URLs (i.redd.it) ---
     if post_url.startswith("https://i.redd.it/"):
