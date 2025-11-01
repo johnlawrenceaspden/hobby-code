@@ -484,7 +484,9 @@ if [[ "$HOSTNAME" == "dell-3520" ]]; then
     alias sus='for i in {1..10}; do date; echo sleeping....$i ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl -i hybrid-sleep; date; acpi -V | grep Battery; sleep 60s; play -q -n synth 0.1 sin 880 vol 10; sleep 60s; echo and repeat...$i; done'
 elif [[ "$HOSTNAME" == "dell-3530" ]]; then
     # ordinary hybrid-sleep with battery info
-    alias sus='date; echo sleeping.... ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl -i hybrid-sleep; date; acpi -V | grep Battery'
+    # alias sus='date; echo sleeping.... ; xscreensaver-command -lock ; date; acpi -V | grep Battery; systemctl -i hybrid-sleep; date; acpi -V | grep Battery'
+    alias sus='date; echo locking.... ; xscreensaver-command -lock ; date; acpi -V | grep Battery; echo sleeping... ; systemctl -i hybrid-sleep; echo waiting... ; sleep 3; echo ...waking; date; acpi -V | grep Battery'
+
 else
     # simpler suspend command that works on all machines, even without hybrid sleep ability
     alias sus='xscreensaver-command -lock ; systemctl -i suspend'
