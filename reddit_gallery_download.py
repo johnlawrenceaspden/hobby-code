@@ -7,7 +7,7 @@ Usage:
     python reddit_gallery_download.py https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
     python reddit_gallery_download.py https://i.redd.it/o9fu9uw82rvf1.png
 
-    #Two different links to the same gallery
+    # Two different links to the same gallery
     python reddit_gallery_download.py "https://www.reddit.com/gallery/1occk95"
     python reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/"
 
@@ -32,6 +32,7 @@ def get_gallery_image_urls(reddit_post_url):
     Given a Reddit post URL, fetch JSON and extract full image URLs if it’s a gallery.
     Handles both /r/... and /gallery/... URLs.
     """
+
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -63,7 +64,7 @@ def get_gallery_image_urls(reddit_post_url):
     if not reddit_post_url.endswith("/"):
         reddit_post_url += "/"
 
-    json_url = reddit_post_url + ".json"
+    json_url = reddit_post_url + ".json"  # Fetch the JSON data for the Reddit post
 
     try:
         resp = requests.get(json_url, headers=headers, timeout=10)
@@ -110,24 +111,18 @@ def get_gallery_image_urls(reddit_post_url):
 
 # -------------------------- Download Helpers --------------------------------
 
-
-import time
-
-
-import time
-
 def safe_download(url, outdir, retries=3):
     """Download a single image with resume support and speed estimation."""
-    os.makedirs(outdir, exist_ok=True)
-    fname = url.split("/")[-1]
-    path = os.path.join(outdir, fname)
-    tmp_path = path + ".part"
+    os.makedirs(outdir, exist_ok=True)  # Create the download directory if it doesn't exist
+    fname = url.split("/")[-1]  # Get the image filename from the URL
+    path = os.path.join(outdir, fname)  # Path where the image will be saved
+    tmp_path = path + ".part"  # Temporary file used for resuming download
 
     headers = {"User-Agent": "RedditDownloader/1.0"}
 
-    # Check if file already complete
+    # Check if file already exists and is complete
     if os.path.exists(path):
-        head = requests.head(url, headers=headers, timeout=10)
+        head = requests.head(url, headers=headers, timeout=10)  # Send a HEAD request to check file size
         if head.status_code == 200 and "Content-Length" in head.headers:
             expected_size = int(head.headers["Content-Length"])
             actual_size = os.path.getsize(path)
@@ -136,27 +131,27 @@ def safe_download(url, outdir, retries=3):
                 return True
         print(f"⚠️  File {fname} exists but is incomplete, resuming...")
 
-    # Determine how much we already have
+    # Determine how much has already been downloaded
     downloaded_size = os.path.getsize(tmp_path) if os.path.exists(tmp_path) else 0
 
-    for attempt in range(1, retries + 1):
+    for attempt in range(1, retries + 1):  # Try up to 'retries' times
         try:
             if downloaded_size > 0:
-                headers["Range"] = f"bytes={downloaded_size}-"
+                headers["Range"] = f"bytes={downloaded_size}-"  # Set the Range header to resume the download
             else:
                 headers.pop("Range", None)
 
             print(f"⬇️  Downloading {fname} (attempt {attempt})... starting at {downloaded_size} bytes")
 
-            start_time = time.time()  # Start the timer
+            start_time = time.time()  # Start the timer to calculate download speed
             with requests.get(url, headers=headers, stream=True, timeout=30) as r:
-                if r.status_code not in (200, 206):
+                if r.status_code not in (200, 206):  # If the server does not support resume, restart
                     print(f"❌ Server did not support resume (status {r.status_code}). Restarting download.")
                     downloaded_size = 0
-                    open(tmp_path, "wb").close()  # reset
+                    open(tmp_path, "wb").close()  # reset the temporary file
                     continue
 
-                mode = "ab" if downloaded_size > 0 else "wb"
+                mode = "ab" if downloaded_size > 0 else "wb"  # Open the file in append mode if resuming
                 total_size = int(r.headers.get("Content-Length", 0)) + downloaded_size
                 bytes_downloaded = 0
 
@@ -166,14 +161,14 @@ def safe_download(url, outdir, retries=3):
                             f.write(chunk)
                             bytes_downloaded += len(chunk)
 
-                            # Calculate elapsed time and speed
+                            # Calculate elapsed time and download speed
                             elapsed_time = time.time() - start_time
                             if elapsed_time > 0:
                                 download_speed = bytes_downloaded / elapsed_time
                                 download_speed_kbps = download_speed / 1024  # Convert to KB/s
                                 download_speed_mbps = download_speed_kbps / 1024  # Convert to MB/s
 
-                                # Print progress and speed
+                                # Print download progress and speed
                                 progress = f"{bytes_downloaded}/{total_size} bytes"
                                 print(f"\r⬇️  Downloading {fname} — {progress} {download_speed_mbps:.2f} MB/s", end="")
 
@@ -184,7 +179,7 @@ def safe_download(url, outdir, retries=3):
                 time.sleep(2)
                 continue
 
-            os.rename(tmp_path, path)
+            os.rename(tmp_path, path)  # Rename the temporary file to the final path
             print(f"\n✅ Finished {fname} ({final_size} bytes)")
 
             return True
@@ -202,25 +197,31 @@ def safe_download(url, outdir, retries=3):
 
 
 def download_images(urls, outdir="images"):
+    """
+    Given a list of URLs, download all the images to the specified directory.
+    Prints the download progress and success rate.
+    """
     print(f"📁 Downloading {len(urls)} image(s) to '{outdir}'...")
     success = 0
     for url in urls:
-        if safe_download(url, outdir):
+        if safe_download(url, outdir):  # Call safe_download for each image URL
             success += 1
     print(f"✅ Done. Successfully downloaded {success}/{len(urls)} images.")
+
 
 # ------------------------------ Entry Point ---------------------------------
 
 def resolve_reddit_post_from_image(image_url):
     """
-    Try to find the Reddit post that contains a given i.redd.it image.
-    Returns (subreddit, title_slug) if found, else (direct_links, image_id).
+    Given an image URL, try to find the Reddit post that contains it.
+    If successful, return the subreddit and post title slug.
+    If unsuccessful, return 'direct_links' as subreddit and image ID as the title.
     """
     try:
-        image_id = os.path.splitext(os.path.basename(image_url))[0]
+        image_id = os.path.splitext(os.path.basename(image_url))[0]  # Extract image ID from the URL
         headers = {"User-Agent": "RedditDownloader/1.0"}
 
-        # Use Reddit search API to find the post that references this image
+        # Search Reddit API to find the post referencing the image
         search_url = f"https://api.reddit.com/search/?q=url:{image_id}&restrict_sr=0"
         resp = requests.get(search_url, headers=headers, timeout=10)
         resp.raise_for_status()
@@ -250,7 +251,9 @@ def resolve_reddit_post_from_image(image_url):
 from urllib.parse import urlparse, parse_qs, unquote
 
 def normalize_media_redirect(url):
-    """If URL is a Reddit media redirect (/media?url=...), extract the real link."""
+    """
+    If the URL is a Reddit media redirect (/media?url=...), extract the real image URL.
+    """
     parsed = urlparse(url)
     if "reddit.com" in parsed.netloc and parsed.path == "/media":
         qs = parse_qs(parsed.query)
@@ -261,7 +264,7 @@ def normalize_media_redirect(url):
     return url
 
 
-
+# -------------------------- Main Logic --------------------------------------
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -285,6 +288,7 @@ if __name__ == "__main__":
     if not post_title_slug:
         post_title_slug = "post"
 
+    # --- Define output directory ---
     if len(sys.argv) >= 3:
         outdir = sys.argv[2]
     else:
@@ -294,9 +298,4 @@ if __name__ == "__main__":
         print("No images found.")
         sys.exit(1)
 
-    download_images(urls, outdir)
-
-
-
-
-
+    download_images(urls, outdir)  # Download the images to the specified directory
