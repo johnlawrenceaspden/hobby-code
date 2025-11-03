@@ -102,8 +102,11 @@ def get_gallery_image_urls(reddit_post_url):
 
 # -------------------------- Download Helpers --------------------------------
 
+
+import time
+
 def safe_download(url, outdir, retries=3):
-    """Download a single image with resume support."""
+    """Download a single image with resume support and speed estimation."""
     os.makedirs(outdir, exist_ok=True)
     fname = url.split("/")[-1]
     path = os.path.join(outdir, fname)
@@ -134,6 +137,7 @@ def safe_download(url, outdir, retries=3):
 
             print(f"⬇️  Downloading {fname} (attempt {attempt})... starting at {downloaded_size} bytes")
 
+            start_time = time.time()  # Start the timer
             with requests.get(url, headers=headers, stream=True, timeout=30) as r:
                 if r.status_code not in (200, 206):
                     print(f"❌ Server did not support resume (status {r.status_code}). Restarting download.")
@@ -143,10 +147,21 @@ def safe_download(url, outdir, retries=3):
 
                 mode = "ab" if downloaded_size > 0 else "wb"
                 total_size = int(r.headers.get("Content-Length", 0)) + downloaded_size
+                bytes_downloaded = 0
+
                 with open(tmp_path, mode) as f:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
+                            bytes_downloaded += len(chunk)
+
+                            # Calculate elapsed time and speed
+                            elapsed_time = time.time() - start_time
+                            if elapsed_time > 0:
+                                download_speed = bytes_downloaded / elapsed_time
+                                download_speed_kbps = download_speed / 1024  # Convert to KB/s
+                                download_speed_mbps = download_speed_kbps / 1024  # Convert to MB/s
+                                print(f"\r⬇️  Downloading {fname} — {download_speed_mbps:.2f} MB/s", end="")
 
             final_size = os.path.getsize(tmp_path)
             if total_size > 0 and final_size < total_size:
@@ -156,7 +171,8 @@ def safe_download(url, outdir, retries=3):
                 continue
 
             os.rename(tmp_path, path)
-            print(f"✅ Finished {fname} ({final_size} bytes)")
+            print(f"\n✅ Finished {fname} ({final_size} bytes)")
+
             return True
 
         except KeyboardInterrupt:
@@ -178,9 +194,6 @@ def download_images(urls, outdir="images"):
         if safe_download(url, outdir):
             success += 1
     print(f"✅ Done. Successfully downloaded {success}/{len(urls)} images.")
-
-
-
 
 # ------------------------------ Entry Point ---------------------------------
 
