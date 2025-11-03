@@ -14,3 +14,10 @@ python reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occ
 python reddit_gallery_download.py "https://www.reddit.com/r/dalle2/comments/1occk95/youre_exploring_a_lonely_asteroid_in_the_middle/" dalle2/asteroid_images
 # another gallery, just for paranoia
 python reddit_gallery_download.py https://www.reddit.com/r/dalle2/comments/1mqp46m/gloomy_winter_scenes_from_berlin_and_iceland/
+
+# expected results if you started with an empty or non-existent dalle2 directory
+tree -s dalle2 
+tree -s dalle2 | wc
+echo expected values     43     192    2109
+
+
