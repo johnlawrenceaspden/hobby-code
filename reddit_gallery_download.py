@@ -3,9 +3,13 @@
 Reddit Gallery Downloader — robust, resumable, and user-friendly.
 
 Usage:
-    # Two different links to the same image 
-    python reddit_gallery_download.py https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
+    # Two different links to the same image
+    # direct link
     python reddit_gallery_download.py https://i.redd.it/o9fu9uw82rvf1.png
+    # media redirect
+    python reddit_gallery_download.py https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
+    # In either case it should be able to find the original post
+    # subreddit dalle2, title The_Dude_holding_a_Wandering_Dude, and put the image in an appropriate subdirectory
 
     # Two different links to the same gallery
     python reddit_gallery_download.py "https://www.reddit.com/gallery/1occk95"
@@ -241,6 +245,7 @@ def resolve_reddit_post_from_image(image_url):
             .replace("\\", "_")
             [:80]
         )
+        print(f"resolved image url {image_url} to subreddit {subreddit}, title {title_slug}")
 
         return subreddit, title_slug
     except Exception as e:
