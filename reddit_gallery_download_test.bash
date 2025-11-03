@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# run doctests first
+python -m doctest reddit_gallery_download.py -v
+
+
 # Two different links to the same image 
 python reddit_gallery_download.py https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
 python reddit_gallery_download.py https://i.redd.it/o9fu9uw82rvf1.png

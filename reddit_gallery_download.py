@@ -253,6 +253,24 @@ from urllib.parse import urlparse, parse_qs, unquote
 def normalize_media_redirect(url):
     """
     If the URL is a Reddit media redirect (/media?url=...), extract the real image URL.
+    e.g. 
+    https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
+    should resolve to:
+    https://i.redd.it/o9fu9uw82rvf1.png
+
+    For example:
+    
+    >>> normalize_media_redirect('https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png')
+    ↪️  Resolved media redirect to: https://i.redd.it/o9fu9uw82rvf1.png
+    'https://i.redd.it/o9fu9uw82rvf1.png'
+
+    >>> normalize_media_redirect('https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2F12345.png')
+    ↪️  Resolved media redirect to: https://i.redd.it/12345.png
+    'https://i.redd.it/12345.png'
+
+    >>> normalize_media_redirect('https://www.reddit.com/r/test/comments/12345/test_image/')
+    'https://www.reddit.com/r/test/comments/12345/test_image/'
+    
     """
     parsed = urlparse(url)
     if "reddit.com" in parsed.netloc and parsed.path == "/media":
