@@ -105,6 +105,9 @@ def get_gallery_image_urls(reddit_post_url):
 
 import time
 
+
+import time
+
 def safe_download(url, outdir, retries=3):
     """Download a single image with resume support and speed estimation."""
     os.makedirs(outdir, exist_ok=True)
@@ -161,7 +164,10 @@ def safe_download(url, outdir, retries=3):
                                 download_speed = bytes_downloaded / elapsed_time
                                 download_speed_kbps = download_speed / 1024  # Convert to KB/s
                                 download_speed_mbps = download_speed_kbps / 1024  # Convert to MB/s
-                                print(f"\r⬇️  Downloading {fname} — {download_speed_mbps:.2f} MB/s", end="")
+
+                                # Print progress and speed
+                                progress = f"{bytes_downloaded}/{total_size} bytes"
+                                print(f"\r⬇️  Downloading {fname} — {progress} {download_speed_mbps:.2f} MB/s", end="")
 
             final_size = os.path.getsize(tmp_path)
             if total_size > 0 and final_size < total_size:
