@@ -295,6 +295,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # --- Always normalize first ---
+    # https://i.redd.it/o9fu9uw82rvf1.png
+    # can also be expressed as a 'media redirect'
+    # https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fo9fu9uw82rvf1.png
+
     post_url = normalize_media_redirect(sys.argv[1])
 
     # --- Handle direct image URLs (i.redd.it) ---
