@@ -18,6 +18,18 @@ python reddit_gallery_download.py https://www.reddit.com/r/dalle2/comments/1mqp4
 # expected results if you started with an empty or non-existent dalle2 directory
 tree -s dalle2 
 tree -s dalle2 | wc
-echo expected values     43     192    2109
 
+# Expected output
+expected_output="     43     192    2109"
 
+# Capture the actual output of the command
+actual_output=$(tree -s dalle2 | wc)
+
+# Compare the actual output with the expected output
+if [ "$actual_output" == "$expected_output" ]; then
+  echo "Test passed: Output matches expected value."
+else
+    echo "Test failed: Output does not match expected value."
+    echo "Expected output: $expected_output"
+    echo "Actual output  : $actual_output"
+fi
