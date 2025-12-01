@@ -3,63 +3,92 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --- PARAMETERS ---
-initial_fat = 30000          # grams
-initial_LA_frac = 0.25       # starting adipose LA fraction
-initial_LA = initial_fat * initial_LA_frac
+def simulate_adipose_LA(
+    initial_fat=30000,                # grams
+    initial_LA_frac=0.25,             # fraction (e.g., 0.25 = 25%)
+    events=None,                      # list of gains/losses (grams): e.g. [-5000, +3000, -4000, +2000]
+    LA_mobilization_factor=0.85,      # LA mobilization relative to other fats (<1 = LA spared)
+    LA_regain_frac=0.0                # LA content of regained fat (0 = LA-free)
+):
+    if events is None:
+        events = []
 
-cycle_loss = 10000           # grams lost per cycle
-cycle_regain = 10000         # grams regained per cycle
-LA_regain_frac = 0.0         # LA content of regained fat (0 = LA-free)
+    # Initial state
+    fat_mass = [initial_fat]
+    LA_mass = [initial_fat * initial_LA_frac]
+    LA_percent = [initial_LA_frac]
 
-LA_mobilization_factor = 0.85    # relative mobilization efficiency (LA vs non-LA)
+    for change in events:
+        F = fat_mass[-1]
+        LA = LA_mass[-1]
+        nonLA = F - LA
 
-cycles = 20                  # number of lose/regain cycles to simulate
+        # -------------------------
+        # LOSS PHASE (negative change)
+        # -------------------------
+        if change < 0:
+            loss = -change
+
+            # Bound: cannot lose more fat than exists
+            loss = min(loss, F)
+
+            # Solve proportional mobilization:
+            # LA burned = x
+            # non-LA burned = y
+            # x + y = loss
+            # (x/LA) : (y/nonLA) = LA_mobilization_factor : 1
+            denom = nonLA + LA * LA_mobilization_factor
+            if denom == 0:
+                break
+
+            k = loss / denom
+            x = LA * k * LA_mobilization_factor      # LA burned
+            y = nonLA * k                            # non-LA burned
+
+            LA_new = LA - x
+            nonLA_new = nonLA - y
+
+        # -------------------------
+        # GAIN PHASE (positive change)
+        # -------------------------
+        else:
+            gain = change
+            gained_LA = gain * LA_regain_frac
+            gained_nonLA = gain - gained_LA
+
+            LA_new = LA + gained_LA
+            nonLA_new = nonLA + gained_nonLA
+
+        # Update totals
+        F_new = LA_new + nonLA_new
+        fat_mass.append(F_new)
+        LA_mass.append(LA_new)
+        LA_percent.append(LA_new / F_new if F_new > 0 else 0)
+
+    return fat_mass, LA_mass, LA_percent
 
 
-# --- SIMULATION STORAGE ---
-fat_mass = [initial_fat]
-LA_mass = [initial_LA]
-LA_percent = [initial_LA_frac]
+# -------------------------
+# EXAMPLE USAGE
+# -------------------------
 
+events = [-6000, +2000, -2000, +4000, -3000, -2000, +4500, -3000, +2000, -2000, +2500, -4500, +3500, -1000, ]   # Custom lose/regain pattern
 
-# --- RUN MULTI-CYCLE SIMULATION ---
-for c in range(cycles):
-    F = fat_mass[-1]
-    LA = LA_mass[-1]
-    nonLA = F - LA
+fat_mass, LA_mass, LA_percent = simulate_adipose_LA(
+    initial_fat=30000,
+    initial_LA_frac=0.25,
+    events=events,
+    LA_mobilization_factor=0.85,
+    LA_regain_frac=0.0
+)
 
-    # --- WEIGHT LOSS PHASE ---
-    # Solve proportional mobilization:
-    # x = LA burned, y = non-LA burned
-    # x + y = cycle_loss
-    # (x/LA) : (y/nonLA) = LA_mobilization_factor : 1
-    k = cycle_loss / (nonLA + LA * LA_mobilization_factor)
-    x = LA * k * LA_mobilization_factor
-    y = nonLA * k
-
-    LA_remaining = LA - x
-    nonLA_remaining = nonLA - y
-
-    # --- REGAIN PHASE ---
-    regained_LA = cycle_regain * LA_regain_frac
-    regained_nonLA = cycle_regain - regained_LA
-
-    LA_new = LA_remaining + regained_LA
-    nonLA_new = nonLA_remaining + regained_nonLA
-
-    F_new = LA_new + nonLA_new
-
-    fat_mass.append(F_new)
-    LA_mass.append(LA_new)
-    LA_percent.append(LA_new / F_new)
-
-
-# --- PLOT ---
+# -------------------------
+# PLOT RESULTS
+# -------------------------
 plt.figure(figsize=(8,5))
-plt.plot(range(cycles+1), LA_percent)
-plt.xlabel("Cycle Number")
+plt.plot(LA_percent, marker='o')
+plt.xlabel("Event Number")
 plt.ylabel("Adipose LA Fraction")
-plt.title("Adipose LA% Over Multiple Lose/Regain Cycles (LA-free Regain)")
+plt.title("Adipose LA% Over Arbitrary Loss/Regain Events")
 plt.grid(True)
 plt.show()
