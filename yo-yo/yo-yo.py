@@ -72,7 +72,7 @@ def simulate_adipose_LA(
 # EXAMPLE USAGE
 # -------------------------
 
-events = [-6000, +2000, -2000, +4000, -3000, -2000, +4500, -3000, +2000, -2000, +2500, -4500, +3500, -1000, ]   # Custom lose/regain pattern
+events = [-6000, +2000, -2000, +4000, -3000, -2000, +4500, -3000, +2000, -2000, +2500, -4500, +3500, -1000, -2800 ]   # Custom lose/regain pattern
 
 fat_mass, LA_mass, LA_percent = simulate_adipose_LA(
     initial_fat=30000,
