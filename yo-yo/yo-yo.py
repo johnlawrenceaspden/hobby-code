@@ -14,29 +14,33 @@ def simulate_adipose_LA_from_pairs(
     LA_regain_frac=0.0
 ):
 
+    # ---- Sort readings by date, just in case ----
+    readings = sorted(readings, key=lambda x: x[0])
+
     # ---- Extract dates and weights ----
     date_strings = [r[0] for r in readings]
     weights = np.array([r[1] for r in readings])
 
-    # ---- Convert date strings to datetime objects (for plotting) ----
+    # ---- Convert date strings to datetime objects ----
     dates = [datetime.strptime(d, "%Y-%m-%d") for d in date_strings]
 
     # ---- Initial body composition ----
     initial_weight = weights[0]
     initial_fat_mass = initial_weight * 1000 * initial_bodyfat_frac
-    lean_mass = initial_weight * 1000 - initial_fat_mass   # FIXED
+    lean_mass = initial_weight * 1000 - initial_fat_mass   # FIXED LEAN MASS
 
-    # ---- Fat mass for every date ----
+    # ---- Fat mass inferred from weights ----
     fat_masses = weights * 1000 - lean_mass
     fat_masses = np.maximum(fat_masses, 0)
 
     # ---- Fat gain/loss events ----
     events = np.diff(fat_masses)
 
-    # ---- Initialize state ----
+    # ---- Initialize simulation state ----
     fat_mass = [fat_masses[0]]
     LA_mass = [fat_masses[0] * initial_LA_frac]
     LA_percent = [initial_LA_frac]
+    nonLA_mass = [fat_masses[0] - LA_mass[0]]
     date_axis = [dates[0]]
 
     # ---- Simulation loop ----
@@ -47,7 +51,7 @@ def simulate_adipose_LA_from_pairs(
         nonLA = F - LA
 
         if change < 0:
-            # -------- FAT LOSS --------
+            # ------ FAT LOSS ------
             loss = -change
             loss = min(loss, F)
 
@@ -63,7 +67,7 @@ def simulate_adipose_LA_from_pairs(
             nonLA_new = nonLA - y
 
         else:
-            # -------- FAT GAIN --------
+            # ------ FAT GAIN ------
             gain = change
             gained_LA = gain * LA_regain_frac
             gained_nonLA = gain - gained_LA
@@ -75,13 +79,22 @@ def simulate_adipose_LA_from_pairs(
 
         fat_mass.append(F_new)
         LA_mass.append(LA_new)
+        nonLA_mass.append(nonLA_new)
         LA_percent.append(LA_new / F_new if F_new > 0 else 0)
         date_axis.append(dates[i+1])
 
-    return np.array(date_axis), np.array(fat_mass), np.array(LA_mass), np.array(LA_percent)
+    return (
+        np.array(date_axis),
+        np.array(fat_mass),
+        np.array(nonLA_mass),
+        np.array(LA_mass),
+        np.array(LA_percent),
+        lean_mass
+    )
 
 
-# ------------------ EXAMPLE USAGE ------------------
+
+# ------------------ INPUT DATA ------------------
 
 readings = [
     ("2023-05-22", 99),
@@ -100,18 +113,22 @@ readings = [
     ("2025-07-01", 92.37),
     ("2025-09-15", 96.2),
     ("2025-11-23", 91.2+1.5),
-    
-    
-
 ]
 
-dates, fat_mass, LA_mass, LA_percent = simulate_adipose_LA_from_pairs(
+
+# ------------------ RUN SIMULATION ------------------
+
+dates, fat_mass, nonLA_mass, LA_mass, LA_percent, lean_mass = simulate_adipose_LA_from_pairs(
     readings,
     initial_bodyfat_frac=0.30,
     initial_LA_frac=0.25
 )
 
-# ---- Plot with actual dates ----
+
+# -------------------------------------------------------
+# FIGURE 1: Adipose LA%
+# -------------------------------------------------------
+
 plt.figure(figsize=(10,6))
 plt.plot(dates, LA_percent, marker='o')
 
@@ -120,9 +137,46 @@ plt.ylabel("Adipose LA Fraction")
 plt.title("Adipose LA% Over Time (Actual Calendar Dates)")
 plt.grid(True)
 
-# Format date axis properly
 plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+
+# -------------------------------------------------------
+# FIGURE 2: Stacked area plot (LEAN + non-LA fat + LA fat)
+# -------------------------------------------------------
+
+lean_mass_kg = lean_mass / 1000
+LA_mass_kg = LA_mass / 1000
+nonLA_mass_kg = nonLA_mass / 1000
+
+lean_layer = lean_mass_kg * np.ones_like(LA_mass_kg)
+nonLA_layer = nonLA_mass_kg
+LA_layer = LA_mass_kg
+
+plt.figure(figsize=(12,6))
+
+plt.stackplot(
+    dates,
+    lean_layer,
+    nonLA_layer,
+    LA_layer,
+    labels=["Lean Mass", "Non-LA Fat Mass", "LA Fat Mass"],
+    colors=["#88c999", "#f2c572", "#e05f5f"],   # green, amber, red
+    alpha=0.95
+)
+
+plt.xlabel("Date")
+plt.ylabel("Mass (kg)")
+plt.title("Stacked Body Composition Over Time (Lean + Non-LA + LA)")
+plt.legend(loc="upper left")
+
+plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+plt.grid(True, alpha=0.3)
 plt.xticks(rotation=45)
 
 plt.tight_layout()
