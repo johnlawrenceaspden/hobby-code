@@ -6,6 +6,27 @@ from datetime import datetime
 import matplotlib.dates as mdates
 
 
+# -------------------------------------------------------
+# Utility: merge and sort anthropological reference lines
+# -------------------------------------------------------
+def merge_and_sort_reference_lines(refdict):
+    grouped = {}
+    for label, pct in refdict.items():
+        grouped.setdefault(pct, []).append(label)
+
+    sorted_pcts = sorted(grouped.keys())
+
+    merged = {}
+    for pct in sorted_pcts:
+        labels = grouped[pct]
+        combined_label = ", ".join(labels)
+        merged[f"{combined_label} (~{pct}%)"] = pct
+    return merged
+
+
+# -------------------------------------------------------
+# Simulation function
+# -------------------------------------------------------
 def simulate_adipose_LA_from_pairs(
     readings,                   # list of (date_string, weight_kg)
     initial_bodyfat_frac=0.30,
@@ -94,8 +115,35 @@ def simulate_adipose_LA_from_pairs(
 
 
 
-# ------------------ INPUT DATA ------------------
+# -------------------------------------------------------
+# Anthropological reference LA% lines (RAW)
+# -------------------------------------------------------
+reference_lines_raw = {
+    "Inuit": 1.5,
+    "Masai": 2.5,
+    "Victorian English": 2.5,
+    "San Bushmen": 3,
+    "Hadza": 3,
+    "Kitavans": 3,
+    "Pre-industrial Europeans": 3.5,
+    "Hunter–gatherer": 4,
+    "Okinawans pre-1950": 4,
+    "1950s Americans": 7,
+    "Modern Mediterranean": 6,
+    "1970s Americans": 9,
+    "Modern China": 10,
+    "Modern British": 12,
+    "Modern American": 15
+}
 
+# Merge + sort lines
+reference_lines = merge_and_sort_reference_lines(reference_lines_raw)
+
+
+
+# -------------------------------------------------------
+# INPUT DATA
+# -------------------------------------------------------
 readings = [
     ("2023-05-22", 99),
     ("2023-09-14", 92+1.5),
@@ -116,100 +164,73 @@ readings = [
 ]
 
 
-# ------------------ RUN SIMULATION ------------------
 
+# -------------------------------------------------------
+# RUN SIMULATION
+# -------------------------------------------------------
 dates, fat_mass, nonLA_mass, LA_mass, LA_percent, lean_mass = simulate_adipose_LA_from_pairs(
     readings,
     initial_bodyfat_frac=0.30,
     initial_LA_frac=0.25
 )
 
-
 # -------------------------------------------------------
-# FIGURE: Stacked body composition + LA% overlay
+# FIGURE: Stacked composition + LA% line + reference lines
 # -------------------------------------------------------
 
 lean_mass_kg = lean_mass / 1000
 LA_mass_kg = LA_mass / 1000
 nonLA_mass_kg = nonLA_mass / 1000
 
-# Layers
 lean_layer = lean_mass_kg * np.ones_like(LA_mass_kg)
 nonLA_layer = nonLA_mass_kg
 LA_layer = LA_mass_kg
 
-fig, ax1 = plt.subplots(figsize=(12,7))
+fig, ax1 = plt.subplots(figsize=(14,7))
 
-# ---------- Stacked body composition ----------
+# ----- Stacked area plot -----
 ax1.stackplot(
     dates,
     lean_layer,
     nonLA_layer,
     LA_layer,
     labels=["Lean Mass", "Non-LA Fat Mass", "LA Fat Mass"],
-    colors=["#88c999", "#f2c572", "#e05f5f"],   # green, amber, red
+    colors=["#88c999", "#f2c572", "#e05f5f"],
     alpha=0.95
 )
 
 ax1.set_xlabel("Date")
 ax1.set_ylabel("Mass (kg)")
-ax1.set_title("Body Composition Over Time (Lean + Non-LA Fat + LA Fat) with LA% Overlay")
-ax1.grid(True, alpha=0.3)
+ax1.set_title("Body Composition With Adipose LA% and Anthropological Reference Lines")
 
-
-# ---------- Right axis: LA% ----------
-ax2 = ax1.twinx()
-ax2.plot(dates, LA_percent * 100, color="black", linewidth=2, label="LA %")
-ax2.set_ylabel("Adipose LA %", color="black")
-ax2.tick_params(axis="y", labelcolor="black")
-
-# Zero-base the LA% axis
-ax2.set_ylim(bottom=0)
-
-# ---------- Reference LA% lines for historical populations ----------
-reference_lines = {
-    "Inuit (~1.5%)": 1.5,
-    "Masai (~2.5%), Victorian English (~2.5%)": 2.5,
-    "San Bushmen (~3%), Hadza (~3%), Kitavans (~3%)": 3,
-    "Pre-industrial Europeans (~3.5%)": 3.5,
-    "Hunter–gatherer (~4%), Okinawans pre-1950 (~4%)": 4,
-    "Modern Mediterranean (~6%)": 6,
-    "1950s Americans (~7%)": 7,
-    "1970s Americans (~9%)": 9,
-    "Modern China (~10%)": 10,
-    "Modern British (~12%)": 12,
-    "Modern American (~15%)": 15
-}
-
-
-
-for label, value in reference_lines.items():
-    ax2.axhline(
-        y=value,
-        color="black",
-        linestyle="dotted",
-        linewidth=1
-    )
-    ax2.text(
-        dates[0], value, "  " + label,
-        va="center",
-        ha="left",
-        fontsize=9,
-        color="black"
-    )
-
-
-
-
-# ---------- Date formatting ----------
+# Date formatting
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 plt.xticks(rotation=45)
+ax1.grid(True, alpha=0.3)
 
-# ---------- Combined legends ----------
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-plt.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
+# ----- Right axis: LA% (auto-scaled) -----
+ax2 = ax1.twinx()
+ax2.plot(dates, LA_percent, color="black", linewidth=2, label="Adipose LA%")
+ax2.set_ylabel("Adipose LA Fraction")
 
-plt.tight_layout()
+# Auto-scale so it fits the data snugly and always includes zero
+LA_min = 0
+LA_max = max(LA_percent) * 1.05
+ax2.set_ylim(LA_min, LA_max)
+
+# ----- Horizontal reference lines (labels on LEFT) -----
+for label, pct in reference_lines.items():
+    y = pct / 100
+    ax2.axhline(y, color="black", linestyle=":", linewidth=0.7)
+    ax2.text(
+        dates[0], y,                      # left edge of graph
+        f"{label}", 
+        va="center",
+        ha="right",
+        fontsize=8,
+        color="black"
+    )
+
+fig.tight_layout()
 plt.show()
