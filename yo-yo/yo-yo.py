@@ -209,27 +209,33 @@ ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 plt.xticks(rotation=45)
 ax1.grid(True, alpha=0.3)
 
-# ----- Right axis: LA% (auto-scaled) -----
+# ----- Right axis: LA% line (auto-scaled) -----
 ax2 = ax1.twinx()
 ax2.plot(dates, LA_percent, color="black", linewidth=2, label="Adipose LA%")
 ax2.set_ylabel("Adipose LA Fraction")
 
-# Auto-scale so it fits the data snugly and always includes zero
 LA_min = 0
 LA_max = max(LA_percent) * 1.05
 ax2.set_ylim(LA_min, LA_max)
 
-# ----- Horizontal reference lines (labels on LEFT) -----
+# ----- Horizontal reference lines + labels INSIDE green area -----
+
+# Find x-position slightly inside the stackplot (5% of plot width)
+x0 = dates[0]
+x1 = dates[-1]
+label_x = x0 + (x1 - x0) * 0.03   # 3% into the plot from the left
+
 for label, pct in reference_lines.items():
     y = pct / 100
     ax2.axhline(y, color="black", linestyle=":", linewidth=0.7)
     ax2.text(
-        dates[0], y,                      # left edge of graph
-        f"{label}", 
+        label_x, y,
+        label,
         va="center",
-        ha="right",
+        ha="left",
         fontsize=8,
-        color="black"
+        color="black",
+        bbox=dict(facecolor="#88c999", alpha=0.6, edgecolor="none", pad=1)
     )
 
 fig.tight_layout()
