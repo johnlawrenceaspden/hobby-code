@@ -168,12 +168,20 @@ ax2.set_ylim(bottom=0)
 
 # ---------- Reference LA% lines for historical populations ----------
 reference_lines = {
-    "Hunter–gatherer (~4%)": 4,
-    "San Bushmen (~3%)": 3,
-    "Victorian English (~2.5%)": 2.5,
+    "Inuit (~1.5%)": 1.5,
+    "Masai (~2.5%), Victorian English (~2.5%)": 2.5,
+    "San Bushmen (~3%), Hadza (~3%), Kitavans (~3%)": 3,
+    "Pre-industrial Europeans (~3.5%)": 3.5,
+    "Hunter–gatherer (~4%), Okinawans pre-1950 (~4%)": 4,
+    "Modern Mediterranean (~6%)": 6,
+    "1950s Americans (~7%)": 7,
+    "1970s Americans (~9%)": 9,
+    "Modern China (~10%)": 10,
     "Modern British (~12%)": 12,
     "Modern American (~15%)": 15
 }
+
+
 
 for label, value in reference_lines.items():
     ax2.axhline(
