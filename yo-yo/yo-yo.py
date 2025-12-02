@@ -162,6 +162,9 @@ ax2.plot(dates, LA_percent * 100, color="black", linewidth=2, label="LA %")
 ax2.set_ylabel("Adipose LA %", color="black")
 ax2.tick_params(axis="y", labelcolor="black")
 
+ax2.set_ylim(bottom=0)
+
+
 # ---------- Date formatting ----------
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
