@@ -126,40 +126,22 @@ dates, fat_mass, nonLA_mass, LA_mass, LA_percent, lean_mass = simulate_adipose_L
 
 
 # -------------------------------------------------------
-# FIGURE 1: Adipose LA%
-# -------------------------------------------------------
-
-plt.figure(figsize=(10,6))
-plt.plot(dates, LA_percent, marker='o')
-
-plt.xlabel("Date")
-plt.ylabel("Adipose LA Fraction")
-plt.title("Adipose LA% Over Time (Actual Calendar Dates)")
-plt.grid(True)
-
-plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-# -------------------------------------------------------
-# FIGURE 2: Stacked area plot (LEAN + non-LA fat + LA fat)
+# FIGURE: Stacked body composition + LA% overlay
 # -------------------------------------------------------
 
 lean_mass_kg = lean_mass / 1000
 LA_mass_kg = LA_mass / 1000
 nonLA_mass_kg = nonLA_mass / 1000
 
+# Layers
 lean_layer = lean_mass_kg * np.ones_like(LA_mass_kg)
 nonLA_layer = nonLA_mass_kg
 LA_layer = LA_mass_kg
 
-plt.figure(figsize=(12,6))
+fig, ax1 = plt.subplots(figsize=(12,7))
 
-plt.stackplot(
+# ---------- Stacked body composition ----------
+ax1.stackplot(
     dates,
     lean_layer,
     nonLA_layer,
@@ -169,15 +151,26 @@ plt.stackplot(
     alpha=0.95
 )
 
-plt.xlabel("Date")
-plt.ylabel("Mass (kg)")
-plt.title("Stacked Body Composition Over Time (Lean + Non-LA + LA)")
-plt.legend(loc="upper left")
+ax1.set_xlabel("Date")
+ax1.set_ylabel("Mass (kg)")
+ax1.set_title("Body Composition Over Time (Lean + Non-LA Fat + LA Fat) with LA% Overlay")
+ax1.grid(True, alpha=0.3)
 
-plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-plt.grid(True, alpha=0.3)
+# ---------- Right axis: LA% ----------
+ax2 = ax1.twinx()
+ax2.plot(dates, LA_percent * 100, color="black", linewidth=2, label="LA %")
+ax2.set_ylabel("Adipose LA %", color="black")
+ax2.tick_params(axis="y", labelcolor="black")
+
+# ---------- Date formatting ----------
+ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
+ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 plt.xticks(rotation=45)
+
+# ---------- Combined legends ----------
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+plt.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
 
 plt.tight_layout()
 plt.show()
