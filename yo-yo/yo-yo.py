@@ -156,13 +156,41 @@ ax1.set_ylabel("Mass (kg)")
 ax1.set_title("Body Composition Over Time (Lean + Non-LA Fat + LA Fat) with LA% Overlay")
 ax1.grid(True, alpha=0.3)
 
+
 # ---------- Right axis: LA% ----------
 ax2 = ax1.twinx()
 ax2.plot(dates, LA_percent * 100, color="black", linewidth=2, label="LA %")
 ax2.set_ylabel("Adipose LA %", color="black")
 ax2.tick_params(axis="y", labelcolor="black")
 
+# Zero-base the LA% axis
 ax2.set_ylim(bottom=0)
+
+# ---------- Reference LA% lines for historical populations ----------
+reference_lines = {
+    "Hunter–gatherer (~4%)": 4,
+    "San Bushmen (~3%)": 3,
+    "Victorian English (~2.5%)": 2.5,
+    "Modern British (~12%)": 12,
+    "Modern American (~15%)": 15
+}
+
+for label, value in reference_lines.items():
+    ax2.axhline(
+        y=value,
+        color="black",
+        linestyle="dotted",
+        linewidth=1
+    )
+    ax2.text(
+        dates[0], value, "  " + label,
+        va="center",
+        ha="left",
+        fontsize=9,
+        color="black"
+    )
+
+
 
 
 # ---------- Date formatting ----------
