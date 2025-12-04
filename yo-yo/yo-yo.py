@@ -119,10 +119,8 @@ def simulate_adipose_LA_from_pairs(
 # Anthropological reference LA% lines (RAW)
 # -------------------------------------------------------
 reference_lines_raw = {
-    "Inuit": 1.5,
     "Masai": 2.5,
     "Victorian English": 2.5,
-    "San Bushmen": 3,
     "Hadza": 3,
     "Kitavans": 3,
     "Pre-industrial Europeans": 3.5,
@@ -144,23 +142,24 @@ reference_lines = merge_and_sort_reference_lines(reference_lines_raw)
 # -------------------------------------------------------
 # INPUT DATA
 # -------------------------------------------------------
+keto_water_weight=1.5
 readings = [
     ("2023-05-22", 99),
-    ("2023-09-14", 92+1.5),
+    ("2023-09-14", 92+keto_water_weight),
     ("2023-10-13", 95.46),
-    ("2023-11-11", 91.6+1.5),
+    ("2023-11-11", 91.6+keto_water_weight),
     ("2024-04-05", 97.44),
     ("2024-05-05", 95.50),
     ("2024-08-28", 97.16),
-    ("2024-09-22", 94.88+1.5),
+    ("2024-09-22", 94.88+keto_water_weight),
     ("2024-10-06", 96.6),
-    ("2024-11-03", 93.4+1.5),
+    ("2024-11-03", 93.4+keto_water_weight),
     ("2024-12-29", 96.6),
     ("2025-01-14", 94.07),
     ("2025-03-28", 96.94),
     ("2025-07-01", 92.37),
     ("2025-09-15", 96.2),
-    ("2025-11-23", 91.2+1.5),
+    ("2025-11-23", 91.2+keto_water_weight),
 ]
 
 
@@ -195,13 +194,13 @@ ax1.stackplot(
     nonLA_layer,
     LA_layer,
     labels=["Lean Mass", "Non-LA Fat Mass", "LA Fat Mass"],
-    colors=["#88c999", "#f2c572", "#e05f5f"],
+    colors=["#88c999", "#e05f5f", "#f2c572"],
     alpha=0.95
 )
 
 ax1.set_xlabel("Date")
 ax1.set_ylabel("Mass (kg)")
-ax1.set_title("Body Composition With Adipose LA% and Anthropological Reference Lines")
+ax1.set_title("Heart Attack Diet: Inferred Body Composition With Adipose LA%")
 
 # Date formatting
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
