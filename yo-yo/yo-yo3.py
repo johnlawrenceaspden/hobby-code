@@ -217,9 +217,12 @@ def main():
         alpha=0.95
     )
 
+
+
+
     ax1.set_xlabel("Date")
     ax1.set_ylabel("Mass (kg)")
-    ax1.set_title("Body Composition With Adipose LA% (ODE model)")
+    ax1.set_title(f"Body Composition With Adipose LA%  rL={args.rL}, p_diet={args.p_diet}, half-life={args.half_life}")
 
     ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
