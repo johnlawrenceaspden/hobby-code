@@ -261,22 +261,6 @@ def main():
     else:
         plt.show()
 
-    # -----------------------
-    # Additional LA% plot
-    # -----------------------
-    fig2 = plt.figure(figsize=(10, 4))
-    plt.plot(date_range, LA_frac * 100)
-    plt.ylabel("LA (% of adipose fat)")
-    plt.xlabel("Date")
-    plt.title("Adipose LA % of Fat")
-    plt.grid()
-    plt.xticks(rotation=25)
-    plt.tight_layout()
-
-    if args.save:
-        fig2.savefig(f"{args.output_prefix}_LApct.png", dpi=200)
-    else:
-        plt.show()
 
 
 if __name__ == "__main__":
