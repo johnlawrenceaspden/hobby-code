@@ -71,6 +71,9 @@ def parse_args():
     parser.add_argument("--half-life", type=float, default=680,
                         help="LA endogenous turnover half-life (days).")
 
+    parser.add_argument("--fat-turnover-rate", type=float, default=0.01,
+                        help="Baseline adipose turnover (fraction of fat mass cycled per day).")
+
     parser.add_argument("--show-table", action="store_true",
                         help="Print summary table for the reading dates.")
 
@@ -134,6 +137,7 @@ def main():
     initial_LA_frac = args.initial_LA_frac
     rL = args.rL
     p_diet = args.p_diet
+    mu = args.fat_turnover_rate
 
     k = np.log(2) / args.half_life
 
@@ -151,7 +155,7 @@ def main():
     lean_mass_kg = interp_weights[0] - F[0]
 
     # -----------------------
-    # Daily Euler loop
+    # Daily Euler loop (with maintenance turnover)
     # -----------------------
     for i in range(1, n_days):
         dW = interp_weights[i] - interp_weights[i - 1]
@@ -163,21 +167,28 @@ def main():
             L[i] = Li
             continue
 
-        if phi > 0:  # fat loss
+        # baseline tissue turnover (kg/day)
+        maintenance = mu * Fi
+
+        # total mobilization & deposition fluxes
+        mobilization_flux = maintenance + max(phi, 0)
+        deposition_flux = maintenance + max(-phi, 0)
+
+        # mobilized LA with biased mobilization
+        if mobilization_flux <= 0:
+            mobil_L = 0.0
+        else:
             denom = Fi + (rL - 1) * Li
-
             if denom <= 0:
-                mobil = phi * (Li / Fi)
+                mobil_L = mobilization_flux * (Li / Fi)
             else:
-                mobil = phi * (rL * Li) / denom
+                mobil_L = mobilization_flux * (rL * Li) / denom
 
-            dL = -mobil - k * Li
-            dF = -phi
+        # LA dynamics
+        dL = -mobil_L - k * Li + deposition_flux * p_diet
 
-        else:  # fat gain
-            gain = -phi
-            dL = -k * Li + gain * p_diet
-            dF = gain
+        # fat mass dynamics (unchanged)
+        dF = -phi
 
         F[i] = max(Fi + dF, 0)
         L[i] = max(Li + dL, 0)
@@ -217,12 +228,10 @@ def main():
         alpha=0.95
     )
 
-
-
-
     ax1.set_xlabel("Date")
     ax1.set_ylabel("Mass (kg)")
-    ax1.set_title(f"Body Composition With Adipose LA%  rL={args.rL}, p_diet={args.p_diet}, half-life={args.half_life}")
+    ax1.set_title(f"Body Composition With Adipose LA%  rL={args.rL}, p_diet={args.p_diet}, "
+                  f"half-life={args.half_life}, turnover={args.fat_turnover_rate}")
 
     ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
@@ -236,7 +245,6 @@ def main():
     ax2 = ax1.twinx()
     ax2.plot(date_range, LA_frac, color="black", linewidth=2)
     ax2.set_ylabel("Adipose LA Fraction")
-
     ax2.set_ylim(0, max(0.05, LA_frac.max() * 1.05))
 
     # Reference lines
@@ -265,6 +273,6 @@ def main():
         plt.show()
 
 
-
 if __name__ == "__main__":
     main()
+
