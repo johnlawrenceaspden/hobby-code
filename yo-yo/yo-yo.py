@@ -31,7 +31,7 @@ def simulate_adipose_LA_from_pairs(
     readings,                   # list of (date_string, weight_kg)
     initial_bodyfat_frac=0.30,
     initial_LA_frac=0.25,
-    LA_mobilization_factor=0.85,
+    LA_mobilization_factor=0.85, #0.85 represents PUFAs not getting burned as much, 1.3 would be preferential PUFA burning
     LA_regain_frac=0.0
 ):
 
@@ -160,7 +160,8 @@ readings = [
     ("2025-07-01", 92.37),
     ("2025-09-15", 96.2),
     ("2025-11-23", 91.2+keto_water_weight),
-    ("2026-01-07", 98.7),
+    ("2026-01-12", 99.18),
+    ("2026-02-04", 96.73),
 ]
 
 
