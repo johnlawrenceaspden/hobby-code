@@ -643,5 +643,5 @@ function getlast(){ find ~/Downloads -maxdepth 1 -type f -printf '%T@ %p\n' | so
 alias y='yt-dlp'
 alias r='~/hobby-code/reddit_gallery_download.py'
 
-# 67123456 -> lmfslfsl
-fasola() {   printf '%s\n' "$*" | tr '1234567' 'fslfslm' | tr -d "',"; }
+# 67(12)3456- -> lm(fs)lfsl-
+fasola ()  {      printf '%s\n' "$*" | tr '1234567' 'fslfslm'; }
