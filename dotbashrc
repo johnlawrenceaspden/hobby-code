@@ -644,4 +644,8 @@ alias y='yt-dlp'
 alias r='~/hobby-code/reddit_gallery_download.py'
 
 # 67(12)3456- -> lm(fs)lfsl-
-fasola ()  {      printf '%s\n' "$*" | tr '1234567' 'fslfslm'; }
+fasola ()
+{
+    printf '%s\n' "$*"
+    printf '%s\n' "$*" | tr '1234567' 'fslfslm'
+}
