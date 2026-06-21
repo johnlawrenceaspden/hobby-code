@@ -103,7 +103,7 @@ def parse_json(data):
 # HTML fallback
 # ----------------------------
 def fetch_html(session, post_id):
-    url = f"https://www.reddit.com/gallery/{post_id}"
+    url = f"https://www.reddit.com/comments/{post_id}"
     r = session.get(url, timeout=30)
     return r.text
 
@@ -117,8 +117,13 @@ def parse_html_meta(html):
 
     data = json.loads(script.string)
 
-    post = data["props"]["pageProps"]["post"]["post"]
-
+    post = (
+        data.get("props", {})
+            .get("pageProps", {})
+            .get("post", {})
+            .get("post", {})
+    )
+    
     return {
         "title": post.get("title"),
         "subreddit": post.get("subredditName"),
