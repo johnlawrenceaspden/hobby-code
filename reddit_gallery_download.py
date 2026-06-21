@@ -197,9 +197,6 @@ def main():
     title = safe_name(meta["title"])
     subreddit = meta["subreddit"] or "unknown"
 
-    title = safe_name(meta["title"])
-    subreddit = meta["subreddit"] or "unknown"
-
     out_dir = Path(subreddit) / f"{title}_{post_id}"
     
     out_dir.mkdir(parents=True, exist_ok=True)
