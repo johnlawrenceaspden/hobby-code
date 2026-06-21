@@ -10,9 +10,12 @@
 # pip install beautifulsoup4 --break-system-packages
 
 
+#!/usr/bin/env python3
+
 import re
 import sys
 import json
+import hashlib
 from pathlib import Path
 
 import requests
@@ -25,48 +28,60 @@ HEADERS = {
         "Mozilla/5.0 (X11; Linux x86_64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/120.0 Safari/537.36"
-    ),
-    "Accept-Language": "en-US,en;q=0.9",
+    )
 }
 
 
+# ----------------------------
+# Session
+# ----------------------------
 def get_session():
-    """Create session with Firefox cookies if available."""
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    s = requests.Session()
+    s.headers.update(HEADERS)
 
     try:
-        cookies = browser_cookie3.firefox()
-        session.cookies.update(cookies)
-        print("[+] Loaded Firefox cookies")
-    except Exception as e:
-        print("[!] Could not load Firefox cookies:", e)
+        s.cookies.update(browser_cookie3.firefox())
+        print("[+] Firefox cookies loaded")
+    except Exception:
+        print("[!] No Firefox cookies found (continuing anonymous)")
 
-    return session
+    return s
 
 
+# ----------------------------
+# Parsing helpers
+# ----------------------------
 def extract_post_id(url):
-    m = re.search(r"gallery/([a-zA-Z0-9]+)", url)
-    if not m:
-        m = re.search(r"comments/([a-zA-Z0-9]+)", url)
+    m = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
     if not m:
         raise ValueError("Invalid Reddit URL")
     return m.group(1)
 
 
-def try_json(session, post_id):
+def safe_name(text):
+    text = text or "untitled"
+    text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
+    return text.strip()[:80]
+
+
+# ----------------------------
+# JSON mode (best)
+# ----------------------------
+def fetch_json(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}/.json"
     r = session.get(url, timeout=30)
-
     if r.status_code != 200:
-        print(f"[!] JSON blocked ({r.status_code})")
         return None
-
     return r.json()
 
 
-def parse_gallery_from_json(data):
+def parse_json(data):
     post = data[0]["data"]["children"][0]["data"]
+
+    meta = {
+        "title": post.get("title"),
+        "subreddit": post.get("subreddit"),
+    }
 
     gallery = post.get("gallery_data", {}).get("items", [])
     media = post.get("media_metadata", {})
@@ -75,54 +90,79 @@ def parse_gallery_from_json(data):
 
     for item in gallery:
         mid = item["media_id"]
-        meta = media.get(mid, {})
-        if "s" not in meta:
+        m = media.get(mid, {})
+        if "s" not in m:
             continue
-
-        url = meta["s"]["u"].replace("&amp;", "&")
+        url = m["s"]["u"].replace("&amp;", "&")
         images.append(url)
 
-    return images
+    return meta, images
 
 
-def extract_from_html(session, post_id):
-    """Fallback: parse HTML for i.redd.it links."""
+# ----------------------------
+# HTML fallback
+# ----------------------------
+def fetch_html(session, post_id):
     url = f"https://www.reddit.com/gallery/{post_id}"
     r = session.get(url, timeout=30)
+    return r.text
 
-    soup = BeautifulSoup(r.text, "html.parser")
 
-    text = soup.get_text(" ")
+def parse_html_meta(html):
+    soup = BeautifulSoup(html, "html.parser")
 
-    # crude but effective fallback
-    urls = re.findall(r"https://i\.redd\.it/[a-zA-Z0-9]+\.(jpg|png|jpeg)", r.text)
+    script = soup.find("script", id="__NEXT_DATA__")
+    if not script:
+        return {"title": None, "subreddit": None}
 
-    # rebuild full matches (regex only captured extension)
-    full_urls = re.findall(r"https://i\.redd\.it/[^\s\"']+", r.text)
+    data = json.loads(script.string)
 
-    # dedupe
+    post = data["props"]["pageProps"]["post"]["post"]
+
+    return {
+        "title": post.get("title"),
+        "subreddit": post.get("subredditName"),
+    }
+
+
+def parse_html_images(html):
+    # capture i.redd.it assets
+    urls = re.findall(r"https://i\.redd\.it/[^\s\"']+", html)
+
+    # dedupe preserving order
     seen = set()
-    cleaned = []
-    for u in full_urls:
+    out = []
+    for u in urls:
         if u not in seen:
             seen.add(u)
-            cleaned.append(u)
+            out.append(u)
 
-    return cleaned
+    return out
 
 
-def download(session, url, out_path):
+# ----------------------------
+# Downloading
+# ----------------------------
+def download(session, url, path):
     r = session.get(url, stream=True, timeout=60)
     r.raise_for_status()
 
-    with open(out_path, "wb") as f:
+    h = hashlib.sha1()
+
+    with open(path, "wb") as f:
         for chunk in r.iter_content(1024 * 64):
             f.write(chunk)
+            h.update(chunk)
+
+    return h.hexdigest()
 
 
+# ----------------------------
+# Main logic
+# ----------------------------
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python reddit_gallery.py <url>")
+        print("Usage: redditdl <url>")
         sys.exit(1)
 
     url = sys.argv[1]
@@ -130,29 +170,44 @@ def main():
 
     session = get_session()
 
+    meta = {"title": post_id, "subreddit": "unknown"}
     images = None
 
-    # 1. Try JSON (best case)
-    data = try_json(session, post_id)
+    # --- JSON attempt ---
+    data = fetch_json(session, post_id)
+
     if data:
         try:
-            images = parse_gallery_from_json(data)
+            meta, images = parse_json(data)
         except Exception as e:
             print("[!] JSON parse failed:", e)
 
-    # 2. Fallback HTML scraping
+    # --- HTML fallback ---
     if not images:
-        print("[*] Falling back to HTML extraction...")
-        images = extract_from_html(session, post_id)
+        print("[*] Falling back to HTML...")
+        html = fetch_html(session, post_id)
+
+        meta = parse_html_meta(html)
+        images = parse_html_images(html)
 
     if not images:
         print("[-] No images found")
         sys.exit(1)
 
-    out_dir = Path(post_id)
-    out_dir.mkdir(exist_ok=True)
+    title = safe_name(meta["title"])
+    subreddit = meta["subreddit"] or "unknown"
 
-    print(f"[+] Found {len(images)} images")
+    title = safe_name(meta["title"])
+    subreddit = meta["subreddit"] or "unknown"
+
+    base_dir = Path(subreddit)
+    out_dir = base_dir / title
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"[r/{subreddit}] {meta['title']}")
+    print(f"[+] Downloading {len(images)} files")
+
+    hashes = set()
 
     for i, img in enumerate(images, 1):
         ext = img.split("?")[0].split(".")[-1]
@@ -161,11 +216,25 @@ def main():
 
         out_file = out_dir / f"{i:02d}.{ext}"
 
-        print(f"[+] Downloading {out_file}")
-        download(session, img, out_file)
+        try:
+            h = download(session, img, out_file)
 
-    print("[✓] Done")
+            # simple duplicate detection
+            if h in hashes:
+                print(f"[!] Duplicate skipped {out_file.name}")
+                out_file.unlink()
+                continue
+
+            hashes.add(h)
+            print(f"[+] {out_file.name}")
+
+        except Exception as e:
+            print(f"[!] Failed {img}: {e}")
+
+    print(f"[✓] Done → {out_dir}")
 
 
 if __name__ == "__main__":
     main()
+
+
