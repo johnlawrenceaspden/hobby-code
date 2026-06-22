@@ -298,6 +298,7 @@ def main():
     # ==================================================
     # DIRECT IMAGE MODE
     # ==================================================
+
     if "i.redd.it" in url:
         print("[*] Direct image detected")
 
@@ -305,13 +306,18 @@ def main():
         if resolved and "reddit.com" in resolved:
             url = resolved
         else:
-            img_id = url.split("/")[-1].split(".")[0]
+            img_hash = hashlib.sha1(url.encode()).hexdigest()[:10]
 
-            out_dir = Path("direct") / "unknown" / img_id
+            ext = urlparse(url).path.split(".")[-1].lower()
+            if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
+                ext = "jpg"
+
+            out_dir = Path("direct")
             out_dir.mkdir(parents=True, exist_ok=True)
 
-            out_file = out_dir / "01.jpg"
+            out_file = out_dir / f"{img_hash}.{ext}"
 
+            # skip if already fully downloaded
             if file_exists(out_file):
                 print(f"[=] Already exists → {out_file}")
                 return
@@ -319,8 +325,9 @@ def main():
             print("[+] Downloading direct image")
             download(session, url, out_file)
 
-            print(f"[✓] Done → {out_dir}")
+            print(f"[✓] Done → {out_file}")
             return
+
 
     # ==================================================
     # POST MODE
