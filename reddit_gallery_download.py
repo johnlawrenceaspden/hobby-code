@@ -15,13 +15,16 @@ r https://v.redd.it/yu7m1sqb658h1
 
 
 working
+
+
+
 r https://i.redd.it/628wzjftft1h1.png
 
 
 r https://i.redd.it/hrc30eeqqosg1.jpeg
 r https://i.redd.it/o9fu9uw82rvf1.png
 
-
+r https://www.reddit.com/gallery/1ubp2ao
 r https://www.reddit.com/gallery/1tu4cki
 r https://www.reddit.com/gallery/1tyw4xv
 
@@ -36,14 +39,12 @@ r https://www.reddit.com/r/dalle2/comments/1tyw4xv/my_dalle_images_from_2022_hav
 
 
 
-
-
-
 #!/usr/bin/env python3
 
 import re
 import sys
 import json
+import time
 import hashlib
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, unquote
@@ -79,34 +80,7 @@ def get_session():
 
 
 # ======================================================
-# URL NORMALIZATION
-# ======================================================
-def unwrap_media_url(url):
-    if "reddit.com/media" not in url:
-        return url
-
-    try:
-        qs = parse_qs(urlparse(url).query)
-        if "url" in qs:
-            return unquote(qs["url"][0])
-    except Exception:
-        pass
-
-    return url
-
-
-def classify(url):
-    if "i.redd.it" in url:
-        return "image"
-    if "reddit.com/gallery" in url:
-        return "gallery"
-    if "reddit.com/comments" in url:
-        return "post"
-    return "unknown"
-
-
-# ======================================================
-# UTILITIES
+# UTIL
 # ======================================================
 def safe_name(text):
     text = text or "untitled"
@@ -115,19 +89,36 @@ def safe_name(text):
     return text[:80].rstrip(". ")
 
 
-def guess_meta(url, fallback_id):
-    subreddit = "unknown"
-    if "/r/" in url:
-        try:
-            subreddit = url.split("/r/")[1].split("/")[0]
-        except Exception:
-            pass
+def format_size(n):
+    for u in ["B", "KB", "MB", "GB"]:
+        if n < 1024:
+            return f"{n:.1f}{u}"
+        n /= 1024
+    return f"{n:.1f}TB"
 
-    return {"title": fallback_id, "subreddit": subreddit}
+
+def format_speed(n):
+    for u in ["B/s", "KB/s", "MB/s", "GB/s"]:
+        if n < 1024:
+            return f"{n:.1f}{u}"
+        n /= 1024
+    return f"{n:.1f}TB/s"
+
+
+def unwrap_media_url(url):
+    if "reddit.com/media" not in url:
+        return url
+    try:
+        qs = parse_qs(urlparse(url).query)
+        if "url" in qs:
+            return unquote(qs["url"][0])
+    except Exception:
+        pass
+    return url
 
 
 # ======================================================
-# IMAGE → POST RESOLVER (best-effort)
+# IMAGE → POST RESOLVE (best effort)
 # ======================================================
 def resolve_image(session, url):
     headers = {
@@ -141,7 +132,6 @@ def resolve_image(session, url):
     except Exception:
         return None
 
-    # redirect hit
     if "reddit.com/r/" in r.url or "reddit.com/comments/" in r.url:
         return r.url
 
@@ -160,7 +150,7 @@ def resolve_image(session, url):
 
 
 # ======================================================
-# JSON FETCH
+# FETCH JSON
 # ======================================================
 def fetch_json(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}/.json"
@@ -180,14 +170,12 @@ def parse_json(data):
 
     images = []
 
-    # gallery
     for item in post.get("gallery_data", {}).get("items", []):
         mid = item.get("media_id")
         m = post.get("media_metadata", {}).get(mid, {})
         if "s" in m:
             images.append(m["s"]["u"].replace("&amp;", "&"))
 
-    # single image fallback
     if not images and post.get("url"):
         images.append(post["url"])
 
@@ -195,36 +183,16 @@ def parse_json(data):
 
 
 # ======================================================
-# HTML + NEXT_DATA EXTRACTION
+# HTML fallback
 # ======================================================
-def extract_from_html(html):
-    images = set()
+def extract_images(html):
+    imgs = set()
 
-    # classic
-    images.update(re.findall(r"https://i\.redd\.it/[^\s\"']+", html))
-    images.update(re.findall(r"https://preview\.redd\.it/[^\s\"']+", html))
-    images.update(re.findall(r"https://external-preview\.redd\.it/[^\s\"']+", html))
+    imgs.update(re.findall(r"https://i\.redd\.it/[^\s\"']+", html))
+    imgs.update(re.findall(r"https://preview\.redd\.it/[^\s\"']+", html))
+    imgs.update(re.findall(r"https://external-preview\.redd\.it/[^\s\"']+", html))
 
-    return list(images)
-
-
-def extract_from_next_data(html):
-    soup = BeautifulSoup(html, "html.parser")
-    script = soup.find("script", id="__NEXT_DATA__")
-    if not script:
-        return []
-
-    try:
-        data = json.loads(script.string)
-    except Exception:
-        return []
-
-    raw = json.dumps(data)
-
-    return re.findall(
-        r"https://(?:i|preview)\.redd\.it/[^\s\"']+",
-        raw
-    )
+    return list(imgs)
 
 
 def parse_html(session, post_id):
@@ -234,7 +202,6 @@ def parse_html(session, post_id):
 
     soup = BeautifulSoup(html, "html.parser")
 
-    post = {}
     meta = {"title": None, "subreddit": None}
 
     script = soup.find("script", id="__NEXT_DATA__")
@@ -255,33 +222,79 @@ def parse_html(session, post_id):
         except Exception:
             pass
 
-    images = list(set(
-        extract_from_html(html) +
-        extract_from_next_data(html)
-    ))
+    images = extract_images(html)
 
     return meta, images
 
 
 # ======================================================
-# DOWNLOAD
+# DOWNLOAD (RESUME + PROGRESS)
 # ======================================================
 def download(session, url, path):
-    r = session.get(url, stream=True, timeout=60)
-    r.raise_for_status()
+    path = Path(path)
+    tmp = path.with_suffix(path.suffix + ".part")
 
-    h = hashlib.sha1()
+    existing = tmp.stat().st_size if tmp.exists() else 0
 
-    with open(path, "wb") as f:
+    headers = {
+        "User-Agent": HEADERS["User-Agent"],
+    }
+
+    if existing > 0:
+        headers["Range"] = f"bytes={existing}-"
+        print(f"[↻] Resuming {path.name} at {format_size(existing)}")
+
+    r = session.get(url, stream=True, headers=headers, timeout=60)
+
+    if r.status_code not in (200, 206):
+        r.raise_for_status()
+
+    total = r.headers.get("Content-Length")
+    if total:
+        total = int(total) + existing
+
+    mode = "ab" if existing else "wb"
+
+    start = time.time()
+    downloaded = existing
+    last = time.time()
+
+    with open(tmp, mode) as f:
         for chunk in r.iter_content(1024 * 64):
-            f.write(chunk)
-            h.update(chunk)
+            if not chunk:
+                continue
 
-    return h.hexdigest()
+            f.write(chunk)
+            downloaded += len(chunk)
+
+            now = time.time()
+
+            if now - last > 0.4:
+                elapsed = now - start
+                speed = (downloaded - existing) / elapsed if elapsed else 0
+
+                if total:
+                    pct = downloaded / total * 100
+                    msg = (
+                        f"[↓] {format_size(downloaded)}/{format_size(total)} "
+                        f"({pct:.1f}%) @ {format_speed(speed)}"
+                    )
+                else:
+                    msg = f"[↓] {format_size(downloaded)} @ {format_speed(speed)}"
+
+                sys.stdout.write("\r" + msg + " " * 10)
+                sys.stdout.flush()
+                last = now
+
+    print()
+
+    tmp.rename(path)
+
+    return True
 
 
 # ======================================================
-# MAIN PIPELINE
+# MAIN
 # ======================================================
 def main():
     if len(sys.argv) != 2:
@@ -291,82 +304,73 @@ def main():
     url = unwrap_media_url(sys.argv[1])
     session = get_session()
 
-    images = None
-    meta = None
-
-    kind = classify(url)
-
-    # ==================================================
-    # IMAGE MODE
-    # ==================================================
-    if kind == "image":
+    # --------------------------------------------------
+    # DIRECT IMAGE MODE
+    # --------------------------------------------------
+    if "i.redd.it" in url:
         print("[*] Direct image detected")
 
         resolved = resolve_image(session, url)
 
         if resolved and "reddit.com" in resolved:
-            print(f"[+] Resolved → {resolved}")
             url = resolved
-            kind = classify(url)
         else:
-            print("[!] No post found → direct mode")
-
             img_id = url.split("/")[-1].split(".")[0]
-            meta = guess_meta(url, img_id)
-            images = [url]
+            meta = {"title": img_id, "subreddit": "direct"}
 
-    # ==================================================
-    # DIRECT DOWNLOAD MODE
-    # ==================================================
-    if images is not None:
-        title = safe_name(meta["title"])
-        subreddit = meta["subreddit"]
+            out_dir = Path("direct") / "unknown" / img_id
+            out_dir.mkdir(parents=True, exist_ok=True)
 
-        out_dir = Path("direct") / subreddit / title
-        out_dir.mkdir(parents=True, exist_ok=True)
+            out_file = out_dir / "01.jpg"
 
-        out_file = out_dir / "01.jpg"
+            print("[+] Downloading direct image")
+            download(session, url, out_file)
 
-        print("[+] Downloading direct image")
-        download(session, url, out_file)
+            print(f"[✓] Done → {out_dir}")
+            return
 
-        print(f"[✓] Done → {out_dir}")
-        return
-
-    # ==================================================
+    # --------------------------------------------------
     # POST MODE
-    # ==================================================
-    post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url).group(1)
-    meta = guess_meta(url, post_id)
+    # --------------------------------------------------
+    post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
+    if not post_id:
+        print("Invalid URL")
+        sys.exit(1)
+
+    post_id = post_id.group(1)
+
+    meta = {"title": post_id, "subreddit": "unknown"}
+
+    images = None
 
     data = fetch_json(session, post_id)
 
     if data:
         try:
-            meta_json, images = parse_json(data)
-            meta.update({k: v for k, v in meta_json.items() if v})
+            m, images = parse_json(data)
+            meta.update({k: v for k, v in m.items() if v})
         except Exception:
             pass
 
     if not images:
-        print("[*] Falling back to HTML + NEXT_DATA")
-        meta_html, images = parse_html(session, post_id)
-        meta.update({k: v for k, v in meta_html.items() if v})
+        print("[*] HTML fallback")
+        m, images = parse_html(session, post_id)
+        meta.update({k: v for k, v in m.items() if v})
 
     if not images:
         print("[-] No images found")
         sys.exit(1)
 
-    # ==================================================
+    # --------------------------------------------------
     # OUTPUT
-    # ==================================================
-    title = safe_name(meta.get("title"))
-    subreddit = meta.get("subreddit") or "unknown"
+    # --------------------------------------------------
+    title = safe_name(meta["title"])
+    subreddit = meta["subreddit"] or "unknown"
 
     out_dir = Path(subreddit) / title
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[r/{subreddit}] {meta.get('title')}")
+    print(f"[r/{subreddit}] {meta['title']}")
     print(f"[+] Downloading {len(images)} file(s)")
 
     hashes = set()
@@ -376,17 +380,12 @@ def main():
         if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
             ext = "jpg"
 
-        out_file = out_dir / f"{i:02d}.{ext}"
+        img_id = hashlib.sha1(img.encode()).hexdigest()[:10]
+
+        out_file = out_dir / f"{i:02d}_{img_id}.{ext}"
 
         try:
-            h = download(session, img, out_file)
-
-            if h in hashes:
-                out_file.unlink()
-                continue
-
-            hashes.add(h)
-            print(f"[+] {out_file.name}")
+            download(session, img, out_file)
 
         except Exception as e:
             print(f"[!] Failed {img}: {e}")
@@ -396,3 +395,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
