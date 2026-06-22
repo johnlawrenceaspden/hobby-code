@@ -371,13 +371,24 @@ def process(url, session):
     print(f"[r/{subreddit}] {meta['title']}")
     print(f"[+] Downloading {len(images)} file(s)")
 
+
     for img, img_id, ext in images:
 
+        # ==================================================
+        # DIRECT MODE → FLAT OUTPUT
+        # ==================================================
         if meta["subreddit"] == "direct":
+            out_dir = Path("direct")
+            out_dir.mkdir(parents=True, exist_ok=True)
             out_file = out_dir / f"{img_id}.{ext}"
+
+        # ==================================================
+        # NORMAL MODE → STRUCTURED OUTPUT
+        # ==================================================
         else:
             out_file = out_dir / f"{img_id}.{ext}"
 
+        # skip existing
         if file_exists(out_file):
             print(f"[=] Skipping {out_file.name}")
             continue
@@ -386,7 +397,7 @@ def process(url, session):
             download(session, img, out_file)
         except Exception as e:
             print(f"[!] Failed {img}: {e}")
-
+    
     print(f"[✓] Done → {out_dir}")
 
 
