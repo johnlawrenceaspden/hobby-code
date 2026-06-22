@@ -9,7 +9,6 @@
 
 # pip install beautifulsoup4 --break-system-packages
 
-
 #!/usr/bin/env python3
 
 import re
@@ -49,7 +48,7 @@ def get_session():
 
 
 # ----------------------------
-# Parsing helpers
+# URL helpers
 # ----------------------------
 def extract_post_id(url):
     m = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
@@ -58,14 +57,65 @@ def extract_post_id(url):
     return m.group(1)
 
 
+def is_direct_image_url(url):
+    return "i.redd.it/" in url
+
+
 def safe_name(text):
     text = text or "untitled"
     text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
-    return text.strip()[:80]
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:80].rstrip(". ")
+
+
+def guess_from_url(url, post_id):
+    parts = url.split("/")
+    subreddit = "unknown"
+
+    if "/r/" in url:
+        try:
+            subreddit = parts[parts.index("r") + 1]
+        except Exception:
+            pass
+
+    return {
+        "title": post_id,
+        "subreddit": subreddit,
+    }
 
 
 # ----------------------------
-# JSON mode (best)
+# Resolve i.redd.it → Reddit post
+# ----------------------------
+def resolve_reddit_post_from_image(session, url):
+    try:
+        r = session.get(url, timeout=30)
+    except Exception:
+        return None
+
+    html = r.text
+    soup = BeautifulSoup(html, "html.parser")
+
+    # 1. OG canonical URL
+    tag = soup.find("meta", property="og:url")
+    if tag and tag.get("content"):
+        return tag["content"]
+
+    # 2. direct reddit link in HTML
+    m = re.search(r"https://www\.reddit\.com/r/[^\"'\s]+", html)
+    if m:
+        return m.group(0)
+
+    # 3. embedded permalink JSON
+    m = re.search(r"\"permalink\":\"(\/r\/[^\"']+)\"", html)
+    if m:
+        return "https://www.reddit.com" + m.group(1)
+
+    return None
+
+
+# ----------------------------
+# JSON mode
 # ----------------------------
 def fetch_json(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}/.json"
@@ -122,8 +172,8 @@ def parse_html_meta(html):
             .get("pageProps", {})
             .get("post", {})
             .get("post", {})
-    )
-    
+    ) or {}
+
     return {
         "title": post.get("title"),
         "subreddit": post.get("subredditName"),
@@ -131,10 +181,8 @@ def parse_html_meta(html):
 
 
 def parse_html_images(html):
-    # capture i.redd.it assets
-    urls = re.findall(r"https://i\.redd\.it/[^\s\"']+", html)
+    urls = re.findall(r"https://i\.redd\.it/[a-zA-Z0-9_/.-]+\.(?:jpg|jpeg|png|webp|gif)", html)
 
-    # dedupe preserving order
     seen = set()
     out = []
     for u in urls:
@@ -146,7 +194,7 @@ def parse_html_images(html):
 
 
 # ----------------------------
-# Downloading
+# Download
 # ----------------------------
 def download(session, url, path):
     r = session.get(url, stream=True, timeout=60)
@@ -163,7 +211,7 @@ def download(session, url, path):
 
 
 # ----------------------------
-# Main logic
+# Main
 # ----------------------------
 def main():
     if len(sys.argv) != 2:
@@ -171,57 +219,86 @@ def main():
         sys.exit(1)
 
     url = sys.argv[1]
-    post_id = extract_post_id(url)
-
     session = get_session()
 
-    meta = {"title": post_id, "subreddit": "unknown"}
     images = None
+    meta = None
 
-    # --- JSON attempt ---
-    data = fetch_json(session, post_id)
+    # ----------------------------
+    # CASE 1: direct image URL
+    # ----------------------------
+    if is_direct_image_url(url):
+        print("[*] Direct i.redd.it image detected")
 
-    if data:
-        try:
-            meta, images = parse_json(data)
-        except Exception as e:
-            print("[!] JSON parse failed:", e)
+        resolved = resolve_reddit_post_from_image(session, url)
 
-    # --- HTML fallback ---
-    if not images:
-        print("[*] Falling back to HTML...")
-        html = fetch_html(session, post_id)
+        if resolved:
+            print(f"[+] Resolved to: {resolved}")
+            url = resolved
+        else:
+            print("[!] Could not resolve post — downloading directly")
 
-        meta = parse_html_meta(html)
-        images = parse_html_images(html)
+            meta = guess_from_url(url, url.split("/")[-1].split(".")[0])
+            images = [url]
+
+    # ----------------------------
+    # CASE 2: normal Reddit post
+    # ----------------------------
+    if images is None:
+        post_id = extract_post_id(url)
+
+        meta = guess_from_url(url, post_id)
+
+        data = fetch_json(session, post_id)
+
+        if data:
+            try:
+                meta_json, images = parse_json(data)
+                meta.update({k: v for k, v in meta_json.items() if v})
+            except Exception as e:
+                print("[!] JSON failed:", e)
+
+        if not images:
+            print("[*] Falling back to HTML...")
+            html = fetch_html(session, post_id)
+
+            meta_html = parse_html_meta(html)
+            images = parse_html_images(html)
+
+            meta.update({k: v for k, v in meta_html.items() if v})
 
     if not images:
         print("[-] No images found")
         sys.exit(1)
 
-    title = safe_name(meta["title"])
-    subreddit = meta["subreddit"] or "unknown"
+    # ----------------------------
+    # Output folder
+    # ----------------------------
+    title = safe_name(meta.get("title"))
+    subreddit = meta.get("subreddit") or "unknown"
 
-    out_dir = Path(subreddit) / f"{title}_{post_id}"
-    
+    out_dir = Path(subreddit) / f"{title}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[r/{subreddit}] {meta['title']}")
-    print(f"[+] Downloading {len(images)} files")
+    print(f"[r/{subreddit}] {meta.get('title')}")
+    print(f"[+] Downloading {len(images)} file(s)")
 
     hashes = set()
 
+    # ----------------------------
+    # Download loop
+    # ----------------------------
     for i, img in enumerate(images, 1):
-        ext = img.split("?")[0].split(".")[-1]
-        if len(ext) > 5:
-            ext = "jpg"
 
-        out_file = out_dir / f"{i:02d}.{ext}"
+        path_part = img.split("?")[0].split(".")[-1].lower()
+        if path_part not in {"jpg", "jpeg", "png", "webp", "gif"}:
+            path_part = "jpg"
+
+        out_file = out_dir / f"{i:02d}.{path_part}"
 
         try:
             h = download(session, img, out_file)
 
-            # simple duplicate detection
             if h in hashes:
                 print(f"[!] Duplicate skipped {out_file.name}")
                 out_file.unlink()
@@ -238,5 +315,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
