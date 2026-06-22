@@ -9,6 +9,34 @@
 
 # pip install beautifulsoup4 --break-system-packages
 
+"""
+broken
+r https://v.redd.it/yu7m1sqb658h1
+
+
+working
+r https://i.redd.it/628wzjftft1h1.png
+
+
+r https://i.redd.it/hrc30eeqqosg1.jpeg
+r https://i.redd.it/o9fu9uw82rvf1.png
+
+
+r https://www.reddit.com/gallery/1tu4cki
+r https://www.reddit.com/gallery/1tyw4xv
+
+r https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fmnjzwo59eg1h1.png
+
+r https://www.reddit.com/r/dalle2/comments/1temwv1/dalle2_revival/
+r https://www.reddit.com/r/dalle2/comments/1tevijp/any_suggestions_for_a_model_more_like_the/
+r https://www.reddit.com/r/dalle2/comments/1tgaphy/i_made_an_ai_image_that_anyone_can_add_to/
+r https://www.reddit.com/r/dalle2/comments/1tyw4xv/my_dalle_images_from_2022_havent_used_it_since/
+"""
+
+
+
+
+
 
 
 #!/usr/bin/env python3
@@ -18,7 +46,7 @@ import sys
 import json
 import hashlib
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs, unquote
 
 import requests
 import browser_cookie3
@@ -51,9 +79,23 @@ def get_session():
 
 
 # ======================================================
-# CLASSIFICATION
+# URL NORMALIZATION
 # ======================================================
-def classify_url(url):
+def unwrap_media_url(url):
+    if "reddit.com/media" not in url:
+        return url
+
+    try:
+        qs = parse_qs(urlparse(url).query)
+        if "url" in qs:
+            return unquote(qs["url"][0])
+    except Exception:
+        pass
+
+    return url
+
+
+def classify(url):
     if "i.redd.it" in url:
         return "image"
     if "reddit.com/gallery" in url:
@@ -61,13 +103,6 @@ def classify_url(url):
     if "reddit.com/comments" in url:
         return "post"
     return "unknown"
-
-
-def extract_post_id(url):
-    m = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
-    if not m:
-        raise ValueError("Invalid Reddit post URL")
-    return m.group(1)
 
 
 # ======================================================
@@ -80,7 +115,7 @@ def safe_name(text):
     return text[:80].rstrip(". ")
 
 
-def guess_from_url(url, fallback_id):
+def guess_meta(url, fallback_id):
     subreddit = "unknown"
     if "/r/" in url:
         try:
@@ -88,16 +123,13 @@ def guess_from_url(url, fallback_id):
         except Exception:
             pass
 
-    return {
-        "title": fallback_id,
-        "subreddit": subreddit,
-    }
+    return {"title": fallback_id, "subreddit": subreddit}
 
 
 # ======================================================
-# IMAGE → POST RESOLUTION (best-effort)
+# IMAGE → POST RESOLVER (best-effort)
 # ======================================================
-def resolve_image_to_post(session, url):
+def resolve_image(session, url):
     headers = {
         "User-Agent": HEADERS["User-Agent"],
         "Accept": "text/html,application/xhtml+xml",
@@ -109,7 +141,7 @@ def resolve_image_to_post(session, url):
     except Exception:
         return None
 
-    # If redirected directly to Reddit post
+    # redirect hit
     if "reddit.com/r/" in r.url or "reddit.com/comments/" in r.url:
         return r.url
 
@@ -128,7 +160,7 @@ def resolve_image_to_post(session, url):
 
 
 # ======================================================
-# FETCH POST DATA
+# JSON FETCH
 # ======================================================
 def fetch_json(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}/.json"
@@ -148,50 +180,85 @@ def parse_json(data):
 
     images = []
 
-    gallery = post.get("gallery_data", {}).get("items", [])
-    media = post.get("media_metadata", {})
+    # gallery
+    for item in post.get("gallery_data", {}).get("items", []):
+        mid = item.get("media_id")
+        m = post.get("media_metadata", {}).get(mid, {})
+        if "s" in m:
+            images.append(m["s"]["u"].replace("&amp;", "&"))
 
-    for item in gallery:
-        mid = item["media_id"]
-        m = media.get(mid, {})
-        if "s" not in m:
-            continue
-        images.append(m["s"]["u"].replace("&amp;", "&"))
+    # single image fallback
+    if not images and post.get("url"):
+        images.append(post["url"])
 
     return meta, images
 
 
-def fetch_html(session, post_id):
-    url = f"https://www.reddit.com/comments/{post_id}"
-    r = session.get(url, timeout=30)
-    return r.text
+# ======================================================
+# HTML + NEXT_DATA EXTRACTION
+# ======================================================
+def extract_from_html(html):
+    images = set()
+
+    # classic
+    images.update(re.findall(r"https://i\.redd\.it/[^\s\"']+", html))
+    images.update(re.findall(r"https://preview\.redd\.it/[^\s\"']+", html))
+    images.update(re.findall(r"https://external-preview\.redd\.it/[^\s\"']+", html))
+
+    return list(images)
 
 
-def parse_html(html):
+def extract_from_next_data(html):
     soup = BeautifulSoup(html, "html.parser")
-
     script = soup.find("script", id="__NEXT_DATA__")
     if not script:
-        return {"title": None, "subreddit": None}, []
+        return []
 
-    data = json.loads(script.string)
+    try:
+        data = json.loads(script.string)
+    except Exception:
+        return []
 
-    post = (
-        data.get("props", {})
-            .get("pageProps", {})
-            .get("post", {})
-            .get("post", {})
-    ) or {}
+    raw = json.dumps(data)
 
-    meta = {
-        "title": post.get("title"),
-        "subreddit": post.get("subredditName"),
-    }
-
-    images = re.findall(
-        r"https://i\.redd\.it/[a-zA-Z0-9_/.-]+\.(?:jpg|jpeg|png|webp|gif)",
-        html
+    return re.findall(
+        r"https://(?:i|preview)\.redd\.it/[^\s\"']+",
+        raw
     )
+
+
+def parse_html(session, post_id):
+    url = f"https://www.reddit.com/comments/{post_id}"
+    r = session.get(url, timeout=30)
+    html = r.text
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    post = {}
+    meta = {"title": None, "subreddit": None}
+
+    script = soup.find("script", id="__NEXT_DATA__")
+    if script:
+        try:
+            data = json.loads(script.string)
+            post = (
+                data.get("props", {})
+                    .get("pageProps", {})
+                    .get("post", {})
+                    .get("post", {})
+            ) or {}
+
+            meta = {
+                "title": post.get("title"),
+                "subreddit": post.get("subredditName"),
+            }
+        except Exception:
+            pass
+
+    images = list(set(
+        extract_from_html(html) +
+        extract_from_next_data(html)
+    ))
 
     return meta, images
 
@@ -221,34 +288,35 @@ def main():
         print("Usage: redditdl <url>")
         sys.exit(1)
 
-    url = sys.argv[1]
+    url = unwrap_media_url(sys.argv[1])
     session = get_session()
 
-    kind = classify_url(url)
-    meta = None
     images = None
+    meta = None
+
+    kind = classify(url)
 
     # ==================================================
-    # STEP 1: IMAGE INPUT
+    # IMAGE MODE
     # ==================================================
     if kind == "image":
         print("[*] Direct image detected")
 
-        resolved = resolve_image_to_post(session, url)
+        resolved = resolve_image(session, url)
 
         if resolved and "reddit.com" in resolved:
             print(f"[+] Resolved → {resolved}")
             url = resolved
-            kind = classify_url(url)
+            kind = classify(url)
         else:
             print("[!] No post found → direct mode")
 
             img_id = url.split("/")[-1].split(".")[0]
-            meta = guess_from_url(url, img_id)
+            meta = guess_meta(url, img_id)
             images = [url]
 
     # ==================================================
-    # STEP 2: DIRECT MODE
+    # DIRECT DOWNLOAD MODE
     # ==================================================
     if images is not None:
         title = safe_name(meta["title"])
@@ -266,10 +334,10 @@ def main():
         return
 
     # ==================================================
-    # STEP 3: REDDIT POST MODE
+    # POST MODE
     # ==================================================
-    post_id = extract_post_id(url)
-    meta = guess_from_url(url, post_id)
+    post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url).group(1)
+    meta = guess_meta(url, post_id)
 
     data = fetch_json(session, post_id)
 
@@ -281,9 +349,8 @@ def main():
             pass
 
     if not images:
-        print("[*] Falling back to HTML")
-        html = fetch_html(session, post_id)
-        meta_html, images = parse_html(html)
+        print("[*] Falling back to HTML + NEXT_DATA")
+        meta_html, images = parse_html(session, post_id)
         meta.update({k: v for k, v in meta_html.items() if v})
 
     if not images:
