@@ -77,27 +77,8 @@ def get_session():
 # ======================================================
 # HELPERS
 # ======================================================
-def safe_name(text):
-    text = text or "untitled"
-    text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text[:80].rstrip(". ")
-
-
-def format_size(n):
-    for u in ["B", "KB", "MB", "GB"]:
-        if n < 1024:
-            return f"{n:.1f}{u}"
-        n /= 1024
-    return f"{n:.1f}TB"
-
-
-def format_speed(n):
-    for u in ["B/s", "KB/s", "MB/s", "GB/s"]:
-        if n < 1024:
-            return f"{n:.1f}{u}"
-        n /= 1024
-    return f"{n:.1f}TB/s"
+def file_exists(path: Path):
+    return path.exists() and path.stat().st_size > 0
 
 
 def unwrap_media_url(url):
@@ -112,12 +93,44 @@ def unwrap_media_url(url):
     return url
 
 
-def file_exists(path: Path):
-    return path.exists() and path.stat().st_size > 0
+def safe_name(text):
+    text = text or "untitled"
+    text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:80].rstrip(". ")
 
 
 # ======================================================
-# IMAGE → POST RESOLVE
+# CANONICAL IMAGE ID RESOLUTION
+# ======================================================
+def extract_reddit_image_id(url):
+    """
+    Try to extract stable ID from Reddit CDN URLs.
+    Works for:
+    - i.redd.it/<id>.png
+    - preview.redd.it/<id>-...jpg
+    - external-preview.redd.it/<id>-...
+    """
+
+    path = urlparse(url).path
+    filename = path.split("/")[-1]
+
+    # strip extension
+    base = filename.split(".")[0]
+
+    # preview/external often have suffixes like:
+    # abc123-LQ.jpg → abc123
+    base = base.split("-")[0]
+
+    # sanity check: reddit media IDs are usually alphanumeric
+    if re.match(r"^[a-zA-Z0-9]+$", base):
+        return base
+
+    return hashlib.sha1(url.encode()).hexdigest()[:10]
+
+
+# ======================================================
+# RESOLVE IMAGE → POST
 # ======================================================
 def resolve_image(session, url):
     headers = {
@@ -267,11 +280,12 @@ def download(session, url, path: Path):
                 if total:
                     pct = downloaded / total * 100
                     msg = (
-                        f"[↓] {format_size(downloaded)}/{format_size(total)} "
-                        f"({pct:.1f}%) @ {format_speed(speed)}"
+                        f"[↓] {downloaded/1024/1024:.1f}MB/"
+                        f"{total/1024/1024:.1f}MB "
+                        f"({pct:.1f}%) @ {speed/1024:.1f}KB/s"
                     )
                 else:
-                    msg = f"[↓] {format_size(downloaded)} @ {format_speed(speed)}"
+                    msg = f"[↓] {downloaded/1024/1024:.1f}MB @ {speed/1024:.1f}KB/s"
 
                 print("\r" + msg, end="", flush=True)
                 last = now
@@ -282,69 +296,42 @@ def download(session, url, path: Path):
 
 
 # ======================================================
-# MAIN
+# PIPELINE
 # ======================================================
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: redditdl <url>")
-        sys.exit(1)
+def build_image_list(url, session):
+    url = unwrap_media_url(url)
 
-    url = unwrap_media_url(sys.argv[1])
-    session = get_session()
+    # -------------------------
+    # DIRECT IMAGE
+    # -------------------------
+    if "i.redd.it" in url or "preview.redd.it" in url:
+        img_id = extract_reddit_image_id(url)
+        ext = urlparse(url).path.split(".")[-1].lower()
+        if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
+            ext = "jpg"
 
-    images = None
-    meta = {"title": None, "subreddit": "unknown"}
+        meta = {"title": img_id, "subreddit": "direct"}
+        return meta, [(url, img_id, ext)]
 
-    # ==================================================
-    # DIRECT IMAGE MODE
-    # ==================================================
-
-    if "i.redd.it" in url:
-        print("[*] Direct image detected")
-
-        resolved = resolve_image(session, url)
-        if resolved and "reddit.com" in resolved:
-            url = resolved
-        else:
-            img_hash = hashlib.sha1(url.encode()).hexdigest()[:10]
-
-            ext = urlparse(url).path.split(".")[-1].lower()
-            if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
-                ext = "jpg"
-
-            out_dir = Path("direct")
-            out_dir.mkdir(parents=True, exist_ok=True)
-
-            out_file = out_dir / f"{img_hash}.{ext}"
-
-            # skip if already fully downloaded
-            if file_exists(out_file):
-                print(f"[=] Already exists → {out_file}")
-                return
-
-            print("[+] Downloading direct image")
-            download(session, url, out_file)
-
-            print(f"[✓] Done → {out_file}")
-            return
-
-
-    # ==================================================
-    # POST MODE
-    # ==================================================
+    # -------------------------
+    # POST / GALLERY
+    # -------------------------
     post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
     if not post_id:
-        print("Invalid URL")
-        sys.exit(1)
+        return {"title": "unknown", "subreddit": "unknown"}, []
 
     post_id = post_id.group(1)
+
+    meta = {"title": post_id, "subreddit": "unknown"}
+    images = []
 
     data = fetch_json(session, post_id)
 
     if data:
         try:
-            m, images = parse_json(data)
+            m, imgs = parse_json(data)
             meta.update({k: v for k, v in m.items() if v})
+            images = imgs
         except Exception:
             pass
 
@@ -352,6 +339,24 @@ def main():
         print("[*] HTML fallback")
         m, images = parse_html(session, post_id)
         meta.update({k: v for k, v in m.items() if v})
+
+    # normalize images
+    out = []
+    for img in images:
+        img_id = extract_reddit_image_id(img)
+        ext = urlparse(img).path.split(".")[-1].lower()
+        if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
+            ext = "jpg"
+        out.append((img, img_id, ext))
+
+    return meta, out
+
+
+# ======================================================
+# MAIN PROCESSOR
+# ======================================================
+def process(url, session):
+    meta, images = build_image_list(url, session)
 
     if not images:
         print("[-] No images found")
@@ -363,20 +368,15 @@ def main():
     out_dir = Path(subreddit) / title
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[r/{subreddit}] {meta.get('title')}")
+    print(f"[r/{subreddit}] {meta['title']}")
     print(f"[+] Downloading {len(images)} file(s)")
 
-    hashes = set()
+    for img, img_id, ext in images:
 
-    for i, img in enumerate(images, 1):
-
-        ext = urlparse(img).path.split(".")[-1].lower()
-        if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
-            ext = "jpg"
-
-        img_id = hashlib.sha1(img.encode()).hexdigest()[:10]
-
-        out_file = out_dir / f"{i:02d}_{img_id}.{ext}"
+        if meta["subreddit"] == "direct":
+            out_file = out_dir / f"{img_id}.{ext}"
+        else:
+            out_file = out_dir / f"{img_id}.{ext}"
 
         if file_exists(out_file):
             print(f"[=] Skipping {out_file.name}")
@@ -390,6 +390,17 @@ def main():
     print(f"[✓] Done → {out_dir}")
 
 
+# ======================================================
+# MAIN
+# ======================================================
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: redditdl <url>")
+        sys.exit(1)
+
+    session = get_session()
+    process(sys.argv[1], session)
+
+
 if __name__ == "__main__":
     main()
-
