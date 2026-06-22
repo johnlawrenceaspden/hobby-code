@@ -19,8 +19,6 @@ working
 
 
 r https://i.redd.it/628wzjftft1h1.png
-
-
 r https://i.redd.it/hrc30eeqqosg1.jpeg
 r https://i.redd.it/o9fu9uw82rvf1.png
 
