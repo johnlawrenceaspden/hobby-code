@@ -34,9 +34,6 @@ r https://www.reddit.com/r/dalle2/comments/1tgaphy/i_made_an_ai_image_that_anyon
 r https://www.reddit.com/r/dalle2/comments/1tyw4xv/my_dalle_images_from_2022_havent_used_it_since/
 """
 
-
-
-
 #!/usr/bin/env python3
 
 import re
@@ -78,7 +75,7 @@ def get_session():
 
 
 # ======================================================
-# UTIL
+# HELPERS
 # ======================================================
 def safe_name(text):
     text = text or "untitled"
@@ -115,8 +112,12 @@ def unwrap_media_url(url):
     return url
 
 
+def file_exists(path: Path):
+    return path.exists() and path.stat().st_size > 0
+
+
 # ======================================================
-# IMAGE → POST RESOLVE (best effort)
+# IMAGE → POST RESOLVE
 # ======================================================
 def resolve_image(session, url):
     headers = {
@@ -148,7 +149,7 @@ def resolve_image(session, url):
 
 
 # ======================================================
-# FETCH JSON
+# JSON PARSER
 # ======================================================
 def fetch_json(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}/.json"
@@ -181,7 +182,7 @@ def parse_json(data):
 
 
 # ======================================================
-# HTML fallback
+# HTML FALLBACK
 # ======================================================
 def extract_images(html):
     imgs = set()
@@ -198,9 +199,9 @@ def parse_html(session, post_id):
     r = session.get(url, timeout=30)
     html = r.text
 
-    soup = BeautifulSoup(html, "html.parser")
-
     meta = {"title": None, "subreddit": None}
+
+    soup = BeautifulSoup(html, "html.parser")
 
     script = soup.find("script", id="__NEXT_DATA__")
     if script:
@@ -220,27 +221,22 @@ def parse_html(session, post_id):
         except Exception:
             pass
 
-    images = extract_images(html)
-
-    return meta, images
+    return meta, extract_images(html)
 
 
 # ======================================================
 # DOWNLOAD (RESUME + PROGRESS)
 # ======================================================
-def download(session, url, path):
-    path = Path(path)
+def download(session, url, path: Path):
     tmp = path.with_suffix(path.suffix + ".part")
 
     existing = tmp.stat().st_size if tmp.exists() else 0
 
-    headers = {
-        "User-Agent": HEADERS["User-Agent"],
-    }
+    headers = {"User-Agent": HEADERS["User-Agent"]}
 
     if existing > 0:
         headers["Range"] = f"bytes={existing}-"
-        print(f"[↻] Resuming {path.name} at {format_size(existing)}")
+        print(f"[↻] Resuming {path.name}")
 
     r = session.get(url, stream=True, headers=headers, timeout=60)
 
@@ -251,13 +247,11 @@ def download(session, url, path):
     if total:
         total = int(total) + existing
 
-    mode = "ab" if existing else "wb"
-
     start = time.time()
     downloaded = existing
     last = time.time()
 
-    with open(tmp, mode) as f:
+    with open(tmp, "ab" if existing else "wb") as f:
         for chunk in r.iter_content(1024 * 64):
             if not chunk:
                 continue
@@ -268,8 +262,7 @@ def download(session, url, path):
             now = time.time()
 
             if now - last > 0.4:
-                elapsed = now - start
-                speed = (downloaded - existing) / elapsed if elapsed else 0
+                speed = (downloaded - existing) / (now - start) if start else 0
 
                 if total:
                     pct = downloaded / total * 100
@@ -280,15 +273,12 @@ def download(session, url, path):
                 else:
                     msg = f"[↓] {format_size(downloaded)} @ {format_speed(speed)}"
 
-                sys.stdout.write("\r" + msg + " " * 10)
-                sys.stdout.flush()
+                print("\r" + msg, end="", flush=True)
                 last = now
 
     print()
 
     tmp.rename(path)
-
-    return True
 
 
 # ======================================================
@@ -302,24 +292,29 @@ def main():
     url = unwrap_media_url(sys.argv[1])
     session = get_session()
 
-    # --------------------------------------------------
+    images = None
+    meta = {"title": None, "subreddit": "unknown"}
+
+    # ==================================================
     # DIRECT IMAGE MODE
-    # --------------------------------------------------
+    # ==================================================
     if "i.redd.it" in url:
         print("[*] Direct image detected")
 
         resolved = resolve_image(session, url)
-
         if resolved and "reddit.com" in resolved:
             url = resolved
         else:
             img_id = url.split("/")[-1].split(".")[0]
-            meta = {"title": img_id, "subreddit": "direct"}
 
             out_dir = Path("direct") / "unknown" / img_id
             out_dir.mkdir(parents=True, exist_ok=True)
 
             out_file = out_dir / "01.jpg"
+
+            if file_exists(out_file):
+                print(f"[=] Already exists → {out_file}")
+                return
 
             print("[+] Downloading direct image")
             download(session, url, out_file)
@@ -327,19 +322,15 @@ def main():
             print(f"[✓] Done → {out_dir}")
             return
 
-    # --------------------------------------------------
+    # ==================================================
     # POST MODE
-    # --------------------------------------------------
+    # ==================================================
     post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
     if not post_id:
         print("Invalid URL")
         sys.exit(1)
 
     post_id = post_id.group(1)
-
-    meta = {"title": post_id, "subreddit": "unknown"}
-
-    images = None
 
     data = fetch_json(session, post_id)
 
@@ -359,21 +350,19 @@ def main():
         print("[-] No images found")
         sys.exit(1)
 
-    # --------------------------------------------------
-    # OUTPUT
-    # --------------------------------------------------
     title = safe_name(meta["title"])
     subreddit = meta["subreddit"] or "unknown"
 
     out_dir = Path(subreddit) / title
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[r/{subreddit}] {meta['title']}")
+    print(f"[r/{subreddit}] {meta.get('title')}")
     print(f"[+] Downloading {len(images)} file(s)")
 
     hashes = set()
 
     for i, img in enumerate(images, 1):
+
         ext = urlparse(img).path.split(".")[-1].lower()
         if ext not in {"jpg", "jpeg", "png", "webp", "gif"}:
             ext = "jpg"
@@ -382,9 +371,12 @@ def main():
 
         out_file = out_dir / f"{i:02d}_{img_id}.{ext}"
 
+        if file_exists(out_file):
+            print(f"[=] Skipping {out_file.name}")
+            continue
+
         try:
             download(session, img, out_file)
-
         except Exception as e:
             print(f"[!] Failed {img}: {e}")
 
@@ -393,5 +385,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
