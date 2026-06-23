@@ -463,6 +463,9 @@ def process(url, session):
     """
 
     meta, images = build_image_list(url, session)
+    print(f"{meta=}")
+    print(f"[meta] {meta}")
+    print(images)
 
     if not images:
         print("[-] No images found")
@@ -474,8 +477,10 @@ def process(url, session):
     out_dir = Path(subreddit) / title
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    print(f"[URL] {url}")
     print(f"[r/{subreddit}] {meta['title']}")
     print(f"[+] Downloading {len(images)} file(s)")
+    print(f"[→] Output directory: {out_dir}")
 
 
     for img, img_id, ext in images:
