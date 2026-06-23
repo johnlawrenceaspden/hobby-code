@@ -480,8 +480,18 @@ def process(url, session):
     print(f"[URL] {url}")
     print(f"[r/{subreddit}] {meta['title']}")
     print(f"[+] Downloading {len(images)} file(s)")
+    for _, img_id, ext in images:
+        print(f"    - {img_id}.{ext}")
     print(f"[→] Output directory: {out_dir}")
 
+    print()
+    print("[SUMMARY]")
+    print(f"  Source URL : {url}")
+    print(f"  Subreddit  : {subreddit}")
+    print(f"  Title      : {title}")
+    print(f"  Output Dir : {out_dir}")
+    print(f"  Files      : {len(images)}")
+    print()
 
     for img, img_id, ext in images:
 
@@ -501,6 +511,8 @@ def process(url, session):
             continue
 
         try:
+            print(f"[>] Downloading {img}")
+            print(f"    → {out_file}")
             download(session, img, out_file)
         except Exception as e:
             print(f"[!] Failed {img}: {e}")
