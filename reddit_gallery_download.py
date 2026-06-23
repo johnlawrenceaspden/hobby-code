@@ -10,6 +10,7 @@
 # pip install beautifulsoup4 --break-system-packages
 
 """
+reddit image downloader
 broken
 r https://v.redd.it/yu7m1sqb658h1
 
@@ -17,11 +18,22 @@ r https://v.redd.it/yu7m1sqb658h1
 working
 
 
+This script downloads images from Reddit posts, galleries, and direct image URLs.
 
+SUPPORTED INPUTS:
+- Direct image links (i.redd.it, preview.redd.it)
+- Reddit post links (/comments/)
+- Reddit gallery links (/gallery/)
+- reddit.com/media wrapper URLs
 r https://i.redd.it/628wzjftft1h1.png
 r https://i.redd.it/hrc30eeqqosg1.jpeg
 r https://i.redd.it/o9fu9uw82rvf1.png
 
+FEATURES:
+- Uses Firefox cookies (if available) for authenticated access
+- Falls back from Reddit JSON API → HTML scraping
+- Resumable downloads (.part files)
+- Organised folder structure by subreddit + post title
 r https://www.reddit.com/gallery/1ubp2ao
 r https://www.reddit.com/gallery/1tu4cki
 r https://www.reddit.com/gallery/1tyw4xv
@@ -49,6 +61,9 @@ import browser_cookie3
 from bs4 import BeautifulSoup
 
 
+# ======================================================
+# USER AGENT (pretend to be a browser)
+# ======================================================
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (X11; Linux x86_64) "
@@ -59,9 +74,16 @@ HEADERS = {
 
 
 # ======================================================
-# SESSION
+# SESSION SETUP
 # ======================================================
 def get_session():
+    """
+    Create a requests session with:
+    - Browser-like headers
+    - Optional Firefox cookies (for logged-in access)
+
+    This improves access to restricted or rate-limited content.
+    """
     s = requests.Session()
     s.headers.update(HEADERS)
 
@@ -75,13 +97,24 @@ def get_session():
 
 
 # ======================================================
-# HELPERS
+# SMALL UTILITIES
 # ======================================================
 def file_exists(path: Path):
+    """
+    Check if a file already exists and is non-empty.
+    Used to avoid re-downloading.
+    """
     return path.exists() and path.stat().st_size > 0
 
 
 def unwrap_media_url(url):
+    """
+    Reddit sometimes wraps media URLs like:
+
+    reddit.com/media?url=<encoded>
+
+    This extracts the real image URL.
+    """
     if "reddit.com/media" not in url:
         return url
     try:
@@ -94,6 +127,12 @@ def unwrap_media_url(url):
 
 
 def safe_name(text):
+    """
+    Convert Reddit titles into safe folder names.
+
+    Removes special characters and limits length
+    so it works across filesystems.
+    """
     text = text or "untitled"
     text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -101,28 +140,26 @@ def safe_name(text):
 
 
 # ======================================================
-# CANONICAL IMAGE ID RESOLUTION
+# IMAGE ID EXTRACTION
 # ======================================================
 def extract_reddit_image_id(url):
     """
-    Try to extract stable ID from Reddit CDN URLs.
-    Works for:
-    - i.redd.it/<id>.png
-    - preview.redd.it/<id>-...jpg
-    - external-preview.redd.it/<id>-...
-    """
+    Try to extract a stable ID from Reddit image URLs.
 
+    Examples:
+        i.redd.it/abc123.png → abc123
+        preview.redd.it/abc123-LQ.jpg → abc123
+
+    Used to generate consistent filenames.
+
+    Falls back to a hash if parsing fails.
+    """
     path = urlparse(url).path
     filename = path.split("/")[-1]
 
-    # strip extension
     base = filename.split(".")[0]
-
-    # preview/external often have suffixes like:
-    # abc123-LQ.jpg → abc123
     base = base.split("-")[0]
 
-    # sanity check: reddit media IDs are usually alphanumeric
     if re.match(r"^[a-zA-Z0-9]+$", base):
         return base
 
@@ -130,9 +167,17 @@ def extract_reddit_image_id(url):
 
 
 # ======================================================
-# RESOLVE IMAGE → POST
+# OPTIONAL FEATURE (currently unused)
 # ======================================================
 def resolve_image(session, url):
+    """
+    Attempt to map a direct image URL back to a Reddit post.
+
+    NOTE: This function is currently NOT USED anywhere.
+
+    Intended flow:
+        image URL → redirect → Reddit post URL
+    """
     headers = {
         "User-Agent": HEADERS["User-Agent"],
         "Accept": "text/html,application/xhtml+xml",
@@ -162,9 +207,14 @@ def resolve_image(session, url):
 
 
 # ======================================================
-# JSON PARSER
+# REDDIT JSON API
 # ======================================================
 def fetch_json(session, post_id):
+    """
+    Fetch Reddit post data in JSON format.
+
+    This is the primary (preferred) data source.
+    """
     url = f"https://www.reddit.com/comments/{post_id}/.json"
     r = session.get(url, timeout=30)
     if r.status_code != 200:
@@ -173,6 +223,17 @@ def fetch_json(session, post_id):
 
 
 def parse_json(data):
+    """
+    Extract metadata + image URLs from Reddit JSON.
+
+    Supports:
+    - gallery posts
+    - single-image posts
+
+    Returns:
+        meta: {title, subreddit}
+        images: [url, url, url]
+    """
     post = data[0]["data"]["children"][0]["data"]
 
     meta = {
@@ -182,12 +243,14 @@ def parse_json(data):
 
     images = []
 
+    # Gallery support
     for item in post.get("gallery_data", {}).get("items", []):
         mid = item.get("media_id")
         m = post.get("media_metadata", {}).get(mid, {})
         if "s" in m:
             images.append(m["s"]["u"].replace("&amp;", "&"))
 
+    # Fallback: single image post
     if not images and post.get("url"):
         images.append(post["url"])
 
@@ -195,9 +258,12 @@ def parse_json(data):
 
 
 # ======================================================
-# HTML FALLBACK
+# HTML FALLBACK (when JSON fails)
 # ======================================================
 def extract_images(html):
+    """
+    Regex-based extraction of image URLs from HTML.
+    """
     imgs = set()
 
     imgs.update(re.findall(r"https://i\.redd\.it/[^\s\"']+", html))
@@ -208,6 +274,13 @@ def extract_images(html):
 
 
 def parse_html(session, post_id):
+    """
+    Backup parser when Reddit JSON is unavailable.
+
+    Extracts:
+    - metadata from __NEXT_DATA__
+    - images from raw HTML
+    """
     url = f"https://www.reddit.com/comments/{post_id}"
     r = session.get(url, timeout=30)
     html = r.text
@@ -238,15 +311,24 @@ def parse_html(session, post_id):
 
 
 # ======================================================
-# DOWNLOAD (RESUME + PROGRESS)
+# DOWNLOAD ENGINE (supports resume + progress)
 # ======================================================
 def download(session, url, path: Path):
+    """
+    Download a file with:
+    - Resume support (.part files)
+    - Progress display
+    - Speed calculation
+    """
+
     tmp = path.with_suffix(path.suffix + ".part")
 
+    # check if partial download exists
     existing = tmp.stat().st_size if tmp.exists() else 0
 
     headers = {"User-Agent": HEADERS["User-Agent"]}
 
+    # resume download if partial exists
     if existing > 0:
         headers["Range"] = f"bytes={existing}-"
         print(f"[↻] Resuming {path.name}")
@@ -272,6 +354,7 @@ def download(session, url, path: Path):
             f.write(chunk)
             downloaded += len(chunk)
 
+            # update progress every ~0.4 seconds
             now = time.time()
 
             if now - last > 0.4:
@@ -292,17 +375,31 @@ def download(session, url, path: Path):
 
     print()
 
+    # finalise file
     tmp.rename(path)
 
 
 # ======================================================
-# PIPELINE
+# IMAGE LIST BUILDER (core logic)
 # ======================================================
 def build_image_list(url, session):
+    """
+    Convert any supported Reddit URL into a list of images.
+
+    Handles:
+    - direct image links
+    - gallery links
+    - post links
+
+    Uses:
+    1. Reddit JSON API (preferred)
+    2. HTML fallback (if JSON fails)
+    """
+
     url = unwrap_media_url(url)
 
     # -------------------------
-    # DIRECT IMAGE
+    # DIRECT IMAGE MODE
     # -------------------------
     if "i.redd.it" in url or "preview.redd.it" in url:
         img_id = extract_reddit_image_id(url)
@@ -314,7 +411,7 @@ def build_image_list(url, session):
         return meta, [(url, img_id, ext)]
 
     # -------------------------
-    # POST / GALLERY
+    # POST / GALLERY MODE
     # -------------------------
     post_id = re.search(r"(?:gallery|comments)/([a-zA-Z0-9]+)", url)
     if not post_id:
@@ -335,12 +432,13 @@ def build_image_list(url, session):
         except Exception:
             pass
 
+    # fallback if JSON fails
     if not images:
         print("[*] HTML fallback")
         m, images = parse_html(session, post_id)
         meta.update({k: v for k, v in m.items() if v})
 
-    # normalize images
+    # normalise images into (url, id, ext)
     out = []
     for img in images:
         img_id = extract_reddit_image_id(img)
@@ -356,6 +454,15 @@ def build_image_list(url, session):
 # MAIN PROCESSOR
 # ======================================================
 def process(url, session):
+    """
+    Main orchestration function:
+
+    - Build image list
+    - Create output folders
+    - Download images
+    - Skip existing files
+    """
+
     meta, images = build_image_list(url, session)
 
     if not images:
@@ -374,21 +481,17 @@ def process(url, session):
 
     for img, img_id, ext in images:
 
-        # ==================================================
-        # DIRECT MODE → FLAT OUTPUT
-        # ==================================================
+        # direct images go into flat folder
         if meta["subreddit"] == "direct":
             out_dir = Path("direct")
             out_dir.mkdir(parents=True, exist_ok=True)
             out_file = out_dir / f"{img_id}.{ext}"
 
-        # ==================================================
-        # NORMAL MODE → STRUCTURED OUTPUT
-        # ==================================================
+        # posts/galleries keep structured folders
         else:
             out_file = out_dir / f"{img_id}.{ext}"
 
-        # skip existing
+        # skip already downloaded files
         if file_exists(out_file):
             print(f"[=] Skipping {out_file.name}")
             continue
@@ -397,14 +500,19 @@ def process(url, session):
             download(session, img, out_file)
         except Exception as e:
             print(f"[!] Failed {img}: {e}")
-    
+
     print(f"[✓] Done → {out_dir}")
 
 
 # ======================================================
-# MAIN
+# CLI ENTRY POINT
 # ======================================================
 def main():
+    """
+    Command line interface:
+
+        python redditdl.py <url>
+    """
     if len(sys.argv) != 2:
         print("Usage: redditdl <url>")
         sys.exit(1)
