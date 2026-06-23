@@ -223,16 +223,14 @@ def fetch_json(session, post_id):
 
 def parse_json(data):
     """
-    Extract metadata + image URLs from Reddit JSON.
+    Extract metadata and best-available image URLs from Reddit JSON.
 
-    Supports:
-    - gallery posts
-    - single-image posts
-
-    Returns:
-        meta: {title, subreddit}
-        images: [url, url, url]
+    Improvements:
+    - Treats `s` and `p` as equal candidates
+    - Selects the largest image by resolution
+    - More robust against inconsistent Reddit metadata
     """
+
     post = data[0]["data"]["children"][0]["data"]
 
     meta = {
@@ -242,18 +240,53 @@ def parse_json(data):
 
     images = []
 
-    # Gallery support
+    # ======================================================
+    # GALLERY HANDLING
+    # ======================================================
     for item in post.get("gallery_data", {}).get("items", []):
         mid = item.get("media_id")
         m = post.get("media_metadata", {}).get(mid, {})
-        if "s" in m:
-            images.append(m["s"]["u"].replace("&amp;", "&"))
 
-    # Fallback: single image post
+        if not m:
+            continue
+
+        candidates = []
+
+        # -------------------------
+        # Add "s" candidate (single preview)
+        # -------------------------
+        if "s" in m and m["s"].get("u"):
+            candidates.append(m["s"])
+
+        # -------------------------
+        # Add all "p" candidates (preview variants)
+        # -------------------------
+        if "p" in m:
+            candidates.extend(m["p"])
+
+        if not candidates:
+            continue
+
+        # -------------------------
+        # Pick largest by resolution
+        # -------------------------
+        best = max(
+            candidates,
+            key=lambda x: (x.get("x", 0) * x.get("y", 0))
+        )
+
+        url = best.get("u")
+        if url:
+            images.append(url.replace("&amp;", "&"))
+
+    # ======================================================
+    # FALLBACK: SINGLE IMAGE POSTS
+    # ======================================================
     if not images and post.get("url"):
         images.append(post["url"])
 
     return meta, images
+
 
 
 # ======================================================
