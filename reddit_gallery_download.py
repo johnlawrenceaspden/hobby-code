@@ -157,16 +157,24 @@ def unwrap_media_url(url):
 
 def safe_name(text):
     """
-    Convert Reddit titles into safe folder names.
+    Convert Reddit titles into safe directory names.
 
-    Removes special characters and limits length
-    so it works across filesystems.
+    Example:
+        "My awesome image post!"
+        -> "My-awesome-image-post"
     """
     text = text or "untitled"
-    text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text[:80].rstrip(". ")
 
+    # Remove characters we don't want in filenames
+    text = re.sub(r"[^a-zA-Z0-9-_ ]", "", text)
+
+    # Collapse multiple spaces into one
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Replace spaces with dashes
+    text = text.replace(" ", "-")
+
+    return text[:80].rstrip(".-")
 
 # ======================================================
 # IMAGE ID EXTRACTION
