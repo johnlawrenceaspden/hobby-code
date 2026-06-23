@@ -1,22 +1,12 @@
 #!/usr/bin/env python3
 
 
-# python3 -m venv venv
-# source venv/bin/activate
-# pip install requests browser-cookie3 beautifulsoup4
+# Needs beautifulsoup4, which is a debian package
+# sudo apt install python3-bs4
 
-# or
-
-# pip install beautifulsoup4 --break-system-packages
 
 """
 reddit image downloader
-broken
-r https://v.redd.it/yu7m1sqb658h1
-
-
-working
-
 
 This script downloads images from Reddit posts, galleries, and direct image URLs.
 
@@ -25,28 +15,67 @@ SUPPORTED INPUTS:
 - Reddit post links (/comments/)
 - Reddit gallery links (/gallery/)
 - reddit.com/media wrapper URLs
-r https://i.redd.it/628wzjftft1h1.png
-r https://i.redd.it/hrc30eeqqosg1.jpeg
-r https://i.redd.it/o9fu9uw82rvf1.png
 
 FEATURES:
 - Uses Firefox cookies (if available) for authenticated access
 - Falls back from Reddit JSON API → HTML scraping
 - Resumable downloads (.part files)
 - Organised folder structure by subreddit + post title
-r https://www.reddit.com/gallery/1ubp2ao
-r https://www.reddit.com/gallery/1tu4cki
-r https://www.reddit.com/gallery/1tyw4xv
-
-r https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fmnjzwo59eg1h1.png
-
-r https://www.reddit.com/r/dalle2/comments/1temwv1/dalle2_revival/
-r https://www.reddit.com/r/dalle2/comments/1tevijp/any_suggestions_for_a_model_more_like_the/
-r https://www.reddit.com/r/dalle2/comments/1tgaphy/i_made_an_ai_image_that_anyone_can_add_to/
-r https://www.reddit.com/r/dalle2/comments/1tyw4xv/my_dalle_images_from_2022_havent_used_it_since/
 """
 
-#!/usr/bin/env python3
+
+
+
+
+# Example cases of various reddit image links
+# broken (video links not supported)
+# r https://v.redd.it/yu7m1sqb658h1
+
+# working
+# r https://i.redd.it/628wzjftft1h1.png
+# r https://i.redd.it/hrc30eeqqosg1.jpeg
+# r https://i.redd.it/o9fu9uw82rvf1.png
+
+# r https://www.reddit.com/gallery/1ubp2ao
+# r https://www.reddit.com/gallery/1tu4cki
+# r https://www.reddit.com/gallery/1tyw4xv
+
+# r https://www.reddit.com/media?url=https%3A%2F%2Fi.redd.it%2Fmnjzwo59eg1h1.png
+
+# r https://www.reddit.com/r/dalle2/comments/1temwv1/dalle2_revival/
+# r https://www.reddit.com/r/dalle2/comments/1tevijp/any_suggestions_for_a_model_more_like_the/
+# r https://www.reddit.com/r/dalle2/comments/1tgaphy/i_made_an_ai_image_that_anyone_can_add_to/
+# r https://www.reddit.com/r/dalle2/comments/1tyw4xv/my_dalle_images_from_2022_havent_used_it_since/
+
+
+
+
+
+
+
+
+
+# ======================================================
+# ARCHITECTURE
+# ======================================================
+#
+# URL
+#  ↓
+# build_image_list()
+#  ├─ direct image
+#  └─ Reddit post/gallery
+#         ↓
+#     JSON parser
+#         ↓
+#     HTML fallback
+#         ↓
+# image list
+#         ↓
+# process()
+#         ↓
+# download()
+#
+# ======================================================
 
 import re
 import sys
@@ -164,47 +193,6 @@ def extract_reddit_image_id(url):
         return base
 
     return hashlib.sha1(url.encode()).hexdigest()[:10]
-
-
-# ======================================================
-# OPTIONAL FEATURE (currently unused)
-# ======================================================
-def resolve_image(session, url):
-    """
-    Attempt to map a direct image URL back to a Reddit post.
-
-    NOTE: This function is currently NOT USED anywhere.
-
-    Intended flow:
-        image URL → redirect → Reddit post URL
-    """
-    headers = {
-        "User-Agent": HEADERS["User-Agent"],
-        "Accept": "text/html,application/xhtml+xml",
-        "Referer": "https://www.reddit.com/",
-    }
-
-    try:
-        r = session.get(url, headers=headers, allow_redirects=True, timeout=30)
-    except Exception:
-        return None
-
-    if "reddit.com/r/" in r.url or "reddit.com/comments/" in r.url:
-        return r.url
-
-    if "text/html" in r.headers.get("Content-Type", ""):
-        soup = BeautifulSoup(r.text, "html.parser")
-
-        tag = soup.find("meta", property="og:url")
-        if tag and tag.get("content"):
-            return tag["content"]
-
-        m = re.search(r"https://www\.reddit\.com/r/[^\"'\s]+", r.text)
-        if m:
-            return m.group(0)
-
-    return None
-
 
 # ======================================================
 # REDDIT JSON API
