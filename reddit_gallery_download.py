@@ -161,7 +161,7 @@ def safe_name(text):
 
     Example:
         "My awesome image post!"
-        -> "My-awesome-image-post"
+        -> "my-awesome-image-post"
     """
     text = text or "untitled"
 
@@ -170,6 +170,9 @@ def safe_name(text):
 
     # Collapse multiple spaces into one
     text = re.sub(r"\s+", " ", text).strip()
+
+    # lowercase only
+    text = text.lower()
 
     # Replace spaces with dashes
     text = text.replace(" ", "-")
