@@ -285,9 +285,9 @@ def parse_json(data):
     if not images and post.get("url"):
         images.append(post["url"])
 
-    from pprint import pprint
-    pprint(meta)
-    pprint(images)
+    # from pprint import pprint
+    # pprint(meta)
+    # pprint(images)
         
     return meta, images
 
@@ -500,9 +500,10 @@ def process(url, session):
     """
 
     meta, images = build_image_list(url, session)
-    print(f"{meta=}")
     print(f"[meta] {meta}")
-    print(images)
+
+    from pprint import pprint
+    pprint(images)
 
     if not images:
         print("[-] No images found")
