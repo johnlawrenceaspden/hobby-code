@@ -285,6 +285,10 @@ def parse_json(data):
     if not images and post.get("url"):
         images.append(post["url"])
 
+    from pprint import pprint
+    pprint(meta)
+    pprint(images)
+        
     return meta, images
 
 
