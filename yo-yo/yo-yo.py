@@ -164,7 +164,7 @@ readings = [
     ("2026-03-21", 94+keto_water_weight),
     ("2026-04-30", 100.6),
     ("2026-07-07", 92+keto_water_weight),
-    ("2026-08-11", 97.06), #provisional
+    ("2026-09-18", 98.7), #provisional
 
     
 ]
