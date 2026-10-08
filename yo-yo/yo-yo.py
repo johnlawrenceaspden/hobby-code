@@ -119,19 +119,20 @@ def simulate_adipose_LA_from_pairs(
 # Anthropological reference LA% lines (RAW)
 # -------------------------------------------------------
 reference_lines_raw = {
-    "Masai": 2.5,
-    "Victorian English": 2.5,
-    "Hadza": 3,
-    "Kitavans": 3,
-    "Pre-industrial Europeans": 3.5,
-    "Hunter–gatherer": 4,
-    "Okinawans pre-1950": 4,
-    "1950s Americans": 7,
-    "Modern Mediterranean": 6,
-    "1970s Americans": 9,
-    "Modern China": 10,
-    "Modern British": 12,
-    "Modern American": 15
+    "Polynesians, Maori, Pukapukans, historical": 2.5,
+    "Cretans/Greek, traditional": 7.5,
+
+    "1959 Americans": 9,
+    "1962 Americans": 10,
+    "1967 Americans": 11,
+    "1973 Americans": 13,
+    "1983 Americans": 13.68,
+    "1988 Americans": 18.2,
+    "2003 Americans": 20.1,
+    "2008 Americans": 23.4,
+    "1960 Japan":16.5,
+    "1990 Scotland":9,
+    "2008 UK":12,
 }
 
 # Merge + sort lines
@@ -164,7 +165,9 @@ readings = [
     ("2026-03-21", 94+keto_water_weight),
     ("2026-04-30", 100.6),
     ("2026-07-07", 92+keto_water_weight),
-    ("2026-09-18", 98.7), #provisional
+    ("2026-09-27", 99.5),
+    ("2026-10-06", 98.2), #provisional
+    
 
     
 ]
