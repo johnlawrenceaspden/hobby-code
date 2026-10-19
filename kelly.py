@@ -2,14 +2,14 @@
 
 import random;
 
-bankroll=100
+bankroll=1
 
-for _ in range(100):
+for _ in range(1):
 
     headsbiased=random.choice([True, False])
 
     c=["H","H","T"] if  headsbiased else ["H","T","T"];
-    l=random.choices(c,k=1);
+    l=random.choices(c,k=5);
 
     print("results",l)
 
@@ -33,14 +33,16 @@ for _ in range(100):
 
     print( "bankroll:" ,bankroll, "bet:", bet)
 
-    if bits>=0 and headsbiased:
-        print("yay")
-        bankroll=bankroll+bet
+    if headsbiased:
+        winnings=bet
     else:
-        print("oops")
-        bankroll=bankroll-bet
+        winnings=-bet
 
+    comment = "oops" if winnings<0 else "yay"
 
-    print("true coin", c)
+    bankroll=bankroll+winnings
+    
+
+    print("true coin", c, comment)
     print("new bankroll",bankroll)
 
