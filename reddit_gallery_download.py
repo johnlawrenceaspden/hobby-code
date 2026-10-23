@@ -208,17 +208,41 @@ def extract_reddit_image_id(url):
 # ======================================================
 # REDDIT JSON API
 # ======================================================
-def fetch_json(session, post_id):
-    """
-    Fetch Reddit post data in JSON format.
 
-    This is the primary (preferred) data source.
-    """
-    url = f"https://www.reddit.com/comments/{post_id}/.json"
-    r = session.get(url, timeout=30)
-    if r.status_code != 200:
-        return None
-    return r.json()
+
+def fetch_json(session, post_id):
+    urls = [
+        f"https://www.reddit.com/comments/{post_id}.json",
+        f"https://old.reddit.com/comments/{post_id}.json",
+    ]
+
+    for url in urls:
+        try:
+            r = session.get(
+                url,
+                params={"raw_json": 1},
+                headers={"Accept": "application/json"},
+                timeout=30,
+            )
+
+            print(f"[DEBUG] {url} -> HTTP {r.status_code}")
+            print(f"[DEBUG] Content-Type: "
+                  f"{r.headers.get('Content-Type')}")
+            print(f"[DEBUG] Response length: {len(r.text)}")
+
+            if r.status_code != 200:
+                continue
+
+            data = r.json()
+            if isinstance(data, list) and data:
+                return data
+
+            print("[DEBUG] Unexpected JSON structure")
+
+        except (requests.RequestException, ValueError) as e:
+            print(f"[DEBUG] Request failed: {e}")
+
+    return None
 
 
 def parse_json(data):
@@ -320,6 +344,23 @@ def parse_html(session, post_id):
     url = f"https://www.reddit.com/comments/{post_id}"
     r = session.get(url, timeout=30)
     html = r.text
+
+
+    print(f"[DEBUG] HTML status: {r.status_code}")
+    print(f"[DEBUG] Final URL: {r.url}")
+    print(f"[DEBUG] Page title: "
+          f"{BeautifulSoup(html, 'html.parser').title}")
+    print(f"[DEBUG] Contains post title: "
+          f"'Dalle2 revival' in html")
+    print(f"[DEBUG] Contains gallery data: "
+          f'"gallery_data"' in html)
+    print(f"[DEBUG] Contains media metadata: "
+          f'"media_metadata"' in html)
+    print(f"[DEBUG] Contains Reddit block markers: "
+          f'any(x in html.lower() for x in '
+          f'["captcha", "blocked", "too many requests"])')
+
+    
 
     meta = {"title": None, "subreddit": None}
 
