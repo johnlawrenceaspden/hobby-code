@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
 
+# links that seem to work via protonvpn to the netherlands as of 30/10/2027, as well as directly, with firefox logged in
+
 # https://www.reddit.com/gallery/1xi7asr
 # https://www.reddit.com/gallery/1ximxcu
+
+# for single images, where the link is to i.redd.it, use the comment link
+# the direct link will get the image but not the subreddit name, so it just puts in the 'direct' folder
+# r https://i.redd.it/k0g62w915gyh1.jpeg
+# but the link to comments on the main page works too and gets the right subreddit and title
+# https://www.reddit.com/r/textlessposter/comments/1xirf0c/avengers_doomsday_2026_dolby_textless/
+# r https://www.reddit.com/r/textlessposter/comments/1xirf0c
 
 
 
