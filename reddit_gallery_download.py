@@ -1,5 +1,23 @@
 #!/usr/bin/env python3
 
+# These fail with mysterious 403 errors, but I can't see them from the browser either, even though the preview pic is still there
+# https://www.reddit.com/r/SophieMarceau/comments/pvy5pz/sophie_marceau_elle_icone_hors_serie_no2_7_sep/
+# https://www.reddit.com/gallery/pvy3ox
+
+# But this works
+# https://www.reddit.com/r/SophieMarceau/comments/1api9bs/sophie_marceau_is_so_beautiful/
+# and so does this direct link
+# https://i.redd.it/kp830wkjj9ic1.jpeg
+
+# And these work even though marked NSFW
+# https://www.reddit.com/r/SophieMarceau/comments/nfz5a0/sophie/
+# https://www.reddit.com/gallery/nfz5a0
+
+# This doesn't work, the thumbnail image appears sound, but the link is to an external site which doesn't seem to exist any more
+# https://www.reddit.com/r/SophieMarceau/comments/gxevyz/denise_richards_and_sophie_marceau_photoshoot_the/
+
+
+
 # links that seem to work via protonvpn to the netherlands as of 30/10/2027, as well as directly, with firefox logged in
 
 # https://www.reddit.com/gallery/1xi7asr
@@ -9,6 +27,7 @@
 # the direct link will get the image but not the subreddit name, so it just puts in the 'direct' folder
 # r https://i.redd.it/k0g62w915gyh1.jpeg
 # but the link to comments on the main page works too and gets the right subreddit and title
+# (the link at the bottom of the image page itself should be the same)
 # https://www.reddit.com/r/textlessposter/comments/1xirf0c/avengers_doomsday_2026_dolby_textless/
 # r https://www.reddit.com/r/textlessposter/comments/1xirf0c
 
