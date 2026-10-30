@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# https://www.reddit.com/gallery/1xi7asr
+# https://www.reddit.com/gallery/1ximxcu
+
+
 
 # Needs beautifulsoup4, which is a debian package
 # sudo apt install python3-bs4
