@@ -209,7 +209,7 @@ LA_layer = LA_mass_kg
 # NEW: Create two vertically stacked plots, preserving the original main plot
 fig, (ax1, ax3) = plt.subplots(
     2, 1,
-    figsize=(20, 13),
+    #figsize=(20, 13),
     sharex=True,
     gridspec_kw={"height_ratios": [3, 1]},
     layout="constrained"
