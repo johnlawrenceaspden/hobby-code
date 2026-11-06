@@ -209,11 +209,11 @@ LA_layer = LA_mass_kg
 # NEW: Create two vertically stacked plots, preserving the original main plot
 fig, (ax1, ax3) = plt.subplots(
     2, 1,
-    figsize=(14,10),
+#    figsize=(14,10),
     sharex=True,
     gridspec_kw={"height_ratios": [3, 1]}
 )
-ax1.tick_params(axis="x", labelbottom=True)
+#ax1.tick_params(axis="x", labelbottom=True)
 
 # ----- Stacked area plot -----
 ax1.stackplot(
