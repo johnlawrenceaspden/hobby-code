@@ -64,7 +64,7 @@ def simulate_adipose_LA_from_pairs(
     nonLA_mass = [fat_masses[0] - LA_mass[0]]
     date_axis = [dates[0]]
 
-    # NEW: Track LA mobilization during each interval (grams)
+    # Track LA mobilization during each interval (grams)
     LA_release = [0.0]
 
     # ---- Simulation loop ----
@@ -74,7 +74,7 @@ def simulate_adipose_LA_from_pairs(
         LA = LA_mass[-1]
         nonLA = F - LA
 
-        # NEW: Initialize LA release for this interval
+        # Initialize LA release for this interval
         la_released = 0.0
 
         if change < 0:
@@ -93,7 +93,7 @@ def simulate_adipose_LA_from_pairs(
             LA_new = LA - x
             nonLA_new = nonLA - y
 
-            # NEW: Record LA mobilized during this interval
+            # Record LA mobilized during this interval
             la_released = x
 
         else:
@@ -113,7 +113,7 @@ def simulate_adipose_LA_from_pairs(
         LA_percent.append(LA_new / F_new if F_new > 0 else 0)
         date_axis.append(dates[i+1])
 
-        # NEW: Store interval LA release
+        # Store interval LA release
         LA_release.append(la_released)
 
     return (
@@ -206,7 +206,7 @@ lean_layer = lean_mass_kg * np.ones_like(LA_mass_kg)
 nonLA_layer = nonLA_mass_kg
 LA_layer = LA_mass_kg
 
-# NEW: Create two vertically stacked plots, preserving the original main plot
+# Create two vertically stacked plots, one for LA composition and another for LA release
 fig, (ax1, ax3) = plt.subplots(
     2, 1,
     #figsize=(20, 13),
@@ -215,7 +215,9 @@ fig, (ax1, ax3) = plt.subplots(
     layout="constrained"
 )
 
-# ----- Stacked area plot -----
+# -------------------------------------------------------
+# GRAPH: Stacked Area Plot of Fat Composition with Percentage Line Superimposed
+# -------------------------------------------------------
 ax1.stackplot(
     dates,
     lean_layer,
@@ -232,7 +234,7 @@ ax1.set_title("Heart Attack Diet: Inferred Body Composition With Adipose LA%")
 # Date formatting
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-#plt.setp(ax1.get_xticklabels(), rotation=45, ha="right")
+#plt.setp(ax1.get_xticklabels(), rotation=45, ha="right") # if date labels are overlapping rotating them helps
 ax1.grid(True, alpha=0.3)
 
 # ----- Right axis: LA% line (auto-scaled) -----
@@ -244,7 +246,7 @@ LA_min = 0
 LA_max = max(LA_percent) * 1.05
 ax2.set_ylim(LA_min, LA_max)
 
-# ----- Horizontal reference lines + labels INSIDE green area -----
+# ----- Horizontal reference lines + labels INSIDE plot area -----
 
 # Find x-position slightly inside the stackplot (5% of plot width)
 x0 = dates[0]
@@ -265,7 +267,7 @@ for label, pct in reference_lines.items():
 
 
 # -------------------------------------------------------
-# NEW GRAPH: LA mobilization spread over each weight-loss interval
+# GRAPH: LA mobilization spread over each weight-loss interval
 # -------------------------------------------------------
 
 # Each block's area equals the total LA released during that interval.
