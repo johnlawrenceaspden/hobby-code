@@ -213,6 +213,7 @@ fig, (ax1, ax3) = plt.subplots(
     sharex=True,
     gridspec_kw={"height_ratios": [3, 1]}
 )
+ax1.tick_params(axis="x", labelbottom=True)
 
 # ----- Stacked area plot -----
 ax1.stackplot(
@@ -225,13 +226,13 @@ ax1.stackplot(
     alpha=0.95
 )
 
-ax1.set_xlabel("Date")
 ax1.set_ylabel("Mass (kg)")
 ax1.set_title("Heart Attack Diet: Inferred Body Composition With Adipose LA%")
 
 # Date formatting
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+#plt.setp(ax1.get_xticklabels(), rotation=45, ha="right")
 ax1.grid(True, alpha=0.3)
 
 # ----- Right axis: LA% line (auto-scaled) -----
@@ -300,11 +301,6 @@ ax3.set_ylabel("LA Mobilization (g/day)")
 ax3.set_xlabel("Date")
 ax3.set_title("Estimated Daily LA Mobilization")
 ax3.grid(True, alpha=0.3)
-
-# ----- Date formatting -----
-ax3.xaxis.set_major_locator(mdates.AutoDateLocator())
-ax3.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-plt.setp(ax3.get_xticklabels(), rotation=45, ha="right")
 
 fig.tight_layout()
 plt.show()
