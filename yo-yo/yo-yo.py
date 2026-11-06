@@ -209,11 +209,11 @@ LA_layer = LA_mass_kg
 # NEW: Create two vertically stacked plots, preserving the original main plot
 fig, (ax1, ax3) = plt.subplots(
     2, 1,
-#    figsize=(14,10),
+    figsize=(20, 13),
     sharex=True,
-    gridspec_kw={"height_ratios": [3, 1]}
+    gridspec_kw={"height_ratios": [3, 1]},
+    layout="constrained"
 )
-#ax1.tick_params(axis="x", labelbottom=True)
 
 # ----- Stacked area plot -----
 ax1.stackplot(
@@ -302,5 +302,4 @@ ax3.set_xlabel("Date")
 ax3.set_title("Estimated Daily LA Mobilization")
 ax3.grid(True, alpha=0.3)
 
-fig.tight_layout()
 plt.show()
