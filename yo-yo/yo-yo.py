@@ -64,12 +64,18 @@ def simulate_adipose_LA_from_pairs(
     nonLA_mass = [fat_masses[0] - LA_mass[0]]
     date_axis = [dates[0]]
 
+    # NEW: Track LA mobilization during each interval (grams)
+    LA_release = [0.0]
+
     # ---- Simulation loop ----
     for i, change in enumerate(events):
 
         F = fat_mass[-1]
         LA = LA_mass[-1]
         nonLA = F - LA
+
+        # NEW: Initialize LA release for this interval
+        la_released = 0.0
 
         if change < 0:
             # ------ FAT LOSS ------
@@ -86,6 +92,9 @@ def simulate_adipose_LA_from_pairs(
 
             LA_new = LA - x
             nonLA_new = nonLA - y
+
+            # NEW: Record LA mobilized during this interval
+            la_released = x
 
         else:
             # ------ FAT GAIN ------
@@ -104,13 +113,17 @@ def simulate_adipose_LA_from_pairs(
         LA_percent.append(LA_new / F_new if F_new > 0 else 0)
         date_axis.append(dates[i+1])
 
+        # NEW: Store interval LA release
+        LA_release.append(la_released)
+
     return (
         np.array(date_axis),
         np.array(fat_mass),
         np.array(nonLA_mass),
         np.array(LA_mass),
         np.array(LA_percent),
-        lean_mass
+        lean_mass,
+        np.array(LA_release)
     )
 
 
@@ -168,9 +181,6 @@ readings = [
     ("2026-09-27", 99.5),
     ("2026-10-06", 98.4),
     ("2026-10-15", 99.5), #provisional
-    
-
-    
 ]
 
 
@@ -178,7 +188,7 @@ readings = [
 # -------------------------------------------------------
 # RUN SIMULATION
 # -------------------------------------------------------
-dates, fat_mass, nonLA_mass, LA_mass, LA_percent, lean_mass = simulate_adipose_LA_from_pairs(
+dates, fat_mass, nonLA_mass, LA_mass, LA_percent, lean_mass, LA_release = simulate_adipose_LA_from_pairs(
     readings,
     initial_bodyfat_frac=0.30,
     initial_LA_frac=0.25
@@ -196,7 +206,13 @@ lean_layer = lean_mass_kg * np.ones_like(LA_mass_kg)
 nonLA_layer = nonLA_mass_kg
 LA_layer = LA_mass_kg
 
-fig, ax1 = plt.subplots(figsize=(14,7))
+# NEW: Create two vertically stacked plots, preserving the original main plot
+fig, (ax1, ax3) = plt.subplots(
+    2, 1,
+    figsize=(14,10),
+    sharex=True,
+    gridspec_kw={"height_ratios": [3, 1]}
+)
 
 # ----- Stacked area plot -----
 ax1.stackplot(
@@ -216,7 +232,6 @@ ax1.set_title("Heart Attack Diet: Inferred Body Composition With Adipose LA%")
 # Date formatting
 ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-plt.xticks(rotation=45)
 ax1.grid(True, alpha=0.3)
 
 # ----- Right axis: LA% line (auto-scaled) -----
@@ -247,6 +262,49 @@ for label, pct in reference_lines.items():
         color="black",
         bbox=dict(facecolor="#88c999", alpha=0.6, edgecolor="none", pad=1)
     )
+
+
+# -------------------------------------------------------
+# NEW GRAPH: LA mobilization spread over each weight-loss interval
+# -------------------------------------------------------
+
+# Each block's area equals the total LA released during that interval.
+# Height is daily LA mobilization (grams/day).
+
+for i in range(1, len(dates)):
+
+    # Duration of the weight interval in days
+    duration_days = (dates[i] - dates[i-1]).days
+
+    if duration_days <= 0:
+        continue
+
+    # Total LA released during this interval (grams)
+    total_LA_released = LA_release[i]
+
+    # Spread release evenly over the interval
+    daily_LA_release = total_LA_released / duration_days
+
+    # Draw rectangular block across the entire interval
+    ax3.fill_between(
+        [dates[i-1], dates[i]],
+        [daily_LA_release, daily_LA_release],
+        [0, 0],
+        color="#f2c572",
+        alpha=0.85,
+        edgecolor="black",
+        linewidth=0.5
+    )
+
+ax3.set_ylabel("LA Mobilization (g/day)")
+ax3.set_xlabel("Date")
+ax3.set_title("Estimated Daily LA Mobilization")
+ax3.grid(True, alpha=0.3)
+
+# ----- Date formatting -----
+ax3.xaxis.set_major_locator(mdates.AutoDateLocator())
+ax3.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+plt.setp(ax3.get_xticklabels(), rotation=45, ha="right")
 
 fig.tight_layout()
 plt.show()
