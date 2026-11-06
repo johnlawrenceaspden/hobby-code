@@ -261,7 +261,6 @@ for label, pct in reference_lines.items():
         ha="left",
         fontsize=8,
         color="black",
-        bbox=dict(facecolor="#88c999", alpha=0.6, edgecolor="none", pad=1)
     )
 
 
