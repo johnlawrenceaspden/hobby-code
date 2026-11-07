@@ -485,17 +485,20 @@ ax_mag.grid(True)
 
 
 # ==================================================
-# 3D PLOT OF THE THEORETICAL EIGENVECTORS (BOTTOM RIGHT)
+# 3D PLOT: THEORETICAL EIGENVECTORS AND ITERATED VECTORS
 # ==================================================
 
 ax_eig = fig.add_subplot(gs[1, 4:6], projection="3d")
-colors = ["C0", "C1", "C2"]
-plotted = 0
+
+# Plot theoretical eigenvector directions as black arrows.
+# Eigenvectors are normalised here so they can be compared with
+# the normalised directions of the iterated trial vectors.
+plotted_eigenvectors = 0
 
 for k, eigenvalue in enumerate(eigenvalues):
     eigenvector = eigenvectors[:, k]
 
-    # Ordinary 3D axes display real eigenvectors only.
+    # Ordinary real 3D axes cannot display genuinely complex directions.
     if not np.allclose(eigenvector.imag, 0, atol=1e-10):
         print(
             f"Skipping eigenvector {k + 1}: it is genuinely complex "
@@ -512,23 +515,73 @@ for k, eigenvalue in enumerate(eigenvalues):
     ax_eig.quiver(
         0, 0, 0,
         direction[0], direction[1], direction[2],
-        color=colors[k % len(colors)],
+        color="black",
         linewidth=2,
         arrow_length_ratio=0.12,
         label=f"Eigenvector {k + 1}, λ = {eigenvalue.real:.3f}"
     )
-
-    # Show both signs because v and -v span the same eigenvector line.
     ax_eig.quiver(
         0, 0, 0,
         -direction[0], -direction[1], -direction[2],
-        color=colors[k % len(colors)],
+        color="black",
         linewidth=1,
-        alpha=0.35,
+        alpha=0.25,
         arrow_length_ratio=0.12
     )
-    plotted += 1
+    plotted_eigenvectors += 1
 
+
+# Plot each trial vector's direction at every iteration.
+# Normalising for display keeps the trajectory visible even when the
+# actual vector magnitudes grow or shrink dramatically.
+for i, (name, history) in enumerate(histories.items()):
+    color = f"C{i}"
+
+    magnitudes = np.linalg.norm(history, axis=1)
+    valid = magnitudes > 1e-14
+
+    directions = np.full_like(history, np.nan, dtype=float)
+    directions[valid] = history[valid] / magnitudes[valid, np.newaxis]
+
+    valid_directions = directions[valid]
+
+    if len(valid_directions) == 0:
+        continue
+
+    # Connect successive directions to show the path through iterations.
+    ax_eig.plot(
+        valid_directions[:, 0],
+        valid_directions[:, 1],
+        valid_directions[:, 2],
+        color=color,
+        marker="o",
+        markersize=3.5,
+        linewidth=1.5,
+        label=f"{name} (iterations)"
+    )
+
+    # Highlight the starting and final directions.
+    first = valid_directions[0]
+    last = valid_directions[-1]
+
+    ax_eig.scatter(
+        first[0], first[1], first[2],
+        color=color,
+        marker="s",
+        s=35,
+        edgecolors="black",
+        linewidths=0.5
+    )
+    ax_eig.scatter(
+        last[0], last[1], last[2],
+        color=color,
+        marker="*",
+        s=85,
+        edgecolors="black",
+        linewidths=0.5
+    )
+
+# Unit-sphere limits make the direction comparison geometrically fair.
 ax_eig.set_xlim(-1, 1)
 ax_eig.set_ylim(-1, 1)
 ax_eig.set_zlim(-1, 1)
@@ -536,10 +589,11 @@ ax_eig.set_box_aspect((1, 1, 1))
 ax_eig.set_xlabel("x")
 ax_eig.set_ylabel("y")
 ax_eig.set_zlabel("z")
-ax_eig.set_title("Theoretical eigenvectors")
+ax_eig.set_title("Eigenvectors and iterated vector directions")
+ax_eig.view_init(elev=22, azim=35)
 
-if plotted:
-    ax_eig.legend(fontsize=7, loc="upper left")
+if plotted_eigenvectors:
+    ax_eig.legend(fontsize=6, loc="upper left")
 else:
     ax_eig.text2D(
         0.1, 0.5,
