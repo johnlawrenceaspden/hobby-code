@@ -123,84 +123,6 @@ print(eigenvectors)
 
 
 # ==================================================
-# 3D PLOT OF THE THEORETICAL EIGENVECTORS
-# ==================================================
-
-# A real 3D plot can display real eigenvectors. If a matrix has
-# genuinely complex eigenvectors, their directions cannot be shown
-# directly in ordinary 3D real space.
-fig_eig = plt.figure(figsize=(8, 7))
-ax_eig = fig_eig.add_subplot(111, projection="3d")
-
-colors = ["C0", "C1", "C2"]
-plotted = 0
-
-for k, eigenvalue in enumerate(eigenvalues):
-    eigenvector = eigenvectors[:, k]
-
-    # Ignore only eigenvectors with a significant imaginary component.
-    if not np.allclose(eigenvector.imag, 0, atol=1e-10):
-        print(
-            f"Skipping eigenvector {k + 1}: it is genuinely complex "
-            "and cannot be represented as a direction in real 3D space."
-        )
-        continue
-
-    # Plot a unit-length version so all arrows are easy to compare.
-    direction = np.real(eigenvector)
-    norm = np.linalg.norm(direction)
-
-    if norm == 0:
-        continue
-
-    direction = direction / norm
-
-    ax_eig.quiver(
-        0, 0, 0,
-        direction[0], direction[1], direction[2],
-        color=colors[k % len(colors)],
-        linewidth=2,
-        arrow_length_ratio=0.12,
-        label=f"Eigenvector {k + 1}, λ = {eigenvalue.real:.3f}"
-    )
-
-    # Also show the opposite direction: v and -v are the same
-    # eigenvector direction (they span the same line).
-    ax_eig.quiver(
-        0, 0, 0,
-        -direction[0], -direction[1], -direction[2],
-        color=colors[k % len(colors)],
-        linewidth=1,
-        alpha=0.35,
-        arrow_length_ratio=0.12
-    )
-    plotted += 1
-
-ax_eig.set_xlim(-1, 1)
-ax_eig.set_ylim(-1, 1)
-ax_eig.set_zlim(-1, 1)
-ax_eig.set_box_aspect((1, 1, 1))
-
-ax_eig.set_xlabel("x")
-ax_eig.set_ylabel("y")
-ax_eig.set_zlabel("z")
-ax_eig.set_title(f"3D plot of eigenvector directions: {matrix_name}")
-
-if plotted:
-    ax_eig.legend()
-else:
-    ax_eig.text2D(
-        0.1, 0.5,
-        "No real eigenvectors to display.",
-        transform=ax_eig.transAxes
-    )
-
-plt.tight_layout()
-plt.show()
-
-
-
-# ==================================================
 # DEFINE STARTING VECTORS
 # ==================================================
 
@@ -315,12 +237,12 @@ for name, v in initial_vectors.items():
 # CREATE FIGURE LAYOUT
 # ==================================================
 
-fig = plt.figure(figsize=(16, 10))
+fig = plt.figure(figsize=(18, 10))
 
 gs = fig.add_gridspec(
-    2, 3,
+    2, 6,
     height_ratios=[1, 1.2],
-    width_ratios=[1, 1, 1]
+    width_ratios=[1, 1, 1, 1, 1, 1]
 )
 
 
@@ -329,9 +251,9 @@ gs = fig.add_gridspec(
 # ==================================================
 
 axes = [
-    fig.add_subplot(gs[0, 0]),
-    fig.add_subplot(gs[0, 1]),
-    fig.add_subplot(gs[0, 2])
+    fig.add_subplot(gs[0, 0:2]),
+    fig.add_subplot(gs[0, 2:4]),
+    fig.add_subplot(gs[0, 4:6])
 ]
 
 
@@ -482,7 +404,7 @@ for j, ax in enumerate(axes):
 # MATRIX A (BOTTOM LEFT)
 # ==================================================
 
-ax_matrix = fig.add_subplot(gs[1, 0])
+ax_matrix = fig.add_subplot(gs[1, 0:2])
 
 im = ax_matrix.imshow(
     A,
@@ -513,10 +435,10 @@ ax_matrix.set_title('Matrix A')
 
 
 # ==================================================
-# GROWTH OF VECTOR MAGNITUDES (BOTTOM RIGHT)
+# GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
 # ==================================================
 
-ax_mag = fig.add_subplot(gs[1, 1:])
+ax_mag = fig.add_subplot(gs[1, 2:4])
 
 for name, history in histories.items():
 
@@ -561,6 +483,69 @@ ax_mag.set_yscale('log')
 ax_mag.legend(fontsize=8)
 ax_mag.grid(True)
 
+
+# ==================================================
+# 3D PLOT OF THE THEORETICAL EIGENVECTORS (BOTTOM RIGHT)
+# ==================================================
+
+ax_eig = fig.add_subplot(gs[1, 4:6], projection="3d")
+colors = ["C0", "C1", "C2"]
+plotted = 0
+
+for k, eigenvalue in enumerate(eigenvalues):
+    eigenvector = eigenvectors[:, k]
+
+    # Ordinary 3D axes display real eigenvectors only.
+    if not np.allclose(eigenvector.imag, 0, atol=1e-10):
+        print(
+            f"Skipping eigenvector {k + 1}: it is genuinely complex "
+            "and cannot be represented as a real 3D direction."
+        )
+        continue
+
+    direction = np.real(eigenvector)
+    norm = np.linalg.norm(direction)
+    if norm == 0:
+        continue
+    direction = direction / norm
+
+    ax_eig.quiver(
+        0, 0, 0,
+        direction[0], direction[1], direction[2],
+        color=colors[k % len(colors)],
+        linewidth=2,
+        arrow_length_ratio=0.12,
+        label=f"Eigenvector {k + 1}, λ = {eigenvalue.real:.3f}"
+    )
+
+    # Show both signs because v and -v span the same eigenvector line.
+    ax_eig.quiver(
+        0, 0, 0,
+        -direction[0], -direction[1], -direction[2],
+        color=colors[k % len(colors)],
+        linewidth=1,
+        alpha=0.35,
+        arrow_length_ratio=0.12
+    )
+    plotted += 1
+
+ax_eig.set_xlim(-1, 1)
+ax_eig.set_ylim(-1, 1)
+ax_eig.set_zlim(-1, 1)
+ax_eig.set_box_aspect((1, 1, 1))
+ax_eig.set_xlabel("x")
+ax_eig.set_ylabel("y")
+ax_eig.set_zlabel("z")
+ax_eig.set_title("Theoretical eigenvectors")
+
+if plotted:
+    ax_eig.legend(fontsize=7, loc="upper left")
+else:
+    ax_eig.text2D(
+        0.1, 0.5,
+        "No real eigenvectors to display.",
+        transform=ax_eig.transAxes
+    )
 
 
 # ==================================================
