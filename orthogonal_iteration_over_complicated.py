@@ -391,7 +391,7 @@ fig = plt.figure(figsize=(18, 15))
 
 gs = fig.add_gridspec(
     3, 6,
-    height_ratios=[1, 1.1, 1],
+    height_ratios=[0.1, 4, 1],
     width_ratios=[1, 1, 1, 1, 1, 1],
     hspace=0.45,
     wspace=0.4
@@ -886,7 +886,7 @@ ax_residual.legend(fontsize=7)
 # GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
 # ==================================================
 
-ax_mag = fig.add_subplot(gs[1, 3:6])
+ax_mag = fig.add_subplot(gs[2, 3:6])
 
 for name, history in histories.items():
 
@@ -937,7 +937,7 @@ ax_mag.grid(True)
 # ==================================================
 
 
-ax_eig = fig.add_subplot(gs[2, 3:6], projection="3d")
+ax_eig = fig.add_subplot(gs[1, 3:6], projection="3d")
 # Plot theoretical eigenvector directions as black arrows.
 # Eigenvectors are normalised here so they can be compared with
 # the normalised directions of the iterated trial vectors.
