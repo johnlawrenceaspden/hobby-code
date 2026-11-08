@@ -568,6 +568,7 @@ matrix_gs = gs[1, 0:2].subgridspec(
 ax_matrix = fig.add_subplot(matrix_gs[0, 0])
 ax_diag = fig.add_subplot(matrix_gs[0, 1])
 
+
 # --------------------------------------------------
 # MATRIX HEATMAP
 # --------------------------------------------------
@@ -687,6 +688,209 @@ ax_diag.text(
 )
 
 ax_diag.set_title('Numerical diagnostics', fontsize=10)
+
+
+
+# ==================================================
+# EIGENVECTOR ALIGNMENT DIAGNOSTICS
+# ==================================================
+
+def vector_eigen_diagnostics(A, v):
+
+    v = np.asarray(v, dtype=float)
+
+    norm_v = np.linalg.norm(v)
+
+    if norm_v < 1e-14:
+        return None
+
+    Av = A @ v
+
+    norm_Av = np.linalg.norm(Av)
+
+    if norm_Av < 1e-14:
+        return {
+            'Angle': np.nan,
+            'Alignment angle': np.nan,
+            'Rayleigh quotient': 0.0,
+            'Residual': 0.0 if norm_v > 0 else np.nan
+        }
+
+    # Angle between v and Av
+    cosine = np.dot(v, Av) / (norm_v * norm_Av)
+
+    cosine = np.clip(cosine, -1.0, 1.0)
+
+    angle = np.degrees(np.arccos(cosine))
+
+    # Acute alignment angle
+    alignment_angle = np.degrees(
+        np.arccos(abs(cosine))
+    )
+
+    # Best-fit eigenvalue (Rayleigh quotient)
+    eigenvalue = np.dot(v, Av) / np.dot(v, v)
+
+    # Eigenvector residual
+    residual = np.linalg.norm(
+        Av - eigenvalue * v
+    ) / (
+        norm_Av + abs(eigenvalue) * norm_v
+    )
+
+    return {
+        'Angle': angle,
+        'Alignment angle': alignment_angle,
+        'Rayleigh quotient': eigenvalue,
+        'Residual': residual
+    }
+
+
+# ==================================================
+# CHECK THEORETICAL EIGENVECTORS
+# ==================================================
+
+print("\nTHEORETICAL EIGENVECTOR CHECKS")
+
+for k in range(len(eigenvalues)):
+
+    v = eigenvectors[:, k]
+
+    result = vector_eigen_diagnostics(A, v)
+
+    if result is None:
+        continue
+
+    print(
+        f"\nEigenvector {k+1}:"
+    )
+
+    print(
+        f"  Theoretical eigenvalue: {eigenvalues[k]:.8f}"
+    )
+
+    print(
+        f"  Calculated eigenvalue:  "
+        f"{result['Rayleigh quotient']:.8f}"
+    )
+
+    print(
+        f"  Angle v to Av:          "
+        f"{result['Angle']:.6f} degrees"
+    )
+
+    print(
+        f"  Alignment angle:        "
+        f"{result['Alignment angle']:.6f} degrees"
+    )
+
+    print(
+        f"  Eigenvector residual:   "
+        f"{result['Residual']:.3e}"
+    )
+
+
+# ==================================================
+# CHECK FINAL ITERATED VECTORS
+# ==================================================
+
+print("\nFINAL ITERATED VECTOR CHECKS")
+
+for name, v in initial_vectors.items():
+
+    result = vector_eigen_diagnostics(A, v)
+
+    print(f"\n{name}:")
+
+    if result is None:
+        print("  Zero vector: no direction to test")
+        continue
+
+    print(
+        f"  Rayleigh quotient: {result['Rayleigh quotient']:.8f}"
+    )
+
+    print(
+        f"  Angle v to Av: "
+        f"{result['Angle']:.6f} degrees"
+    )
+
+    print(
+        f"  Alignment angle: "
+        f"{result['Alignment angle']:.6f} degrees"
+    )
+
+    print(
+        f"  Eigenvector residual: "
+        f"{result['Residual']:.3e}"
+    )
+
+
+# ==================================================
+# EIGENVECTOR CONVERGENCE HISTORY
+# ==================================================
+
+fig_angles, axes_angles = plt.subplots(
+    1, 2,
+    figsize=(12, 4)
+)
+
+for name, history in histories.items():
+
+    angles = []
+    residuals = []
+
+    for v in history:
+
+        result = vector_eigen_diagnostics(A, v)
+
+        if result is None:
+            angles.append(np.nan)
+            residuals.append(np.nan)
+        else:
+            angles.append(result['Alignment angle'])
+            residuals.append(result['Residual'])
+
+    axes_angles[0].plot(
+        angles,
+        'o-',
+        label=name
+    )
+
+    axes_angles[1].plot(
+        residuals,
+        'o-',
+        label=name
+    )
+
+axes_angles[0].set_title(
+    'Angle between v and Av'
+)
+
+axes_angles[0].set_xlabel('Iteration')
+axes_angles[0].set_ylabel('Alignment angle (degrees)')
+axes_angles[0].grid(True)
+axes_angles[0].legend()
+
+axes_angles[1].set_title(
+    'Eigenvector residual'
+)
+
+axes_angles[1].set_xlabel('Iteration')
+axes_angles[1].set_ylabel('Relative residual')
+axes_angles[1].set_yscale('log')
+axes_angles[1].grid(True)
+axes_angles[1].legend()
+
+fig_angles.suptitle(
+    f'Eigenvector convergence diagnostics: {matrix_name}'
+)
+
+fig_angles.tight_layout()
+
+
+
+
 
 # ==================================================
 # GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
