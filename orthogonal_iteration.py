@@ -123,6 +123,156 @@ print(eigenvectors)
 
 
 # ==================================================
+# MATRIX PROPERTY DIAGNOSTICS
+# ==================================================
+
+def matrix_diagnostics(A, eigenvalues, eigenvectors):
+
+    n = A.shape[0]
+    I = np.eye(n)
+
+    eps = np.finfo(float).eps
+
+    # Basic properties
+    symmetric_residual = (
+        np.linalg.norm(A - A.T, 'fro')
+        / max(np.linalg.norm(A, 'fro'), eps)
+    )
+
+    is_symmetric = np.allclose(A, A.T)
+
+    # Normality: A.T @ A = A @ A.T
+    normality_residual = (
+        np.linalg.norm(A.T @ A - A @ A.T, 'fro')
+        / max(np.linalg.norm(A, 'fro')**2, eps)
+    )
+
+    is_normal = np.allclose(
+        A.T @ A,
+        A @ A.T
+    )
+
+    # Orthogonality: A.T @ A = I
+    orthogonality_residual = np.linalg.norm(
+        A.T @ A - I, 'fro'
+    ) / np.sqrt(n)
+
+    is_orthogonal = np.allclose(
+        A.T @ A, I
+    )
+
+    # Rank and singular values
+    singular_values = np.linalg.svd(
+        A, compute_uv=False
+    )
+
+    rank = np.linalg.matrix_rank(A)
+
+    condition_number = np.linalg.cond(A, 2)
+
+    # Determinant and trace
+    determinant = np.linalg.det(A)
+    trace = np.trace(A)
+
+    # Spectral radius
+    spectral_radius = np.max(np.abs(eigenvalues))
+
+    # Eigenvalues sorted by decreasing magnitude
+    sorted_indices = np.argsort(
+        np.abs(eigenvalues)
+    )[::-1]
+
+    sorted_eigenvalues = eigenvalues[sorted_indices]
+
+    eigenvalue_magnitudes = np.abs(sorted_eigenvalues)
+
+    # Eigenvalue separation ratios
+    ratios = []
+
+    for i in range(n - 1):
+
+        if eigenvalue_magnitudes[i] > eps:
+            ratio = (
+                eigenvalue_magnitudes[i + 1]
+                / eigenvalue_magnitudes[i]
+            )
+        else:
+            ratio = np.nan
+
+        ratios.append(ratio)
+
+    # Positive definiteness (only meaningful for symmetric matrices)
+    if is_symmetric:
+
+        symmetric_eigenvalues = np.linalg.eigvalsh(A)
+
+        positive_definite = np.all(
+            symmetric_eigenvalues > eps
+        )
+
+        positive_semidefinite = np.all(
+            symmetric_eigenvalues >= -eps
+        )
+
+        negative_definite = np.all(
+            symmetric_eigenvalues < -eps
+        )
+
+    else:
+
+        positive_definite = None
+        positive_semidefinite = None
+        negative_definite = None
+
+    # Conditioning of the eigenvector matrix
+    eigenvector_condition = np.linalg.cond(
+        eigenvectors
+    )
+
+    # Relative distance from singularity
+    relative_smallest_singular_value = (
+        singular_values[-1] / singular_values[0]
+        if singular_values[0] > eps
+        else 0.0
+    )
+
+    return {
+
+        'Symmetric': is_symmetric,
+        'Symmetry residual': symmetric_residual,
+
+        'Normal': is_normal,
+        'Normality residual': normality_residual,
+
+        'Orthogonal matrix': is_orthogonal,
+        'Orthogonality residual': orthogonality_residual,
+
+        'Positive definite': positive_definite,
+        'Positive semidefinite': positive_semidefinite,
+        'Negative definite': negative_definite,
+
+        'Rank': rank,
+        'Condition number': condition_number,
+
+        'Determinant': determinant,
+        'Trace': trace,
+
+        'Spectral radius': spectral_radius,
+
+        'Eigenvalues (magnitude order)': sorted_eigenvalues,
+
+        'Eigenvalue ratios': ratios,
+
+        'Eigenvector condition number': eigenvector_condition,
+
+        'Relative smallest singular value':
+            relative_smallest_singular_value
+    }
+
+
+
+
+# ==================================================
 # DEFINE STARTING VECTORS
 # ==================================================
 
@@ -136,7 +286,7 @@ initial_vectors = {
 n_keep = 0
 
 # Random seed for reproducibility
-np.random.seed(42)
+# np.random.seed(42)
 
 # Keep the first n_keep vectors
 initial_vectors = dict(
@@ -401,10 +551,26 @@ for j, ax in enumerate(axes):
 
 
 # ==================================================
-# MATRIX A (BOTTOM LEFT)
+# MATRIX HEATMAP AND PROPERTY DIAGNOSTICS
 # ==================================================
 
-ax_matrix = fig.add_subplot(gs[1, 0:2])
+diagnostics = matrix_diagnostics(
+    A, eigenvalues, eigenvectors
+)
+
+# Divide existing matrix plotting area into two panels
+matrix_gs = gs[1, 0:2].subgridspec(
+    1, 2,
+    width_ratios=[1, 1.35],
+    wspace=0.3
+)
+
+ax_matrix = fig.add_subplot(matrix_gs[0, 0])
+ax_diag = fig.add_subplot(matrix_gs[0, 1])
+
+# --------------------------------------------------
+# MATRIX HEATMAP
+# --------------------------------------------------
 
 im = ax_matrix.imshow(
     A,
@@ -414,7 +580,9 @@ im = ax_matrix.imshow(
 fig.colorbar(
     im,
     ax=ax_matrix,
-    label='Matrix value'
+    label='Matrix value',
+    fraction=0.046,
+    pad=0.04
 )
 
 for i in range(A.shape[0]):
@@ -422,17 +590,103 @@ for i in range(A.shape[0]):
     for j in range(A.shape[1]):
 
         ax_matrix.text(
-            j,
-            i,
-            f'{A[i, j]:.0f}',
+            j, i,
+            f'{A[i, j]:.2f}',
             ha='center',
             va='center',
             color='white',
-            fontsize=14
+            fontsize=10
         )
 
 ax_matrix.set_title('Matrix A')
 
+# --------------------------------------------------
+# PROPERTY DISPLAY
+# --------------------------------------------------
+
+ax_diag.axis('off')
+
+def status(value):
+
+    if value is None:
+        return 'N/A'
+
+    return 'YES' if value else 'NO'
+
+
+def fmt(value):
+
+    if value is None:
+        return 'N/A'
+
+    if np.isinf(value):
+        return '∞'
+
+    if np.isnan(value):
+        return 'undefined'
+
+    return f'{value:.3e}'
+
+
+d = diagnostics
+
+lines = [
+
+    'MATRIX PROPERTIES',
+    '',
+    f"Symmetric:          {status(d['Symmetric'])}",
+    f"Normal:             {status(d['Normal'])}",
+    f"Orthogonal:         {status(d['Orthogonal matrix'])}",
+    '',
+    f"Symmetry residual:  {fmt(d['Symmetry residual'])}",
+    f"Normality residual: {fmt(d['Normality residual'])}",
+    f"Orthogonality:      {fmt(d['Orthogonality residual'])}",
+    '',
+    f"Rank:               {d['Rank']} / {A.shape[0]}",
+    f"Condition number:   {fmt(d['Condition number'])}",
+    f"Determinant:        {fmt(d['Determinant'])}",
+    f"Trace:              {fmt(d['Trace'])}",
+    '',
+    f"Spectral radius:    {fmt(d['Spectral radius'])}",
+    f"Eigenvector cond.:  {fmt(d['Eigenvector condition number'])}",
+    f"Smallest SV ratio:  {fmt(d['Relative smallest singular value'])}",
+    '',
+    'DEFINITENESS',
+    f"Positive definite:  {status(d['Positive definite'])}",
+    f"Positive semidef.:  {status(d['Positive semidefinite'])}",
+    f"Negative definite:  {status(d['Negative definite'])}",
+    '',
+    'EIGENVALUE MAGNITUDES',
+]
+
+for i, value in enumerate(
+    d['Eigenvalues (magnitude order)']
+):
+
+    lines.append(
+        f'|λ{i+1}| = {abs(value):.5g}'
+    )
+
+lines.append('')
+lines.append('CONVERGENCE RATIOS')
+
+for i, ratio in enumerate(d['Eigenvalue ratios']):
+
+    lines.append(
+        f'|λ{i+2}| / |λ{i+1}| = {fmt(ratio)}'
+    )
+
+ax_diag.text(
+    0.0, 1.0,
+    '\n'.join(lines),
+    transform=ax_diag.transAxes,
+    verticalalignment='top',
+    horizontalalignment='left',
+    fontsize=7.5,
+    family='monospace'
+)
+
+ax_diag.set_title('Numerical diagnostics', fontsize=10)
 
 # ==================================================
 # GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
