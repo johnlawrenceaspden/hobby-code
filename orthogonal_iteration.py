@@ -387,12 +387,14 @@ for name, v in initial_vectors.items():
 # CREATE FIGURE LAYOUT
 # ==================================================
 
-fig = plt.figure(figsize=(18, 10))
+fig = plt.figure(figsize=(18, 15))
 
 gs = fig.add_gridspec(
-    2, 6,
-    height_ratios=[1, 1.2],
-    width_ratios=[1, 1, 1, 1, 1, 1]
+    3, 6,
+    height_ratios=[1, 1.1, 1],
+    width_ratios=[1, 1, 1, 1, 1, 1],
+    hspace=0.45,
+    wspace=0.4
 )
 
 
@@ -559,11 +561,13 @@ diagnostics = matrix_diagnostics(
 )
 
 # Divide existing matrix plotting area into two panels
-matrix_gs = gs[1, 0:2].subgridspec(
+matrix_gs = gs[1, 0:3].subgridspec(
     1, 2,
     width_ratios=[1, 1.35],
     wspace=0.3
 )
+
+
 
 ax_matrix = fig.add_subplot(matrix_gs[0, 0])
 ax_diag = fig.add_subplot(matrix_gs[0, 1])
@@ -830,10 +834,8 @@ for name, v in initial_vectors.items():
 # EIGENVECTOR CONVERGENCE HISTORY
 # ==================================================
 
-fig_angles, axes_angles = plt.subplots(
-    1, 2,
-    figsize=(12, 4)
-)
+ax_angle = fig.add_subplot(gs[2, 0:2])
+ax_residual = fig.add_subplot(gs[2, 2])
 
 for name, history in histories.items():
 
@@ -847,47 +849,35 @@ for name, history in histories.items():
         if result is None:
             angles.append(np.nan)
             residuals.append(np.nan)
+
         else:
             angles.append(result['Alignment angle'])
             residuals.append(result['Residual'])
 
-    axes_angles[0].plot(
+    ax_angle.plot(
         angles,
         'o-',
         label=name
     )
 
-    axes_angles[1].plot(
+    ax_residual.plot(
         residuals,
         'o-',
         label=name
     )
 
-axes_angles[0].set_title(
-    'Angle between v and Av'
-)
+ax_angle.set_title('Eigenvector alignment')
+ax_angle.set_xlabel('Iteration')
+ax_angle.set_ylabel('Alignment angle (degrees)')
+ax_angle.grid(True)
+ax_angle.legend(fontsize=8)
 
-axes_angles[0].set_xlabel('Iteration')
-axes_angles[0].set_ylabel('Alignment angle (degrees)')
-axes_angles[0].grid(True)
-axes_angles[0].legend()
-
-axes_angles[1].set_title(
-    'Eigenvector residual'
-)
-
-axes_angles[1].set_xlabel('Iteration')
-axes_angles[1].set_ylabel('Relative residual')
-axes_angles[1].set_yscale('log')
-axes_angles[1].grid(True)
-axes_angles[1].legend()
-
-fig_angles.suptitle(
-    f'Eigenvector convergence diagnostics: {matrix_name}'
-)
-
-fig_angles.tight_layout()
-
+ax_residual.set_title('Eigenvector residual')
+ax_residual.set_xlabel('Iteration')
+ax_residual.set_ylabel('Relative residual')
+ax_residual.set_yscale('log')
+ax_residual.grid(True)
+ax_residual.legend(fontsize=7)
 
 
 
@@ -896,7 +886,7 @@ fig_angles.tight_layout()
 # GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
 # ==================================================
 
-ax_mag = fig.add_subplot(gs[1, 2:4])
+ax_mag = fig.add_subplot(gs[1, 3:6])
 
 for name, history in histories.items():
 
@@ -946,8 +936,8 @@ ax_mag.grid(True)
 # 3D PLOT: THEORETICAL EIGENVECTORS AND ITERATED VECTORS
 # ==================================================
 
-ax_eig = fig.add_subplot(gs[1, 4:6], projection="3d")
 
+ax_eig = fig.add_subplot(gs[2, 3:6], projection="3d")
 # Plot theoretical eigenvector directions as black arrows.
 # Eigenvectors are normalised here so they can be compared with
 # the normalised directions of the iterated trial vectors.
@@ -1069,13 +1059,12 @@ eigenvalue_text = ', '.join(
 )
 
 fig.suptitle(
-    f'Orthogonal Iteration and Vector Evolution '
-    f': {matrix_name} '
+    f'Orthogonal Iteration and Vector Evolution: '
+    f'{matrix_name}\n'
     f'(Eigenvalues: {eigenvalue_text})',
-    fontsize=14
+    fontsize=15
 )
 
-#fig.tight_layout(rect=[0, 0, 1, 0.92])
-fig.tight_layout()
+fig.tight_layout(rect=[0, 0, 1, 0.96])
 
 plt.show()
