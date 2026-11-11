@@ -424,7 +424,7 @@ for i in range(A.shape[0]):
         ax_matrix.text(
             j,
             i,
-            f'{A[i, j]:.0f}',
+            f'{A[i, j]:.5g}',
             ha='center',
             va='center',
             color='white',
