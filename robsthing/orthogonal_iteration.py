@@ -102,7 +102,7 @@ matrices = {
 # Randomly select a matrix
 matrix_name = np.random.choice(list(matrices.keys()))
 # or to just pick the final matrix
-# matrix_name = list(matrices.keys())[-1]
+matrix_name = list(matrices.keys())[-1]
 
 A = matrices[matrix_name]
 
