@@ -90,12 +90,28 @@ matrices = {
         [ 0,  0,  1]
     ]),
     
+    'Badly Conditioned':
+    np.array([
+        [ 2, 0,   0],
+        [ 0, 1.9, 0],
+        [ 0, 0,   1]
+    ]),
+
+    'Rotates Subspace':
+    np.array([
+        [ 0, -1, 0],
+        [ 1, 0,  0],
+        [ 0, 0,  1]
+    ]),
+
+    
    'Non-Normal':
     np.array([
         [ 1,  10,  0],
         [ 0,  2,  0],
         [ 0,  0,  1]
     ]),
+
 }
 
 
