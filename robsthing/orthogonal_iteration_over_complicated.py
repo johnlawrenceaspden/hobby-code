@@ -390,23 +390,37 @@ for name, v in initial_vectors.items():
 fig = plt.figure(figsize=(18, 15))
 
 gs = fig.add_gridspec(
-    3, 6,
-    height_ratios=[0.1, 4, 1],
-    width_ratios=[1, 1, 1, 1, 1, 1],
+    4, 6,
+    height_ratios=[1, 1, 1, 1],
+    width_ratios=[2, 1, 1, 1, 1, 1],
     hspace=0.45,
     wspace=0.4
 )
+
+
+
+
+ax_matrix = fig.add_subplot(gs[0, 0])
+ax_diag = fig.add_subplot(gs[1, 0])
+
+ax_angle = fig.add_subplot(gs[1, 1])
+ax_residual = fig.add_subplot(gs[1, 2])
+
+ax_eig = fig.add_subplot(gs[0:3, 3:6], projection="3d")
+ax_mag = fig.add_subplot(gs[2, 1])
+
+
+axes = [
+    fig.add_subplot(gs[3, 1]),
+    fig.add_subplot(gs[3, 2]),
+    fig.add_subplot(gs[3, 3])
+]
 
 
 # ==================================================
 # THREE NORMALISED VECTOR COMPONENTS (TOP ROW)
 # ==================================================
 
-axes = [
-    fig.add_subplot(gs[0, 0:2]),
-    fig.add_subplot(gs[0, 2:4]),
-    fig.add_subplot(gs[0, 4:6])
-]
 
 
 # Fade settings (relative to initial magnitude)
@@ -549,7 +563,7 @@ for j, ax in enumerate(axes):
     ax.set_ylim(-1, 1)
 
     ax.grid(True)
-    ax.legend(fontsize=7)
+    #ax.legend(fontsize=7)
 
 
 # ==================================================
@@ -560,17 +574,6 @@ diagnostics = matrix_diagnostics(
     A, eigenvalues, eigenvectors
 )
 
-# Divide existing matrix plotting area into two panels
-matrix_gs = gs[1, 0:3].subgridspec(
-    1, 2,
-    width_ratios=[1, 1.35],
-    wspace=0.3
-)
-
-
-
-ax_matrix = fig.add_subplot(matrix_gs[0, 0])
-ax_diag = fig.add_subplot(matrix_gs[0, 1])
 
 
 # --------------------------------------------------
@@ -585,7 +588,7 @@ im = ax_matrix.imshow(
 fig.colorbar(
     im,
     ax=ax_matrix,
-    label='Matrix value',
+    #label='Matrix value',
     fraction=0.046,
     pad=0.04
 )
@@ -596,14 +599,14 @@ for i in range(A.shape[0]):
 
         ax_matrix.text(
             j, i,
-            f'{A[i, j]:.2f}',
+            f'{A[i, j]:.4g}',
             ha='center',
             va='center',
             color='white',
             fontsize=10
         )
 
-ax_matrix.set_title('Matrix A')
+#ax_matrix.set_title('Matrix A')
 
 # --------------------------------------------------
 # PROPERTY DISPLAY
@@ -630,7 +633,7 @@ def fmt(value):
     if np.isnan(value):
         return 'undefined'
 
-    return f'{value:.3e}'
+    return f'{value:.10g}'
 
 
 d = diagnostics
@@ -834,8 +837,6 @@ for name, v in initial_vectors.items():
 # EIGENVECTOR CONVERGENCE HISTORY
 # ==================================================
 
-ax_angle = fig.add_subplot(gs[2, 0:2])
-ax_residual = fig.add_subplot(gs[2, 2])
 
 for name, history in histories.items():
 
@@ -870,14 +871,14 @@ ax_angle.set_title('Eigenvector alignment')
 ax_angle.set_xlabel('Iteration')
 ax_angle.set_ylabel('Alignment angle (degrees)')
 ax_angle.grid(True)
-ax_angle.legend(fontsize=8)
+#ax_angle.legend(fontsize=8)
 
 ax_residual.set_title('Eigenvector residual')
 ax_residual.set_xlabel('Iteration')
 ax_residual.set_ylabel('Relative residual')
 ax_residual.set_yscale('log')
 ax_residual.grid(True)
-ax_residual.legend(fontsize=7)
+#ax_residual.legend(fontsize=7)
 
 
 
@@ -886,7 +887,7 @@ ax_residual.legend(fontsize=7)
 # GROWTH OF VECTOR MAGNITUDES (BOTTOM MIDDLE)
 # ==================================================
 
-ax_mag = fig.add_subplot(gs[2, 3:6])
+
 
 for name, history in histories.items():
 
@@ -928,7 +929,7 @@ ax_mag.set_title('Growth of Trial Vectors')
 
 ax_mag.set_yscale('log')
 
-ax_mag.legend(fontsize=8)
+#ax_mag.legend(fontsize=8)
 ax_mag.grid(True)
 
 
@@ -937,7 +938,7 @@ ax_mag.grid(True)
 # ==================================================
 
 
-ax_eig = fig.add_subplot(gs[1, 3:6], projection="3d")
+
 # Plot theoretical eigenvector directions as black arrows.
 # Eigenvectors are normalised here so they can be compared with
 # the normalised directions of the iterated trial vectors.
