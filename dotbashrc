@@ -646,6 +646,6 @@ alias r='~/hobby-code/reddit_gallery_download.py'
 # 67(12)3456- -> lm(fs)lfsl-
 fasola ()
 {
-    printf '%s\n' "$*"
-    printf '%s\n' "$*" | tr '1234567' 'fslfslm'
+    printf '\n%s\n' "$*"
+    printf '\n%s\n' "$*" | tr '1234567' 'fslfslm'
 }
