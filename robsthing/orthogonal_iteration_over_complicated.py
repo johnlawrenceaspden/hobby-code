@@ -90,19 +90,28 @@ matrices = {
         [ 0,  0,  1]
     ]),
     
-   'Non-Normal':
+   'Non-Normal, defective':
     np.array([
-        [ 1,  10,  0],
-        [ 0,  2,  0],
+        [ 1,  1,  0],
+        [ 0,  1,  0],
         [ 0,  0,  1]
     ]),
+
+   'Non-Normal, diagonalizable':
+    np.array([
+        [ 1,  1,  0],
+        [ 0,  2,  0],
+        [ 0,  0,  3]
+    ]),
+
+
 }
 
 
 # Randomly select a matrix
-matrix_name = np.random.choice(list(matrices.keys()))
+#matrix_name = np.random.choice(list(matrices.keys()))
 # or to just pick the final matrix
-# matrix_name = list(matrices.keys())[-1]
+matrix_name = list(matrices.keys())[-1]
 
 A = matrices[matrix_name]
 
